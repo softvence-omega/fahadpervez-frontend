@@ -36,14 +36,7 @@ const routes = createBrowserRouter([
         path: "/form",
         element: <Form />,
       },
-      {
-        path: "/login",
-        element: <Login />,
-      },
-      {
-        path: "/signup",
-        element: <Signup />,
-      },
+
       {
         path: "/admin",
         element: <AdminRoute />, // This will check if the user is an admin
@@ -52,6 +45,15 @@ const routes = createBrowserRouter([
         ],
       },
     ],
+
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
   },
   {
     path: "*",

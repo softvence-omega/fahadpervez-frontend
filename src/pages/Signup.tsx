@@ -1,30 +1,25 @@
-import { useState } from "react";
+
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CiSquarePlus } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
+import { FcGoogle } from "react-icons/fc";
+import signupImage from "../assets/signUp/signUpImage.png";
 
 const signupSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email format"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  image: z
-    .any()
-    .refine((file) => file, "Image is required")
-    .optional(),
 });
 
 type SignupFormInputs = z.infer<typeof signupSchema>;
 
 const Signup = () => {
-  const [preview, setPreview] = useState<string | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  // const [preview, setPreview] = useState<string | null>(null);
+  // const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<SignupFormInputs>({
     resolver: zodResolver(signupSchema),
@@ -32,118 +27,162 @@ const Signup = () => {
 
   const navigate = useNavigate();
 
+  // Email signup
   const onSubmit = (data: SignupFormInputs) => {
     const formData = new FormData();
-    formData.append("name", data.name);
     formData.append("email", data.email);
     formData.append("password", data.password);
-    if (selectedFile) formData.append("image", selectedFile);
+    // if (selectedFile) formData.append("image", selectedFile);
 
     console.log("Signup Data:", Object.fromEntries(formData));
     navigate("/login");
   };
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file));
-      setSelectedFile(file);
-      setValue("image", file, { shouldValidate: true });
-    }
+  // Google signup
+  const handleGoogleSignup = () => {
+    console.log("Google signup triggered");
+    // 👉 Later: integrate Firebase/Auth0/NextAuth/etc.
   };
 
+  // const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0];
+  //   if (file) {
+  //     setPreview(URL.createObjectURL(file));
+  //     setSelectedFile(file);
+  //     setValue("image", file, { shouldValidate: true });
+  //   }
+  // };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-200">
-      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-semibold text-center">Signup</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
-          {/* Name Field */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Name
-            </label>
-            <input
-              type="text"
-              {...register("name")}
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm">{errors.name.message}</p>
-            )}
-          </div>
+    <div className="flex h-screen">
+      {/* Left Side */}
+      <div className="hidden md:flex md:w-1/2 relative items-center justify-center">
+        <img
+          src={signupImage}
+          alt="Signup Illustration"
+          className="h-full w-full object-cover"
+        />
+        <div className="absolute top-6 left-6">
+          <h1 className="text-blue-600 font-bold text-lg">
+            Medical Student Hub
+          </h1>
+        </div>
+        <div className="absolute bottom-6 left-6 bg-white/80 p-4 rounded-lg text-sm max-w-sm">
+          <p className="italic text-gray-700">
+            “This library has saved me countless hours of work and helped me
+            deliver stunning designs to my clients faster than ever before.”
+          </p>
+          <p className="mt-2 font-semibold text-gray-900">Sofia Davis</p>
+        </div>
+      </div>
 
-          {/* Email Field */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              {...register("email")}
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email.message}</p>
-            )}
-          </div>
+      {/* Right Side */}
+      <div className="flex w-full md:w-1/2 items-center justify-center p-6">
+        <div className="w-full max-w-sm">
+          <h2 className="text-2xl font-semibold text-[#09090B] mb-6 leading-8">Create an account</h2>
+          <p className="text-sm font-normal text-[#71717A] leading-5 mb-6">Enter your email below to create your account</p>
 
-          {/* Password Field */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              type="password"
-              {...register("password")}
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm">{errors.password.message}</p>
-            )}
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Profile Picture
-            </label>
-            {/* input box  */}
-            <div
-              className="relative w-full h-36 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center cursor-pointer hover:border-blue-500 transition"
-              onClick={() => document.getElementById("fileInput")?.click()}
-            >
-              {preview ? (
-                <img
-                  src={preview}
-                  alt="Preview"
-                  className="absolute inset-0 w-full h-full object-cover rounded-lg"
-                />
-              ) : (
-                <div className="flex flex-col items-center text-gray-500">
-                  <CiSquarePlus className="h-12 w-12" />
-                  <p className="text-sm">Click to upload</p>
-                </div>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {/* Email */}
+            <div>
+              <input
+                type="email"
+                placeholder="name@example.com"
+                {...register("email")}
+                className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm">{errors.email.message}</p>
               )}
             </div>
-            <input
-              type="file"
-              accept="image/*"
-              id="fileInput"
-              className="hidden"
-              onChange={handleImageChange}
-            />
-            {errors.image?.message &&
-              typeof errors.image.message === "string" && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.image.message}
+
+            {/* Password
+            <div>
+              <input
+                type="password"
+                placeholder="Password"
+                {...register("password")}
+                className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+              />
+              {errors.password && (
+                <p className="text-red-500 text-sm">
+                  {errors.password.message}
                 </p>
               )}
+            </div> */}
+
+            {/* Profile Picture Upload */}
+            {/* <div>
+              <div
+                className="relative w-full h-32 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center cursor-pointer hover:border-blue-500 transition"
+                onClick={() => document.getElementById("fileInput")?.click()}
+              >
+                {preview ? (
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center text-gray-500">
+                    <CiSquarePlus className="h-12 w-12" />
+                    <p className="text-sm">Click to upload profile picture</p>
+                  </div>
+                )}
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                id="fileInput"
+                className="hidden"
+                onChange={handleImageChange}
+              />
+            </div> */}
+
+            {/* Sign up button */}
+            <button
+              type="submit"
+              className="w-full bg-black text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-gray-800"
+            >
+              Sign up with Email
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div className="flex items-center my-4">
+            <div className="flex-grow border-t border-gray-300"></div>
+            <span className="mx-2 text-gray-500 text-sm">
+              OR CONTINUE WITH
+            </span>
+            <div className="flex-grow border-t border-gray-300"></div>
           </div>
+
+          {/* Google button */}
           <button
-            type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+            onClick={handleGoogleSignup}
+            className="w-full flex items-center justify-center border border-gray-400 p-3 rounded-md hover:bg-gray-100"
           >
-            Signup
+            <FcGoogle className="mr-2 text-xl" />
+            Google
           </button>
-        </form>
+
+          {/* Terms + Sign in */}
+          <p className="text-xs text-gray-500 mt-6 text-center">
+            By clicking continue, you agree to our{" "}
+            <span className="underline cursor-pointer">Terms of Service</span>{" "}
+            and{" "}
+            <span className="underline cursor-pointer">Privacy Policy</span>.
+          </p>
+          <p className="text-sm text-center text-gray-600 mt-4">
+            Already have an account?{" "}
+            <span
+              className="text-blue-600 cursor-pointer hover:underline"
+              onClick={() => navigate("/login")}
+            >
+              Sign in
+            </span>
+          </p>
+        </div>
       </div>
     </div>
   );
