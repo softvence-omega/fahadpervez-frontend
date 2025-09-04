@@ -6,10 +6,12 @@ import NotFound from "../pages/NotFound";
 import Home from "../pages/Home";
 import AdminRoute from "./AdminRoutes";
 import AdminDashboard from "@/pages/Admin/AdminDashboard";
-import Login from "@/pages/Login";
-import Signup from "@/pages/Signup";
+import Login from "@/pages/authPage/Login";
+import Signup from "@/pages/authPage/Signup";
 import Form from "@/pages/Form";
 import Services from "@/pages/Services";
+import VerificationOTP from "@/pages/authPage/VerificationOTP";
+import SetPassword from "@/pages/authPage/SetPassword";
 
 const routes = createBrowserRouter([
   {
@@ -54,6 +56,14 @@ const routes = createBrowserRouter([
   {
     path: "/signup",
     element: <Signup />,
+  },
+  {
+    path: "/verification-otp",
+    element: <VerificationOTP />,
+  },
+  {
+    path: "/set-password",
+    element: <SetPassword />,
   },
   {
     path: "*",
