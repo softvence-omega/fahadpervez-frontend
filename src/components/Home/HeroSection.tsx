@@ -1,9 +1,9 @@
 import CommonWrapper from "@/common/CommonWrapper";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 
-import heroIcon1 from "../../assets/home/hero_icon_1.png"
-import heroIcon2 from "../../assets/home/hero_icon_2.png"
-import bannerImage from "../../assets/home/heroBanner.png"
+import heroIcon1 from "@/assets/home/hero_icon_1.png"
+import heroIcon2 from "@/assets/home/hero_icon_2.png"
+import bannerImage from "@/assets/home/heroBanner.png"
 
 export default function HeroSection() {
   return (
