@@ -90,7 +90,7 @@ const Signup = () => {
             {/* Sign up button */}
             <button
               type="submit"
-              className="w-full bg-black text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-gray-800"
+              className="w-full bg-black text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-gray-800 cursor-pointer"
             >
               Sign up with Email
             </button>
@@ -108,7 +108,7 @@ const Signup = () => {
           {/* Google button */}
           <button
             onClick={handleGoogleSignup}
-            className="w-full flex items-center justify-center text-sm text-[#3F3F46] font-medium border border-[#D2D6DB] p-[8px] rounded-lg hover:bg-gray-100"
+            className="w-full flex items-center justify-center text-sm text-[#3F3F46] font-medium border border-[#D2D6DB] p-[8px] rounded-lg hover:bg-gray-100 cursor-pointer"
           >
             <FcGoogle className="mr-2 text-xl" />
             Google

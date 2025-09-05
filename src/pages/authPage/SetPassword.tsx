@@ -105,7 +105,7 @@ const SetPassword = () => {
                         {/* Sign up button */}
                         <button
                             type="submit"
-                            className="w-full bg-black text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-gray-800 mt-6"
+                            className="w-full bg-black text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-gray-800 mt-6 cursor-pointer"
                         >
                             Save change
                         </button>

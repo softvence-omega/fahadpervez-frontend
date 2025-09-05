@@ -1,116 +1,131 @@
-import React from "react";
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
+import footerImage from "@/assets/home/footerImage.svg";
+import footerBg from "@/assets/home/footerbg.png";
+import { FaFacebook, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
-const Footer: React.FC = () => {
+const Footer = () => {
   return (
-    <footer className="bg-[#212a31] text-white py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* About Section */}
-          <div>
-            <h3 className="text-lg font-bold mb-4">About Us</h3>
-            <p className="text-sm">
-              We are a team of passionate developers building amazing web
-              applications with modern technologies.
-            </p>
-          </div>
+    <div className="bg-white relative overflow-hidden pt-44">
+      {/* Footer Container */}
+      <div className="relative">
+        {/* Background Image */}
+        <img
+          src={footerBg}
+          alt="Footer background"
+          className="absolute top-0 left-0 w-full h-full object-top z-0"
+        />
+        {/* Right Side - Floating Image */}
+        <img
+          src={footerImage}
+          alt="Medical consultation"
+          className="absolute -top-32 right-4 md:right-8 lg:right-16 xl:right-92 z-10 w-[300px] md:w-[350px] lg:w-[500px] h-[300px] md:h-[350px] lg:h-[500px] object-cover rounded-full shadow-2xl"
+        />
+        {/* Footer Content */}
+        <div className="relative z-20 pt-40 pb-10 px-4 sm:px-6 lg:px-10 max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-start">
+            {/* Left Side */}
+            <div className="flex-1 max-w-lg">
+              <h2 className="text-white text-2xl md:text-3xl font-light mb-8 md:mb-12">
+                Ready to get started?
+              </h2>
 
-          {/* Quick Links Section */}
-          <div>
-            <h3 className="text-lg font-bold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li>
-                <a href="/" className="hover:text-gray-300">
-                  Home
-                </a>
-              </li>
-              <li>
-                <a href="/about" className="hover:text-gray-300">
-                  About
-                </a>
-              </li>
-              <li>
-                <a href="/services" className="hover:text-gray-300">
-                  Services
-                </a>
-              </li>
-              <li>
-                <a href="/contact" className="hover:text-gray-300">
-                  Contact
-                </a>
-              </li>
-            </ul>
-          </div>
+              <div className="flex flex-col sm:flex-row gap-8 sm:gap-16">
+                {/* Navigation Links */}
+                <div>
+                  <h3 className="text-white text-base font-medium mb-6 opacity-90">
+                    Site Map
+                  </h3>
+                  <ul className="space-y-3">
+                    <li>
+                      <Link
+                        to="#"
+                        className="text-white/70 text-sm hover:text-white transition-colors"
+                      >
+                        About
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="#"
+                        className="text-white/70 text-sm hover:text-white transition-colors"
+                      >
+                        Articles
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="#"
+                        className="text-white/70 text-sm hover:text-white transition-colors"
+                      >
+                        Tools
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="#"
+                        className="text-white/70 text-sm hover:text-white transition-colors"
+                      >
+                        For Students
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
 
-          {/* Social Media Section */}
-          <div>
-            <h3 className="text-lg font-bold mb-4">Follow Us</h3>
-            <div className="flex space-x-4">
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-gray-300"
-              >
-                <FaFacebook size={24} />
-              </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-gray-300"
-              >
-                <FaTwitter size={24} />
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-gray-300"
-              >
-                <FaInstagram size={24} />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-gray-300"
-              >
-                <FaLinkedin size={24} />
-              </a>
+                {/* Membership */}
+                <div>
+                  <h3 className="text-white text-base font-medium mb-6 opacity-90">
+                    Membership
+                  </h3>
+                  <ul className="space-y-3">
+                    <li>
+                      <Link
+                        to="#"
+                        className="text-white/70 text-sm hover:text-white transition-colors"
+                      >
+                        Become a Member
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Newsletter Section */}
-          <div>
-            <h3 className="text-lg font-bold mb-4">Newsletter</h3>
-            <p className="text-sm mb-4">
-              Subscribe to our newsletter to get the latest updates.
-            </p>
-            {/* <form className="lg:flex">
-              <input
-                type="email"
-                placeholder="Your email"
-                className="p-2 mr-2 rounded-md border-1 border-white  text-white focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="bg-[#124e66] text-[#d3d9d4] px-4 rounded-md hover:bg-[#124e66]/50"
-              >
-                Subscribe
-              </button>
-            </form> */}
+          {/* Bottom Footer */}
+          <div className="px-4 sm:px-6 lg:px-0 py-5 mt-10">
+            <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+              <div className="text-white/60 text-sm">
+                © 2025 Medical Search Hub | All Rights Reserved
+              </div>
+
+              <div className="flex items-center gap-4">
+                <span className="text-white/60 text-sm">Follow us on</span>
+                <div className="flex gap-3">
+                  <Link
+                    to="#"
+                    className="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
+                  >
+                    <FaFacebook className="w-5 h-5 text-white" />
+                  </Link>
+                  <Link
+                    to="#"
+                    className="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
+                  >
+                    <FaLinkedin className="w-5 h-5 text-white" />
+                  </Link>
+                  <Link
+                    to="#"
+                    className="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
+                  >
+                    <FaTwitter className="w-5 h-5 text-white" />
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* Copyright Section */}
-        <div className="border-t border-gray-700 mt-8 pt-8 text-center">
-          <p className="text-sm">
-            &copy; {new Date().getFullYear()} Akash Saha. All rights reserved.
-          </p>
-        </div>
       </div>
-    </footer>
+    </div>
   );
 };
 

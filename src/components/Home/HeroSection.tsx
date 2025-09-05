@@ -26,8 +26,8 @@ export default function HeroSection() {
               </div>
             </div>
             <div className="space-x-5">
-              <Button className="text-sm font-medium bg-[#0D9488] text-white py-3 px-5">Join Study Group</Button>
-              <Button className="text-sm font-medium bg-[#0076F5] text-white py-3 px-5">Take a Quiz</Button>
+              <Button className="text-sm font-medium bg-[#0D9488] text-white py-3 px-5 cursor-pointer">Join Study Group</Button>
+              <Button className="text-sm font-medium bg-[#0076F5] text-white py-3 px-5 cursor-pointer">Take a Quiz</Button>
             </div>
           </div>
           <div className="hidden md:block">
