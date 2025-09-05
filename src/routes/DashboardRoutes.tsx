@@ -32,10 +32,6 @@ const dashboardRoutes = {
       element: <McqBank />,
     },
     {
-      path: "mcq-bank",
-      element: <McqBank />,
-    },
-    {
       path: "flashcard-generator",
       element: <FlashcardPage />,
     },
