@@ -1,8 +1,9 @@
-
 const DashboardNavbar = () => {
   return (
-    <div>Khnnnn</div>
-  )
-}
+    <div className="">
+      Dashboard Navbar
+    </div>
+  );
+};
 
-export default DashboardNavbar
+export default DashboardNavbar;
