@@ -105,7 +105,7 @@ export default function VerificationOTP() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-black text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-gray-800"
+              className="w-full bg-black text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-gray-800 cursor-pointer"
             >
               Verify OTP
             </button>
@@ -114,7 +114,7 @@ export default function VerificationOTP() {
           {/* Back + Sign up */}
           <button
             onClick={() => navigate(-1)}
-            className="text-sm text-[#0F172A] font-medium mt-6 mb-8 hover:underline flex items-center gap-1 mx-auto"
+            className="text-sm text-[#0F172A] font-medium mt-6 mb-8 hover:underline flex items-center gap-1 mx-auto cursor-pointer"
           >
             ← Back
           </button>
