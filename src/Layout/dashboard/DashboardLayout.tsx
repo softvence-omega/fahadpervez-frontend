@@ -1,15 +1,18 @@
 import { Outlet } from "react-router-dom";
 import DashboardNavbar from "./DashboardNavbar";
+import CommonWrapper from "@/common/CommonWrapper";
 
-const Layout: React.FC = () => {
+const DashboardLayout: React.FC = () => {
   return (
     <div>
       <DashboardNavbar />
       <main>
-        <Outlet />
+        <CommonWrapper>
+          <Outlet />
+        </CommonWrapper>
       </main>
     </div>
   );
 };
 
-export default Layout;
+export default DashboardLayout;
