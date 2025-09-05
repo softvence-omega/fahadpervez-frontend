@@ -10,9 +10,8 @@ import { Link } from "react-router-dom";
 // import { useAppDispatch } from "@/hooks/useRedux";
 // import { logout } from "@/store/Slices/AuthSlice/authSlice";
 
-import Logo from "../assets/home/Logo.png"
+import Logo from "@/assets/home/Logo.png";
 import CommonWrapper from "@/common/CommonWrapper";
-
 
 const Navbar: React.FC = () => {
   // const navigate = useNavigate();
@@ -103,11 +102,13 @@ const Navbar: React.FC = () => {
 
             {/* right side button */}
             <div>
-
               <div className="space-x-6">
-                <button className="bg-white px-4 py-2 rounded-[6px] text-[#0058B8] font-medium cursor-pointer">Registration</button>
-                <button className="text-white px-8 py-2 rounded-[6px] bg-[#0058B8] font-medium cursor-pointer">Login</button>
-
+                <button className="bg-white px-4 py-2 rounded-[6px] text-[#0058B8] font-medium cursor-pointer">
+                  Registration
+                </button>
+                <button className="text-white px-8 py-2 rounded-[6px] bg-[#0058B8] font-medium cursor-pointer">
+                  Login
+                </button>
               </div>
 
               {/* <Popover>
@@ -124,7 +125,6 @@ const Navbar: React.FC = () => {
               </PopoverContent>
             </Popover> */}
             </div>
-
           </div>
         </div>
       </CommonWrapper>
