@@ -9,12 +9,12 @@ export default function HeroSection() {
   return (
     <div>
       <CommonWrapper>
-        <div className="flex items-center justify-between">
+        <div className="md:flex items-center justify-between">
           <div className="mt-20 mb-6">
             <h1 className="text-5xl font-bold text-[#1E293B] leading-12 mb-4">Welcome to Your Medical <br /> Student Hub</h1>
             <p className="text-lg text-[#334155] font-normal leading-7 mb-12">Learn smarter, connect faster, succeed together.</p>
 
-            <div className="flex space-x-8 mb-20">
+            <div className="md:flex space-x-8 space-y-8 md:space-y-0 mb-20">
               <div className="w-[300px] rounded-[8px] bg-[#0EA5E94D] py-5 px-6">
                 <img src={heroIcon1} alt="heroIcon" />
                 <h3 className="text-xl font-semibold text-[#1D4ED8] leading-7">Medical Student</h3>
@@ -30,7 +30,7 @@ export default function HeroSection() {
               <Button className="text-sm font-medium bg-[#0076F5] text-white py-3 px-5">Take a Quiz</Button>
             </div>
           </div>
-          <div>
+          <div className="hidden md:block">
             <img src={bannerImage} alt="" />
           </div>
         </div>

@@ -87,7 +87,7 @@ const Footer: React.FC = () => {
             <p className="text-sm mb-4">
               Subscribe to our newsletter to get the latest updates.
             </p>
-            <form className="flex">
+            {/* <form className="lg:flex">
               <input
                 type="email"
                 placeholder="Your email"
@@ -99,7 +99,7 @@ const Footer: React.FC = () => {
               >
                 Subscribe
               </button>
-            </form>
+            </form> */}
           </div>
         </div>
 
