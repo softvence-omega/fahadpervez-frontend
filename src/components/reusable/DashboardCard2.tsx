@@ -1,4 +1,4 @@
-import { Plus, Play, BrainCog, BookOpenText } from "lucide-react";
+import { BookOpen, Plus, Play, BrainCog } from "lucide-react";
 
 // Color theme configurations
 type ThemeKey =
@@ -124,7 +124,7 @@ const colorThemes: Record<
   },
 };
 
-interface DashboardCard1Props {
+interface DashboardCard2Props {
   title?: string;
   subtitle?: string;
   sectionTitle?: string;
@@ -157,7 +157,7 @@ interface DashboardCard1Props {
   quizCardBorder?: string;
 }
 
-const DashboardCard1 = ({
+const DashboardCard2 = ({
   title = "MCQ Bank",
   subtitle = "120/2400 Question Completed",
   sectionTitle = "Today's Quiz Suggestions",
@@ -169,7 +169,7 @@ const DashboardCard1 = ({
   onCreateQuiz = () => alert("Create quiz clicked"),
   onStartQuiz = () => alert("Start quiz clicked"),
   onViewAll = () => alert("View all clicked"),
-  icon: IconComponent = BookOpenText,
+  icon: IconComponent = BookOpen,
 
   // Theme-based styling
   theme = "pink",
@@ -188,7 +188,7 @@ const DashboardCard1 = ({
   viewAllText = "",
   quizCardBg = "",
   quizCardBorder = "",
-}: DashboardCard1Props) => {
+}: DashboardCard2Props) => {
   // Determine which colors to use
   const getColors = () => {
     if (customColors) return customColors;
@@ -287,7 +287,7 @@ const DashboardCard1 = ({
           {/* Start Quiz Button */}
           <button
             onClick={onStartQuiz}
-            className="flex items-center justify-center gap-2 px-4 py-2 text-sm bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors duration-200 font-medium text-nowrap"
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors duration-200 font-medium text-nowrap"
           >
             <Play className="w-4 h-4" />
             {secondButtonTitle}
@@ -298,4 +298,4 @@ const DashboardCard1 = ({
   );
 };
 
-export default DashboardCard1;
+export default DashboardCard2;

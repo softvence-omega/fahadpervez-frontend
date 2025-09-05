@@ -75,7 +75,7 @@ const DashboardNavbar = () => {
           {/* Logo */}
           <div className="flex items-center gap-4 md:gap-6">
             <Link to="/dashboard">
-              <img src="/logo1.svg" className="h-16" alt="" />
+              <img src="/logo1.svg " className="h-16" alt="" />
             </Link>
 
             {/* Search Bar */}
