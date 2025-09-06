@@ -6,6 +6,7 @@ import CommunityEvent from "@/pages/dashboard/CommunityEvent";
 import Courses from "@/pages/dashboard/Courses";
 import DashboardHome from "@/pages/dashboard/DashboardHome";
 import DiagramExplorer from "@/pages/dashboard/DiagramExplorer";
+import DownloadNotes from "@/pages/dashboard/DownloadNotes";
 import FlashcardPage from "@/pages/dashboard/FlashcardPage";
 import GamifiedLearning from "@/pages/dashboard/GamifiedLearning";
 import McqBank from "@/pages/dashboard/McqBank";
@@ -54,6 +55,10 @@ const dashboardRoutes = {
     {
       path: "gamified-learning",
       element: <GamifiedLearning />,
+    },
+    {
+      path: "download-notes",
+      element: <DownloadNotes />,
     },
   ],
 };
