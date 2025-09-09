@@ -4,9 +4,10 @@ import AITutor from "@/pages/dashboard/AITutor";
 import ClinicalCaseGenerator from "@/pages/dashboard/ClinicalCaseGenerator";
 import CommunityEvent from "@/pages/dashboard/CommunityEvent";
 import Courses from "@/pages/dashboard/Courses";
+import CreateNotes from "@/pages/dashboard/downloadNotes/CreateNotes";
 import DashboardHome from "@/pages/dashboard/DashboardHome";
 import DiagramExplorer from "@/pages/dashboard/DiagramExplorer";
-import DownloadNotes from "@/pages/dashboard/DownloadNotes";
+import DownloadNotes from "@/pages/dashboard/downloadNotes/DownloadNotes";
 import FlashcardPage from "@/pages/dashboard/FlashcardPage";
 import GamifiedLearning from "@/pages/dashboard/GamifiedLearning";
 import McqBank from "@/pages/dashboard/McqBank";
@@ -59,6 +60,10 @@ const dashboardRoutes = {
     {
       path: "download-notes",
       element: <DownloadNotes />,
+    },
+    {
+      path: "create-note",
+      element: <CreateNotes />,
     },
   ],
 };

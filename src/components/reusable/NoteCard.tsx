@@ -42,7 +42,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
             </p>
 
             {/* Meta Info */}
-            <div className="flex justify-between">
+            <div className="flex justify-between flex-wrap gap-5">
                 <div>
                     <h3 className="text-base text-black font-medium leading-6">Chapter</h3>
                     <p className="text-base text-black font-normal leading-6 mt-1">
@@ -57,29 +57,31 @@ const NoteCard: React.FC<NoteCardProps> = ({
                     </p>
                 </div>
 
-                <div>
-                    {showDownload && (<div>
-                        <h3 className="text-base text-black font-medium leading-6">Downloads</h3>
+                {showDownload && (
+                    <div>
+                        <h3 className="text-base text-black font-medium leading-6">
+                            Downloads
+                        </h3>
                         <p className="text-base text-black font-normal leading-6 mt-1">
                             {downloads}
                         </p>
-                    </div>)}
-                </div>
+                    </div>
+                )}
             </div>
 
             {/* Buttons */}
-            <div className="flex mt-9 gap-5">
+            <div className="flex flex-col sm:flex-row mt-9 gap-4 sm:gap-5">
                 {showDownload ? (
                     <>
                         <button
                             onClick={onViewNotes}
-                            className="border border-slate-300 py-2 px-7 rounded-[6px] cursor-pointer"
+                            className="w-full sm:w-auto border border-slate-300 py-2 px-7 rounded-[6px] cursor-pointer"
                         >
                             View Notes
                         </button>
                         <button
                             onClick={onDownload}
-                            className="flex items-center gap-3 bg-green-900 hover:bg-green-800 text-white py-2 px-6 rounded-[6px] cursor-pointer"
+                            className="w-full sm:w-auto flex items-center justify-center gap-3 bg-green-900 hover:bg-green-800 text-white py-2 px-6 rounded-[6px] cursor-pointer"
                         >
                             <Download className="w-5 h-5" /> Download PDF
                         </button>
