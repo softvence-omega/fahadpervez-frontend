@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 
 import Logo from "@/assets/home/Logo.png";
 import CommonWrapper from "@/common/CommonWrapper";
+import { Menu, X } from "lucide-react";
 
 const Navbar: React.FC = () => {
   // const navigate = useNavigate();
@@ -68,38 +69,6 @@ const Navbar: React.FC = () => {
               </Link>
             </div>
 
-            {/* Mobile Menu Button */}
-            <div className="md:hidden flex items-center">
-              <button
-                onClick={toggleMenu}
-                type="button"
-                className="text-white hover:text-gray-300 focus:outline-none"
-              >
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  {isOpen ? (
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  ) : (
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6h16M4 12h16m-7 6h7"
-                    />
-                  )}
-                </svg>
-              </button>
-            </div>
-
             {/* right side button */}
             <div>
               <div className="space-x-6">
@@ -124,6 +93,16 @@ const Navbar: React.FC = () => {
                 </Button>
               </PopoverContent>
             </Popover> */}
+            </div>
+            {/* Mobile Menu Button */}
+            <div className="md:hidden flex items-center">
+              <button
+                onClick={toggleMenu}
+                type="button"
+                className="text-blue-700 hover:text-blue-900 focus:outline-none"
+              >
+                {!isOpen ? <Menu /> : <X />}
+              </button>
             </div>
           </div>
         </div>

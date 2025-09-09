@@ -4,7 +4,6 @@ import MentorSection from "@/components/Home/MentorSection";
 import StudyPlanSection from "@/components/Home/StudyPlanSection";
 
 const Home = () => {
-
   return (
     <div className="bg-white">
       <HeroSection />
@@ -14,5 +13,5 @@ const Home = () => {
     </div>
   );
 };
- 
+
 export default Home;
