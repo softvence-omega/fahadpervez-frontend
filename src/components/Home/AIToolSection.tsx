@@ -5,17 +5,17 @@ import { FcSettings } from "react-icons/fc"
 
 export default function AIToolSection() {
     return (
-        <div className="bg-[#0F172A] pt-28 pb-40 mt-36">
+        <div className="bg-[#0F172A] py-20">
             <CommonWrapper>
-                <div className="md:flex items-center justify-between gap-3">
+                <div className="grid md:grid-cols-2 gap-6 items-center justify-between gap-3">
                     <div className="mx-auto">
-                        <h2 className="text-5xl text-white font-semibold leading-14">Enhancing learning with smart <br /> AI-powered tools.</h2>
+                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">Enhancing learning with Smart AI-powered tools.</h2>
                         <div className="max-w-[600px] bg-slate-800 rounded-[20px] pt-6 pl-6 pb-4 mt-10 mb-8">
                             <div className="flex items-center gap-4">
                                 <FaAirbnb className="w-6 h-6 text-white" />
                                 <h4 className="text-[#F8FAFC] font-medium">AI  Tutor</h4>
                             </div>
-                            <p className="w-[450px] pt-3 text-base text-slate-400 font-normal leading-6">A set of checkable buttons—known as radio buttons—where no more than one of the buttons can be checked at a time.</p>
+                            <p className=" pt-3 text-base text-slate-400 font-normal leading-6">A set of checkable buttons—known as radio buttons—where no more than one of the buttons can be checked at a time.</p>
                         </div>
                         <div className="space-y-8 ml-6">
                             <div className="flex items-center gap-4">
@@ -41,8 +41,8 @@ export default function AIToolSection() {
                             </div>
                         </div>
                     </div>
-                    <div className="hidden md:block mx-auto">
-                        <img src={AIToolImage} alt="ai_tool_image" />
+                    <div className="hidden md:block max-w-xl mx-auto">
+                        <img src={AIToolImage} className="w-full" alt="ai_tool_image" />
                     </div>
                 </div>
             </CommonWrapper>

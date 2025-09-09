@@ -29,7 +29,7 @@ const Navbar: React.FC = () => {
   // };
 
   return (
-    <nav className="bg-[#E2E8F0] shadow-lg py-3">
+    <nav className="bg-slate-200 shadow py-3 sticky top-0">
       <CommonWrapper>
         <div className="px-4 sm:px-6 lg:px-0">
           <div className="flex items-center justify-between h-16">
