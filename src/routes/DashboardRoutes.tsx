@@ -8,12 +8,15 @@ import CreateNotes from "@/pages/dashboard/downloadNotes/CreateNotes";
 import DashboardHome from "@/pages/dashboard/DashboardHome";
 import DiagramExplorer from "@/pages/dashboard/DiagramExplorer";
 import DownloadNotes from "@/pages/dashboard/downloadNotes/DownloadNotes";
-import FlashcardPage from "@/pages/dashboard/FlashcardPage";
+import FlashcardPage from "@/pages/dashboard/flashcard/FlashcardPage";
 import GamifiedLearning from "@/pages/dashboard/GamifiedLearning";
 import McqBank from "@/pages/dashboard/McqBank";
 import QuizGenerator from "@/pages/dashboard/quizGenerator/QuizGenerator";
 import QuizPage from "@/pages/dashboard/quizGenerator/QuizPage";
 import AllGeneratedQuiz from "@/pages/dashboard/quizGenerator/AllGeneratedQuiz";
+import FlashCardGenerator from "@/pages/dashboard/flashcard/FlashCardGenerator";
+import FlashCardCollection from "@/pages/dashboard/flashcard/FlashCardCollection";
+import AllGeneratedFlashCard from "@/pages/dashboard/flashcard/AllGeneratedFlashcard";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -36,7 +39,7 @@ const dashboardRoutes = {
       element: <McqBank />,
     },
     {
-      path: "flashcard-generator",
+      path: "flashcard-page",
       element: <FlashcardPage />,
     },
     {
@@ -74,6 +77,18 @@ const dashboardRoutes = {
     {
       path: "all-generated-quiz",
       element: <AllGeneratedQuiz />,
+    },
+    {
+      path: "flashcard-generator",
+      element: <FlashCardGenerator />,
+    },
+    {
+      path: "flashcard-collection",
+      element: <FlashCardCollection />,
+    },
+    {
+      path: "all-flash-card",
+      element: <AllGeneratedFlashCard />,
     },
   ],
 };

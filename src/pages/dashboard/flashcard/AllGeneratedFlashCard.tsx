@@ -1,11 +1,11 @@
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
-import QuizCard from "./QuizCard";
 import { useState } from "react";
 import Pagination from "@/components/reusable/Pagination";
+import QuizCard from "../quizGenerator/QuizCard";
 
-export default function AllGeneratedQuiz() {
+export default function AllGeneratedFlashCard() {
 
     // Dummy products (replace with API data)
     const products = Array.from({ length: 57 }, (_, i) => ({
@@ -45,21 +45,21 @@ export default function AllGeneratedQuiz() {
                 <Link to={'/dashboard/quiz-page'} className="mb-7">
                     <ArrowLeft /></Link>
                 <DashboardHeading
-                    title="Generated Quiz"
+                    title="Your Flashcard Collection"
                     titleSize="text-xl"
-                    description="Create custom quizzes from your images and videos using AI"
+                    description="AI-powered spaced repetition learning"
                     descColor="text-[#4A5565]"
                     descSize="text-sm"
                     className="mt-12 mb-12 space-y-1"
                 />
             </div>
 
-            <h3 className="font-medium text-black mb-6">All Generated Quiz's</h3>
+            <h3 className="font-medium text-black mb-6">All Flashcards</h3>
 
             <div className="bg-white border border-slate-300 rounded-[8px] py-5 pl-7 pr-5">
                 <div>
-                    <h3 className="text-sm text-[#0A0A0A] font-medium">Generated Quizzes</h3>
-                    <p className="text-sm text-[#717182] mt-1">Your AI-generated quizzes ready to use</p>
+                    <h3 className="text-sm text-[#0A0A0A] font-medium">Generated Cards</h3>
+                    <p className="text-sm text-[#717182] mt-1">Your AI-generated Cards ready to use</p>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
                         {Array.from({ length: 17 }).map(() => (
