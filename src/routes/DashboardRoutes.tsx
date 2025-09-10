@@ -11,7 +11,9 @@ import DownloadNotes from "@/pages/dashboard/downloadNotes/DownloadNotes";
 import FlashcardPage from "@/pages/dashboard/FlashcardPage";
 import GamifiedLearning from "@/pages/dashboard/GamifiedLearning";
 import McqBank from "@/pages/dashboard/McqBank";
-import QuizGenerator from "@/pages/dashboard/QuizGenerator";
+import QuizGenerator from "@/pages/dashboard/quizGenerator/QuizGenerator";
+import QuizPage from "@/pages/dashboard/quizGenerator/QuizPage";
+import AllGeneratedQuiz from "@/pages/dashboard/quizGenerator/AllGeneratedQuiz";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -64,6 +66,14 @@ const dashboardRoutes = {
     {
       path: "create-note",
       element: <CreateNotes />,
+    },
+    {
+      path: "quiz-page",
+      element: <QuizPage />,
+    },
+    {
+      path: "all-generated-quiz",
+      element: <AllGeneratedQuiz />,
     },
   ],
 };
