@@ -7,7 +7,7 @@ export default function AIToolSection() {
     return (
         <div className="bg-[#0F172A] py-20">
             <CommonWrapper>
-                <div className="grid md:grid-cols-2 gap-6 items-center justify-between gap-3">
+                <div className="grid md:grid-cols-2 gap-6 items-center justify-between">
                     <div className="mx-auto">
                         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">Enhancing learning with Smart AI-powered tools.</h2>
                         <div className="max-w-[600px] bg-slate-800 rounded-[20px] pt-6 pl-6 pb-4 mt-10 mb-8">
