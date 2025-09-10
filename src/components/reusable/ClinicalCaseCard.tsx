@@ -25,7 +25,7 @@ const ClinicalCaseCard = ({
   icon: IconComponent = BookOpenText,
 }: // Theme-based styling
 
-ClinicalCaseCardProps) => {
+  ClinicalCaseCardProps) => {
   // Determine which colors to use
 
   return (

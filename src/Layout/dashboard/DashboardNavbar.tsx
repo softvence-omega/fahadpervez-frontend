@@ -27,7 +27,7 @@ const DashboardNavbar = () => {
     { name: "Community & Event", href: "/dashboard/community-event" },
     { name: "AI Tutor", href: "/dashboard/ai-tutor" },
     { name: "MCQ Bank", href: "/dashboard/mcq-bank" },
-    { name: "Flashcard Generator", href: "/dashboard/flashcard-generator" },
+    { name: "Flashcard Generator", href: "/dashboard/flashcard-page" },
     { name: "Quiz Generator", href: "/dashboard/quiz-generator" },
     {
       name: "Clinical Case Generator",
