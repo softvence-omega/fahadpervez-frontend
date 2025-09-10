@@ -1,99 +1,56 @@
-// import UserAvatar from "@/ui/UserAvatar";
+"use client";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-// import {
-//   Popover,
-//   PopoverContent,
-//   PopoverTrigger,
-// } from "@/components/ui/popover";
-// import { Button } from "@/components/ui/button";
-// import { useAppDispatch } from "@/hooks/useRedux";
-// import { logout } from "@/store/Slices/AuthSlice/authSlice";
-
-import Logo from "@/assets/home/Logo.png";
 import CommonWrapper from "@/common/CommonWrapper";
 import { Menu, X } from "lucide-react";
 
 const Navbar: React.FC = () => {
-  // const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
-  // const dispatch = useAppDispatch();
+  const toggleMenu = () => setIsOpen(!isOpen);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
-  // const handleLogout = () => {
-  //   dispatch(logout());
-  //   navigate("/login");
-  // };
+  const navLinks = [
+    { path: "/", label: "Home" },
+    { path: "/tools", label: "Tools" },
+    { path: "/for-students", label: "For Students" },
+    { path: "/news", label: "News & Insights" },
+  ];
 
   return (
-    <nav className="bg-slate-200 shadow py-3 sticky top-0">
+    <nav className="bg-slate-200 shadow sticky top-0 z-50 py-2">
       <CommonWrapper>
         <div className="px-4 sm:px-6 lg:px-0">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-12 md:h-16">
             {/* Logo */}
             <div className="flex-shrink-0">
               <Link to="/" className="text-white text-2xl font-bold">
-                <img src={Logo} alt="" />
+                <img src="/logo1.svg" alt="Logo" className="h-16" />
               </Link>
             </div>
 
             {/* Desktop Menu */}
-            <div className="hidden md:flex space-x-4 text-[#09090B]">
-              <Link
-                to="/"
-                className="hover:text-[#0058B8] px-3 py-2 rounded-md font-medium"
-              >
-                Home
-              </Link>
-              <Link
-                to="/tools"
-                className="hover:text-[#0058B8] px-3 py-2 rounded-md font-medium"
-              >
-                Tools
-              </Link>
-              <Link
-                to="/for-students"
-                className="hover:text-[#0058B8] px-3 py-2 rounded-md font-medium"
-              >
-                For Students
-              </Link>
-              <Link
-                to="/news"
-                className="hover:text-[#0058B8] px-3 py-2 rounded-md font-medium"
-              >
-                News & Insights
-              </Link>
-            </div>
-
-            {/* right side button */}
-            <div>
-              <div className="space-x-6">
-                <button className="bg-white px-4 py-2 rounded-[6px] text-[#0058B8] font-medium cursor-pointer">
-                  Registration
-                </button>
-                <button className="text-white px-8 py-2 rounded-[6px] bg-[#0058B8] font-medium cursor-pointer">
-                  Login
-                </button>
-              </div>
-
-              {/* <Popover>
-              <PopoverTrigger>
-                <UserAvatar userName="Akash" />
-              </PopoverTrigger>
-              <PopoverContent className="mr-3 bg-website-color-darkGray border-none text-white">
-                <Button
-                  onClick={handleLogout}
-                  className="bg-website-color-lightGray text-black w-full"
+            <div className="hidden md:flex space-x-6 text-[#09090B] font-medium">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className="hover:text-[#0058B8] px-3 py-2 rounded-md"
                 >
-                  Logout
-                </Button>
-              </PopoverContent>
-            </Popover> */}
+                  {link.label}
+                </Link>
+              ))}
             </div>
+
+            {/* Right Side Buttons (Desktop) */}
+            <div className="hidden md:flex space-x-4">
+              <button className="bg-white px-4 py-2 rounded-[6px] text-[#0058B8] font-medium cursor-pointer">
+                Registration
+              </button>
+              <button className="text-white px-8 py-2 rounded-[6px] bg-[#0058B8] font-medium cursor-pointer">
+                Login
+              </button>
+            </div>
+
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center">
               <button
@@ -101,7 +58,7 @@ const Navbar: React.FC = () => {
                 type="button"
                 className="text-blue-700 hover:text-blue-900 focus:outline-none"
               >
-                {!isOpen ? <Menu /> : <X />}
+                {!isOpen ? <Menu size={28} /> : <X size={28} />}
               </button>
             </div>
           </div>
@@ -110,32 +67,28 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link
-              to="/"
-              className="text-white block hover:bg-purple-700 px-3 py-2 rounded-md text-base font-medium"
-            >
-              Home
-            </Link>
-            <Link
-              to="/about"
-              className="text-white block hover:bg-purple-700 px-3 py-2 rounded-md text-base font-medium"
-            >
-              About
-            </Link>
-            <Link
-              to="/services"
-              className="text-white block hover:bg-purple-700 px-3 py-2 rounded-md text-base font-medium"
-            >
-              Services
-            </Link>
-            <Link
-              to="/contact"
-              className="text-white block hover:bg-purple-700 px-3 py-2 rounded-md text-base font-medium"
-            >
-              Contact
-            </Link>
+        <div className="md:hidden bg-slate-100 border-t border-blue-400/20">
+          <div className="px-4 pt-3 pb-4 space-y-2">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className="block text-[#09090B] hover:text-[#0058B8] px-3 py-2 rounded-md font-medium"
+                onClick={() => setIsOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+
+            {/* Buttons (Mobile) */}
+            <div className="mt-4 space-y-2">
+              <button className="w-full bg-white px-4 py-2 rounded-[6px] text-[#0058B8] font-medium">
+                Registration
+              </button>
+              <button className="w-full text-white px-4 py-2 rounded-[6px] bg-[#0058B8] font-medium">
+                Login
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -1,17 +1,16 @@
 import CommonWrapper from "@/common/CommonWrapper";
 import MentorCard from "./MentorCard";
+import PrimaryButton from "../reusable/PrimaryButton";
 
 export default function MentorSection() {
   return (
     <div className="py-10 md:py-16">
       <CommonWrapper>
-        <div className="flex justify-between items-center mb-12">
-          <h2 className="text-3xl font-bricolage text-black font-semibold leading-9">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-5 md:mb-8 lg:mb-12 gap-4">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bricolage text-black font-semibold text-center md:text-left">
             Expert Mentorship for Tomorrow's Doctors
           </h2>
-          <button className="text-sm text-white font-medium leading-6 py-3 px-4 rounded-lg bg-linear-to-r from-[#0076F5] to-[#0058B8] cursor-pointer">
-            All Professor
-          </button>
+          <PrimaryButton className="px-6 py-3">All Professor</PrimaryButton>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           <MentorCard />

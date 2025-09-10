@@ -8,7 +8,7 @@ export default function HeroSection() {
   return (
     <div className="bg-[#FAFAFA]  ">
       <CommonWrapper>
-        <div className="md:grid grid-cols-2 gap-10 items-center">
+        <div className="lg:grid grid-cols-2 gap-10 items-center">
           <div className="py-10 md:py-16" >
             <h1 className="text-3xl md:text-5xl font-bold text-[#1E293B]  mb-4">Welcome to Your Medical <br /> Student Hub</h1>
             <p className="text-base md:text-lg text-[#334155]">Learn smarter, connect faster, succeed together.</p>
@@ -33,7 +33,7 @@ export default function HeroSection() {
               </PrimaryButton>
             </div>
           </div>
-          <div className="hidden md:block pt-10">
+          <div className="hidden lg:block pt-10">
             <img src={bannerImage} alt="" />
           </div>
         </div>
