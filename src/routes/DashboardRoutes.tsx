@@ -17,9 +17,11 @@ import AllGeneratedQuiz from "@/pages/dashboard/quizGenerator/AllGeneratedQuiz";
 import FlashCardGenerator from "@/pages/dashboard/flashcard/FlashCardGenerator";
 import FlashCardCollection from "@/pages/dashboard/flashcard/FlashCardCollection";
 import AllGeneratedFlashCard from "@/pages/dashboard/flashcard/AllGeneratedFlashCard";
+import ClinicalCaseDetails from "@/components/dashboard/clinical-case/ClinicalCaseDetails";
 import QuizPage from "@/pages/dashboard/quizGenerator/QuizPage";
 import Quiz from "@/pages/dashboard/quizGenerator/Quiz";
 import AnswerOverview from "@/pages/dashboard/quizGenerator/AnswerOverview";
+
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -55,6 +57,10 @@ const dashboardRoutes = {
     {
       path: "clinical-case-generator",
       element: <ClinicalCaseGenerator />,
+    },
+    {
+      path: "clinical-case/:id",
+      element: <ClinicalCaseDetails />,
     },
     {
       path: "diagram-explorer",
