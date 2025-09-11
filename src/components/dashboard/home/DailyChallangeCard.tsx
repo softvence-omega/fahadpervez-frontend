@@ -31,17 +31,24 @@ const DailyChallengeCard: React.FC<DailyChallengeCardProps> = ({
         </div>
         <div className="mt-4 flex space-x-6">
           <div className="flex items-center text-slate-800">
-            <span><PiSealQuestion className="w-5 h-5"/></span>
+            <span>
+              <PiSealQuestion className="w-5 h-5" />
+            </span>
             <span className="ml-1">{flashcards} Flashcards</span>
           </div>
           <div className="flex items-center text-gray-600">
-            <span className="material-icons text-blue-500">assignment</span>
+            <span>
+              <PiSealQuestion className="w-5 h-5" />
+            </span>
             <span className="ml-1">Case: {caseCount}</span>
           </div>
         </div>
       </div>
-      <div className="mt-4 flex justify-between items-center">
-        <span className="text-blue-500 text-sm">{reward}</span>
+      <div className="mt-4 flex flex-col lg:flex-row gap-4 justify-between lg:items-center">
+        <div className="flex md:block items-center gap-2">
+          <p className="text-blue-btn-1 text-sm">Rewards</p>
+          <span className="text-sm">{reward}</span>
+        </div>
         <PrimaryButton className="px-4 py-2">Continue Challenge</PrimaryButton>
       </div>
     </div>
