@@ -4,12 +4,14 @@ type PrimaryHeadingProps = {
   title: string;
   icon?: ReactNode;
   className?: string;
+  iconColor?: string;
 };
 
 const PrimaryHeading: React.FC<PrimaryHeadingProps> = ({
   title,
   icon,
   className,
+  iconColor = "text-blue-main",
 }) => {
   return (
     <div
@@ -17,7 +19,7 @@ const PrimaryHeading: React.FC<PrimaryHeadingProps> = ({
         className || ""
       }`}
     >
-      {icon && <span className="text-blue-main">{icon}</span>}
+      {icon && <span className={` ${iconColor}`}>{icon}</span>}
       <h2 className="text-slate-800">{title}</h2>
     </div>
   );

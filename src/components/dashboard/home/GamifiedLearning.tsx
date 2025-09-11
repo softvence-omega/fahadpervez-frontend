@@ -98,7 +98,7 @@ const GamifiedLearning = () => {
           <BadgesSection />
 
           {/* Weekly Leaderboard */}
-          <Leaderboard players={players} currentUserId="4" />
+          <Leaderboard players={players} currentUserId="5" />
         </div>
       </div>
     </div>
