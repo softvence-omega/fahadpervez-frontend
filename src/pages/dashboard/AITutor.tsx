@@ -1,7 +1,11 @@
+import Quiz from "./quizGenerator/Quiz"
 
 const AITutor = () => {
   return (
-    <div>AITutor</div>
+    <div>
+      AITutor
+      <Quiz />
+    </div>
   )
 }
 

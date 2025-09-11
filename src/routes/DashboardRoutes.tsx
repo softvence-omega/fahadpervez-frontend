@@ -12,11 +12,14 @@ import FlashcardPage from "@/pages/dashboard/flashcard/FlashcardPage";
 import GamifiedLearning from "@/pages/dashboard/GamifiedLearning";
 import McqBank from "@/pages/dashboard/McqBank";
 import QuizGenerator from "@/pages/dashboard/quizGenerator/QuizGenerator";
-import QuizPage from "@/pages/dashboard/quizGenerator/QuizPage";
+import QuizCollection from "@/pages/dashboard/quizGenerator/QuizCollection";
 import AllGeneratedQuiz from "@/pages/dashboard/quizGenerator/AllGeneratedQuiz";
 import FlashCardGenerator from "@/pages/dashboard/flashcard/FlashCardGenerator";
 import FlashCardCollection from "@/pages/dashboard/flashcard/FlashCardCollection";
-import AllGeneratedFlashCard from "@/pages/dashboard/flashcard/AllGeneratedFlashcard";
+import AllGeneratedFlashCard from "@/pages/dashboard/flashcard/AllGeneratedFlashCard";
+import QuizPage from "@/pages/dashboard/quizGenerator/QuizPage";
+import Quiz from "@/pages/dashboard/quizGenerator/Quiz";
+import AnswerOverview from "@/pages/dashboard/quizGenerator/AnswerOverview";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -41,6 +44,9 @@ const dashboardRoutes = {
     {
       path: "flashcard-page",
       element: <FlashcardPage />,
+      children: [
+
+      ]
     },
     {
       path: "quiz-generator",
@@ -75,8 +81,20 @@ const dashboardRoutes = {
       element: <QuizPage />,
     },
     {
+      path: "quiz-collection",
+      element: <QuizCollection />,
+    },
+    {
       path: "all-generated-quiz",
       element: <AllGeneratedQuiz />,
+    },
+    {
+      path: "quiz/:id",
+      element: <Quiz />,
+    },
+    {
+      path: "quiz-answer-overview/:id",
+      element: <AnswerOverview />,
     },
     {
       path: "flashcard-generator",
