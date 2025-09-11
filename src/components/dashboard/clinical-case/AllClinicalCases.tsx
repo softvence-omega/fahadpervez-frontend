@@ -1,5 +1,14 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { Search, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Search,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ArrowRight,
+  Bookmark,
+} from "lucide-react";
+import PrimaryButton from "@/components/reusable/PrimaryButton";
+import { useNavigate } from "react-router-dom";
 
 // Type definitions
 interface CaseData {
@@ -157,6 +166,7 @@ const AllClinicalCases: React.FC = () => {
     useState<FilterOption>("All");
   const [activeTab, setActiveTab] = useState<TabType>("All Cases");
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const navigate = useNavigate();
 
   const casesPerPage = 6;
 
@@ -185,13 +195,13 @@ const AllClinicalCases: React.FC = () => {
     const getDifficultyColor = (difficulty: CaseData["difficulty"]): string => {
       switch (difficulty) {
         case "Beginner":
-          return "text-orange-600 bg-orange-100";
+          return "text-orange-400";
         case "Intermediate":
-          return "text-blue-600 bg-blue-100";
+          return "text-blue-600 ";
         case "Advanced":
-          return "text-green-600 bg-green-100";
+          return "text-green-600 ";
         default:
-          return "text-gray-600 bg-gray-100";
+          return "text-gray-600";
       }
     };
 
@@ -211,30 +221,22 @@ const AllClinicalCases: React.FC = () => {
     const isCompleted = caseData.status === "completed";
 
     const handleStartCase = (): void => {
-      // Handle case start logic here
+      navigate(`/dashboard/clinical-case/${caseData.frameId}`);
       console.log(`Starting case: ${caseData.id}`);
     };
 
     return (
       <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
-        {caseData.frameId && (
-          <div className="mb-3">
-            <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
-              📋 Frame {caseData.frameId}
-            </span>
-          </div>
-        )}
-
-        <div className="flex items-start justify-between mb-3">
+        <div className="flex items-center mb-3 gap-3">
           <span
-            className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(
-              caseData.difficulty
+            className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-slate-100 border border-slate-200 text-slate-800
+            )}
             )}`}
           >
             {caseData.specialty}
           </span>
           <span
-            className={`px-2 py-1 rounded text-xs font-medium ${getDifficultyColor(
+            className={`px-2 py-1 text-xs font-medium border rounded-full ${getDifficultyColor(
               caseData.difficulty
             )}`}
           >
@@ -246,25 +248,25 @@ const AllClinicalCases: React.FC = () => {
           {caseData.title}
         </h3>
 
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+        <p className="text-gray-600 text-sm mb-4 line-clamp-1">
           {caseData.description}
         </p>
 
         <div className="flex items-center justify-between">
           {isCompleted ? (
-            <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded text-sm font-medium">
+            <PrimaryButton className="border border-slate-300 text-black bg-white transition-colors">
               Completed
-            </span>
+            </PrimaryButton>
           ) : (
-            <button
+            <PrimaryButton
               onClick={handleStartCase}
               className={`px-4 py-2 ${getButtonColor(
                 caseData.difficulty
               )} text-white rounded text-sm font-medium transition-colors flex items-center gap-2`}
+              icon={<ArrowRight className="w-4 h-4" />}
             >
-              Start Case
-              <ChevronRight size={16} />
-            </button>
+              Start Case  <Bookmark/>
+            </PrimaryButton>
           )}
         </div>
       </div>
@@ -386,9 +388,9 @@ const AllClinicalCases: React.FC = () => {
   };
 
   return (
-    <div >
+    <div>
       {/* Header */}
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">All Cases</h1>
+      <h1 className="text-xl font-semibold text-gray-800 my-6">All Cases</h1>
 
       {/* Search and Filters */}
       <div className="mb-6 space-y-4">
