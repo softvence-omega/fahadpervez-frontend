@@ -1,48 +1,81 @@
-import DashboardHeading from "@/components/reusable/DashboardHeading";
-import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
-import QuizCard from "./QuizCard";
-// import QuizCard from "./QuizCard";
+import DashboardHeading from "@/components/reusable/DashboardHeading"
+import PrimaryButton from "@/components/reusable/PrimaryButton"
+import { Plus } from "lucide-react"
+import { useState } from "react"
+import { Link } from "react-router-dom"
+import FlashCardOverview from "../flashcard/FlashCardOverview"
+import MyQuizOverviewTab from "./MyQuizOverviewTab"
+// import FlashCardOverview from "./FlashCardOverview"
 
-export default function QuizPage() {
+const QuizPage = () => {
+
+    const [activeTab, setActiveTab] = useState("overview");
+
+    const tabs = [
+        { id: "overview", label: "Overview" },
+        { id: "myQuiz", label: "My Quiz" },
+    ];
+
     return (
         <div>
-            <div className="flex items-center gap-3">
-                <Link to={'/dashboard/quiz-generator'} className="mb-7">
-                    <ArrowLeft /></Link>
+            <div className="md:flex justify-between items-center">
                 <DashboardHeading
-                    title="Generated Quiz"
+                    title="AI Quiz Generator Overview"
                     titleSize="text-xl"
+                    titleColor="text-[#0A0A0A]"
                     description="Create custom quizzes from your images and videos using AI"
-                    className="mt-12 mb-12 space-y-1"
+                    descColor="text-[#4A5565]"
+                    descFont="text-sm"
+                    className="mt-12 mb-8"
                 />
+                <Link to={"/dashboard/quiz-generator"}>
+                    <PrimaryButton
+                        icon={<Plus className="w-4 h-4" />}
+                        bgType="solid"
+                        iconPosition="left"
+                        bgColor="bg-blue-btn-1"
+                        className="h-12 mb-4 hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer">
+                        Generate Quiz
+                    </PrimaryButton>
+                </Link>
             </div>
 
             <div>
-                <h3 className="font-medium mb-6">Today's Quiz</h3>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white border border-slate-300 p-5 rounded-[8px]">
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
+                {/* Tab  */}
+                <div>
+                    <div>
+                        {/* Tab Buttons */}
+                        <div className="flex gap-4 my-6 md:my-8">
+                            {tabs.map((tab) => (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id)}
+                                    className={` py-1 text-start text-lg font-semibold leading-7 transition-colors duration-200 hover:cursor-pointer
+                      ${activeTab === tab.id
+                                            ? "border-b-2 border-blue-500 text-blue-600"
+                                            : "text-gray-500 hover:text-blue-500"
+                                        }`}
+                                >
+                                    {tab.label}
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Tab Content */}
+                        <div className="">
+                            {activeTab === "overview" && (
+                                <FlashCardOverview />
+                            )}
+                            {activeTab === "myQuiz" && (
+                                <MyQuizOverviewTab />
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div className="mt-12">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="font-medium">All  Quiz's</h3>
-                    <Link to={"/dashboard/all-generated-quiz"} className="text-blue-main text-sm font-medium border border-slate-200 rounded-[6px] py-2 px-4">View all</Link>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white border border-slate-300 p-5 rounded-[8px]">
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
-                </div>
-            </div>
         </div>
     )
 }
+
+export default QuizPage

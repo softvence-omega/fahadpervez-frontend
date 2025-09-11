@@ -42,7 +42,7 @@ export default function AllGeneratedQuiz() {
     return (
         <div>
             <div className="flex items-center gap-3">
-                <Link to={'/dashboard/quiz-page'} className="mb-7">
+                <Link to={'/dashboard/quiz-collection'} className="mb-7">
                     <ArrowLeft /></Link>
                 <DashboardHeading
                     title="Generated Quiz"
