@@ -43,7 +43,7 @@ const QuizGenerator = () => {
           descFont="text-sm"
           className="mt-12 mb-8"
         />
-        <Link to={"/dashboard/quiz-page"}>
+        <Link to={"/dashboard/quiz-collection"}>
           <PrimaryButton
             bgType="solid"
             iconPosition="left"
