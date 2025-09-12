@@ -1,6 +1,6 @@
 // DashboardRoutes.tsx
 import DashboardLayout from "@/Layout/dashboard/DashboardLayout";
-import AITutor from "@/pages/dashboard/AITutor";
+import AITutor from "@/pages/dashboard/AI Tutor/AITutor";
 import ClinicalCaseGenerator from "@/pages/dashboard/ClinicalCaseGenerator";
 import CommunityEvent from "@/pages/dashboard/CommunityEvent";
 import Courses from "@/pages/dashboard/Courses";
