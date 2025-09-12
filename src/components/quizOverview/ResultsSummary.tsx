@@ -32,7 +32,7 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({
                 </span>
             </p>
             <div className="flex justify-center space-x-4 mt-6">
-                <Button className="bg-blue-main">Repeat Session</Button>
+                <Link to={`/dashboard/quiz/${23}`}><Button className="bg-blue-main">Repeat Session</Button></Link>
                 <Link to={`/dashboard/quiz-answer-overview/${"2"}`}><Button className="bg-slate-600">Review Session</Button></Link>
             </div>
         </div>

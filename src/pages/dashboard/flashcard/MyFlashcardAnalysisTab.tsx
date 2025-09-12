@@ -47,7 +47,7 @@ const overviewStats: Stats = {
     totalTime: "0h 01m",
 };
 
-const MyQuizOverviewTab: React.FC = () => {
+const MyFlashCardAnalysisTab: React.FC = () => {
     const [selectedSession, setSelectedSession] = useState<Session>(
         sessionsData[0]
     );
@@ -111,4 +111,4 @@ const MyQuizOverviewTab: React.FC = () => {
     );
 };
 
-export default MyQuizOverviewTab;
+export default MyFlashCardAnalysisTab;

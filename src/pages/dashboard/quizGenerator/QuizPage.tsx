@@ -3,8 +3,8 @@ import PrimaryButton from "@/components/reusable/PrimaryButton"
 import { Plus } from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import FlashCardOverview from "../flashcard/FlashCardOverview"
-import MyQuizOverviewTab from "./MyQuizOverviewTab"
+import MyQuizAnalysisTab from "./MyQuizAnalysisTab"
+import QuizOverviewTab from "./QuizOverviewTab"
 // import FlashCardOverview from "./FlashCardOverview"
 
 const QuizPage = () => {
@@ -64,10 +64,10 @@ const QuizPage = () => {
                         {/* Tab Content */}
                         <div className="">
                             {activeTab === "overview" && (
-                                <FlashCardOverview />
+                                <QuizOverviewTab />
                             )}
                             {activeTab === "myQuiz" && (
-                                <MyQuizOverviewTab />
+                                <MyQuizAnalysisTab />
                             )}
                         </div>
                     </div>
