@@ -1,6 +1,6 @@
 // DashboardRoutes.tsx
 import DashboardLayout from "@/Layout/dashboard/DashboardLayout";
-import AITutor from "@/pages/dashboard/AITutor";
+import AITutor from "@/pages/dashboard/AI Tutor/AITutor";
 import ClinicalCaseGenerator from "@/pages/dashboard/ClinicalCaseGenerator";
 import CommunityEvent from "@/pages/dashboard/CommunityEvent";
 import Courses from "@/pages/dashboard/Courses";
@@ -21,6 +21,7 @@ import ClinicalCaseDetails from "@/components/dashboard/clinical-case/ClinicalCa
 import QuizPage from "@/pages/dashboard/quizGenerator/QuizPage";
 import Quiz from "@/pages/dashboard/quizGenerator/Quiz";
 import AnswerOverview from "@/pages/dashboard/quizGenerator/AnswerOverview";
+import SolveFlashCard from "@/pages/dashboard/flashcard/SolveFlashCard";
 
 
 const dashboardRoutes = {
@@ -42,13 +43,6 @@ const dashboardRoutes = {
     {
       path: "mcq-bank",
       element: <McqBank />,
-    },
-    {
-      path: "flashcard-page",
-      element: <FlashcardPage />,
-      children: [
-
-      ]
     },
     {
       path: "quiz-generator",
@@ -103,6 +97,13 @@ const dashboardRoutes = {
       element: <AnswerOverview />,
     },
     {
+      path: "flashcard-page",
+      element: <FlashcardPage />,
+      children: [
+
+      ]
+    },
+    {
       path: "flashcard-generator",
       element: <FlashCardGenerator />,
     },
@@ -113,6 +114,10 @@ const dashboardRoutes = {
     {
       path: "all-flash-card",
       element: <AllGeneratedFlashCard />,
+    },
+    {
+      path: "solve-flash-card/:id",
+      element: <SolveFlashCard />,
     },
   ],
 };

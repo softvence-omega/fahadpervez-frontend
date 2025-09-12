@@ -18,6 +18,7 @@ const FlashCardGenerator = () => {
     }
 
     // called after modal submit
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleFinalSubmit = (modalData: any) => {
         const combinedData = {
             files,

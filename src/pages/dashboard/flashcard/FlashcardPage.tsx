@@ -4,6 +4,7 @@ import { Plus } from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import FlashCardOverview from "./FlashCardOverview"
+import MyFlashCardAnalysisTab from "./MyFlashcardAnalysisTab"
 
 const FlashcardPage = () => {
 
@@ -11,7 +12,7 @@ const FlashcardPage = () => {
 
   const tabs = [
     { id: "overview", label: "Overview" },
-    { id: "myFlashcard", label: "My Flashcard" },
+    // { id: "myFlashcard", label: "My Flashcard" },
   ];
 
   return (
@@ -65,7 +66,7 @@ const FlashcardPage = () => {
                 <FlashCardOverview />
               )}
               {activeTab === "myFlashcard" && (
-                <p>My Flashcard Tab</p>
+                <MyFlashCardAnalysisTab />
               )}
             </div>
           </div>

@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useState } from "react"
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function FlashCardGeneratorDialog({ open, setOpen, onFinalSubmit }: any) {
     const [sessionName, setSessionName] = useState("")
     const [category, setCategory] = useState("")
@@ -32,7 +33,7 @@ export function FlashCardGeneratorDialog({ open, setOpen, onFinalSubmit }: any) 
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="sm:max-w-[350px]">
+            <DialogContent className="sm:max-w-[450px]">
                 <DialogHeader>
                     <DialogTitle>Customize Card</DialogTitle>
                     <DialogDescription>
@@ -53,7 +54,7 @@ export function FlashCardGeneratorDialog({ open, setOpen, onFinalSubmit }: any) 
                     <div className="grid gap-2 w-full">
                         <Label>Flashcard Category</Label>
                         <Select value={category} onValueChange={setCategory}>
-                            <SelectTrigger>
+                            <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Basic/Clinical/Advanced" />
                             </SelectTrigger>
                             <SelectContent>
@@ -67,7 +68,7 @@ export function FlashCardGeneratorDialog({ open, setOpen, onFinalSubmit }: any) 
                     <div className="grid gap-2 w-full">
                         <Label>Flashcard Type</Label>
                         <Select value={flashCardType} onValueChange={setFlashCardType}>
-                            <SelectTrigger>
+                            <SelectTrigger className="w-full">
                                 <SelectValue placeholder="TypeA/TypeB/TypeC" />
                             </SelectTrigger>
                             <SelectContent>
@@ -94,7 +95,7 @@ export function FlashCardGeneratorDialog({ open, setOpen, onFinalSubmit }: any) 
                     <div className="grid gap-2">
                         <Label>Exam prep category</Label>
                         <Select value={examPrepCategory} onValueChange={setExamPrepCategory}>
-                            <SelectTrigger>
+                            <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Basic/Clinical/Advanced" />
                             </SelectTrigger>
                             <SelectContent>

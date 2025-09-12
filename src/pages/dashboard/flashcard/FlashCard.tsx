@@ -1,11 +1,11 @@
 import { BrainCircuit, Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-export default function QuizCard() {
+export default function FlashCard() {
     const navigate = useNavigate();
 
     const handleQuiz = (id: string) => {
-        navigate(`/dashboard/quiz/${id}`)
+        navigate(`/dashboard/solve-flash-card/${id}`)
     }
 
     return (
@@ -19,7 +19,7 @@ export default function QuizCard() {
                     <p className="text-sm text-slate-500 mt-2">1 questions • From anatomy_diagram.jpg</p>
                 </div>
                 <button onClick={() => handleQuiz('3')} className="w-full rounded-[4px] py-3 flex justify-center gap-1 items-center bg-emerald-800 text-white cursor-pointer">
-                    <Play className="w-4 h-4" /> Start Quiz
+                    <Play className="w-4 h-4" /> View Card
                 </button>
             </div>
         </div>

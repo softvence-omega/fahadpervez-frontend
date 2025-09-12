@@ -1,7 +1,7 @@
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
-import QuizCard from "../quizGenerator/QuizCard";
+import FlashCard from "./FlashCard";
 
 export default function FlashCardCollection() {
     return (
@@ -20,10 +20,10 @@ export default function FlashCardCollection() {
             <div className="bg-white border border-slate-300 p-5 rounded-[8px]">
                 <h3 className="font-medium mb-6">Today's  Generated Flashcards</h3>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 ">
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
+                    <FlashCard />
+                    <FlashCard />
+                    <FlashCard />
+                    <FlashCard />
                 </div>
             </div>
 
@@ -33,13 +33,13 @@ export default function FlashCardCollection() {
                     <Link to={"/dashboard/all-flash-card"} className="text-blue-main text-sm font-medium border border-slate-200 rounded-[6px] py-2 px-4">View all</Link>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 ">
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
+                    <FlashCard />
+                    <FlashCard />
+                    <FlashCard />
+                    <FlashCard />
+                    <FlashCard />
+                    <FlashCard />
+                    <FlashCard />
                 </div>
             </div>
         </div>

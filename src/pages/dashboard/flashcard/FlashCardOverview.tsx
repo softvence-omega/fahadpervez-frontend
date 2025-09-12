@@ -11,7 +11,7 @@ export default function FlashCardOverview() {
           iconColor="text-blue-700"
           iconBg="bg-blue-100"
           topText="10"
-          bottomText="Total Quizzes"
+          bottomText="Total Flash Card"
         />
         <TestOverviewCard
           icon={NotebookText}
