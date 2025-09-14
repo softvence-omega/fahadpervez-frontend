@@ -5,7 +5,6 @@ import {
   ChevronLeft,
   ChevronRight,
   ArrowRight,
-  Bookmark,
 } from "lucide-react";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { useNavigate } from "react-router-dom";
@@ -265,7 +264,7 @@ const AllClinicalCases: React.FC = () => {
               )} text-white rounded text-sm font-medium transition-colors flex items-center gap-2`}
               icon={<ArrowRight className="w-4 h-4" />}
             >
-              Start Case  <Bookmark/>
+              Start Case
             </PrimaryButton>
           )}
         </div>
