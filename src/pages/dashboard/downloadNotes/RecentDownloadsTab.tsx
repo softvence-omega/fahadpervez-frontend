@@ -40,13 +40,13 @@ export default function RecentDownloadsTab() {
 
 
   return (
-    <div>
+    <div className="mt-10 p-6">
       <div className="flex items-center gap-2">
         <FileDown className="w-5 h-5 text-[#007BFF]" />
         <p className="text-lg text-slate-800 font-medium leading-7">Recent Downloads</p>
       </div>
 
-      <div className="mt-6 space-y-7">
+      <div className="mt-6 space-y-7 border border-slate-300 p-8 rounded-[8px]">
         <div className="flex justify-between items-center border-b border-b-slate-300 pb-2 pl-2">
           <div className="flex items-center gap-3">
             <img src={pdfImage} alt="pdfImage" />

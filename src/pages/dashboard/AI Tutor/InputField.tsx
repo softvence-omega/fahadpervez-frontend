@@ -22,7 +22,7 @@ export default function InputField({ value, onChange, onSend }: InputFieldProps)
                 onChange={(e) => onChange(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Type your message..."
-                className="flex-1"
+                className="flex-1 h-20"
             />
             <Button onClick={onSend} className="bg-blue-500 text-white">Send</Button>
         </div>
