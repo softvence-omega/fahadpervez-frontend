@@ -23,6 +23,9 @@ import Quiz from "@/pages/dashboard/quizGenerator/Quiz";
 import AnswerOverview from "@/pages/dashboard/quizGenerator/AnswerOverview";
 import SolveFlashCard from "@/pages/dashboard/flashcard/SolveFlashCard";
 import AllCommunities from "@/components/dashboard/community-event/AllCommunities";
+import CareerResourcePage from "@/pages/dashboard/careerResource/CareerResourcePage";
+import MyResource from "@/pages/dashboard/careerResource/MyResource";
+import StudyPlan from "@/pages/dashboard/study plan/StudyPlan";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -120,6 +123,18 @@ const dashboardRoutes = {
     {
       path: "solve-flash-card/:id",
       element: <SolveFlashCard />,
+    },
+    {
+      path: "resources",
+      element: <CareerResourcePage />,
+    },
+    {
+      path: "my-resources",
+      element: <MyResource />,
+    },
+    {
+      path: "study-plan",
+      element: <StudyPlan />,
     },
   ],
 };
