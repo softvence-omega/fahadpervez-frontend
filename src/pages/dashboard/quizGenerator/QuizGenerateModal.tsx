@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useState } from "react"
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function QuizGeneratorDialog({ open, setOpen, onFinalSubmit }: any) {
   const [quizName, setQuizName] = useState("")
   const [subject, setSubject] = useState("")

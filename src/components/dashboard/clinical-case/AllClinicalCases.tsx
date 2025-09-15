@@ -265,7 +265,7 @@ const AllClinicalCases: React.FC = () => {
               )} text-white rounded text-sm font-medium transition-colors flex items-center gap-2`}
               icon={<ArrowRight className="w-4 h-4" />}
             >
-              Start Case  <Bookmark/>
+              Start Case  <Bookmark />
             </PrimaryButton>
           )}
         </div>
@@ -363,13 +363,12 @@ const AllClinicalCases: React.FC = () => {
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`px-3 py-2 text-sm font-medium rounded transition-colors ${
-        isActive
+      className={`px-3 py-2 text-sm font-medium rounded transition-colors ${isActive
           ? "bg-blue-500 text-white"
           : disabled
-          ? "text-gray-400 cursor-not-allowed"
-          : "text-gray-700 hover:bg-gray-100"
-      }`}
+            ? "text-gray-400 cursor-not-allowed"
+            : "text-gray-700 hover:bg-gray-100"
+        }`}
     >
       {children || page}
     </button>
@@ -441,11 +440,10 @@ const AllClinicalCases: React.FC = () => {
                 <button
                   key={tab}
                   onClick={() => handleTabClick(tab)}
-                  className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
-                    activeTab === tab
+                  className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === tab
                       ? "border-blue-500 text-blue-600"
                       : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  }`}
+                    }`}
                 >
                   {tab}
                 </button>

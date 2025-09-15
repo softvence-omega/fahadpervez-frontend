@@ -23,7 +23,7 @@ const testOverviewCard: React.FC<OverviewCardProps> = ({
             className={`max-w-[350px flex items-center gap-5 bg-white border border-slate-300 rounded-[12px] py-7 px-4 cursor-${onClick ? "pointer" : "default"} transition hover:shadow-md`}
         >
             <div className={`${iconBg} p-3 rounded-[6px] flex items-center justify-center`}>
-                <Icon className={`${iconColor} w-6 h-6`} /> {/* ✅ Icon is dynamic */}
+                <Icon className={`${iconColor} w-6 h-6`} /> 
             </div>
             <div>
                 <p className="text-xl text-[#0A0A0A] font-semibold">{topText}</p>
