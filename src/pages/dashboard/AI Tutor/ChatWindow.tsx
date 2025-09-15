@@ -34,17 +34,17 @@ export default function ChatWindow() {
         }
     };
 
-    if (!currentChat) {
-        return <NewChatPrompt />;
-    }
+    // if (!currentChat) {
+    //     return <NewChatPrompt />;
+    // }
 
     return (
         <section className="flex-1 p-6 overflow-y-auto">
             <header className="border-b border-gray-200 pb-4 mb-4">
                 <h2 className="text-xl font-semibold">{currentChat?.title}</h2>
             </header>
-            <div className="h-3/5 overflow-y-auto">
-                <ChatMessages messages={currentChat?.messages} lastMessageRef={lastMessageRef} />
+            <div className="h-4/6 overflow-y-auto">
+                {currentChat ? <ChatMessages messages={currentChat?.messages} lastMessageRef={lastMessageRef} /> : <NewChatPrompt />}
             </div>
             <InputField value={inputValue} onChange={setInputValue} onSend={handleSend} />
         </section>
