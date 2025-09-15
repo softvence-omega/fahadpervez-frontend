@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Clock, Star, User } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import CommonSkeletonLoader from "@/components/reusable/CommonSkeletonLoader";
 
 interface Mentor {
   id: string;
@@ -29,17 +29,7 @@ const MentorshipPage: React.FC<MentorshipPageProps> = ({
   isLoading,
 }) => {
   if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <Skeleton className="h-64 w-full" />
-        <div className="flex gap-2">
-          {Array.from({ length: 2 }).map((_, i) => (
-            <Skeleton key={i} className="h-10 w-32" />
-          ))}
-        </div>
-        <Skeleton className="h-96 w-full" />
-      </div>
-    );
+    return <CommonSkeletonLoader />;
   }
 
   return (

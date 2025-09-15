@@ -10,8 +10,11 @@ import {
   CalendarDays,
   MessageCircle,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Communities = () => {
+  const navigate = useNavigate();
+
   const cardConfigs = [
     {
       icon: CalendarDays,
@@ -92,8 +95,8 @@ const Communities = () => {
     },
   ];
 
-  const handleCardClick = (title: string) => {
-    alert(`${title} card clicked!`);
+  const handleCardClick = () => {
+    navigate("/dashboard/all-communities");
   };
 
   return (
@@ -103,7 +106,7 @@ const Communities = () => {
           <CommunityEventHomeCard
             key={index}
             {...config}
-            onClick={() => handleCardClick(config.title)}
+            onClick={() => handleCardClick()}
           />
         ))}
       </div>
