@@ -22,13 +22,13 @@ import QuizPage from "@/pages/dashboard/quizGenerator/QuizPage";
 import Quiz from "@/pages/dashboard/quizGenerator/Quiz";
 import AnswerOverview from "@/pages/dashboard/quizGenerator/AnswerOverview";
 import SolveFlashCard from "@/pages/dashboard/flashcard/SolveFlashCard";
+import AllCommunities from "@/components/dashboard/community-event/AllCommunities";
 import CareerResourcePage from "@/pages/dashboard/careerResource/CareerResourcePage";
 import MyResource from "@/pages/dashboard/careerResource/MyResource";
 import StudyPlan from "@/pages/dashboard/study plan/StudyPlan";
 import CreateStudyPlan from "@/pages/dashboard/study plan/CreateStudyPlan";
 import MyPlan from "@/pages/dashboard/study plan/MyPlan";
 import WeeklyPlan from "@/pages/dashboard/study plan/WeeklyPlan";
-
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -41,6 +41,10 @@ const dashboardRoutes = {
     {
       path: "community-event",
       element: <CommunityEvent />,
+    },
+    {
+      path: "all-communities",
+      element: <AllCommunities />,
     },
     {
       path: "ai-tutor",
@@ -105,9 +109,7 @@ const dashboardRoutes = {
     {
       path: "flashcard-page",
       element: <FlashcardPage />,
-      children: [
-
-      ]
+      children: [],
     },
     {
       path: "flashcard-generator",
