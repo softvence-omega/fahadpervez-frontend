@@ -12,6 +12,7 @@ import {
   Share2,
   Sparkles,
 } from "lucide-react";
+import PrimaryButton from "@/components/reusable/PrimaryButton";
 
 // Enhanced type definitions
 interface PatientInfo {
@@ -379,7 +380,9 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
                 }`}
               >
                 <Icon size={16} />
-                <span className="text-sm lg:text-base font-medium">{label}</span>
+                <span className="text-sm lg:text-base font-medium">
+                  {label}
+                </span>
               </button>
             ))}
           </div>
@@ -508,7 +511,10 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
             </div>
 
             {/* Initial Investigations */}
-            <div ref={labsRef} className="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div
+              ref={labsRef}
+              className="bg-white rounded-lg shadow-sm border border-gray-200"
+            >
               <SectionHeader
                 title="Initial Investigations"
                 icon={<Microscope size={20} />}
@@ -574,7 +580,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
               <div className="mb-3">
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
-                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                    className="bg-blue-main h-2 rounded-full transition-all duration-300"
                     style={{ width: `${readingProgress}%` }}
                   ></div>
                 </div>
@@ -584,17 +590,13 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
                   ? "Continue reading to unlock the next step"
                   : "Ready to make your decision!"}
               </p>
-              <button
+              <PrimaryButton
+                className="w-full px-4 py-2 text-base"
                 onClick={handleMakeDecision}
                 disabled={readingProgress < 100}
-                className={`w-full py-2 px-4 rounded font-medium transition-colors ${
-                  readingProgress >= 100
-                    ? "bg-blue-600 text-white hover:bg-blue-700"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                }`}
               >
-                🎯 Make Your Decision
-              </button>
+                Make Your Decision
+              </PrimaryButton>
             </div>
 
             {/* Quick Actions */}

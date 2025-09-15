@@ -3,6 +3,7 @@ import ClinicalLeaderboard from "@/components/dashboard/clinical-case/ClinicalLe
 import ClinicalProgress from "@/components/dashboard/clinical-case/ClinicalProgress";
 import ClinicalRecommendation from "@/components/dashboard/clinical-case/ClinicalRecommendation";
 import ClinicalWeekPlan from "@/components/dashboard/clinical-case/ClinicalWeekPlan";
+import DashboardHeading from "@/components/reusable/DashboardHeading";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { Plus } from "lucide-react";
 
@@ -12,12 +13,14 @@ const ClinicalCaseGenerator = () => {
       {/* heading */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-10 text-center md:text-left gap-6">
         <div >
-          <h1 className="text-2xl font-semibold text-[#0A0A0A]">
-            Clinical Case Generator
-          </h1>
-          <p className="text-sm text-[#4A5565] mt-2">
-            Create custom quizzes from your images and videos using AI
-          </p>
+          <DashboardHeading
+                   title="Community & Events"
+                   titleSize="text-xl md:text-2xl"
+                   titleColor="text-[#0A0A0A]"
+                   description="Connect, learn, and grow with the medical education community"
+                   descColor="text-[#4A5565]"
+                   descFont="text-sm"
+                 />
         </div>
         <PrimaryButton icon={<Plus className="w-4 h-4" />} iconPosition="left">
           Create Clinical Case

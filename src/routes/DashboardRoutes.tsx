@@ -22,7 +22,7 @@ import QuizPage from "@/pages/dashboard/quizGenerator/QuizPage";
 import Quiz from "@/pages/dashboard/quizGenerator/Quiz";
 import AnswerOverview from "@/pages/dashboard/quizGenerator/AnswerOverview";
 import SolveFlashCard from "@/pages/dashboard/flashcard/SolveFlashCard";
-
+import AllCommunities from "@/components/dashboard/community-event/AllCommunities";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -35,6 +35,10 @@ const dashboardRoutes = {
     {
       path: "community-event",
       element: <CommunityEvent />,
+    },
+    {
+      path: "all-communities",
+      element: <AllCommunities />,
     },
     {
       path: "ai-tutor",
@@ -99,9 +103,7 @@ const dashboardRoutes = {
     {
       path: "flashcard-page",
       element: <FlashcardPage />,
-      children: [
-
-      ]
+      children: [],
     },
     {
       path: "flashcard-generator",
