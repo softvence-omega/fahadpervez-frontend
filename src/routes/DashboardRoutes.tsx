@@ -26,6 +26,9 @@ import AllCommunities from "@/components/dashboard/community-event/AllCommunitie
 import CareerResourcePage from "@/pages/dashboard/careerResource/CareerResourcePage";
 import MyResource from "@/pages/dashboard/careerResource/MyResource";
 import StudyPlan from "@/pages/dashboard/study plan/StudyPlan";
+import CreateStudyPlan from "@/pages/dashboard/study plan/CreateStudyPlan";
+import MyPlan from "@/pages/dashboard/study plan/MyPlan";
+import WeeklyPlan from "@/pages/dashboard/study plan/WeeklyPlan";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -135,6 +138,18 @@ const dashboardRoutes = {
     {
       path: "study-plan",
       element: <StudyPlan />,
+    },
+    {
+      path: "create-study-plan",
+      element: <CreateStudyPlan />,
+    },
+    {
+      path: "my-plan",
+      element: <MyPlan />,
+    },
+    {
+      path: "weekly-plan/:id",
+      element: <WeeklyPlan />,
     },
   ],
 };
