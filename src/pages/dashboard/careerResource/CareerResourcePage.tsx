@@ -53,7 +53,7 @@ export default function CareerResourcePage() {
                 <PrimaryButton
                     iconPosition="left"
                     icon={<Briefcase className="w-4 h-4" />}
-                    className="mt-8"
+                    className="mt-8 cursor-pointer hover:bg-blue-btn-1"
                 >
                     Career Guidance
                 </PrimaryButton>
@@ -73,7 +73,7 @@ export default function CareerResourcePage() {
             </div>
             <div>
                 {/* Tab Button */}
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                     {
                         tabs.map(tab => <button onClick={() => setActiveTab(tab.id)}
                             className={`flex items-center gap-1 text-lg text-[#0A0A0A] p-3 border border-slate-300 rounded cursor-pointer ${activeTab === tab.id && "bg-blue-main text-white border-transparent"}`}
