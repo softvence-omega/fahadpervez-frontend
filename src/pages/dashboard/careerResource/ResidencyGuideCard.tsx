@@ -14,7 +14,7 @@ export default function ResidencyGuideCard() {
                 </div>
             </div>
 
-            <div className="my-11 flex flex-wrap gap-40">
+            <div className="my-11 flex flex-col md:flex-row gap-10 md:gap-40">
                 <div className="space-y-4">
                     <h3 className="mt-2 text-sm font-semibold text-[#0A0A0A] line-clamp-1">
                         What's Included:
@@ -53,7 +53,7 @@ export default function ResidencyGuideCard() {
             </div>
 
             <PrimaryButton
-                className="bg-green-900 w-full mt-4 flex gap-2"
+                className="bg-green-900 w-full mt-4 flex gap-2 hover:bg-green-800 cursor-pointer"
                 // onClick={() => navigate(`${buttonLink}`)}
                 icon={<Download />}
                 iconPosition="left"
