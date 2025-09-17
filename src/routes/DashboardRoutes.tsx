@@ -30,6 +30,7 @@ import CreateStudyPlan from "@/pages/dashboard/study plan/CreateStudyPlan";
 import MyPlan from "@/pages/dashboard/study plan/MyPlan";
 import WeeklyPlan from "@/pages/dashboard/study plan/WeeklyPlan";
 import StudentProfile from "@/pages/dashboard/student profile/StudentProfile";
+import EditStudentProfile from "@/pages/dashboard/student profile/EditStudentProfile";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -155,6 +156,10 @@ const dashboardRoutes = {
     {
       path: "student-profile",
       element: <StudentProfile />,
+    },
+    {
+      path: "edit-student-profile",
+      element: <EditStudentProfile />,
     },
   ],
 };

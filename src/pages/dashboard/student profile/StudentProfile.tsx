@@ -1,4 +1,5 @@
 import profileImage from "@/assets/dashboard/profileImage.png"
+import profileBg from "@/assets/dashboard/profileBg.png"
 
 import blueBadge from "@/assets/dashboard/blue-badge.png"
 import oranBadge from "@/assets/dashboard/orange-badge.png"
@@ -14,10 +15,10 @@ export default function StudentProfile() {
     return (
         <div className="my-8 md:my-10">
             {/* Background Image */}
-            {/* <img src={profileBg} alt="Profile Background" className="w-full" /> */}
+            <img src={profileBg} alt="Profile Background" className="w-full" />
 
             {/* Bottom Boxes (stick 50px below image) */}
-            <div className=" grid md:grid-cols-3 gap-4 md:gap-6 justify-between">
+            <div className=" grid md:grid-cols-3 gap-4 md:gap-6 justify-between px-1 -mt-5">
                 <div className="bg-white border border-slate-300 rounded-[8px] p-4 md:p-6">
                     <div className="text-center">
                         <img src={profileImage} alt="" className="mx-auto" />
@@ -33,7 +34,7 @@ export default function StudentProfile() {
                 </div>
 
                 {/* Badge Earn */}
-                <div className="border border-slate-300 rounded-[8px] px-4 pt-5 pb-4">
+                <div className="bg-white border border-slate-300 rounded-[8px] px-4 pt-5 pb-4">
                     <div
                         className={`flex items-center gap-2 text-xl font-medium border-b border-b-slate-300 pb-2`}
                     >
@@ -73,7 +74,7 @@ export default function StudentProfile() {
                 </div>
 
                 {/* Achievements */}
-                <div className="border border-slate-300 rounded-[8px] px-7 pt-6">
+                <div className="bg-white border border-slate-300 rounded-[8px] px-7 pt-6">
                     <PrimaryHeading
                         title="Achievements"
                         icon={<FileBadge2 size={26} className="text-blue-main" />}
