@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BadgeHelp } from "lucide-react";
+import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types";
+import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
+
+
+const breadcrumbs: BreadcrumbItem[] = [
+    { name: "Dashboard", link: "/dashboard" },
+    { name: "Flashcard Generator", link: "/dashboard/flashcard-generator" },
+];
 
 // Sample flashcard data
 const flashCardData = {
@@ -74,7 +82,7 @@ export default function SolveFlashCard() {
                     🎉 Session Completed!
                 </h1>
                 <p className="text-gray-600 mb-4">
-                    You’ve reviewed all {questions.length} flashcards.
+                    You've reviewed all {questions.length} flashcards.
                 </p>
                 <Button
                     onClick={() => {
@@ -93,8 +101,8 @@ export default function SolveFlashCard() {
     return (
         <div className="min-h-screen">
             {/* Header */}
-            <div className="text-sm text-gray-600 mb-2">
-                Dashboard &gt; MCOG &gt; Custom Flashcards
+            <div className="text-sm text-gray-600 my-10">
+                <Breadcrumb breadcrumbs={breadcrumbs} />
             </div>
             <h1 className="text-xl font-bold mb-1">Flashcards</h1>
             <p className="text-sm text-gray-600 mb-4">
@@ -127,7 +135,13 @@ export default function SolveFlashCard() {
                 </div>
 
                 {/* Flashcard Area */}
-                <div className="w-full md:w-3/4 flex flex-col items-center">
+                <div className="w-full md:w-3/4 flex flex-col items-center border border-slate-300 rounded-[8px] pb-7 px-5">
+
+                    <div className="w-full max-w-2xl mt-7 mb-12 border border-slate-300 py-2 px-4 rounded-[8px]">
+                        <h3 className="font-medium text-slate-900">Review your Flashcard</h3>
+                        <p className="text-sm text-slate-900">Click card to reveal the answer</p>
+                    </div>
+
                     <div
                         className={`relative w-full max-w-2xl h-64 md:h-80 bg-white rounded-xl shadow-lg cursor-pointer transition-transform duration-500 preserve-3d ${isFlipped ? "rotate-y-180" : ""
                             }`}
@@ -160,7 +174,7 @@ export default function SolveFlashCard() {
                     </div>
 
                     {/* Navigation Buttons */}
-                    <div className="flex justify-between w-full mt-6">
+                    <div className="flex items-center justify-end gap-3 w-full mt-6">
                         {currentQuestion > 0 ? (
                             <Button variant="outline" onClick={handlePrevious}>
                                 Previous
@@ -168,9 +182,12 @@ export default function SolveFlashCard() {
                         ) : (
                             <div></div>
                         )}
-                        {currentQuestion < questions.length && (
+                        {/* {currentQuestion < questions.length && (
                             <Button onClick={handleNext}>Next</Button>
-                        )}
+                        )} */}
+                        {currentQuestion < questions.length - 1 ? (
+                            <Button onClick={handleNext}>Next</Button>
+                        ) : (<Button onClick={handleNext} className="bg-blue-main hover:bg-blue-700">Complete</Button>)}
                     </div>
                 </div>
             </div>
