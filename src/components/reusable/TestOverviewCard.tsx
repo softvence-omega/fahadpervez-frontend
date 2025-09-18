@@ -20,7 +20,7 @@ const TestOverviewCard: React.FC<OverviewCardProps> = ({
     return (
         <div
             onClick={onClick}
-            className={`max-w-[350px flex items-center gap-5 bg-white border border-slate-300 rounded-[12px] py-7 px-4 cursor-${onClick ? "pointer" : "default"} transition hover:shadow-md`}
+            className={`max-w-[350px flex items-center gap-5 bg-white border border-slate-300 rounded-[12px] py-7 px-4 cursor-${onClick ? "pointer" : "default"} transition shadow-md hover:drop-shadow-lg`}
         >
             <div className={`${iconBg} p-3 rounded-[6px] flex items-center justify-center`}>
                 <Icon className={`${iconColor} w-6 h-6`} /> 

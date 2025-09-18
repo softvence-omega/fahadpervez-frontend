@@ -33,6 +33,7 @@ import StudentProfile from "@/pages/dashboard/student profile/StudentProfile";
 import EditStudentProfile from "@/pages/dashboard/student profile/EditStudentProfile";
 import DailyChallenge from "@/pages/dashboard/gamifiedLearning/DailyChallenge";
 import PracticeMCQ from "@/pages/dashboard/mcqBank/PracticeMCQ";
+import DiagramDetails from "@/components/dashboard/diagram/DiagramDetails";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -77,6 +78,10 @@ const dashboardRoutes = {
     {
       path: "diagram-explorer",
       element: <DiagramExplorer />,
+    },
+    {
+      path: "diagram-details",
+      element: <DiagramDetails />,
     },
     {
       path: "courses",
