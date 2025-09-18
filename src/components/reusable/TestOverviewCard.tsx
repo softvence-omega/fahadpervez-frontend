@@ -9,7 +9,7 @@ interface OverviewCardProps {
     onClick?: () => void; // optional clickable card
 }
 
-const testOverviewCard: React.FC<OverviewCardProps> = ({
+const TestOverviewCard: React.FC<OverviewCardProps> = ({
     icon: Icon,
     iconColor = "text-blue-700",
     iconBg = "bg-blue-100",
@@ -33,4 +33,4 @@ const testOverviewCard: React.FC<OverviewCardProps> = ({
     );
 };
 
-export default testOverviewCard;
+export default TestOverviewCard;

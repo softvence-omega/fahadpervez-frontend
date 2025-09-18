@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Timer } from 'lucide-react'; // Assuming lucide-react for icons
 
 // Sample JSON data for medical students (Neurology questions with answers)
 const quizData = {

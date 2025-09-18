@@ -3,7 +3,7 @@ import profileBg from "@/assets/dashboard/profileBg.png"
 
 export default function EditStudentProfile() {
     return (
-        <div>
+        <div className="my-8 md:my-10">
             {/* Background Image */}
             <img src={profileBg} alt="Profile Background" className="w-full" />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-7 -mt-5 mb-10 px-2 md:px-11">
