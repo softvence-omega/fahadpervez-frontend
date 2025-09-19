@@ -275,20 +275,9 @@ const MedicalEventsDashboard: React.FC = () => {
       <Breadcrumb breadcrumbs={breadcrumbs} />
 
       <div>
-        {/* Section Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-3">
-            <ChevronLeft className="h-5 w-5 text-muted-foreground" />
-            <h1 className="text-3xl font-bold">Events</h1>
-          </div>
-          <p className="text-lg text-muted-foreground">
-            Connect, learn, and grow with the medical education community
-          </p>
-        </div>
-
         {/* Navigation Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-          <TabsList className="grid w-full grid-cols-5 bg-card border">
+          <TabsList className="grid w-full grid-cols-5 bg-card ">
             {tabs.map((tab) => (
               <TabsTrigger
                 key={tab}

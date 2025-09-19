@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge, Calendar, Clock, MapPin, Star } from "lucide-react";
+import CommonSkeletonLoader from "@/components/reusable/CommonSkeletonLoader";
 
 interface Event {
   id: string;
@@ -44,17 +44,7 @@ const EventPage: React.FC<EventPageProps> = ({
   const featuredEvent = events.find((e) => e.featured) || events[0];
 
   if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <Skeleton className="h-64 w-full" />
-        <div className="flex gap-2">
-          {Array.from({ length: 2 }).map((_, i) => (
-            <Skeleton key={i} className="h-10 w-32" />
-          ))}
-        </div>
-        <Skeleton className="h-96 w-full" />
-      </div>
-    );
+    return <CommonSkeletonLoader />;
   }
 
   return (
@@ -81,7 +71,9 @@ const EventPage: React.FC<EventPageProps> = ({
                   <div className="flex items-center gap-2">
                     <Avatar className="w-10 h-10">
                       <AvatarImage src="/api/placeholder/40/40" />
-                      <AvatarFallback>{featuredEvent.title.slice(0, 2)}</AvatarFallback>
+                      <AvatarFallback>
+                        {featuredEvent.title.slice(0, 2)}
+                      </AvatarFallback>
                     </Avatar>
                     <div>
                       <div className="font-medium">
