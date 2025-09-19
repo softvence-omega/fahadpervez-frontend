@@ -9,8 +9,8 @@ import DashboardHome from "@/pages/dashboard/DashboardHome";
 import DiagramExplorer from "@/pages/dashboard/DiagramExplorer";
 import DownloadNotes from "@/pages/dashboard/downloadNotes/DownloadNotes";
 import FlashcardPage from "@/pages/dashboard/flashcard/FlashcardPage";
-import GamifiedLearning from "@/pages/dashboard/GamifiedLearning";
-import McqBank from "@/pages/dashboard/McqBank";
+import GamifiedLearning from "@/pages/dashboard/gamifiedLearning/GamifiedLearning";
+import McqBank from "@/pages/dashboard/mcqBank/McqBank";
 import QuizGenerator from "@/pages/dashboard/quizGenerator/QuizGenerator";
 import QuizCollection from "@/pages/dashboard/quizGenerator/QuizCollection";
 import AllGeneratedQuiz from "@/pages/dashboard/quizGenerator/AllGeneratedQuiz";
@@ -26,6 +26,13 @@ import AllCommunities from "@/components/dashboard/community-event/AllCommunitie
 import CareerResourcePage from "@/pages/dashboard/careerResource/CareerResourcePage";
 import MyResource from "@/pages/dashboard/careerResource/MyResource";
 import StudyPlan from "@/pages/dashboard/study plan/StudyPlan";
+import CreateStudyPlan from "@/pages/dashboard/study plan/CreateStudyPlan";
+import MyPlan from "@/pages/dashboard/study plan/MyPlan";
+import WeeklyPlan from "@/pages/dashboard/study plan/WeeklyPlan";
+import StudentProfile from "@/pages/dashboard/student profile/StudentProfile";
+import EditStudentProfile from "@/pages/dashboard/student profile/EditStudentProfile";
+import DailyChallenge from "@/pages/dashboard/gamifiedLearning/DailyChallenge";
+import PracticeMCQ from "@/pages/dashboard/mcqBank/PracticeMCQ";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -52,6 +59,10 @@ const dashboardRoutes = {
       element: <McqBank />,
     },
     {
+      path: "practice-mcq",
+      element: <PracticeMCQ />,
+    },
+    {
       path: "quiz-generator",
       element: <QuizGenerator />,
     },
@@ -74,6 +85,10 @@ const dashboardRoutes = {
     {
       path: "gamified-learning",
       element: <GamifiedLearning />,
+    },
+    {
+      path: "gamified-learning/daily-challenges",
+      element: <DailyChallenge />,
     },
     {
       path: "download-notes",
@@ -135,6 +150,26 @@ const dashboardRoutes = {
     {
       path: "study-plan",
       element: <StudyPlan />,
+    },
+    {
+      path: "create-study-plan",
+      element: <CreateStudyPlan />,
+    },
+    {
+      path: "my-plan",
+      element: <MyPlan />,
+    },
+    {
+      path: "weekly-plan/:id",
+      element: <WeeklyPlan />,
+    },
+    {
+      path: "student-profile",
+      element: <StudentProfile />,
+    },
+    {
+      path: "edit-student-profile",
+      element: <EditStudentProfile />,
     },
   ],
 };

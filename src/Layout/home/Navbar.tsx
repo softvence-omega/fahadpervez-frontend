@@ -43,12 +43,16 @@ const Navbar: React.FC = () => {
 
             {/* Right Side Buttons (Desktop) */}
             <div className="hidden md:flex space-x-4">
-              <button className="bg-white px-4 py-2 rounded-[6px] text-[#0058B8] font-medium cursor-pointer">
-                Registration
-              </button>
-              <button className="text-white px-8 py-2 rounded-[6px] bg-[#0058B8] font-medium cursor-pointer">
-                Login
-              </button>
+              <Link to={"/signup"}>
+                <button className="bg-white px-4 py-2 rounded-[6px] text-[#0058B8] font-medium cursor-pointer">
+                  Registration
+                </button>
+              </Link>
+              <Link to={"/login"}>
+                <button className="text-white px-8 py-2 rounded-[6px] bg-[#0058B8] font-medium cursor-pointer">
+                  Login
+                </button>
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -82,12 +86,14 @@ const Navbar: React.FC = () => {
 
             {/* Buttons (Mobile) */}
             <div className="mt-4 space-y-2">
-              <button className="w-full bg-white px-4 py-2 rounded-[6px] text-[#0058B8] font-medium">
+              <Link to={"/signup"}><button className="w-full bg-white px-4 py-2 rounded-[6px] text-[#0058B8] font-medium">
                 Registration
-              </button>
-              <button className="w-full text-white px-4 py-2 rounded-[6px] bg-[#0058B8] font-medium">
-                Login
-              </button>
+              </button></Link>
+              <Link to={"/login"}>
+                <button className="w-full text-white px-4 py-2 rounded-[6px] bg-[#0058B8] font-medium">
+                  Login
+                </button>
+              </Link>
             </div>
           </div>
         </div>

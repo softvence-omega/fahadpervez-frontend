@@ -1,5 +1,6 @@
 // src/routes/AuthRoutes.tsx
 import Login from "@/pages/authPage/Login";
+import MultiStepRegisterForm from "@/pages/authPage/MultiStepRegisterForm";
 import SetPassword from "@/pages/authPage/SetPassword";
 import Signup from "@/pages/authPage/Signup";
 import VerificationOTP from "@/pages/authPage/VerificationOTP";
@@ -20,6 +21,10 @@ const authRoutes = [
   {
     path: "/set-password",
     element: <SetPassword />,
+  },
+  {
+    path: "/multi-step-register",
+    element: <MultiStepRegisterForm />,
   },
 ];
 
