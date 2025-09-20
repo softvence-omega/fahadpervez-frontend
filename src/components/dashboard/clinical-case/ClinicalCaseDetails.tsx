@@ -358,7 +358,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
           </h1>
 
           {/* Navigation Tabs */}
-          <div className="flex gap-8 border-b border-gray-200">
+          <div className="flex gap-4 md:gap-6 lg:gap-8 border-b border-gray-200 overflow-auto">
             {[
               {
                 key: "history",
@@ -388,9 +388,9 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
           </div>
         </div>
 
-        <div className="flex gap-6 my-4 lg:my-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-4 lg:my-6">
           {/* Main Content */}
-          <div className="flex-1 space-y-6">
+          <div className="md:col-span-2 space-y-6">
             {/* Patient Presentation */}
             <div
               ref={presentationRef}
@@ -467,7 +467,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
                     <h3 className="font-semibold text-gray-900 mb-3">
                       Vital Signs
                     </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                       {Object.entries(caseData.vitalSigns).map(
                         ([key, vital]) => (
                           <VitalSignCard
@@ -571,7 +571,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
           </div>
 
           {/* Sidebar */}
-          <div className="w-80 space-y-6">
+          <div className=" space-y-6">
             {/* Reading Progress */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h3 className="font-semibold text-gray-900 mb-3">
