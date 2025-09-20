@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import { BreadcrumbItem } from "../gamified-learning/types";
 import EventPage from "./EventPage";
-import StudyGroupPage from "./StudyGroupPage";
+import StudyGroupPage from "./study-group-page/StudyGroupPage";
 import SocialFeedPage from "./SocialFeedPage";
 import MentorshipPage from "./MentorshipPage";
 import ForumsPage from "./ForumsPage";
