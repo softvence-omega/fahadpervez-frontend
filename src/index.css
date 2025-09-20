@@ -133,3 +133,32 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
+
+
+/* calendar.css */
+.fc {
+  font-size: 14px;
+}
+
+.fc-daygrid-event {
+  border-radius: 6px;
+  padding: 4px;
+  border: 1px solid #e5e7eb;
+}
+
+.fc-toolbar-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.fc-button {
+  background: #f3f4f6 !important;
+  color: #111 !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 6px !important;
+  padding: 4px 10px !important;
+}
+
+.fc-button:hover {
+  background: #e5e7eb !important;
+}
