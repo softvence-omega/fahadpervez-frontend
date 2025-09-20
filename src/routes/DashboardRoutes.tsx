@@ -37,6 +37,7 @@ import DiagramDetails from "@/components/dashboard/diagram/DiagramDetails";
 import OSCE from "@/pages/dashboard/OSCE";
 import DrugCard from "@/pages/dashboard/DrugCard";
 import YourDrugCard from "@/components/dashboard/drug card/YourDrugCard";
+import GroupDetails from "@/components/dashboard/community-event/study-group-page/groupDetails";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -53,6 +54,10 @@ const dashboardRoutes = {
     {
       path: "all-communities",
       element: <AllCommunities />,
+    },
+    {
+      path: "group-details",
+      element: <GroupDetails />,
     },
     {
       path: "ai-tutor",
