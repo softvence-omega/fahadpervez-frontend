@@ -25,7 +25,7 @@ export default function CreateNewDiscussion() {
 
   const [postTitle, setPostTitle] = useState("");
   const [category, setCategory] = useState("");
-  const [subject, setSubject] = useState("");
+  const [description, setDescription] = useState("");
   const [tagInput, setTagInput] = useState(""); // input value
   const [tags, setTags] = useState<string[]>([]); // tag array
 
@@ -46,7 +46,7 @@ export default function CreateNewDiscussion() {
     console.log({
       postTitle,
       category,
-      subject,
+      description,
       tags,
     });
     // setOpen(false);
@@ -104,8 +104,8 @@ export default function CreateNewDiscussion() {
           <div className="grid gap-2 col-span-2">
             <Label>Detailed Content</Label>
             <Textarea
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               placeholder="provide more details about your discussion"
             />
           </div>
