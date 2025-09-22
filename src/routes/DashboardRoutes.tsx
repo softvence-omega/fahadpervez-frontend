@@ -37,7 +37,9 @@ import DiagramDetails from "@/components/dashboard/diagram/DiagramDetails";
 import OSCE from "@/pages/dashboard/OSCE";
 import DrugCard from "@/pages/dashboard/DrugCard";
 import YourDrugCard from "@/components/dashboard/drug card/YourDrugCard";
-import GroupDetails from "@/components/dashboard/community-event/study-group-page/groupDetails";
+import GroupDetails from "@/components/dashboard/community-event/study-group-page/GroupDetails";
+import MakeDecesion from "@/components/dashboard/clinical-case/MakeDecesion";
+
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -82,6 +84,10 @@ const dashboardRoutes = {
     {
       path: "clinical-case/:id",
       element: <ClinicalCaseDetails />,
+    },
+    {
+      path: "clinical-case/:id/make-decesion",
+      element: <MakeDecesion />,
     },
     {
       path: "diagram-explorer",
