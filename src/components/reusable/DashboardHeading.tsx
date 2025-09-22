@@ -24,11 +24,11 @@ export default function DashboardHeading({
 }: DashboardHeadingProps) {
     return (
         <div className={className}>
-            <h2 className={`${titleSize} ${titleColor} ${titleFont} leading-9`}>
+            <h2 className={`${titleSize} ${titleColor} ${titleFont}`}>
                 {title}
             </h2>
             {description && (
-                <p className={`${descSize} ${descColor} ${descFont} leading-6`}>
+                <p className={`${descSize} ${descColor} ${descFont}`}>
                     {description}
                 </p>
             )}
