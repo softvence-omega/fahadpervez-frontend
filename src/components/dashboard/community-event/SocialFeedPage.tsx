@@ -1,90 +1,58 @@
-import CommonSkeletonLoader from "@/components/reusable/CommonSkeletonLoader";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
-import { Filter, MessageCircle } from "lucide-react";
+import { useState } from "react";
+import PrimaryButton from "@/components/reusable/PrimaryButton";
+import SocialFeed from "./social-feed/SocialFeed";
+import LiveChat from "./social-feed/LiveChat";
+import CreatePostModal from "./social-feed/CreatePostModal";
+import CreateRoomModal from "./social-feed/CreateRoomModal";
 
-interface Post {
-  id: string;
-  title: string;
-  content: string;
-  author: string;
-  likes: number;
-  comments: number;
-  date: string;
-}
 
-interface SocialFeedPageProps {
-  posts: Post[];
-  isLoading: boolean;
-}
-
-const SocialFeedPage: React.FC<SocialFeedPageProps> = ({
-  posts,
-  isLoading,
-}) => {
-  if (isLoading) {
-    return <CommonSkeletonLoader />;
-  }
+const SocialFeedPage = () => {
+  const [activeTab, setActiveTab] = useState("Social Feed");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center gap-2">
-          <MessageCircle className="h-6 w-6" />
-          <CardTitle>Social Feed</CardTitle>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row items-center justify-between h-auto sm:h-16 gap-3 py-4">
+        <div className="flex space-x-1">
+          <button
+            onClick={() => setActiveTab("Social Feed")}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+              activeTab === "Social Feed"
+                ? "bg-blue-600 text-white"
+                : "text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            Social Feed
+          </button>
+          <button
+            onClick={() => setActiveTab("Live Chat")}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+              activeTab === "Live Chat"
+                ? "bg-blue-600 text-white"
+                : "text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            Live Chat
+          </button>
         </div>
-        <CardDescription>Stay connected with the community</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex gap-2 mb-4">
-          <Input placeholder="Search posts..." className="max-w-sm" />
-          <Button variant="outline">
-            <Filter className="h-4 w-4 mr-2" />
-            Filter
-          </Button>
-        </div>
-        {posts.map((post) => (
-          <Card key={post.id}>
-            <CardContent className="p-4 space-y-3">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <Avatar className="w-8 h-8">
-                    <AvatarFallback>JD</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <div className="font-medium">{post.author}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {post.date}
-                    </div>
-                  </div>
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  {post.likes} likes
-                </div>
-              </div>
-              <h3 className="font-semibold">{post.title}</h3>
-              <p className="text-muted-foreground">{post.content}</p>
-              <div className="flex items-center justify-between text-sm text-muted-foreground">
-                <Button variant="ghost" size="sm">
-                  Like
-                </Button>
-                <Button variant="ghost" size="sm">
-                  {post.comments} Comments
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </CardContent>
-    </Card>
+
+        {/* Dynamic Button */}
+        <PrimaryButton onClick={() => setIsModalOpen(true)}>
+          {activeTab === "Social Feed" ? "+ Create Post" : "+ Create Room"}
+        </PrimaryButton>
+      </div>
+
+      {/* Content */}
+      {activeTab === "Social Feed" ? <SocialFeed /> : <LiveChat />}
+
+      {/* Modals */}
+      {activeTab === "Social Feed" ? (
+        <CreatePostModal open={isModalOpen} onOpenChange={setIsModalOpen} />
+      ) : (
+        <CreateRoomModal open={isModalOpen} onOpenChange={setIsModalOpen} />
+      )}
+    </div>
   );
 };
 

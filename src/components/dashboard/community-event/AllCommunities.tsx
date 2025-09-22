@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { ChevronLeft } from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -40,34 +39,6 @@ interface StudyGroup {
   leader: string;
 }
 
-interface Post {
-  id: string;
-  title: string;
-  content: string;
-  author: string;
-  likes: number;
-  comments: number;
-  date: string;
-}
-
-interface Mentor {
-  id: string;
-  name: string;
-  specialty: string;
-  experience: string;
-  availability: string;
-  rating: number;
-}
-
-interface ForumThread {
-  id: string;
-  title: string;
-  author: string;
-  replies: number;
-  views: number;
-  lastPost: string;
-}
-
 const breadcrumbs: BreadcrumbItem[] = [
   { name: "Dashboard", link: "/dashboard" },
   { name: "Community & Event", link: "/dashboard/community-event" },
@@ -86,9 +57,6 @@ const MedicalEventsDashboard: React.FC = () => {
   // Dynamic data fetching simulation
   const [events, setEvents] = useState<Event[]>([]);
   const [studyGroups, setStudyGroups] = useState<StudyGroup[]>([]);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [mentors, setMentors] = useState<Mentor[]>([]);
-  const [threads, setThreads] = useState<ForumThread[]>([]);
 
   React.useEffect(() => {
     // Simulate API calls for dynamic data
@@ -182,69 +150,6 @@ const MedicalEventsDashboard: React.FC = () => {
           leader: "Sarah Lee",
         },
       ]);
-
-      // Dynamic posts
-      setPosts([
-        {
-          id: "1",
-          title: "Just crushed my mock exam!",
-          content: "Sharing my study tips for everyone...",
-          author: "John Doe",
-          likes: 23,
-          comments: 5,
-          date: "Sep 14, 2025",
-        },
-        {
-          id: "2",
-          title: "Best resources for anatomy?",
-          content: "Looking for recommendations...",
-          author: "Jane Smith",
-          likes: 15,
-          comments: 8,
-          date: "Sep 13, 2025",
-        },
-      ]);
-
-      // Dynamic mentors
-      setMentors([
-        {
-          id: "1",
-          name: "Dr. Maria Estevez",
-          specialty: "Internal Medicine",
-          experience: "10+ years at NYU",
-          availability: "Wednesdays 2-4 PM",
-          rating: 4.9,
-        },
-        {
-          id: "2",
-          name: "Dr. Raj Patel",
-          specialty: "Surgery",
-          experience: "15 years in residency training",
-          availability: "Fridays 10 AM-12 PM",
-          rating: 4.8,
-        },
-      ]);
-
-      // Dynamic forum threads
-      setThreads([
-        {
-          id: "1",
-          title: "How to balance study and clinical rotations?",
-          author: "StudentMD2026",
-          replies: 12,
-          views: 156,
-          lastPost: "2 hours ago",
-        },
-        {
-          id: "2",
-          title: "Recommended books for PLAB 2",
-          author: "FutureDoc",
-          replies: 7,
-          views: 89,
-          lastPost: "1 day ago",
-        },
-      ]);
-
       setIsLoading(false);
     };
 
@@ -282,7 +187,7 @@ const MedicalEventsDashboard: React.FC = () => {
               <TabsTrigger
                 key={tab}
                 value={tab}
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                className="data-[state=active]:bg-blue-main data-[state=active]:text-white"
               >
                 {tab}
               </TabsTrigger>
@@ -306,13 +211,13 @@ const MedicalEventsDashboard: React.FC = () => {
             <StudyGroupPage studyGroups={studyGroups} isLoading={isLoading} />
           </TabsContent>
           <TabsContent value="Social Feed" className="space-y-6">
-            <SocialFeedPage posts={posts} isLoading={isLoading} />
+            <SocialFeedPage />
           </TabsContent>
           <TabsContent value="Mentorship" className="space-y-6">
-            <MentorshipPage mentors={mentors} isLoading={isLoading} />
+            <MentorshipPage />
           </TabsContent>
           <TabsContent value="Forums" className="space-y-6">
-            <ForumsPage threads={threads} isLoading={isLoading} />
+            <ForumsPage />
           </TabsContent>
         </Tabs>
       </div>

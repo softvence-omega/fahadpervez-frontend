@@ -1,6 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge"; // ✅ use ShadCN badge, not lucide
 import React from "react";
 
 interface Event {
@@ -21,42 +19,41 @@ interface Event {
 interface UpcomingEventsCardProps {
   event: Event;
 }
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case "PLAB Prep":
-        return "bg-red";
-      case "Workshop":
-        return "bg-green";
-      case "Conference":
-        return "bg-purple";
-      case "Telemedicine":
-        return "bg-blue";
-      case "Health Summit":
-        return "bg-indigo";
-      default:
-        return "bg-gray";
-    }
-  };
 
-const UpcomingEventsCard: React.FC<UpcomingEventsCardProps> = ({
-  event,
-}) => {
+const getTypeColor = (type: string) => {
+  switch (type) {
+    case "PLAB Prep":
+      return "bg-red-200 text-red-800";
+    case "Workshop":
+      return "bg-green-200 text-green-800";
+    case "Conference":
+      return "bg-purple-200 text-purple-800";
+    case "Telemedicine":
+      return "bg-blue-200 text-blue-800";
+    case "Health Summit":
+      return "bg-indigo-200 text-indigo-800";
+    default:
+      return "bg-gray-200 text-gray-800";
+  }
+};
+
+const UpcomingEventsCard: React.FC<UpcomingEventsCardProps> = ({ event }) => {
   return (
-    <Card className="hover:shadow-md transition-shadow border-gray-200">
-      <CardHeader className="pb-2">
+    <div className="hover:shadow-md transition-shadow border border-gray-200 p-4 md:p-6 rounded-xl">
+      <div className="pb-2">
         <div className="flex items-start justify-between">
-          <Badge
-            className={`text-xs ${getTypeColor(
+          <p
+            className={`text-sm px-2 py-1 rounded-full ${getTypeColor(
               event.type
-            )} !text-white !bg-opacity-90`}
+            )}`}
           >
             {event.type}
-          </Badge>
+          </p>
 
           <div className="text-sm text-muted-foreground">{event.date}</div>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-2 p-4">
+      </div>
+      <div className="space-y-2 pt-4">
         <h3 className="font-semibold line-clamp-2">{event.title}</h3>
         <p className="text-sm text-muted-foreground line-clamp-2">
           {event.description}
@@ -73,8 +70,8 @@ const UpcomingEventsCard: React.FC<UpcomingEventsCardProps> = ({
             Register
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
