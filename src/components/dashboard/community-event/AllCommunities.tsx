@@ -187,7 +187,7 @@ const MedicalEventsDashboard: React.FC = () => {
               <TabsTrigger
                 key={tab}
                 value={tab}
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                className="data-[state=active]:bg-blue-main data-[state=active]:text-white"
               >
                 {tab}
               </TabsTrigger>
