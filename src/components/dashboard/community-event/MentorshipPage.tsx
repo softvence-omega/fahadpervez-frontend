@@ -5,6 +5,7 @@ import MyMentorCard from "./mentor/MyMentorCard";
 import ConnectMentorCard from "./mentor/ConnectMentorCard";
 import { useState } from "react";
 import FindMentorModal from "./mentor/FindMentorModal";
+import { Link } from "react-router-dom";
 
 const MentorshipPage = () => {
   const [open, setOpen] = useState(false);
@@ -34,9 +35,12 @@ const MentorshipPage = () => {
       <div className="border border-slate-300 rounded-[8px] pt-5 px-8 pb-7">
         <div className="flex items-center justify-between">
           <h3 className="text-slate-900 font-medium">My Mentor</h3>
-          <p className="text-sm font-medium text-blue-main underline">
+          <Link
+            to={"/dashboard/my-mentor"}
+            className="text-sm font-medium text-blue-main underline"
+          >
             View All
-          </p>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-7">
