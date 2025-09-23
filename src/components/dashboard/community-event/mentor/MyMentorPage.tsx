@@ -34,10 +34,10 @@ export default function MyMentorPage() {
       </div>
 
       <div className="flex items-center gap-4 mt-6">
-        <Button className="text-sm font-medium bg-blue-main text-white py-2 px-4 rounded-[6px]">
+        <Button className="text-sm font-medium bg-blue-main hover:bg-blue-main/80 text-white py-2 px-4 rounded-[6px] cursor-pointer">
           Overview
         </Button>
-        <Button className="text-sm font-medium bg-white text-slate-800 py-2 px-4 rounded-[6px] border border-slate-300">
+        <Button className="text-sm font-medium bg-white text-slate-800 py-2 px-4 hover:text-slate-500 hover:bg-white cursor-pointer rounded-[6px] border border-slate-300">
           Recoded Session
         </Button>
       </div>
