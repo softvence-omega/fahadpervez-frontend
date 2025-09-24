@@ -11,9 +11,9 @@ export default function MyResource() {
                     <Link to={'/dashboard/resources'} className="mb-7">
                         <ArrowLeft /></Link>
                     <DashboardHeading
-                        title="Create  Notes"
+                        title="Downloaded Resources"
                         titleSize="text-xl"
-                        description="Builds confidence through repeated practice."
+                        description="Access comprehensive study materials and career planning tools"
                         className="mt-12 mb-12 space-y-1"
                     />
                 </div>
