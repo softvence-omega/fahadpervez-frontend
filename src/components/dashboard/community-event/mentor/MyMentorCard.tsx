@@ -20,12 +20,12 @@ export default function MyMentorCard() {
       </div>
 
       <div className="flex flex-col gap-2 mt-10">
-        <Button className="w-full bg-white text-slate-800 hover:text-white hover:bg-blue-main border border-slate-300 rounded pt-2 px-4">
+        <Button className="w-full bg-white text-slate-800 hover:text-white hover:bg-blue-main border border-slate-300 rounded pt-2 px-4 cursor-pointer">
           <Files />
           Ask Question
         </Button>
 
-        <Button className="w-full bg-white text-slate-800 hover:text-white hover:bg-blue-main border border-slate-300 rounded pt-2 px-4">
+        <Button className="w-full bg-white text-slate-800 hover:text-white hover:bg-blue-main border border-slate-300 rounded pt-2 px-4 cursor-pointer">
           <Plus />
           New Session
         </Button>

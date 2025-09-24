@@ -63,7 +63,7 @@ const MentorshipPage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-7 mt-7">
-            {Array(3)
+            {Array(8)
               .fill(null)
               .map(() => (
                 <ConnectMentorCard />

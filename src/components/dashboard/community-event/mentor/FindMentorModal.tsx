@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function FindMentorModal({ open, setOpen }: any) {
   const [mentorName, setMentorName] = useState("");
@@ -26,8 +27,11 @@ export default function FindMentorModal({ open, setOpen }: any) {
   const [language, setLanguage] = useState("");
   const [availability, setAvailability] = useState("");
 
+  const navigate = useNavigate();
+
   const handleSubmit = () => {
     setOpen(false);
+    navigate("/dashboard/all-mentor")
   };
 
   return (

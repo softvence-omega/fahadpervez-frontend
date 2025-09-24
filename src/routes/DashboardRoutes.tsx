@@ -41,6 +41,8 @@ import GroupDetails from "@/components/dashboard/community-event/study-group-pag
 import CreateNewDiscussion from "@/components/dashboard/community-event/forums/CreateNewDiscussion";
 import AllMentorPage from "@/components/dashboard/community-event/mentor/AllMentorPage";
 import MyMentorPage from "@/components/dashboard/community-event/mentor/MyMentorPage";
+import MentorProfile from "@/components/dashboard/community-event/mentor/MentorProfile";
+import BookingPage from "@/components/dashboard/community-event/mentor/BookingPage";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -57,6 +59,14 @@ const dashboardRoutes = {
     {
       path: "all-communities",
       element: <AllCommunities />,
+    },
+    {
+      path: "mentor-profile",
+      element: <MentorProfile />,
+    },
+    {
+      path: "confirm-booking",
+      element: <BookingPage />,
     },
     {
       path: "group-details",
