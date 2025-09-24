@@ -37,8 +37,13 @@ import DiagramDetails from "@/components/dashboard/diagram/DiagramDetails";
 import OSCE from "@/pages/dashboard/OSCE";
 import DrugCard from "@/pages/dashboard/DrugCard";
 import YourDrugCard from "@/components/dashboard/drug card/YourDrugCard";
-import GroupDetails from "@/components/dashboard/community-event/study-group-page/GroupDetails";
 import MakeDecesion from "@/components/dashboard/clinical-case/MakeDecesion";
+import GroupDetails from "@/components/dashboard/community-event/study-group-page/groupDetails";
+import CreateNewDiscussion from "@/components/dashboard/community-event/forums/CreateNewDiscussion";
+import AllMentorPage from "@/components/dashboard/community-event/mentor/AllMentorPage";
+import MyMentorPage from "@/components/dashboard/community-event/mentor/MyMentorPage";
+import MentorProfile from "@/components/dashboard/community-event/mentor/MentorProfile";
+import BookingPage from "@/components/dashboard/community-event/mentor/BookingPage";
 
 
 const dashboardRoutes = {
@@ -58,8 +63,28 @@ const dashboardRoutes = {
       element: <AllCommunities />,
     },
     {
+      path: "mentor-profile",
+      element: <MentorProfile />,
+    },
+    {
+      path: "confirm-booking",
+      element: <BookingPage />,
+    },
+    {
       path: "group-details",
       element: <GroupDetails />,
+    },
+    {
+      path: "create-new-discussion",
+      element: <CreateNewDiscussion />,
+    },
+    {
+      path: "my-mentor",
+      element: <MyMentorPage />,
+    },
+    {
+      path: "all-mentor",
+      element: <AllMentorPage />,
     },
     {
       path: "ai-tutor",
