@@ -20,6 +20,7 @@ const FeaturedEventCard: React.FC<FeaturedEventCardProps> = ({
   featuredEvent,
   getTypeColor,
 }) => {
+  console.log(getTypeColor);
   return (
     <div className="bg-white px-8 py-6 border border-gray-200 rounded-lg">
       <div className="pb-4">
@@ -31,7 +32,7 @@ const FeaturedEventCard: React.FC<FeaturedEventCardProps> = ({
       <div className="space-y-4">
         <div className=" ">
           <div className="flex items-start gap-4">
-            <div className="flex-1 space-y-3 md: space-y-5">
+            <div className="flex-1 space-y-3 md:space-y-5">
               <h3 className="text-xl font-semibold">{featuredEvent.title}</h3>
 
               <div className="flex items-center gap-2">

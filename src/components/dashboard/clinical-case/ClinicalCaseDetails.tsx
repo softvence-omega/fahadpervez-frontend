@@ -13,6 +13,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
+import { useNavigate, useParams } from "react-router-dom";
 
 // Enhanced type definitions
 interface PatientInfo {
@@ -174,6 +175,9 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
   const vitalsRef = useRef<HTMLDivElement | null>(null);
   const labsRef = useRef<HTMLDivElement | null>(null);
   const imagingRef = useRef<HTMLDivElement | null>(null);
+  const { id } = useParams();
+
+  const navigate = useNavigate();
 
   // Simulate reading progress
   useEffect(() => {
@@ -206,6 +210,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
 
   const handleMakeDecision = (): void => {
     console.log("Make Your Decision clicked");
+    navigate(`/dashboard/clinical-case/${id}/make-decision`);
   };
 
   const handleQuickAction = (action: string): void => {
@@ -372,7 +377,8 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
             ].map(({ key, label, icon: Icon, ref }) => (
               <button
                 key={key}
-                onClick={() => scrollToSection(ref, key)}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                onClick={() => scrollToSection(ref as any, key)}
                 className={`flex items-center gap-2 pb-3 border-b-2 transition-colors px-4 ${
                   activeTab === key
                     ? "border-blue-main text-blue-main"
@@ -593,7 +599,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
               <PrimaryButton
                 className="w-full px-4 py-2 text-base"
                 onClick={handleMakeDecision}
-                disabled={readingProgress < 100}
+                // disabled={readingProgress < 100}
               >
                 Make Your Decision
               </PrimaryButton>
