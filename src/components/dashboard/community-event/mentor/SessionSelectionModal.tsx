@@ -68,13 +68,15 @@ export function SessionSelectionModal({
     if (selectedSession) {
       onBookNow(selectedSession);
 
+      const selectedSessionObj = sessions.find(s => s.id === selectedSession);
       navigate("/dashboard/confirm-booking", {
         state: {
-          price: 25,
-          duration: 30,
-          sessions: 1,
+          price: selectedSessionObj?.price,
+          duration: selectedSessionObj?.duration,
+          sessions: 1, // you can make this dynamic if needed
           mentorName: "Mouhammad",
           specialty: "Medical Consultant - Preventive & Clinical Care",
+          mentorId: selectedSessionObj?.id, // using session id as mentorId (replace if you have real mentorId)
         },
       });
       // Optionally close the modal after booking
