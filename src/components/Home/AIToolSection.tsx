@@ -4,16 +4,20 @@ import AIToolImage from "@/assets/home/AI_tool_image.png";
 import CommonWrapper from "@/common/CommonWrapper";
 import { FaAirbnb, FaBook, FaBookOpen, FaBookReader } from "react-icons/fa";
 import { FcSettings } from "react-icons/fc";
+import { useNavigate } from "react-router-dom";
 
 interface ToolCardProps {
   icon: React.ReactNode;
   title: string;
   description: string;
+  link: string;
 }
 
-const ToolCard = ({ icon, title, description }: ToolCardProps) => {
+const ToolCard = ({ icon, title, description, link }: ToolCardProps) => {
+  const navigate = useNavigate();
   return (
     <div
+      onClick={() => navigate(link)}
       className="bg-slate-800 rounded-[20px] p-5 group transition-all duration-300 hover:bg-slate-700"
     >
       <div className="flex items-center gap-4">
@@ -38,36 +42,43 @@ export default function AIToolSection() {
       title: "AI Tutor",
       description:
         "A set of checkable buttons—known as radio buttons—where no more than one can be checked at a time.",
+
+      link: "/dashboard/ai-tutor",
     },
     {
       icon: <FaAirbnb className="w-6 h-6 text-white" />,
       title: "Pharmaceutical Aid",
       description:
         "Helps provide detailed pharmaceutical assistance with AI-driven insights.",
+      link: "/dashboard/drug-cards",
     },
     {
       icon: <FaBook className="w-6 h-6 text-white" />,
       title: "Question Aid",
       description:
         "Guides you through solving complex medical questions with clear steps.",
+      link: "/dashboard/mcq-bank",
     },
     {
       icon: <FcSettings className="w-6 h-6 text-white" />,
       title: "In Depth Explanation",
       description:
         "Breaks down tough concepts into easy-to-understand detailed explanations.",
+      link: "/dashboard/ai-tutor",
     },
     {
       icon: <FaBookOpen className="w-6 h-6 text-white" />,
       title: "Clinical Context",
       description:
         "Puts theoretical knowledge into real-world clinical scenarios.",
+      link: "/dashboard/clinical-case-generator",
     },
     {
       icon: <FaBookReader className="w-6 h-6 text-white" />,
       title: "USMLE Question Style",
       description:
         "Practice with AI-generated USMLE style questions and rationales.",
+      link: "/dashboard/ai-tutor",
     },
   ];
 
@@ -87,6 +98,7 @@ export default function AIToolSection() {
                   icon={tool.icon}
                   title={tool.title}
                   description={tool.description}
+                  link={tool.link}
                 />
               ))}
             </div>

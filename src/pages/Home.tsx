@@ -1,3 +1,4 @@
+import { Element } from "react-scroll";
 import AIToolSection from "@/components/Home/AIToolSection";
 import HeroSection from "@/components/Home/HeroSection";
 import MentorSection from "@/components/Home/MentorSection";
@@ -8,26 +9,40 @@ import Tools from "@/components/Home/Tools";
 const Home = () => {
   return (
     <div className="bg-white">
-      <HeroSection />
-      <Tools/>
-      <StudyPlanSection
-        title="Innovative AI Study plan for better Education."
-        description="Every year, we change the lives of millions of students..."
-        leftFeatures={[
-          { text: "AI Generated Quiz" },
-          { text: "MCQ Bank" },
-          { text: "Downloads Notes" },
-        ]}
-        rightFeatures={[
-          { text: "AI Create Flash Cards" },
-          { text: "Case Study" },
-          { text: "Medical AI" },
-        ]}
-        buttonText="Start Case"
-        image={studyPlanImage}
-      />
-      <AIToolSection />
-      <MentorSection />
+      <Element name="hero">
+        <HeroSection />
+      </Element>
+
+      <Element name="tools">
+        <Tools />
+      </Element>
+
+      <Element name="study-plan">
+        <StudyPlanSection
+          title="Innovative AI Study plan for better Education."
+          description="Every year, we change the lives of millions of students..."
+          leftFeatures={[
+            { text: "AI Generated Quiz" },
+            { text: "MCQ Bank" },
+            { text: "Downloads Notes" },
+          ]}
+          rightFeatures={[
+            { text: "AI Create Flash Cards" },
+            { text: "Case Study" },
+            { text: "Medical AI" },
+          ]}
+          buttonText="Start Case"
+          image={studyPlanImage}
+        />
+      </Element>
+
+      <Element name="ai-tools">
+        <AIToolSection />
+      </Element>
+
+      <Element name="mentors">
+        <MentorSection />
+      </Element>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link as ScrollLink } from "react-scroll";
 import CommonWrapper from "@/common/CommonWrapper";
 import { Menu, X } from "lucide-react";
 
@@ -10,10 +10,11 @@ const Navbar: React.FC = () => {
   const toggleMenu = () => setIsOpen(!isOpen);
 
   const navLinks = [
-    { path: "/", label: "Home" },
-    { path: "/tools", label: "Tools" },
-    { path: "/for-students", label: "For Students" },
-    { path: "/news", label: "News & Insights" },
+    { to: "hero", label: "Home" },
+    { to: "tools", label: "Tools" },
+    { to: "study-plan", label: "Study Plan" },
+    { to: "ai-tools", label: "AI Tools" },
+    { to: "mentors", label: "Mentors" },
   ];
 
   return (
@@ -23,36 +24,33 @@ const Navbar: React.FC = () => {
           <div className="flex items-center justify-between h-12 md:h-16">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <Link to="/" className="text-white text-2xl font-bold">
-                <img src="/logo1.svg" alt="Logo" className="h-16" />
-              </Link>
+              <img src="/logo1.svg" alt="Logo" className="h-16" />
             </div>
 
             {/* Desktop Menu */}
             <div className="hidden md:flex space-x-6 text-[#09090B] font-medium">
               {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className="hover:text-[#0058B8] px-3 py-2 rounded-md"
+                <ScrollLink
+                  key={link.to}
+                  to={link.to}
+                  smooth={true}
+                  duration={500}
+                  offset={-70} // Adjust for sticky navbar height
+                  className="hover:text-[#0058B8] px-3 py-2 rounded-md cursor-pointer"
                 >
                   {link.label}
-                </Link>
+                </ScrollLink>
               ))}
             </div>
 
-            {/* Right Side Buttons (Desktop) */}
+            {/* Right Side Buttons */}
             <div className="hidden md:flex space-x-4">
-              <Link to={"/signup"}>
-                <button className="bg-white px-4 py-2 rounded-[6px] text-[#0058B8] font-medium cursor-pointer">
-                  Registration
-                </button>
-              </Link>
-              <Link to={"/login"}>
-                <button className="text-white px-8 py-2 rounded-[6px] bg-[#0058B8] font-medium cursor-pointer">
-                  Login
-                </button>
-              </Link>
+              <button className="bg-white px-4 py-2 rounded-[6px] text-[#0058B8] font-medium cursor-pointer">
+                Registration
+              </button>
+              <button className="text-white px-8 py-2 rounded-[6px] bg-[#0058B8] font-medium cursor-pointer">
+                Login
+              </button>
             </div>
 
             {/* Mobile Menu Button */}
@@ -74,27 +72,18 @@ const Navbar: React.FC = () => {
         <div className="md:hidden bg-slate-100 border-t border-blue-400/20">
           <div className="px-4 pt-3 pb-4 space-y-2">
             {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className="block text-[#09090B] hover:text-[#0058B8] px-3 py-2 rounded-md font-medium"
+              <ScrollLink
+                key={link.to}
+                to={link.to}
+                smooth={true}
+                duration={500}
+                offset={-70}
+                className="block text-[#09090B] hover:text-[#0058B8] px-3 py-2 rounded-md font-medium cursor-pointer"
                 onClick={() => setIsOpen(false)}
               >
                 {link.label}
-              </Link>
+              </ScrollLink>
             ))}
-
-            {/* Buttons (Mobile) */}
-            <div className="mt-4 space-y-2">
-              <Link to={"/signup"}><button className="w-full bg-white px-4 py-2 rounded-[6px] text-[#0058B8] font-medium">
-                Registration
-              </button></Link>
-              <Link to={"/login"}>
-                <button className="w-full text-white px-4 py-2 rounded-[6px] bg-[#0058B8] font-medium">
-                  Login
-                </button>
-              </Link>
-            </div>
           </div>
         </div>
       )}
