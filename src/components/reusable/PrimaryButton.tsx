@@ -43,7 +43,7 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
     : "";
 
   // Combine classes with shadcn button
-  const customClasses: string = `rounded-[6px] h-auto text-white hover:text-white ${backgroundClasses} ${iconSpacingClasses} ${className}`;
+  const customClasses: string = `rounded-[6px] cursor-pointer h-auto text-white hover:text-white ${backgroundClasses} ${iconSpacingClasses} ${className}`;
 
   return (
     <Button

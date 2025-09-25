@@ -62,7 +62,7 @@ const Footer = () => {
                     </li>
                     <li>
                       <Link
-                        to="#"
+                        to="/dashboard"
                         className="text-white/70 text-sm hover:text-white transition-colors"
                       >
                         For Students
@@ -79,7 +79,7 @@ const Footer = () => {
                   <ul className="space-y-3">
                     <li>
                       <Link
-                        to="#"
+                        to="/signup"
                         className="text-white/70 text-sm hover:text-white transition-colors"
                       >
                         Become a Member

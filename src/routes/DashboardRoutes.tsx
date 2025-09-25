@@ -196,7 +196,7 @@ const dashboardRoutes = {
       element: <MyResource />,
     },
     {
-      path: "study-plan",
+      path: "smart-study",
       element: <StudyPlan />,
     },
     {

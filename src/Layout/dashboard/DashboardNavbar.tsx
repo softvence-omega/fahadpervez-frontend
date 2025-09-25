@@ -29,19 +29,20 @@ const DashboardNavbar = () => {
     { name: "MCQ Bank", href: "/dashboard/mcq-bank" },
     { name: "Flashcard Generator", href: "/dashboard/flashcard-page" },
     { name: "Quiz Generator", href: "/dashboard/quiz-page" },
+
+    { name: "Diagram Explorer", href: "/dashboard/diagram-explorer" },
+    { name: "Smart Study", href: "/dashboard/smart-study" },
+    { name: "Gamified Learning", href: "/dashboard/gamified-learning" },
+  ];
+
+  const moreItems = [
     {
       name: "Clinical Case Generator",
       href: "/dashboard/clinical-case-generator",
     },
-    { name: "Diagram Explorer", href: "/dashboard/diagram-explorer" },
-  ];
-
-  const moreItems = [
-    { name: "CME/CPD Courses", href: "/dashboard/courses" },
-    { name: "Gamified Learning", href: "/dashboard/gamified-learning" },
     { name: "OSCE / Clinical Skills Lab", href: "/dashboard/osce" },
-    { name: "Study Plan", href: "/dashboard/study-plan" },
     { name: "Drug Cards/Pharmacology", href: "/dashboard/drug-cards" },
+    { name: "CME/CPD Courses", href: "/dashboard/courses" },
     { name: "Download Notes", href: "/dashboard/download-notes" },
     { name: "Resources", href: "/dashboard/resources" },
   ];
@@ -50,7 +51,7 @@ const DashboardNavbar = () => {
     { name: "Settings", icon: Settings, href: "/dashboard/settings" },
     { name: "Edit Profile", icon: User, href: "/dashboard/edit-profile" },
     { name: "Help & Support", icon: HelpCircle, href: "/dashboard/help" },
-    { name: "Logout", icon: LogOut, href: "/logout" },
+    { name: "Logout", icon: LogOut, href: "#" },
   ];
 
   // Function to check if route is active
@@ -166,15 +167,16 @@ const DashboardNavbar = () => {
         </div>
         <div>
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex flex-wrap lg:items-center justify-between lg:space-x-1 mt-2">
-            {navigationItems.slice(0, 8).map((item) => (
+          <div className="hidden lg:flex flex-wrap justify-between lg:items-center  lg:space-x-2 mt-2">
+            {navigationItems.slice(0, 10).map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`px-3 py-2 font-medium text-sm transition-colors duration-200 text-nowrap  ${isActiveRoute(item.href)
+                className={`px-3 py-2 font-medium text-sm transition-colors duration-200 text-nowrap  ${
+                  isActiveRoute(item.href)
                     ? "bg-blue-50 text-blue-700 border-b-2 border-blue-700"
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                  }`}
+                }`}
               >
                 {item.name}
               </Link>
@@ -186,10 +188,9 @@ const DashboardNavbar = () => {
                 onClick={() => setIsMoreOpen(!isMoreOpen)}
                 className={`flex items-center px-3 py-2 text-sm font-medium transition-colors duration-200 ${
                   isMoreSectionActive()
-
                     ? "bg-blue-50 text-blue-700 border-b-2 border-blue-700"
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                  }`}
+                }`}
               >
                 More
                 <ChevronDown className="ml-1 h-4 w-4" />
@@ -206,10 +207,11 @@ const DashboardNavbar = () => {
                       <Link
                         key={item.name}
                         to={item.href}
-                        className={`block px-4 py-3 text-sm transition-colors duration-200 ${isActiveRoute(item.href)
+                        className={`block px-4 py-3 text-sm transition-colors duration-200 ${
+                          isActiveRoute(item.href)
                             ? "bg-blue-50 text-blue-700 font-medium"
                             : "text-gray-700 hover:bg-gray-50"
-                          }`}
+                        }`}
                         onClick={() => setIsMoreOpen(false)}
                       >
                         {item.name}
@@ -231,10 +233,11 @@ const DashboardNavbar = () => {
               <Link
                 key={item.name}
                 to={item.href}
-                className={`block px-3 py-2 text-base font-medium rounded-md transition-colors duration-200 ${isActiveRoute(item.href)
+                className={`block px-3 py-2 text-base font-medium rounded-md transition-colors duration-200 ${
+                  isActiveRoute(item.href)
                     ? "bg-blue-50 text-blue-700"
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                  }`}
+                }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item.name}
@@ -249,10 +252,11 @@ const DashboardNavbar = () => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`block px-3 py-2 text-base font-medium rounded-md transition-colors duration-200 ${isActiveRoute(item.href)
+                  className={`block px-3 py-2 text-base font-medium rounded-md transition-colors duration-200 ${
+                    isActiveRoute(item.href)
                       ? "bg-blue-50 text-blue-700"
                       : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                    }`}
+                  }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}

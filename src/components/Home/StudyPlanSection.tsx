@@ -1,6 +1,7 @@
 import CommonWrapper from "@/common/CommonWrapper";
 import PrimaryButton from "../reusable/PrimaryButton";
 import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Feature {
   text: string;
@@ -23,6 +24,7 @@ export default function StudyPlanSection({
   buttonText,
   image,
 }: StudyPlanSectionProps) {
+  const navigate = useNavigate();
   return (
     <CommonWrapper>
       <div className="grid grid-cols-1 lg:items-center lg:grid-cols-2 gap-10 py-10 md:py-16">
@@ -61,7 +63,12 @@ export default function StudyPlanSection({
             </div>
           </div>
 
-          <PrimaryButton icon={<ArrowRight className="w-4 h-4" />}>
+          <PrimaryButton
+            onClick={() => {
+              navigate("/dashboard/clinical-case-generator");
+            }}
+            icon={<ArrowRight className="w-4 h-4" />}
+          >
             {buttonText}
           </PrimaryButton>
         </div>
