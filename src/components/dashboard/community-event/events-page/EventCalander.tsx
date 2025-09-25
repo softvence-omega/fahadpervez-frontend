@@ -1,76 +1,92 @@
-"use client";
-
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from "@fullcalendar/interaction";
 import { useState } from "react";
+import CalendarHeader from "./calanderComponents/CalendarHeader";
+import WeekDays from "./calanderComponents/WeekDays";
+import CalendarDay from "./calanderComponents/CalendarDay";
+import { Event, DayObj } from "./calanderComponents/types";
 
 const EventCalendar = () => {
-  const [events] = useState([
-    {
-      id: "1",
-      title: "Team Meeting",
-      start: "2025-09-21T10:00:00",
-      url: "https://meet.google.com",
-      backgroundColor: "#cbd5f5", // light blue
-    },
-    {
-      id: "2",
-      title: "Health Summit",
-      start: "2025-09-23T14:00:00",
-      url: "https://healthsummit.com",
-      backgroundColor: "#bbf7d0", // light green
-    },
-    {
-      id: "3",
-      title: "Telemedicine Checkup",
-      start: "2025-09-25T09:00:00",
-      url: "https://telemedicine.com",
-      backgroundColor: "#f3e8ff", // light purple
-    },
-    {
-      id: "4",
-      title: "Product Demo",
-      start: "2025-09-28T16:00:00",
-      url: "https://zoom.com",
-      backgroundColor: "#fde68a", // light yellow
-    },
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  const [currentDate, setCurrentDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
+  
+  const [events] = useState<Event[]>([
+    { id: "1", title: "Team Meeting", start: "2025-09-21T10:00:00", url: "https://meet.google.com", backgroundColor: "#cbd5f5" },
+    { id: "2", title: "Health Summit", start: "2025-09-23T14:00:00", url: "https://healthsummit.com", backgroundColor: "#bbf7d0" },
+    { id: "3", title: "Telemedicine Checkup", start: "2025-09-25T09:00:00", url: "https://telemedicine.com", backgroundColor: "#f3e8ff" },
+    { id: "4", title: "Product Demo", start: "2025-09-28T16:00:00", url: "https://zoom.com", backgroundColor: "#fde68a" },
+    { id: "5", title: "Conference Call", start: "2025-10-15T11:00:00", url: "https://teams.microsoft.com", backgroundColor: "#fed7aa" },
+    { id: "6", title: "Workshop", start: "2025-10-20T13:00:00", url: "https://workshop.com", backgroundColor: "#ddd6fe" },
   ]);
 
+  const getDaysInMonth = (date: Date): DayObj[] => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay();
+    const days: DayObj[] = [];
+    const adjustedStartingDay = startingDayOfWeek === 0 ? 6 : startingDayOfWeek - 1;
+
+    const prevMonth = new Date(year, month, 0);
+    const prevMonthDays = prevMonth.getDate();
+    for (let i = adjustedStartingDay - 1; i >= 0; i--) {
+      days.push({ day: prevMonthDays - i, isCurrentMonth: false, isPrevMonth: true, date: new Date(year, month - 1, prevMonthDays - i) });
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      days.push({ day, isCurrentMonth: true, isPrevMonth: false, date: new Date(year, month, day) });
+    }
+
+    let nextMonthDay = 1;
+    while (days.length < 42) {
+      days.push({ day: nextMonthDay, isCurrentMonth: false, isPrevMonth: false, date: new Date(year, month + 1, nextMonthDay) });
+      nextMonthDay++;
+    }
+
+    return days;
+  };
+
+  const isToday = (dayObj: DayObj) => dayObj.date.toDateString() === today.toDateString();
+
+  const getWeekNumber = (date: Date) => {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+  };
+
+  const goToPreviousMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+  const goToNextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+  const goToToday = () => setCurrentDate(new Date(today.getFullYear(), today.getMonth(), 1));
+
+  const days = getDaysInMonth(currentDate);
+
   return (
-    <div className="bg-white px-8 py-6 border border-gray-200 rounded-lg">
-      <FullCalendar
-        plugins={[dayGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        events={events}
-        height="500px"
-        headerToolbar={{
-          left: "prev next today",
-          center: "title",
-          right: "dayGridMonth dayGridWeek",
-        }}
-        eventContent={(eventInfo) => (
-          <div className="text-xs leading-tight rounded bg-blue-200">
-            <strong className="font-medium text-wrap">{eventInfo.event.title}</strong>
-            <div>
-              {new Date(eventInfo.event.start!).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </div>
-            {eventInfo.event.url && (
-              <a
-                href={eventInfo.event.url}
-                target="_blank"
-                rel="noreferrer"
-                className="text-blue-600 underline"
-              >
-                URL
-              </a>
-            )}
-          </div>
-        )}
-      />
+    <div className="bg-white px-8 py-6 border border-gray-200 rounded-lg w-full">
+      <div className="rounded-lg overflow-hidden bg-white">
+        <CalendarHeader
+          currentDate={currentDate}
+          goToPreviousMonth={goToPreviousMonth}
+          goToNextMonth={goToNextMonth}
+          goToToday={goToToday}
+        />
+        <WeekDays />
+        <div className="grid grid-cols-7 bg-white">
+          {days.map((dayObj, index) => (
+            <CalendarDay
+              key={index}
+              dayObj={dayObj}
+              events={events}
+              isToday={isToday}
+              getWeekNumber={getWeekNumber}
+              index={index}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
