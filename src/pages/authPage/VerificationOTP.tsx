@@ -79,8 +79,8 @@ export default function VerificationOTP() {
       <div className="flex w-full md:w-1/2 items-center justify-center p-6">
         <div className="w-full max-w-[400px] text-center border border-[#E2E8F0] p-8 rounded-[8px]">
           <h2 className="text-2xl font-semibold text-[#020617]">Verification</h2>
-          <p className="w-[325px] mx-auto text-sm font-normal text-[#71717A] leading-5 mb-6 mt-2">
-            We’ve sent a 6-digit code to <b>test@test12309u.com</b>. Enter it below.
+          <p className="w-[325px] mx-auto text-sm font-normal text-slate-500 leading-5 mb-6 mt-2">
+            We've sent a 6-digit code to <b>test@test12309u.com</b>. Enter it below.
           </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -94,7 +94,7 @@ export default function VerificationOTP() {
                   maxLength={1}
                   value={digit}
                   onChange={(e) => handleChange(e.target.value, index)}
-                  className="w-10 h-12 text-center border rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-black"
+                  className="w-10 h-12 text-center border border-slate-300 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-black"
                 />
               ))}
             </div>
@@ -105,7 +105,7 @@ export default function VerificationOTP() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-black text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-gray-800 cursor-pointer"
+              className="w-full bg-blue-main text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-blue-600 cursor-pointer"
             >
               Verify OTP
             </button>

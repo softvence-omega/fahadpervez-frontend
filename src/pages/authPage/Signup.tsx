@@ -1,19 +1,25 @@
-
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import signupImage from "../../assets/signUp/signUpImage.png";
-import logo from "../../assets/signUp/logo.png"
+import logo from "../../assets/signUp/logo.png";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 const signupSchema = z.object({
-  email: z.string().email("Invalid email format"),
+  email: z.string().nonempty("Email is required").email("Invalid email format"),
+  password: z
+    .string()
+    .nonempty("Password is required")
+    .min(6, "Password must be at least 6 characters"),
 });
 
 type SignupFormInputs = z.infer<typeof signupSchema>;
 
 const Signup = () => {
+  const [showPassword, setShowPassword] = useState(false);
   // const [preview, setPreview] = useState<string | null>(null);
   // const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -34,7 +40,7 @@ const Signup = () => {
     // formData.append("password", data.password);
 
     console.log("Signup Data:", Object.fromEntries(formData));
-    // navigate("/login");
+    navigate("/verification-otp");
   };
 
   // Google signup
@@ -70,8 +76,12 @@ const Signup = () => {
       {/* Right Side */}
       <div className="flex w-full md:w-1/2 items-center justify-center p-6">
         <div className="w-full max-w-sm">
-          <h2 className="text-2xl font-semibold text-[#09090B]">Create an account</h2>
-          <p className="text-sm font-normal text-[#71717A] leading-5 mb-6 mt-2">Enter your email below to create your account</p>
+          <h2 className="text-2xl font-semibold text-[#09090B]">
+            Create an account
+          </h2>
+          <p className="text-sm font-normal text-[#71717A] leading-5 mb-6 mt-2">
+            Enter your email below to create your account
+          </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
             {/* Email */}
@@ -87,10 +97,32 @@ const Signup = () => {
               )}
             </div>
 
+            {/* Password */}
+            <div className="relative">
+              <input
+                type={`${showPassword ? "password" : "text"}`}
+                placeholder="*****"
+                {...register("password")}
+                className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+              />
+              <div onClick={() => setShowPassword((prev) => !prev)}>
+                {showPassword ? (
+                  <Eye className="absolute top-3 right-2" />
+                ) : (
+                  <EyeOff className="absolute top-3 right-2" />
+                )}
+              </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
             {/* Sign up button */}
             <button
               type="submit"
-              className="w-full bg-black text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-gray-800 cursor-pointer"
+              className="w-full bg-blue-main text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-blue-600 cursor-pointer"
             >
               Sign up with Email
             </button>
@@ -118,8 +150,8 @@ const Signup = () => {
           <p className="text-xs text-[#71717A] font-normal mt-6 px-8 text-center">
             By clicking continue, you agree to our{" "}
             <span className="underline cursor-pointer">Terms of Service</span>{" "}
-            and{" "}
-            <span className="underline cursor-pointer">Privacy Policy</span>.
+            and <span className="underline cursor-pointer">Privacy Policy</span>
+            .
           </p>
           <p className="text-sm text-center text-gray-600 mt-4">
             Already have an account?{" "}
