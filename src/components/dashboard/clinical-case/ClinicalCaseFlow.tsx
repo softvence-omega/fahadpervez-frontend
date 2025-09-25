@@ -45,9 +45,8 @@ const ClinicalCaseFlow: React.FC<Props> = ({ clinicalCase }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 items- gap-8 mt-9">
-      <div className="col-span-3 bg-white border border-gray-300 p-6 rounded-2xl">
-        <h2 className="text-2xl font-bold mb-4">Decision Point</h2>
+    <div className="grid grid-cols-1 md:grid-cols-4 items- gap-8 my-9">
+      <div className="col-span-3">
         {/* <p className="text-gray-600 mb-6">{clinicalCase.caseDetails}</p> */}
 
         {currentStep === 1 && (
