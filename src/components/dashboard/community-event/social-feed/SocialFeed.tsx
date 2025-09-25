@@ -5,6 +5,14 @@ import PostCard from "./PostCard";
 const SocialFeed = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState("All Posts");
+  const options = [
+    "All Posts",
+    "Medical Cases",
+    "Study Tips",
+    "Questions",
+    "Resources",
+  ];
+  const [isOpen, setIsOpen] = useState(false);
 
   const posts = [
     {
@@ -56,21 +64,55 @@ const SocialFeed = () => {
             </div>
 
             {/* Filter */}
-            <div>
+            <div className="w-full relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Filter by type:
               </label>
-              <select
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
-                className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+
+              {/* Selected Box */}
+              <div
+                className="bg-white border border-gray-300 rounded-lg shadow-sm px-4 py-2 flex justify-between items-center cursor-pointer focus:ring-2 focus:ring-blue-500 transition-colors duration-200"
+                onClick={() => setIsOpen(!isOpen)}
               >
-                <option>All Posts</option>
-                <option>Medical Cases</option>
-                <option>Study Tips</option>
-                <option>Questions</option>
-                <option>Resources</option>
-              </select>
+                <span>{filterType}</span>
+                <svg
+                  className={`w-4 h-4 text-gray-400 transform transition-transform duration-200 ${
+                    isOpen ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+
+              {/* Dropdown Options */}
+              {isOpen && (
+                <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
+                  {options.map((option) => (
+                    <li
+                      key={option}
+                      onClick={() => {
+                        setFilterType(option);
+                        setIsOpen(false);
+                      }}
+                      className={`px-4 py-2 cursor-pointer hover:bg-blue-500 hover:text-white transition-colors ${
+                        option === filterType
+                          ? "bg-blue-100 text-blue-700 font-medium"
+                          : "text-gray-700"
+                      }`}
+                    >
+                      {option}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         </div>
