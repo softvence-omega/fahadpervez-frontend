@@ -25,7 +25,7 @@ export default function CreateStudyPlan() {
         <div>
             <div className="">
                 <div className="flex items-center gap-3">
-                    <Link to={'/dashboard/study-plan'} className="mb-7">
+                    <Link to={'/dashboard/smart-study'} className="mb-7">
                         <ArrowLeft /></Link>
                     <DashboardHeading
                         title="Create New Study Plan"
@@ -44,7 +44,7 @@ export default function CreateStudyPlan() {
                     }}
                     className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5x mx-auto p-6"
                 >
-                    <div className="p-6 border rounded-xl border-black/10">
+                    <div className="p-6 border rounded-xl border-black/10 bg-white">
                         <h3 className="flex items-center gap-2 text-lg font-semibold mb-2">
                             Exam Information
                         </h3>
@@ -100,7 +100,7 @@ export default function CreateStudyPlan() {
                     </div>
 
                     {/* Right side */}
-                    <div className="p-6 border rounded-xl border-black/10 flex flex-col justify-between gap-4">
+                    <div className="p-6 border rounded-xl border-black/10 flex flex-col justify-between gap-4 bg-white">
                         <h3 className="text-lg font-semibold">Topics to Cover</h3>
                         <p className="text-sm text-gray-500">
                             Select the topics you need to study for this exam

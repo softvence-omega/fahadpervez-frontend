@@ -1,44 +1,56 @@
+// src/components/MultiStepRegisterForm.tsx
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import CommonWrapper from "@/common/CommonWrapper";
-import AboutYourSelfTab from "./AboutYourSelfTab";
+import { Progress } from "@/components/ui/progress";
+import AboutYourSelfTab from "./ProfileSetupTab";
+import PreparingFor from "./PreparingFor";
 import Preferences from "./Preferences";
 import UploadProfile from "./UploadProfile";
-import PreparingFor from "./PreparingFor";
-// import Preferences from "./Preferences";
-
-const steps = [
-  { id: 1, title: "Profile setup", content: <AboutYourSelfTab /> },
-  {
-    id: 2,
-    title: "What Are you Preparing For",
-    content: <PreparingFor onBack={() => {}} onNext={() => {}} />,
-  },
-  {
-    id: 3,
-    title: "Setting your Preferences",
-    content: <Preferences />,
-  },
-  {
-    id: 4,
-    title: "Upload Your Photo",
-    content: <UploadProfile />,
-  },
-];
+import { MultiStepFormData, multiStepSchema } from "./schemas";
+// import { multiStepSchema, type MultiStepFormData } from "@/lib/schemas";
 
 export default function MultiStepRegisterForm() {
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState<number>(0);
+  const [formData, setFormData] = useState<Partial<MultiStepFormData>>({});
 
-  const handleNext = () => {
-    if (step < steps.length - 1) setStep(step + 1);
+  const stepCount = 4;
+  const progressValue = ((step + 1) / stepCount) * 100;
+
+  const handleNext = (partial: Partial<MultiStepFormData>) => {
+    // merge partial into state
+    setFormData((prev) => ({ ...prev, ...partial }));
+    setStep((s) => Math.min(s + 1, stepCount - 1));
   };
 
-  const handleBack = () => {
-    if (step > 0) setStep(step - 1);
-  };
+  const handleBack = () => setStep((s) => Math.max(0, s - 1));
 
-  const progressValue = ((step + 1) / steps.length) * 100;
+  const handleFinalSubmit = async (partial: Partial<MultiStepFormData>) => {
+    const merged = { ...formData, ...partial } as MultiStepFormData;
+
+    console.log(merged)
+    
+    // validate final merged object
+    const check = multiStepSchema.safeParse(merged);
+    if (!check.success) {
+      // send first validation error as alert — you can replace with UI error handling
+      alert(check.error.errors[0]?.message ?? "Validation failed");
+      return;
+    }
+
+    // try {
+    //   const res = await fetch("/api/register", {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify(merged),
+    //   });
+    //   if (!res.ok) throw new Error("Failed to submit");
+    //   alert("Form submitted ✅");
+    //   // optional: reset state or navigate
+    // } catch (err) {
+    //   console.error(err);
+    //   alert("Submission failed. See console for details.");
+    // }
+  };
 
   return (
     <div>
@@ -46,58 +58,47 @@ export default function MultiStepRegisterForm() {
         <CommonWrapper>
           <div className="flex items-center justify-between ">
             <div className="flex items-center gap-7">
-              <img src="/logo1.svg " className="h-16" alt="" />
+              <img src="/logo1.svg" className="h-16" alt="logo" />
               <h2 className="text-xl font-semibold ">Medical Student Hub</h2>
             </div>
             <p>
-              Step {step + 1} of {steps.length}
+              Step {step + 1} of {stepCount}
             </p>
           </div>
         </CommonWrapper>
       </div>
+
       <CommonWrapper>
         <div className="max-w-4x mx-auto mt-4">
-          {/* Progress Bar */}
-          <Progress
-            value={progressValue}
-            className="h-2 mb-6 [&>div]:bg-[#0D71CF]"
-          />
+          <Progress value={progressValue} className="h-2 mb-6 [&>div]:bg-[#0D71CF]" />
 
-          {/* Step Title */}
-          <h2 className="text-lg font-semibold mb-4 text-center">
-            {steps[step].title}
-          </h2>
-
-          {/* Step Content */}
-          <div className="min-h-[150px] flex items-center justify-center border rounded-lg p-6 mb-6">
-            {steps[step].content}
-          </div>
-
-          {/* Navigation Buttons */}
-          <div className="flex justify-between">
-            {step > 0 ? (
-              <Button
-                variant="outline"
-                onClick={handleBack}
-                className="cursor-pointer"
-              >
-                Back
-              </Button>
-            ) : (
-              <div />
+          <div className="min-h-[150px] flex items-center justify-center rounded-lg p-6 mb-6">
+            {step === 0 && (
+              <AboutYourSelfTab
+                defaultValues={formData.profile ?? undefined}
+                onNext={(profile) => handleNext({ profile })}
+              />
             )}
-
-            {step < steps.length - 1 ? (
-              <Button onClick={handleNext} className="cursor-pointer">
-                Continue
-              </Button>
-            ) : (
-              <Button
-                onClick={() => alert("Form submitted ✅")}
-                className="bg-blue-main w-3xs h-10"
-              >
-                Submit
-              </Button>
+            {step === 1 && (
+              <PreparingFor
+                defaultValues={formData.preparing ?? undefined}
+                onBack={handleBack}
+                onNext={(preparing) => handleNext({ preparing })}
+              />
+            )}
+            {step === 2 && (
+              <Preferences
+                defaultValues={formData.preferences ?? undefined}
+                onBack={handleBack}
+                onNext={(preferences) => handleNext({ preferences })}
+              />
+            )}
+            {step === 3 && (
+              <UploadProfile
+                defaultValues={formData.upload ?? undefined}
+                onBack={handleBack}
+                onNext={(upload) => handleFinalSubmit({ upload })}
+              />
             )}
           </div>
         </div>

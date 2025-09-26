@@ -9,7 +9,7 @@ export default function MyPlan() {
         <div>
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-3">
-                    <Link to={'/dashboard/study-plan'} className="mb-7">
+                    <Link to={'/dashboard/smart-study'} className="mb-7">
                         <ArrowLeft /></Link>
                     <DashboardHeading
                         title="All Study Plan"
