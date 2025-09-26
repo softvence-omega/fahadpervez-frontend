@@ -4,9 +4,9 @@ import DashboardHeading from "@/components/reusable/DashboardHeading";
 import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
-import ConnectMentorCard from "./ConnectMentorCard";
 import { useState } from "react";
 import Pagination from "@/components/reusable/Pagination";
+import MyMentorCard from "./MyMentorCard";
 
 export default function AllMentorPage() {
   const breadcrumbs: BreadcrumbItem[] = [
@@ -91,12 +91,12 @@ export default function AllMentorPage() {
         </Link>
       </div>
 
-      <div className="bg-white border border-slate-300 rounded-[12px] p-7">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div className="">
+        <div className="my-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {Array(6)
             .fill(null)
             .map(() => (
-              <ConnectMentorCard />
+              <MyMentorCard />
             ))}
         </div>
       </div>

@@ -57,8 +57,9 @@ const MyQuizAnalysisTab: React.FC = () => {
             <div>
                 <div className="flex flex-col md:flex-row gap-4">
                     {/* Left Side: Sessions List */}
-                    <div className="w-full md:w-1/4 space-y-4">
-                        <h3 className="text-lg text-gray-800 font-medium">All sessions</h3>
+                    <div className="w-full md:w-1/4 space-y-4 mt-4">
+                        <div className="">
+                            <h3 className="text-lg text-gray-800 font-medium mb-2">All sessions</h3>
                         {sessionsData.map((session) => (
                             <div
                                 key={session.id}
@@ -74,6 +75,7 @@ const MyQuizAnalysisTab: React.FC = () => {
                                 <Progress value={session.progress} className="mt-2 [&>div]:bg-green-500" />
                             </div>
                         ))}
+                        </div>
                     </div>
 
                     {/* Right Side: Session Details */}

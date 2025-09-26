@@ -132,16 +132,16 @@ const AnswerOverview = () => {
 //   );
 
   return (
-    <div className="min-h-screen bg-blue-50 p-4">
+    <div className="min-h-screen p-4">
       {/* Header */}
-      <div className="text-sm text-gray-600 mb-2">
+      {/* <div className="text-sm text-gray-600 mb-2">
         Dashboard &gt; MCOG &gt; Custom Session
       </div>
       <h1 className="text-xl font-bold mb-1">{quizData.title}</h1>
-      <p className="text-sm text-gray-600 mb-4">{quizData.description}</p>
+      <p className="text-sm text-gray-600 mb-4">{quizData.description}</p> */}
 
       {/* Main Content */}
-      <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex flex-col md:flex-row gap-4 my-10">
         {/* Sidebar */}
         <div className="w-full md:w-1/4 bg-white p-4 rounded-lg shadow">
           <h2 className="font-semibold mb-2">Study Mode</h2>

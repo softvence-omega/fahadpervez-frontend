@@ -86,7 +86,7 @@ const MentorshipPage = () => {
         <div className="flex items-center justify-between">
           <h3 className="text-slate-900 font-medium">Suggested For You</h3>
           <Link
-            to={"/dashboard/my-mentor"}
+            to={"/dashboard/all-mentor"}
             className="text-sm font-medium text-blue-main underline"
           >
             View All

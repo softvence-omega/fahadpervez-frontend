@@ -2,11 +2,20 @@ import DashboardHeading from "@/components/reusable/DashboardHeading";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import QuizCard from "./QuizCard";
+import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types";
+import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 // import QuizCard from "./QuizCard";
+
+
+const breadcrumbs: BreadcrumbItem[] = [
+  { name: "Dashboard", link: "/dashboard" },
+  { name: "Quiz Collection", link: "/dashboard/quiz-collection" },
+];
 
 export default function QuizCollection() {
     return (
-        <div>
+        <div className="md:my-6">
+            <Breadcrumb breadcrumbs={breadcrumbs} />
             <div className="flex items-center gap-3">
                 <Link to={'/dashboard/quiz-generator'} className="mb-7">
                     <ArrowLeft /></Link>
