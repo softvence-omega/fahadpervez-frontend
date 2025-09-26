@@ -1,48 +1,39 @@
-import CareerResources from "@/components/dashboard/home/CareerResources";
-import GamifiedLearning from "@/components/dashboard/home/GamifiedLearning";
-import Highlights from "@/components/dashboard/home/Highlights";
-import ClinicalCaseCard from "@/components/reusable/ClinicalCaseCard";
-import DashboardCard1 from "@/components/reusable/DashboardCard1";
-import DashboardCard2 from "@/components/reusable/DashboardCard2";
-import { CopyCheck } from "lucide-react";
-const DashboardHome = () => {
+import React from "react";
+import Header from "@/components/dashboard_new/Header";
+import OverviewSection from "@/components/dashboard_new/OverviewSection";
+import SmartStudyPlan from "@/components/dashboard_new/SmartStudyPlan";
+import DailyChallenge from "@/components/dashboard_new/DailyChallenge";
+import PerformanceBySubject from "@/components/dashboard_new/PerformanceBySubject";
+import WeeklyLeaderboard from "@/components/dashboard_new/WeeklyLeaderboard";
+import WeeklyHighlights from "@/components/dashboard_new/WeeklyHighlights";
+
+const Dashboard: React.FC = () => {
   return (
-    <div className="py-10 md:py-16">
-      {/* Daily Updates */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <DashboardCard1
-          theme="pink"
-          title="MCQ Bank"
-          tags={["Drug Card", "Pharmacology"]}
-          secondButtonTitle="Start Quiz"
-        />
-        <DashboardCard2 theme="indigo" />
-        <DashboardCard1
-          icon={CopyCheck}
-          theme="green"
-          title="Flashcards"
-          subtitle="120 card reviewed"
-          firstButtonTitle="Create Flashcard"
-          sectionTitle="Today's Flashcard Suggestions"
-          tags={["Immunology", "Pharmacology"]}
-          quizTitle="Cardiology Flashcard"
-          secondButtonTitle="View"
-        />
-      </div>
-      {/* Clinical Cases */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 my-10">
-        <ClinicalCaseCard />
-        <ClinicalCaseCard />
+    <div className="my-6 md:my-10">
+      {/* Header */}
+      <Header userName="Emma Harrison" goal="Anatomy" dailyTarget="2 hours" />
+
+      {/* Overview Section */}
+      <OverviewSection />
+
+      {/* Smart Study Plan + Daily Challenge */}
+      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <SmartStudyPlan />
+        <DailyChallenge />
       </div>
 
-      {/* Highlight of the week */}
-      <Highlights />
-      {/* Study & Career Resources */}
-      <CareerResources />
-      {/* Gamified Learning */}
-      <GamifiedLearning />
+      {/* Performance by Subject + Weekly Leaderboard */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <PerformanceBySubject />
+        <WeeklyLeaderboard />
+      </div>
+
+      {/* Highlights of the Week */}
+      <div className="mb-6">
+        <WeeklyHighlights />
+      </div>
     </div>
   );
 };
 
-export default DashboardHome;
+export default Dashboard;
