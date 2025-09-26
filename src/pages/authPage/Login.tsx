@@ -117,7 +117,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-[#0F172A] text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-blue-main text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {isSubmitting ? "Loading..." : "Login"}
             </button>
@@ -127,7 +127,7 @@ const Login = () => {
           {/* Google button */}
           <button
             onClick={handleGoogleSignup}
-            className="w-full flex items-center justify-center text-sm text-[#3F3F46] font-medium border border-[#D2D6DB] p-[8px] rounded-lg hover:bg-gray-100 mt-2"
+            className="w-full flex items-center justify-center text-sm text-[#3F3F46] font-medium border border-[#D2D6DB] p-[8px] rounded-lg hover:bg-gray-100 mt-2 cursor-pointer"
           >
             <FcGoogle className="mr-2 text-xl" />
             Google
