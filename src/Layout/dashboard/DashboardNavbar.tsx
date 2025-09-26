@@ -49,7 +49,7 @@ const DashboardNavbar = () => {
 
   const profileItems = [
     { name: "Settings", icon: Settings, href: "/dashboard/settings" },
-    { name: "Edit Profile", icon: User, href: "/dashboard/edit-profile" },
+    { name: "Profile", icon: User, href: "/dashboard/profile" },
     { name: "Help & Support", icon: HelpCircle, href: "/dashboard/help" },
     { name: "Logout", icon: LogOut, href: "#" },
   ];

@@ -44,7 +44,9 @@ import MyMentorPage from "@/components/dashboard/community-event/mentor/MyMentor
 import MentorProfile from "@/components/dashboard/community-event/mentor/MentorProfile";
 import BookingPage from "@/components/dashboard/community-event/mentor/BookingPage";
 import GroupDetails from "@/components/dashboard/community-event/study-group-page/GroupDetails";
-
+import Profile from "@/pages/profile/Profile";
+import Settings from "@/pages/profile/Settings";
+import Help from "@/pages/profile/Help";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -227,6 +229,19 @@ const dashboardRoutes = {
       path: "edit-student-profile",
       element: <EditStudentProfile />,
     },
+    {
+      path: "settings",
+      element: <Settings />,
+    },
+    {
+      path: "profile",
+      element: <Profile />,
+    },
+    {
+      path: "help",
+      element: <Help />,
+    },
+    {},
   ],
 };
 

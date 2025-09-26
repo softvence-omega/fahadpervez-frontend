@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Link as ScrollLink } from "react-scroll";
 import CommonWrapper from "@/common/CommonWrapper";
 import { Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,12 +46,12 @@ const Navbar: React.FC = () => {
 
             {/* Right Side Buttons */}
             <div className="hidden md:flex space-x-4">
-              <button className="bg-white px-4 py-2 rounded-[6px] text-[#0058B8] font-medium cursor-pointer">
+              <Link to="/signup" className="bg-white px-4 py-2 rounded-[6px] text-[#0058B8] font-medium cursor-pointer">
                 Registration
-              </button>
-              <button className="text-white px-8 py-2 rounded-[6px] bg-[#0058B8] font-medium cursor-pointer">
+              </Link>
+              <Link to="/login" className="text-white px-8 py-2 rounded-[6px] bg-[#0058B8] font-medium cursor-pointer">
                 Login
-              </button>
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
