@@ -1,7 +1,8 @@
 import { useState } from "react";
 import Switch from "./Switch";
+import { NotificationSettingsProps } from "./types";
 
-const NotificationSettings = ({ notifications }) => {
+const NotificationSettings = ({ notifications }: NotificationSettingsProps) => {
   const [notificationPrefs, setNotificationPrefs] = useState({
     emailNotifications: true,
     pushNotifications: true,

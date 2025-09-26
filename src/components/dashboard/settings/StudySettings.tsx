@@ -1,7 +1,8 @@
 import Select from "./Select";
 import Switch from "./Switch";
+import { StudySettingsProps } from "./types";
 
-const StudySettings = ({ userData, onUserDataChange }) => {
+const StudySettings = ({ userData, onUserDataChange }: StudySettingsProps) => {
   const studyGoalOptions = [
     { value: "01 Hours", label: "01 Hours" },
     { value: "02 Hours", label: "02 Hours" },

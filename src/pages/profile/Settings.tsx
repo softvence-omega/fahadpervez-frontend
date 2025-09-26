@@ -1,19 +1,5 @@
-import React, { useState, useEffect } from "react";
-import {
-  ChevronRight,
-  Home,
-  User,
-  Bell,
-  CreditCard,
-  Shield,
-  BookOpen,
-  Brain,
-  Target,
-  Clock,
-  Smartphone,
-  Monitor,
-  Tablet,
-} from "lucide-react";
+import { useState } from "react";
+import { User, Bell, CreditCard, Shield, BookOpen } from "lucide-react";
 import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import StudySettings from "@/components/dashboard/settings/StudySettings";
@@ -92,20 +78,20 @@ export default function SettingsDashboard() {
     const Component = activeTabData.component;
 
     if (activeTab === "Study Settings") {
-      return <Component userData={userData} onUserDataChange={setUserData} />;
+      return <Component userData={userData} onUserDataChange={setUserData} notifications={undefined} paymentMethods={undefined} />;
     } else if (activeTab === "Notification Setting") {
-      return <Component notifications={mockNotifications} />;
+      return <Component notifications={mockNotifications} userData={undefined} onUserDataChange={undefined} paymentMethods={undefined} />;
     } else if (activeTab === "Payment Setting") {
-      return <Component paymentMethods={mockPaymentMethods} />;
+      return <Component paymentMethods={mockPaymentMethods} userData={undefined} onUserDataChange={undefined} notifications={undefined} />;
     } else {
-      return <Component />;
+      return <Component userData={undefined} onUserDataChange={undefined} notifications={undefined} paymentMethods={undefined} />;
     }
   };
 
-   const breadcrumbs: BreadcrumbItem[] = [
-      { name: "Dashboard", link: "/dashboard" },
-      { name: "Community & Event", link: "/dashboard/community-event" },
-    ];
+  const breadcrumbs: BreadcrumbItem[] = [
+    { name: "Dashboard", link: "/dashboard" },
+    { name: "Community & Event", link: "/dashboard/community-event" },
+  ];
 
   return (
     <div className="my-6 md:my-10">
