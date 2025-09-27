@@ -1,21 +1,21 @@
 import { useState } from "react";
 import {
+  BadgeHelp,
   Clock12,
   Languages,
-  Link,
+  Link as LinkIcon,
   MapPin,
-  Search,
   Star,
   Video,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
-import SessionCard from "./SessionCard";
 import { ConnectionRequestModal } from "./ConnectionRequestModal";
 import { SessionSelectionModal } from "./SessionSelectionModal";
 import { BreadcrumbItem } from "../../gamified-learning/types";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
+import { Link } from "react-router-dom";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { name: "Dashboard", link: "/dashboard" },
@@ -73,56 +73,56 @@ export default function MentorProfile() {
             </span>
           </div>
           <div className="flex flex-col md:flex-row gap-3">
-            <Button
+            {/* <Button
               onClick={() => setIsModalOpen(true)}
               className="px-6 py-2 bg-white border rounded-lg text-blue-700 font-medium hover:bg-blue-50 mb-7 cursor-pointer"
             >
               <Link />
               Connect
-            </Button>
-            <Button
-              onClick={() => setActiveModal("session")}
-              className="px-6 py-2 bg-white border rounded-lg text-blue-700 font-medium hover:bg-blue-50 mb-7 cursor-pointer"
-            >
-              <Link />
-              Book For Session
-            </Button>
+            </Button> */}
           </div>
         </div>
 
         <div className="p-6">
-          <div className="flex items-center justify-between">
+          <div className="md:flex items-center justify-between">
             {/* Profile Header */}
             <div className="max-w-lg flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-              <div className="flex gap-4">
-                <div>
-                  <h1 className="text-2xl text-[#0F172A] font-semibold mt-2">
-                    Mohammad Essayed
-                  </h1>
-                  <p className="text-[#0F172A] font-medium mb-1">
-                    Medical Consultant- Preventive & Clinical Care
+              <div>
+                <h1 className="text-2xl text-[#0F172A] font-semibold mt-2">
+                  Mohammad Essayed
+                </h1>
+                <p className="text-[#0F172A] font-medium mb-1">
+                  Medical Consultant- Preventive & Clinical Care
+                </p>
+
+                <Button
+                  onClick={() => setActiveModal("session")}
+                  className="bg-white border rounded text-blue-main font-medium hover:bg-blue-50 my-1 cursor-pointer"
+                >
+                  <LinkIcon />
+                  Book For Session
+                </Button>
+
+                <p className="text-[#118577] hover:underline mb-5">
+                  I'll help you step confidently into the field of Medical
+                  Consultant, sharing over 12 years of real-world experience
+                </p>
+                <div className="mt-3 text-sm text-gray-600 space-y-3">
+                  <p className="flex items-center gap-2 text-[#475569]">
+                    <MapPin className="w-5 h-5 text-emerald-600" /> Poland
                   </p>
-                  <p className="text-[#118577] hover:underline mb-5">
-                    I'll help you step confidently into the field of Medical
-                    Consultant, sharing over 12 years of real-world experience
+                  <p className="flex items-center gap-2 text-[#475569]">
+                    <Languages className="w-5 h-5 text-emerald-600" /> Speaks
+                    English and Arabic
                   </p>
-                  <div className="mt-3 text-sm text-gray-600 space-y-3">
-                    <p className="flex items-center gap-2 text-[#475569]">
-                      <MapPin className="w-5 h-5 text-emerald-600" /> Poland
-                    </p>
-                    <p className="flex items-center gap-2 text-[#475569]">
-                      <Languages className="w-5 h-5 text-emerald-600" /> Speaks
-                      English and Arabic
-                    </p>
-                    <p className="flex items-center gap-2 text-[#475569]">
-                      <Star className="w-5 h-5 text-emerald-600" />
-                      5.0 (60 reviews)
-                    </p>
-                    <p className="flex items-center gap-2 text-[#475569]">
-                      <Clock12 className="w-5 h-5 text-emerald-600" />
-                      Active today
-                    </p>
-                  </div>
+                  <p className="flex items-center gap-2 text-[#475569]">
+                    <Star className="w-5 h-5 text-emerald-600" />
+                    5.0 (60 reviews)
+                  </p>
+                  <p className="flex items-center gap-2 text-[#475569]">
+                    <Clock12 className="w-5 h-5 text-emerald-600" />
+                    Active today
+                  </p>
                 </div>
               </div>
             </div>
@@ -147,7 +147,7 @@ export default function MentorProfile() {
           </div>
 
           {/* About Section */}
-          <div className="mt-10">
+          {/* <div className="mt-10">
             <h2 className="text-xl text-[#0F172A] font-semibold mb-5">About</h2>
             <p className="leading-relaxed ">
               In a field as dynamic and critical as information security, your
@@ -158,10 +158,10 @@ export default function MentorProfile() {
               information security, I'm here to guide, inspire, and elevate your
               career to new heights.
             </p>
-          </div>
+          </div> */}
 
           {/* Testimonials */}
-          <div className="mt-12">
+          {/* <div className="mt-12">
             <h2 className="text-xl text-[#0F172A] font-semibold mb-6">
               What mentees say
             </h2>
@@ -185,46 +185,42 @@ export default function MentorProfile() {
               Muhammad is a great mentor, he walked me through the real skills
               you need to know to be job ready. Very much recommended.
             </p>
-          </div>
+          </div> */}
 
-          {/* Bottom Skills */}
-          {/* <div className="mt-8">
-          <h2 className="text-lg font-semibold">Skills</h2>
-          <div className="flex flex-wrap gap-2 mt-3">
-            {skills.map((skill, idx) => (
-              <span
-                key={idx}
-                className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
+          {/* Asked Question Section */}
+          <div className="my-10">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg text-[#0F172A]  font-medium">
+                Asked Question
+              </h3>
+              <Link
+                to={"/dashboard/my-mentor"}
+                className="text-sm font-semibold text-blue-main underline"
               >
-                {skill}
-              </span>
-            ))}
-          </div>
-        </div> */}
-
-          <div className="border border-[#0000001A] p-7 rounded-[8px] my-10">
-            <div className="flex flex-col md:flex-row justify-between items-center mb-10 text-center md:text-left gap-6">
-              <div>
-                <DashboardHeading
-                  title="Recorded Session"
-                  titleSize="text-xl"
-                  titleColor="text-[#0A0A0A]"
-                  description="Access your recorded study sessions, mentorship calls, and educational content"
-                  descColor="text-[#4A5565]"
-                  descFont="text-sm"
-                />
-              </div>
-              <PrimaryButton
-                icon={<Video className="w-4 h-4" />}
-                iconPosition="left"
-                className="bg-white text-slate-800 border border-slate-300 cursor-pointer"
-              >
-                6 Recordings
-              </PrimaryButton>
+                View All
+              </Link>
             </div>
+            <div className="border border-[#0000001A] p-4 rounded-[8px]">
+              <div className="flex flex-col md:flex-row justify-between items-center mb-3 text-center md:text-left gap-6">
+                <div>
+                  <DashboardHeading
+                    title="Your Asked Question"
+                    titleSize="text-base"
+                    titleFont="font-normal"
+                    titleColor="text-[#0A0A0A]"
+                    description="Access your Question sessions, for getting your answer"
+                    descColor="text-[#717182]"
+                    descFont="text-sm"
+                    className="space-y-2"
+                  />
+                </div>
+                <p className="flex items-center gap-1 text-slate-800 cursor-pointer">
+                  <BadgeHelp className="w-4 h-4" />6 Question
+                </p>
+              </div>
 
-            <div className="flex items-center gap-6">
-              {/* Search Input with Icon */}
+              {/* <div className="flex items-center gap-6">
+              {/* Search Input with Icon
               <div className="relative">
                 <input
                   type="text"
@@ -234,22 +230,80 @@ export default function MentorProfile() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
               </div>
 
-              {/* Dropdown */}
+              {/* Dropdown 
               <select className="h-10 px-4 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
                 <option value="all">All</option>
                 <option value="new">New</option>
                 <option value="watched">Watched</option>
               </select>
+            </div> */}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {/* Completed Session Section*/}
+          <div className="my-10">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg text-[#0F172A]  font-medium">
+                Completed Session
+              </h3>
+              <Link
+                to={"/dashboard/my-mentor"}
+                className="text-sm font-semibold text-blue-main underline"
+              >
+                View All
+              </Link>
+            </div>
+            <div className="border border-[#0000001A] p-4 rounded-[8px]">
+              <div className="flex flex-col md:flex-row justify-between items-center mb-3 text-center md:text-left gap-6">
+                <div>
+                  <DashboardHeading
+                    title="Recorded Session"
+                    titleSize="text-base"
+                    titleFont="font-normal"
+                    titleColor="text-[#0A0A0A]"
+                    description="Access your recorded study sessions, mentorship calls, and educational content"
+                    descColor="text-[#4A5565]"
+                    descFont="text-sm"
+                    className="space-y-2"
+                  />
+                </div>
+                <PrimaryButton
+                  icon={<Video className="w-4 h-4" />}
+                  iconPosition="left"
+                  className="bg-white text-slate-800 border border-slate-300 cursor-pointer"
+                >
+                  6 Recordings
+                </PrimaryButton>
+              </div>
+
+              {/* <div className="flex items-center gap-6">
+              {/* Search Input with Icon
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search by title, instructor, or tags..."
+                  className="w-full md:w-[450px] h-10 pl-10 pr-4 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
+              </div>
+
+              {/* Dropdown 
+              <select className="h-10 px-4 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                <option value="all">All</option>
+                <option value="new">New</option>
+                <option value="watched">Watched</option>
+              </select>
+            </div> */}
+            </div>
+          </div>
+
+          {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {Array(4)
               .fill(null)
               .map(() => (
                 <SessionCard />
               ))}
-          </div>
+          </div> */}
         </div>
 
         <ConnectionRequestModal

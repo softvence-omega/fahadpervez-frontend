@@ -11,6 +11,7 @@ import MyMentorCard from "./MyMentorCard";
 export default function AllMentorPage() {
   const breadcrumbs: BreadcrumbItem[] = [
     { name: "Dashboard", link: "/dashboard" },
+    { name: "Mentor", link: "/dashboard/mentorship" },
     { name: "All Mentor", link: "/dashboard/all-mentor" },
   ];
 

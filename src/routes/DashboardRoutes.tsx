@@ -47,6 +47,9 @@ import GroupDetails from "@/components/dashboard/community-event/study-group-pag
 import Profile from "@/pages/profile/Profile";
 import Settings from "@/pages/profile/Settings";
 import Help from "@/pages/profile/Help";
+import MentorshipPage from "@/components/dashboard/community-event/MentorshipPage";
+import AskQuestion from "@/components/dashboard/community-event/mentor/AskQuestion";
+import MySession from "@/components/dashboard/community-event/mentor/MySession";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -65,20 +68,8 @@ const dashboardRoutes = {
       element: <AllCommunities />,
     },
     {
-      path: "mentor-profile",
-      element: <MentorProfile />,
-    },
-    {
-      path: "confirm-booking",
-      element: <BookingPage />,
-    },
-    {
-      path: "group-details",
-      element: <GroupDetails />,
-    },
-    {
-      path: "create-new-discussion",
-      element: <CreateNewDiscussion />,
+      path: "mentorship",
+      element: <MentorshipPage />,
     },
     {
       path: "my-mentor",
@@ -88,6 +79,31 @@ const dashboardRoutes = {
       path: "all-mentor",
       element: <AllMentorPage />,
     },
+    {
+      path: "mentor-profile/:id",
+      element: <MentorProfile />,
+    },
+    {
+      path: "ask-question",
+      element: <AskQuestion />,
+    },
+    {
+      path: "confirm-booking",
+      element: <BookingPage />,
+    },
+    {
+      path: "my-session",
+      element: <MySession />,
+    },
+    {
+      path: "group-details",
+      element: <GroupDetails />,
+    },
+    {
+      path: "create-new-discussion",
+      element: <CreateNewDiscussion />,
+    },
+
     {
       path: "ai-tutor",
       element: <AITutor />,
