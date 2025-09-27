@@ -6,6 +6,7 @@ import DailyChallenge from "@/components/dashboard_new/DailyChallenge";
 import PerformanceBySubject from "@/components/dashboard_new/PerformanceBySubject";
 import WeeklyLeaderboard from "@/components/dashboard_new/WeeklyLeaderboard";
 import WeeklyHighlights from "@/components/dashboard_new/WeeklyHighlights";
+// import ChatInterface from "@/components/dashboard_new/message";
 
 const Dashboard: React.FC = () => {
   return (

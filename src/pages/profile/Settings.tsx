@@ -1,19 +1,5 @@
-import React, { useState, useEffect } from "react";
-import {
-  ChevronRight,
-  Home,
-  User,
-  Bell,
-  CreditCard,
-  Shield,
-  BookOpen,
-  Brain,
-  Target,
-  Clock,
-  Smartphone,
-  Monitor,
-  Tablet,
-} from "lucide-react";
+import { useState } from "react";
+import { User, Bell, CreditCard, Shield, BookOpen } from "lucide-react";
 import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import StudySettings from "@/components/dashboard/settings/StudySettings";
@@ -32,6 +18,9 @@ const mockUserData = {
   totalStudyTime: "127 Hours",
   completedCourses: 8,
   currentLevel: "Intermediate",
+  aiAssistant: true,
+  adaptiveDifficulty: false,
+  recommendations: true,
 };
 
 const mockNotifications = [
@@ -69,11 +58,17 @@ const mockPaymentMethods = [
   },
 ];
 
+type TabConfig = {
+  name: string;
+  icon: React.ElementType;
+  component: React.ComponentType<any>; // accept different props
+};
+
 export default function SettingsDashboard() {
   const [activeTab, setActiveTab] = useState("Study Settings");
   const [userData, setUserData] = useState(mockUserData);
 
-  const tabs = [
+  const tabs: TabConfig[] = [
     { name: "Study Settings", icon: BookOpen, component: StudySettings },
     {
       name: "Notification Setting",
@@ -102,10 +97,10 @@ export default function SettingsDashboard() {
     }
   };
 
-   const breadcrumbs: BreadcrumbItem[] = [
-      { name: "Dashboard", link: "/dashboard" },
-      { name: "Community & Event", link: "/dashboard/community-event" },
-    ];
+  const breadcrumbs: BreadcrumbItem[] = [
+    { name: "Dashboard", link: "/dashboard" },
+    { name: "Community & Event", link: "/dashboard/community-event" },
+  ];
 
   return (
     <div className="my-6 md:my-10">

@@ -25,8 +25,8 @@ const OverviewCard: React.FC<OverviewCardProps> = ({ icon, title, subtitle, stat
         <div className="grid grid-cols-3 gap-4 text-sm">
           {stats.map((s, i) => (
             <div key={i}>
-              <div className="font-semibold text-gray-900">{s.value}</div>
-              <div className="text-gray-600">{s.label}</div>
+              <div className="font-semibold text-gray-900 text-nowrap text-center">{s.value}</div>
+              <div className="text-gray-600 text-nowrap text-center">{s.label}</div>
             </div>
           ))}
         </div>

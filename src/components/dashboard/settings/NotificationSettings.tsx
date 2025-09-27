@@ -1,7 +1,8 @@
 import { useState } from "react";
 import Switch from "./Switch";
+import { NotificationSettingsProps } from "./types";
 
-const NotificationSettings = ({ notifications }) => {
+const NotificationSettings = ({ notifications }: NotificationSettingsProps) => {
   const [notificationPrefs, setNotificationPrefs] = useState({
     emailNotifications: true,
     pushNotifications: true,
@@ -18,7 +19,7 @@ const NotificationSettings = ({ notifications }) => {
           Recent Notifications
         </h3>
         <div className="space-y-3">
-          {notifications.slice(0, 3).map((notification) => (
+          {notifications?.slice(0, 3).map((notification) => (
             <div
               key={notification.id}
               className={`p-3 rounded-md border ${
