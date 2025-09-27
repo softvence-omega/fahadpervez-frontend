@@ -6,7 +6,7 @@ import DailyChallenge from "@/components/dashboard_new/DailyChallenge";
 import PerformanceBySubject from "@/components/dashboard_new/PerformanceBySubject";
 import WeeklyLeaderboard from "@/components/dashboard_new/WeeklyLeaderboard";
 import WeeklyHighlights from "@/components/dashboard_new/WeeklyHighlights";
-import ChatInterface from "@/components/dashboard_new/message";
+// import ChatInterface from "@/components/dashboard_new/message";
 
 const Dashboard: React.FC = () => {
   return (
@@ -32,10 +32,6 @@ const Dashboard: React.FC = () => {
       {/* Highlights of the Week */}
       <div className="mb-6">
         <WeeklyHighlights />
-      </div>
-      {/* Chat Interface */}
-      <div className="mb-6">
-        <ChatInterface />
       </div>
     </div>
   );
