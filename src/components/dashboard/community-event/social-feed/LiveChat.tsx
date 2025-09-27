@@ -333,7 +333,6 @@
 import { useState } from "react";
 import {
   Search,
-
   MoreHorizontal,
   Send,
   Paperclip,
@@ -342,7 +341,6 @@ import {
   ThumbsUp,
   Menu,
   X,
-
 } from "lucide-react";
 
 const LiveChat = () => {
@@ -513,42 +511,8 @@ const LiveChat = () => {
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
       `}
       >
-        {/* Sidebar Header */}
-        <div className="p-3 sm:p-4 border-b border-gray-200">
-          <div className="flex items-center justify-between mb-4 lg:hidden">
-            <h2 className="text-lg font-semibold text-gray-900">Chat Rooms</h2>
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="p-2 hover:bg-gray-100 rounded-lg"
-            >
-              <X size={20} />
-            </button>
-          </div>
-
-          <div className="flex space-x-2 sm:space-x-4 mb-4">
-            <button
-              onClick={() => setActiveTab("Rooms")}
-              className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-md transition-colors ${
-                activeTab === "Rooms"
-                  ? "text-white bg-blue-600"
-                  : "text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              Rooms
-            </button>
-            <button
-              onClick={() => setActiveTab("Messages")}
-              className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-md transition-colors ${
-                activeTab === "Messages"
-                  ? "text-white bg-blue-600"
-                  : "text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              Messages
-            </button>
-          </div>
-
-          {/* Search */}
+        {/* Search */}
+        <div className="grid gap-4 p-3 sm:p-4">
           <div className="relative">
             <Search
               className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -559,6 +523,43 @@ const LiveChat = () => {
               placeholder="Search chats..."
               className="w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
+          </div>
+          {/* Sidebar Header */}
+          <div className=" border-b border-gray-200">
+            <div className="flex items-center justify-between mb-4 lg:hidden">
+              <h2 className="text-lg font-semibold text-gray-900">
+                Chat Rooms
+              </h2>
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="flex space-x-2 sm:space-x-4 mb-4">
+              <button
+                onClick={() => setActiveTab("Rooms")}
+                className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-md transition-colors ${
+                  activeTab === "Rooms"
+                    ? "text-white bg-blue-600"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                Rooms
+              </button>
+              <button
+                onClick={() => setActiveTab("Messages")}
+                className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-md transition-colors ${
+                  activeTab === "Messages"
+                    ? "text-white bg-blue-600"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                Messages
+              </button>
+            </div>
           </div>
         </div>
 
