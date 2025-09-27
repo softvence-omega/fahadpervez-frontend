@@ -8,6 +8,9 @@ export interface UserData {
   totalStudyTime: string;
   completedCourses: number;
   currentLevel: string;
+  aiAssistant: boolean;
+  adaptiveDifficulty: boolean;
+  recommendations: boolean;
 }
 
 export interface Notification {
@@ -19,11 +22,11 @@ export interface Notification {
 }
 
 export interface PaymentMethod {
-  id: number;
+  id: string;
   type: string;
   last4: string;
   expiry: string;
-  isDefault: boolean;
+  isDefault?: boolean;
 }
 
 // Each settings component props
@@ -33,11 +36,11 @@ export interface StudySettingsProps {
 }
 
 export interface NotificationSettingsProps {
-  notifications: Notification[];
+  notifications?: Notification[];
 }
 
 export interface PaymentSettingsProps {
-  paymentMethods: PaymentMethod[];
+  paymentMethods: PaymentMethod[]; // required
 }
 
 export interface PrivacySettingsProps {}

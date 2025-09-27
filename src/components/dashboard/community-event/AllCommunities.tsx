@@ -6,7 +6,7 @@ import { BreadcrumbItem } from "../gamified-learning/types";
 import EventPage from "./EventPage";
 import StudyGroupPage from "./study-group-page/StudyGroupPage";
 import SocialFeedPage from "./SocialFeedPage";
-import MentorshipPage from "./MentorshipPage";
+// import MentorshipPage from "./MentorshipPage";
 import ForumsPage from "./ForumsPage";
 import MessagesPage from "./messages/MessagesPage";
 
