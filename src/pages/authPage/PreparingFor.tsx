@@ -32,7 +32,8 @@ export default function PreparingFor({ onNext, onBack, defaultValues }: Props) {
   const handleNext = () => {
     const result = preparingForSchema.safeParse({ exams: selected });
     if (!result.success) {
-      alert(result.error.errors[0].message);
+      // alert(result.error.errors[0].message);
+        alert( "Validation failed");
       return;
     }
     onNext({ exams: selected });
