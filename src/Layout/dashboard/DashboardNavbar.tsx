@@ -43,6 +43,7 @@ const DashboardNavbar = () => {
     { name: "OSCE / Clinical Skills Lab", href: "/dashboard/osce" },
     { name: "Drug Cards/Pharmacology", href: "/dashboard/drug-cards" },
     { name: "CME/CPD Courses", href: "/dashboard/courses" },
+    { name: "Mentorship", href: "/dashboard/mentorship" },
     { name: "Download Notes", href: "/dashboard/download-notes" },
     { name: "Resources", href: "/dashboard/resources" },
   ];

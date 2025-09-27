@@ -9,7 +9,7 @@ import { useState } from "react";
 export default function MyMentorPage() {
   const breadcrumbs: BreadcrumbItem[] = [
     { name: "Dashboard", link: "/dashboard" },
-    { name: "Mentor", link: "/dashboard/all-communities" },
+    { name: "Mentor", link: "/dashboard/mentorship" },
     { name: "My Mentor", link: "/dashboard/my-mentor" },
   ];
 

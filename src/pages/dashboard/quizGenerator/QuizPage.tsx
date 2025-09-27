@@ -45,7 +45,7 @@ const QuizPage = () => {
                 <div>
                     <div>
                         {/* Tab Buttons */}
-                        <div className="flex gap-4 my-6 md:my-8">
+                        <div className="flex gap-4 my-2">
                             {tabs.map((tab) => (
                                 <button
                                     key={tab.id}

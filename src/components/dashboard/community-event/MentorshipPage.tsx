@@ -1,13 +1,18 @@
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import MyMentorCard from "./mentor/MyMentorCard";
-import { useState } from "react";
-import FindMentorModal from "./mentor/FindMentorModal";
 import { Link } from "react-router-dom";
+import { BreadcrumbItem } from "../gamified-learning/types";
+import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
+
+const breadcrumbs: BreadcrumbItem[] = [
+  { name: "Dashboard", link: "/dashboard" },
+  { name: "Mentors", link: "/dashboard/mentorship" },
+];
 
 const MentorshipPage = () => {
-  const [open, setOpen] = useState(false);
   return (
-    <div>
+    <div className="mt-6 mb-16">
+      <Breadcrumb breadcrumbs={breadcrumbs} />
       <div>
         <div className="flex flex-col md:flex-row justify-between items-center mb-10 text-center md:text-left gap-6">
           <div>
@@ -21,7 +26,7 @@ const MentorshipPage = () => {
             />
           </div>
           <Link
-            to={"/dashboard/my-mentor"}
+            to={"/dashboard/my-session"}
             className="text-sm font-medium text-blue-main underline"
           >
             View All
@@ -43,12 +48,12 @@ const MentorshipPage = () => {
         </div>
       </div>
 
-      <div className="pt-5 px-8 pb-7">
+      <div className="mt-16 mb-7">
         <div className="flex items-center justify-between">
-          <h3 className="text-slate-900 font-medium">My Mentor</h3>
+          <h3 className="text-xl text-[#111827]  font-semibold">My Mentor</h3>
           <Link
             to={"/dashboard/my-mentor"}
-            className="text-sm font-medium text-blue-main underline"
+            className="text-sm font-semibold text-blue-main underline"
           >
             View All
           </Link>
@@ -82,12 +87,14 @@ const MentorshipPage = () => {
         </div> */}
       </div>
 
-      <div className="pt-5 px-8 pb-7">
+      <div className="mt-16 mb-7">
         <div className="flex items-center justify-between">
-          <h3 className="text-slate-900 font-medium">Suggested For You</h3>
+          <h3 className="text-xl text-[#111827]  font-semibold">
+            Suggested For You
+          </h3>
           <Link
-            to={"/dashboard/my-mentor"}
-            className="text-sm font-medium text-blue-main underline"
+            to={"/dashboard/all-mentor"}
+            className="text-sm font-semibold text-blue-main underline"
           >
             View All
           </Link>
@@ -101,8 +108,6 @@ const MentorshipPage = () => {
             ))}
         </div>
       </div>
-
-      <FindMentorModal open={open} setOpen={setOpen} />
     </div>
   );
 };

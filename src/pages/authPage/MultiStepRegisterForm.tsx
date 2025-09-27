@@ -33,7 +33,9 @@ export default function MultiStepRegisterForm() {
     const check = multiStepSchema.safeParse(merged);
     if (!check.success) {
       // send first validation error as alert — you can replace with UI error handling
-      alert(check.error.errors[0]?.message ?? "Validation failed");
+      // alert(check?.error?.errors[0]?.message ??  "Validation failed");
+      alert( "Validation failed");
+
       return;
     }
 

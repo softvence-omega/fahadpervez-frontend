@@ -35,22 +35,22 @@ export default function WeeklyPlan() {
         {
             day: "MON",
             sessions: [
-                { id: "1", title: "Esophageal Disorders", time: "9:00–10:00", type: "MCQs", duration: "1h", status: "complete" },
-                { id: "2", title: "Gastric & Duodenal Diseases", time: "10:30–12:30", type: "Notes Review", duration: "2h", status: "complete" },
+                { id: "1", title: "Esophageal Disorders", time: "9:00 - 10:00", type: "MCQs", duration: "1h", status: "complete" },
+                { id: "2", title: "Gastric & Duodenal Diseases", time: "10:30 - 12:30", type: "Notes Review", duration: "2h", status: "complete" },
             ],
         },
         {
             day: "TUE",
             sessions: [
-                { id: "3", title: "Esophageal Disorders", time: "9:00–10:00", type: "MCQs", duration: "1h", status: "missed" },
-                { id: "4", title: "Gastric & Duodenal Diseases", time: "10:30–12:30", type: "Notes Review", duration: "2h", status: "missed" },
+                { id: "3", title: "Esophageal Disorders", time: "9:00 - 10:00", type: "MCQs", duration: "1h", status: "missed" },
+                { id: "4", title: "Gastric & Duodenal Diseases", time: "10:30 - 12:30", type: "Notes Review", duration: "2h", status: "missed" },
             ],
         },
         {
             day: "WED",
             sessions: [
-                { id: "5", title: "Esophageal Disorders", time: "9:00–10:00", type: "MCQs", duration: "1h", status: "pending" },
-                { id: "6", title: "Gastric & Duodenal Diseases", time: "10:30–12:30", type: "Notes Review", duration: "2h", status: "pending" },
+                { id: "5", title: "Esophageal Disorders", time: "9:00 - 10:00", type: "MCQs", duration: "1h", status: "pending" },
+                { id: "6", title: "Gastric & Duodenal Diseases", time: "10:30 - 12:30", type: "Notes Review", duration: "2h", status: "pending" },
             ],
         },
     ];
@@ -183,28 +183,28 @@ export default function WeeklyPlan() {
                                 <CardHeader><CardTitle className="text-yellow-900">Targeted MCQs</CardTitle></CardHeader>
                                 <CardContent>
                                     <p className="text-sm text-[#CA8A04] mb-2">Focus quiz on Gastric & Duodenal Pathology MCQs</p>
-                                    <Button size="sm" className="text-yellow-600 bg-white">Start Quiz</Button>
+                                    <Button size="sm" className="text-yellow-600 bg-white cursor-pointer">Start Quiz</Button>
                                 </CardContent>
                             </Card>
                             <Card className="border-blue-300 bg-[#BFDBFE]">
                                 <CardHeader><CardTitle className="text-blue-700">Clinical Case</CardTitle></CardHeader>
                                 <CardContent>
                                     <p className="text-sm text-[#1D4ED8] mb-2">Patient with Chronic Dyspepsia case study</p>
-                                    <Button variant="outline" size="sm" className="text-[#2563EB]">View Case</Button>
+                                    <Button variant="outline" size="sm" className="text-[#2563EB] cursor-pointer">View Case</Button>
                                 </CardContent>
                             </Card>
                             <Card className="border-green-300 bg-[#BBF7D0]">
                                 <CardHeader><CardTitle className="text-green-700">Download Notes</CardTitle></CardHeader>
                                 <CardContent>
                                     <p className="text-sm text-[#15803D] mb-2">Pharmacological Management of Acid-Peptic Disorders</p>
-                                    <Button variant="outline" size="sm" className="text-[#16A34A]">Download</Button>
+                                    <Button variant="outline" size="sm" className="text-[#16A34A] cursor-pointer">Download</Button>
                                 </CardContent>
                             </Card>
                             <Card className="border-purple-300 bg-[#E9D5FF]">
                                 <CardHeader><CardTitle className="text-purple-700">AI Tutor</CardTitle></CardHeader>
                                 <CardContent>
                                     <p className="text-sm text-[#7E22CE] mb-2">Quick clarification on PPI mechanisms?</p>
-                                    <Button variant="outline" size="sm" className="text-[#9333EA]">Chat Now</Button>
+                                    <Button variant="outline" size="sm" className="text-[#9333EA] cursor-pointer">Chat Now</Button>
                                 </CardContent>
                             </Card>
                         </div>
