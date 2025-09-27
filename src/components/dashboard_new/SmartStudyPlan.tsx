@@ -54,50 +54,58 @@ const SmartStudyPlan: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {demoStudyPlan.map((plan, i) => (
-          <div key={i} className="border border-gray-200 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-3">
-              {plan.labels.map((label, idx) => (
-                <span
-                  key={idx}
-                  className={`${plan.color} flex-nowrap px-2 py-1 rounded text-xs font-medium`}
-                >
-                  {label}
-                </span>
-              ))}
-            </div>
-            <h5 className="font-semibold text-gray-900 mb-3">{plan.title}</h5>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 text-sm text-gray-600 mb-4">
-              {plan.duration && (
-                <span className="flex items-center gap-1 text-nowrap text-sm sm:text-base">
-                  <Clock className="w-4 h-4" />
-                  Est. {plan.duration}
-                </span>
-              )}
-              {plan.type === "Quiz" && (
-                <span className="flex items-center gap-1 text-nowrap text-sm sm:text-base">
-                  <BookOpen className="w-4 h-4" />
-                  {plan.questions} Questions
-                </span>
-              )}
-              {plan.type === "Flashcard" && (
-                <span className="flex items-center gap-1 text-nowrap text-sm sm:text-base">
-                  <RotateCcw className="w-4 h-4" />
-                  {plan.questions} Flashcards
-                </span>
-              )}
-            </div>
-            <button className="w-full bg-gray-800 text-white py-2.5 rounded-lg font-medium hover:bg-gray-700 transition-colors flex items-center justify-center gap-2">
-              {plan.type === "Flashcard" ? (
-                <RotateCcw className="w-4 h-4" />
-              ) : (
-                <span className="text-sm">▶</span>
-              )}{" "}
-              {plan.buttonText}
-            </button>
-          </div>
-        ))}
+  {demoStudyPlan.map((plan, i) => (
+    <div
+      key={i}
+      className="border border-gray-200 rounded-lg p-4 flex flex-col"
+    >
+      <div>
+        <div className="flex flex-wrap items-center gap-2 mb-3">
+          {plan.labels.map((label, idx) => (
+            <span
+              key={idx}
+              className={`${plan.color} text-nowrap px-2 py-1 rounded text-xs font-medium`}
+            >
+              {label}
+            </span>
+          ))}
+        </div>
+        <h5 className="font-semibold text-gray-900 mb-3">{plan.title}</h5>
+        <div className="flex flex-wrap flex-col sm:flex-row sm:items-center gap-4 text-sm text-gray-600 mb-4">
+          {plan.duration && (
+            <span className="flex items-center gap-1 text-nowrap text-sm sm:text-base">
+              <Clock className="w-4 h-4" />
+              Est. {plan.duration}
+            </span>
+          )}
+          {plan.type === "Quiz" && (
+            <span className="flex items-center gap-1 text-nowrap text-sm sm:text-base">
+              <BookOpen className="w-4 h-4" />
+              {plan.questions} Questions
+            </span>
+          )}
+          {plan.type === "Flashcard" && (
+            <span className="flex items-center gap-1 text-nowrap text-sm sm:text-base">
+              <RotateCcw className="w-4 h-4" />
+              {plan.questions} Flashcards
+            </span>
+          )}
+        </div>
       </div>
+
+      {/* Button always aligned at bottom */}
+      <button className="mt-auto w-full bg-gray-800 text-white py-2.5 rounded-lg font-medium hover:bg-gray-700 transition-colors flex items-center justify-center gap-2">
+        {plan.type === "Flashcard" ? (
+          <RotateCcw className="w-4 h-4" />
+        ) : (
+          <span className="text-sm">▶</span>
+        )}{" "}
+        {plan.buttonText}
+      </button>
+    </div>
+  ))}
+</div>
+
     </div>
   );
 };

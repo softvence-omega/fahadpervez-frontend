@@ -31,8 +31,8 @@ const DailyChallenge: React.FC = () => {
       </div>
 
       <div className="border border-gray-200 rounded-lg p-6">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-nowrap sm:items-center justify-between mb-4">
+          <div className="flex flex-wrap items-center gap-2">
             {demoChallenge.labels.map((label, i) => (
               <span
                 key={i}
@@ -49,12 +49,12 @@ const DailyChallenge: React.FC = () => {
           {demoChallenge.title}
         </h5>
         <div className="text-sm text-gray-600 mb-4">{demoChallenge.reward}</div>
-        <div className="flex items-center gap-6 text-sm text-gray-600 mb-6">
-          <span className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600 mb-6">
+          <span className="flex text-nowrap items-center gap-2">
             <BookOpen className="w-4 h-4" />
             {demoChallenge.questions} Questions
           </span>
-          <span className="flex items-center gap-2">
+          <span className="flex text-nowrap items-center gap-2">
             <Clock className="w-4 h-4" />
             Est. {demoChallenge.duration}
           </span>

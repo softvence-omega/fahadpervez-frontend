@@ -12,7 +12,7 @@ const Header: React.FC<HeaderProps> = ({ userName, goal, dailyTarget }) => {
   return (
     <div className="bg-[#EFF6FF99]/60 border border-[#93C5FD66]/40 rounded-lg shadow-sm p-6 space-y-6 mb-6">
       {/* Row 1: Greeting */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6">
+      <div className="flex justify-between items-start sm:items-center gap-4 sm:gap-6">
         <div className="flex-1 min-w-0">
           <h1 className="text-2xl font-semibold text-gray-900 ">
             Good Morning, {userName}!
@@ -31,7 +31,7 @@ const Header: React.FC<HeaderProps> = ({ userName, goal, dailyTarget }) => {
 
         {/* Daily Target */}
         <div className="flex items-center gap-3 mt-4 sm:mt-0 flex-shrink-0">
-          <div className="text-right min-w-[80px]">
+          <div className="text-right hidden sm:block min-w-[80px]">
             <div className="text-sm text-gray-500 truncate">Daily Target:</div>
             <div className="text-sm font-medium text-zinc-700 truncate">
               {dailyTarget}
