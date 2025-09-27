@@ -1,5 +1,14 @@
-const Switch = ({ checked, onCheckedChange, disabled = false }) => (
+import React from "react";
+
+interface SwitchProps {
+  checked: boolean;
+  onCheckedChange: (checked: boolean) => void;
+  disabled?: boolean;
+}
+
+const Switch: React.FC<SwitchProps> = ({ checked, onCheckedChange, disabled = false }) => (
   <button
+    type="button"
     onClick={() => !disabled && onCheckedChange(!checked)}
     className={`
       relative inline-flex h-6 w-11 items-center rounded-full transition-colors

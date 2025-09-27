@@ -1,7 +1,8 @@
 import { CreditCard } from "lucide-react";
 import { useState } from "react";
+import { PaymentSettingsProps } from "./types";
 
-const PaymentSettings = ({ paymentMethods }) => {
+const PaymentSettings = ({ paymentMethods }: PaymentSettingsProps) => {
   const [billingInfo, setBillingInfo] = useState({
     subscriptionPlan: "Premium",
     nextBilling: "Oct 26, 2025",

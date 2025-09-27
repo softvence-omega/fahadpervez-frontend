@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
@@ -9,6 +8,7 @@ import StudyGroupPage from "./study-group-page/StudyGroupPage";
 import SocialFeedPage from "./SocialFeedPage";
 import MentorshipPage from "./MentorshipPage";
 import ForumsPage from "./ForumsPage";
+import MessagesPage from "./messages/MessagesPage";
 
 interface Event {
   id: string;
@@ -46,26 +46,18 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const MedicalEventsDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("Event");
+  const [activeTab, setActiveTab] = useState("event");
   const [activeEventFilter, setActiveEventFilter] = useState("All Event");
   const [isLoading, setIsLoading] = useState(true);
 
-  const tabs = ["Event", "Study Group", "Social Feed", "Mentorship", "Forums"];
-
-  const eventFilters = ["All Event", "Registered Event"];
-
-  // Dynamic data fetching simulation
   const [events, setEvents] = useState<Event[]>([]);
   const [studyGroups, setStudyGroups] = useState<StudyGroup[]>([]);
 
   React.useEffect(() => {
-    // Simulate API calls for dynamic data
     const fetchData = async () => {
       setIsLoading(true);
-      // Mock delay for API
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Dynamic events (removed calendar-specific events, now just upcoming/featured)
       setEvents([
         {
           id: "1",
@@ -93,45 +85,8 @@ const MedicalEventsDashboard: React.FC = () => {
           endTime: "16:00",
           color: "bg-red-500",
         },
-        {
-          id: "3",
-          title: "Free Suturing Workshop",
-          type: "Workshop",
-          date: "July 10, 2025",
-          description: "Learn basic surgical techniques online",
-          price: "Free",
-          status: "Free",
-          startTime: "10:00",
-          endTime: "12:00",
-          color: "bg-green-500",
-        },
-        {
-          id: "4",
-          title: "Global Student Conference",
-          type: "Conference",
-          date: "Aug 15, 2025",
-          description: "Network with students worldwide",
-          price: "$25",
-          status: "Paid",
-          startTime: "09:00",
-          endTime: "17:00",
-          color: "bg-purple-500",
-        },
-        {
-          id: "5",
-          title: "Global Student Network Summit",
-          type: "Conference",
-          date: "Aug 20, 2025",
-          description: "Network with medical professionals",
-          price: "$50",
-          status: "Paid",
-          startTime: "08:00",
-          endTime: "18:00",
-          color: "bg-indigo-500",
-        },
       ]);
 
-      // Dynamic study groups
       setStudyGroups([
         {
           id: "1",
@@ -150,6 +105,7 @@ const MedicalEventsDashboard: React.FC = () => {
           leader: "Sarah Lee",
         },
       ]);
+
       setIsLoading(false);
     };
 
@@ -159,68 +115,83 @@ const MedicalEventsDashboard: React.FC = () => {
   const getTypeColor = (type: string) => {
     switch (type) {
       case "PLAB Prep":
-        return "bg-red";
+        return "bg-red-500";
       case "Workshop":
-        return "bg-green";
+        return "bg-green-500";
       case "Conference":
-        return "bg-purple";
+        return "bg-purple-500";
       case "Telemedicine":
-        return "bg-blue";
+        return "bg-blue-500";
       case "Health Summit":
-        return "bg-indigo";
+        return "bg-indigo-500";
       default:
-        return "bg-gray";
+        return "bg-gray-500";
     }
   };
 
+  // ✅ Dynamic Tabs config
+  const tabs = [
+    { value: "social-feed", label: "Social Feed", content: <SocialFeedPage /> },
+    {
+      value: "event",
+      label: "Events",
+      content: (
+        <EventPage
+          events={events}
+          activeEventFilter={activeEventFilter}
+          setActiveEventFilter={setActiveEventFilter}
+          eventFilters={["All Event", "Registered Event"]}
+          isLoading={isLoading}
+          getTypeColor={getTypeColor}
+        />
+      ),
+    },
+    {
+      value: "study-group",
+      label: "Study Groups",
+      content: (
+        <StudyGroupPage studyGroups={studyGroups} isLoading={isLoading} />
+      ),
+    },
+    { value: "forums", label: "Forums", content: <ForumsPage /> },
+    { value: "message", label: "Messages", content: <MessagesPage /> },
+  ];
+
   return (
     <div className="my-6 md:my-10">
-      {/* Header */}
-
       <Breadcrumb breadcrumbs={breadcrumbs} />
 
-      <div>
-        {/* Navigation Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-          <TabsList className="grid w-full grid-cols-5 bg-card ">
-            {tabs.map((tab) => (
-              <TabsTrigger
-                key={tab}
-                value={tab}
-                className="data-[state=active]:bg-blue-main data-[state=active]:text-white"
-              >
-                {tab}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="mb-8 h-auto"
+      >
+        {/* ✅ Dynamic Tab List */}
+        <TabsList className="grid w-full grid-cols-5 gap-2 bg-card rounded-lg p-1 h-auto">
+          {tabs.map((tab) => (
+            <TabsTrigger
+              key={tab.value}
+              value={tab.value}
+              className="rounded-md px-3 py-2 text-sm font-medium transition-all
+                data-[state=active]:bg-blue-600 data-[state=active]:text-white
+                hover:bg-blue-50"
+            >
+              {tab.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
 
-        {/* Tab Contents */}
-        <Tabs value={activeTab}>
-          <TabsContent value="Event" className="space-y-6">
-            <EventPage
-              events={events}
-              activeEventFilter={activeEventFilter}
-              setActiveEventFilter={setActiveEventFilter}
-              eventFilters={eventFilters}
-              isLoading={isLoading}
-              getTypeColor={getTypeColor}
-            />
+        {/* ✅ Dynamic Tab Content */}
+        {tabs.map((tab) => (
+          <TabsContent
+            key={tab.value}
+            value={tab.value}
+            className="mt-6 space-y-6"
+          >
+            {tab.content}
           </TabsContent>
-          <TabsContent value="Study Group" className="space-y-6">
-            <StudyGroupPage studyGroups={studyGroups} isLoading={isLoading} />
-          </TabsContent>
-          <TabsContent value="Social Feed" className="space-y-6">
-            <SocialFeedPage />
-          </TabsContent>
-          <TabsContent value="Mentorship" className="space-y-6">
-            <MentorshipPage />
-          </TabsContent>
-          <TabsContent value="Forums" className="space-y-6">
-            <ForumsPage />
-          </TabsContent>
-        </Tabs>
-      </div>
+        ))}
+      </Tabs>
     </div>
   );
 };
