@@ -33,7 +33,7 @@ const OverviewSection: React.FC = () => {
   return (
     <div className="mb-8">
       <h3 className="text-xl font-semibold text-gray-900 mb-6">Overview</h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {demoOverview.map((card, i) => (
           <OverviewCard key={i} {...card} />
         ))}
