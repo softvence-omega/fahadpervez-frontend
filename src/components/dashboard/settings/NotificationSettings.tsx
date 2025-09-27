@@ -19,7 +19,7 @@ const NotificationSettings = ({ notifications }: NotificationSettingsProps) => {
           Recent Notifications
         </h3>
         <div className="space-y-3">
-          {notifications.slice(0, 3).map((notification) => (
+          {notifications?.slice(0, 3).map((notification) => (
             <div
               key={notification.id}
               className={`p-3 rounded-md border ${

@@ -18,6 +18,9 @@ const mockUserData = {
   totalStudyTime: "127 Hours",
   completedCourses: 8,
   currentLevel: "Intermediate",
+  aiAssistant: true,
+  adaptiveDifficulty: false,
+  recommendations: true,
 };
 
 const mockNotifications = [
@@ -55,11 +58,17 @@ const mockPaymentMethods = [
   },
 ];
 
+type TabConfig = {
+  name: string;
+  icon: React.ElementType;
+  component: React.ComponentType<any>; // accept different props
+};
+
 export default function SettingsDashboard() {
   const [activeTab, setActiveTab] = useState("Study Settings");
   const [userData, setUserData] = useState(mockUserData);
 
-  const tabs = [
+  const tabs: TabConfig[] = [
     { name: "Study Settings", icon: BookOpen, component: StudySettings },
     {
       name: "Notification Setting",
@@ -78,13 +87,13 @@ export default function SettingsDashboard() {
     const Component = activeTabData.component;
 
     if (activeTab === "Study Settings") {
-      return <Component userData={userData} onUserDataChange={setUserData} notifications={undefined} paymentMethods={undefined} />;
+      return <Component userData={userData} onUserDataChange={setUserData} />;
     } else if (activeTab === "Notification Setting") {
-      return <Component notifications={mockNotifications} userData={undefined} onUserDataChange={undefined} paymentMethods={undefined} />;
+      return <Component notifications={mockNotifications} />;
     } else if (activeTab === "Payment Setting") {
-      return <Component paymentMethods={mockPaymentMethods} userData={undefined} onUserDataChange={undefined} notifications={undefined} />;
+      return <Component paymentMethods={mockPaymentMethods} />;
     } else {
-      return <Component userData={undefined} onUserDataChange={undefined} notifications={undefined} paymentMethods={undefined} />;
+      return <Component />;
     }
   };
 
