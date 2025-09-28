@@ -10,7 +10,6 @@ const mentorRoutes = {
   children: [
     {
       index: true,
-      path: "dashboard",
       element: <MentorDashboard />,
     },
     {
