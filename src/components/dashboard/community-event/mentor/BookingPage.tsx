@@ -85,7 +85,6 @@ const BookingPage = () => {
     setSessions(bookingProps.sessions);
   }, [bookingProps.sessions]);
 
-
   // ---------------- Mock APIs ----------------
   const fetchAvailableDates = async (mentorId: string) => {
     console.log(mentorId);
@@ -285,7 +284,8 @@ const BookingPage = () => {
                       htmlFor="message"
                       className="text-sm text-[#111827] font-medium"
                     >
-                      Message for {bookingProps.mentorName} (optional)
+                      {/* Message for {bookingProps.mentorName} (optional) */}
+                      Type Your Issue
                     </Label>
                     <Textarea
                       id="message"

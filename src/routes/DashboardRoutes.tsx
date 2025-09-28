@@ -50,6 +50,8 @@ import Help from "@/pages/profile/Help";
 import MentorshipPage from "@/components/dashboard/community-event/MentorshipPage";
 import AskQuestion from "@/components/dashboard/community-event/mentor/AskQuestion";
 import MySession from "@/components/dashboard/community-event/mentor/MySession";
+import SessionDetails from "@/components/dashboard/community-event/mentor/SessionDetails";
+import RecordedSession from "@/components/dashboard/community-event/mentor/RecordedSession";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -94,6 +96,14 @@ const dashboardRoutes = {
     {
       path: "my-session",
       element: <MySession />,
+    },
+    {
+      path: "session-details/:id",
+      element: <SessionDetails />,
+    },
+    {
+      path: "recorded-session",
+      element: <RecordedSession />,
     },
     {
       path: "group-details",

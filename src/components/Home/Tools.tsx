@@ -9,9 +9,9 @@ const tools = [
   {
     id: 1,
     icon: tool1,
-    title: "AI Clinical Case Generator",
+    title: "Smart Study",
     description:
-      "Save hours by instantly generating flashcards with AI-powered tools that help you efficiently test and strengthen your knowledge.",
+      "Smart study isn't about working harder — it's about learning efficiently with AI that helps you review, recall, and retain knowledge faster.",
     link: "/dashboard/clinical-case-generator",
   },
   {
