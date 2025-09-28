@@ -8,7 +8,9 @@ const MentorLayout: React.FC = () => {
       <MentorNavbar />
       <main>
         <CommonWrapper>
-          <Outlet />
+          <div className="my-6 md:my-10">
+            <Outlet />
+          </div>
         </CommonWrapper>
       </main>
     </div>

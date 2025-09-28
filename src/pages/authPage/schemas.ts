@@ -56,15 +56,100 @@ export const uploadProfileSchema = z.object({
   bio: z.string().min(1, "Bio is required").max(300, "Bio max 300 characters"),
 });
 
-export const multiStepSchema = z.object({
-  profile: profileSetupSchema,
-  preparing: preparingForSchema,
-  preferences: preferencesSchema,
-  upload: uploadProfileSchema,
+// mentor onboarding details
+
+export const verifyProfessionSchema = z.object({
+  photo: z.instanceof(File, { message: "Profile photo is required" }),
+  degree: z.instanceof(File, { message: "Degree is required" }),
+  identity: z.instanceof(File, { message: "Identity photo is required" }),
+  certificate: z.instanceof(File, { message: "Certificate is required" }),
 });
+
+export const updatePreferenceSchema = z.object({
+  bio: z
+    .string()
+    .min(1, "Professional bio is required")
+    .max(500, "Bio max 500 characters"),
+  subjects: z
+    .array(z.string().min(1, "Subject is required"))
+    .min(1, "At least one subject is required"),
+  languages: z
+    .array(z.string().min(1, "Language is required"))
+    .min(1, "At least one language is required"),
+  hourlyRate: z.number().min(0, "Hourly rate must be positive"),
+  availability: z
+    .record(
+      z.object({
+        startTime: z.string().min(1, "Start time is required"),
+        endTime: z.string().min(1, "End time is required"),
+      })
+    )
+    .refine(
+      (data) => Object.keys(data).length > 0,
+      "At least one day must be selected"
+    ),
+});
+
+
+export const platformTrainingSchema = z.object({
+  trainingCompleted: z.boolean().refine((val) => val === true, {
+    message: "You must complete the platform training",
+  }),
+});
+
+export const payoutSetupSchema = z.object({
+  paymentMethod: z.string().min(1, "Payment method is required"),
+  paymentDetails: z.string().min(1, "Payment details are required"),
+});
+
+// end mentor onboarding
+
+// Update multiStepSchema to use discriminated union based on profile.role
+export const multiStepSchema = z.discriminatedUnion("role", [
+  z.object({
+    role: z.literal("student"),
+    profile: studentSchema,
+    preparing: preparingForSchema,
+    preferences: preferencesSchema,
+    upload: uploadProfileSchema,
+  }),
+  z.object({
+    role: z.literal("professional"),
+    profile: professionalSchema,
+    preparing: preparingForSchema,
+    preferences: preferencesSchema,
+    upload: uploadProfileSchema,
+  }),
+  z.object({
+    role: z.literal("mentor"),
+    profile: mentorSchema,
+    verifyProfession: verifyProfessionSchema,
+    updatePreference: updatePreferenceSchema,
+    platformTraining: platformTrainingSchema,
+    payoutSetup: payoutSetupSchema,
+    upload: uploadProfileSchema,
+  }),
+]);
 
 export type ProfileSetupData = z.infer<typeof profileSetupSchema>;
 export type PreparingForData = z.infer<typeof preparingForSchema>;
 export type PreferencesData = z.infer<typeof preferencesSchema>;
 export type UploadProfileData = z.infer<typeof uploadProfileSchema>;
+export type VerifyProfessionData = z.infer<typeof verifyProfessionSchema>;
+export type UpdatePreferenceData = z.infer<typeof updatePreferenceSchema>;
+export type PlatformTrainingData = z.infer<typeof platformTrainingSchema>;
+export type PayoutSetupData = z.infer<typeof payoutSetupSchema>;
 export type MultiStepFormData = z.infer<typeof multiStepSchema>;
+
+// export const multiStepSchema = z.object({
+//   profile: profileSetupSchema,
+//   preparing: preparingForSchema,
+//   preferences: preferencesSchema,
+//   upload: uploadProfileSchema,
+// });
+
+// export type ProfileSetupData = z.infer<typeof profileSetupSchema>;
+// export type PreparingForData = z.infer<typeof preparingForSchema>;
+// export type PreferencesData = z.infer<typeof preferencesSchema>;
+// export type UploadProfileData = z.infer<typeof uploadProfileSchema>;
+// export type MultiStepFormData = z.infer<typeof multiStepSchema>;
