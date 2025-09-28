@@ -1,4 +1,5 @@
 import { BookOpen, Clock, Heart, Play, Target } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const OSCECard = ({
     title = "Cardiovascular Examination (CVS)",
@@ -61,6 +62,7 @@ const OSCECard = ({
                         <Play className="w-4 h-4 md:w-5 md:h-5" />
                         <span>Simulate</span>
                     </button> */}
+                    <Link to={`/dashboard/practice-with-checklist/${3}`}>
                     <button
                         onClick={onPractice}
                         className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-emerald-700 text-white text-xs md:text-sm font-medium rounded-md hover:bg-emerald-800 transition-colors"
@@ -68,6 +70,7 @@ const OSCECard = ({
                         <Target className="w-4 h-4 md:w-5 md:h-5" />
                         <span>Practice</span>
                     </button>
+                    </Link>
                 </div>
 
             </div>
