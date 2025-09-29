@@ -55,6 +55,7 @@ import RecordedSession from "@/components/dashboard/community-event/mentor/Recor
 import OSCEStation from "@/components/dashboard/osce/OSCEStation";
 import PracticeWithChecklist from "@/components/dashboard/osce/PracticeWithChecklist";
 import OSCETutorial from "@/components/dashboard/osce/OSCETutorial";
+import CheckListResult from "@/components/dashboard/osce/CheckListResult";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -180,6 +181,10 @@ const dashboardRoutes = {
     {
       path: "osce-tutorial/:id",
       element: <OSCETutorial />,
+    },
+    {
+      path: "check-list-result",
+      element: <CheckListResult />,
     },
     {
       path: "download-notes",

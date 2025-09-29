@@ -14,7 +14,7 @@ export default function OSCEStation() {
 
   const handleWatchTutorial = () => {
     // Add your implementation here
-    alert("Opening tutorial...");
+    // alert("Opening tutorial...");
   };
 
   // const handleSimulate = () => {
@@ -24,7 +24,7 @@ export default function OSCEStation() {
 
   const handlePractice = () => {
     // Add your implementation here
-    alert("Opening practice checklist...");
+    // alert("Opening practice checklist...");
   };
 
   return (

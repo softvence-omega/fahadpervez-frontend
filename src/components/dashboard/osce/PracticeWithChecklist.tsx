@@ -1,6 +1,9 @@
+import { ArrowRight} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { JSX } from "react";
-import { Link } from "react-router-dom";
+import { BsQuestionLg } from "react-icons/bs";
+import { FaBoxArchive } from "react-icons/fa6";
+import { Link, useNavigate } from "react-router-dom";
 
 /**
  * Page data JSON (dynamic topics + items live here)
@@ -118,6 +121,7 @@ export default function PracticeWithChecklist(): JSX.Element {
   const [checkedCount, setCheckedCount] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitResult, setSubmitResult] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   // Timer effect (start/stop safe)
   useEffect(() => {
@@ -210,6 +214,8 @@ export default function PracticeWithChecklist(): JSX.Element {
     };
 
     console.log(payload);
+
+    navigate("/dashboard/check-list-result");
 
     try {
       setIsSubmitting(true);
@@ -486,19 +492,47 @@ export default function PracticeWithChecklist(): JSX.Element {
         </div>
 
         <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="font-semibold">Related Resources</h3>
-          <ul className="space-y-2">
-            <li>
-              <a href="#" className="text-blue-500">
-                CVS Module
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-blue-500">
-                Study Planner
-              </a>
-            </li>
-          </ul>
+          <h3 className="font-semibold mb-4">Related Resources</h3>
+
+          <div className="border border-[#FED7AA] bg-[#FFF7ED] p-3 rounded-[8px] mb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="bg-[#FFEDD5] py-3 px-2 rounded inline-flex items-center justify-center">
+                  <div className="bg-[#EA580C] p-2 rounded-full inline-flex items-center justify-center">
+                    <BsQuestionLg className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-[#7C2D12]">CVS MCQs</p>
+                  <p className="text-xs text-[#C2410C]">
+                    5 questions on cardiac murmurs
+                  </p>
+                </div>
+              </div>
+              <ArrowRight className="text-[#EA580C]" />
+            </div>
+          </div>
+
+          <div className="border border-[#99F6E4] bg-[#F0FDFA] p-3 rounded-[8px]">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="bg-[#CCFBF1] py-3 px-2 rounded inline-flex items-center justify-center">
+                  <div className="bg-[#CCFBF1] p-2 rounded-full inline-flex items-center justify-center">
+                    <FaBoxArchive className="w-5 h-5 text-[#0D9488]" />
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-[#134E4A]">
+                    Study Planner
+                  </p>
+                  <p className="text-xs text-[#0F766E]">
+                    Schedule auscultation practice
+                  </p>
+                </div>
+              </div>
+              <ArrowRight className="text-[#0D9488]" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
