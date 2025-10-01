@@ -1,4 +1,3 @@
-// src/components/MultiStepRegisterForm.tsx
 import { useState } from "react";
 import CommonWrapper from "@/common/CommonWrapper";
 import { Progress } from "@/components/ui/progress";
@@ -6,18 +5,32 @@ import AboutYourSelfTab from "./ProfileSetupTab";
 import PreparingFor from "./PreparingFor";
 import Preferences from "./Preferences";
 import UploadProfile from "./UploadProfile";
+import VerifyProfession from "./VerifyProfession";
+import UpdatePreference from "./UpdatePreference";
+import PlatformTraining from "./PlatformTraining";
+import PayoutSetup from "./PayoutSetup";
 import { MultiStepFormData, multiStepSchema } from "./schemas";
-// import { multiStepSchema, type MultiStepFormData } from "@/lib/schemas";
 
 export default function MultiStepRegisterForm() {
   const [step, setStep] = useState<number>(0);
   const [formData, setFormData] = useState<Partial<MultiStepFormData>>({});
 
-  const stepCount = 4;
+  // Determine steps based on role
+  const isMentor = formData.profile?.role === "mentor";
+  const steps = isMentor
+    ? [
+        "AboutYourSelfTab",
+        "VerifyProfession",
+        "UpdatePreference",
+        "PlatformTraining",
+        "PayoutSetup",
+        "UploadProfile",
+      ]
+    : ["AboutYourSelfTab", "PreparingFor", "Preferences", "UploadProfile"];
+  const stepCount = steps.length;
   const progressValue = ((step + 1) / stepCount) * 100;
 
   const handleNext = (partial: Partial<MultiStepFormData>) => {
-    // merge partial into state
     setFormData((prev) => ({ ...prev, ...partial }));
     setStep((s) => Math.min(s + 1, stepCount - 1));
   };
@@ -27,41 +40,40 @@ export default function MultiStepRegisterForm() {
   const handleFinalSubmit = async (partial: Partial<MultiStepFormData>) => {
     const merged = { ...formData, ...partial } as MultiStepFormData;
 
-    console.log(merged)
-    
-    // validate final merged object
-    const check = multiStepSchema.safeParse(merged);
-    if (!check.success) {
-      // send first validation error as alert — you can replace with UI error handling
-      // alert(check?.error?.errors[0]?.message ??  "Validation failed");
-      alert( "Validation failed");
+    console.log(merged);
 
+    // Validate final merged object
+    const check = multiStepSchema.safeParse({ ...merged, role: formData.profile?.role });
+    if (!check.success) {
+      alert("Validation failed");
       return;
     }
 
-    // try {
-    //   const res = await fetch("/api/register", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(merged),
-    //   });
-    //   if (!res.ok) throw new Error("Failed to submit");
-    //   alert("Form submitted ✅");
-    //   // optional: reset state or navigate
-    // } catch (err) {
-    //   console.error(err);
-    //   alert("Submission failed. See console for details.");
-    // }
+    // Uncomment for actual API submission
+    /*
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(merged),
+      });
+      if (!res.ok) throw new Error("Failed to submit");
+      alert("Form submitted ✅");
+    } catch (err) {
+      console.error(err);
+      alert("Submission failed. See console for details.");
+    }
+    */
   };
 
   return (
     <div>
       <div className="border-b-2 border-b-slate-300">
         <CommonWrapper>
-          <div className="flex items-center justify-between ">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-7">
               <img src="/logo1.svg" className="h-16" alt="logo" />
-              <h2 className="text-xl font-semibold ">Medical Student Hub</h2>
+              <h2 className="text-xl font-semibold">Medical Student Hub</h2>
             </div>
             <p>
               Step {step + 1} of {stepCount}
@@ -71,31 +83,59 @@ export default function MultiStepRegisterForm() {
       </div>
 
       <CommonWrapper>
-        <div className="max-w-4x mx-auto mt-4">
+        <div className="max-w-7xl mx-auto mt-4">
           <Progress value={progressValue} className="h-2 mb-6 [&>div]:bg-[#0D71CF]" />
 
           <div className="min-h-[150px] flex items-center justify-center rounded-lg p-6 mb-6">
-            {step === 0 && (
+            {steps[step] === "AboutYourSelfTab" && (
               <AboutYourSelfTab
                 defaultValues={formData.profile ?? undefined}
                 onNext={(profile) => handleNext({ profile })}
               />
             )}
-            {step === 1 && (
+            {steps[step] === "PreparingFor" && (
               <PreparingFor
                 defaultValues={formData.preparing ?? undefined}
                 onBack={handleBack}
                 onNext={(preparing) => handleNext({ preparing })}
               />
             )}
-            {step === 2 && (
+            {steps[step] === "Preferences" && (
               <Preferences
                 defaultValues={formData.preferences ?? undefined}
                 onBack={handleBack}
                 onNext={(preferences) => handleNext({ preferences })}
               />
             )}
-            {step === 3 && (
+            {steps[step] === "VerifyProfession" && (
+              <VerifyProfession
+                defaultValues={formData.verifyProfession ?? undefined}
+                onBack={handleBack}
+                onNext={(verifyProfession) => handleNext({ verifyProfession })}
+              />
+            )}
+            {steps[step] === "UpdatePreference" && (
+              <UpdatePreference
+                defaultValues={formData.updatePreference ?? undefined}
+                onBack={handleBack}
+                onNext={(updatePreference) => handleNext({ updatePreference })}
+              />
+            )}
+            {steps[step] === "PlatformTraining" && (
+              <PlatformTraining
+                defaultValues={formData.platformTraining ?? undefined}
+                onBack={handleBack}
+                onNext={(platformTraining) => handleNext({ platformTraining })}
+              />
+            )}
+            {steps[step] === "PayoutSetup" && (
+              <PayoutSetup
+                defaultValues={formData.payoutSetup ?? undefined}
+                onBack={handleBack}
+                onNext={(payoutSetup) => handleNext({ payoutSetup })}
+              />
+            )}
+            {steps[step] === "UploadProfile" && (
               <UploadProfile
                 defaultValues={formData.upload ?? undefined}
                 onBack={handleBack}

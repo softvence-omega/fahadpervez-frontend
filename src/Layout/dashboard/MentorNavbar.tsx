@@ -22,7 +22,7 @@ const MentorNavbar = () => {
   const location = useLocation();
 
   const navigationItems = [
-    { name: "Dashboard", href: "/mentor/dashboard" },
+    { name: "Dashboard", href: "/mentor" },
     { name: "Question Bank", href: "/mentor/question-bank" },
     { name: "Materials", href: "/mentor/materials" },
     { name: "Classes", href: "/mentor/classes" },
@@ -38,9 +38,9 @@ const MentorNavbar = () => {
 
   // Function to check if route is active
   const isActiveRoute = (href: string) => {
-    if (href === "/dashboard") {
+    if (href === "/mentor") {
       // For dashboard, only match exact path
-      return location.pathname === "/dashboard";
+      return location.pathname === "/mentor";
     }
     // For other routes, check if current path starts with the href
     return location.pathname.startsWith(href);
