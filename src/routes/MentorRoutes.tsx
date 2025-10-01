@@ -3,6 +3,7 @@ import MentorDashboard from "@/pages/mentor/MentorDashboard";
 import MentorEarnings from "@/pages/mentor/MentorEarnings";
 import MentorMaterials from "@/pages/mentor/MentorMaterials";
 import MentorQuestionBank from "@/pages/mentor/MentorQuestionBank";
+import MentorSettings from "@/pages/mentor/MentorSettings";
 
 const mentorRoutes = {
   path: "/mentor",
@@ -28,6 +29,10 @@ const mentorRoutes = {
       path: "earnings",
       element: <MentorEarnings />,
     },
+    {
+      path: "mentor-setting",
+      element: <MentorSettings/>
+    }
   ],
 };
 
