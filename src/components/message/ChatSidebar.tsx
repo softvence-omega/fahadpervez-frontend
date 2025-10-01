@@ -82,7 +82,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                   {" "}
                   <Link to="#">
                     <Plus className="w-6 h-6 inline" />
-                    <p className="hidden md:inline">Create new Group</p>
+                    <p className="hidden lg:inline">Create new Group</p>
                   </Link>
                 </span>
               </button>
