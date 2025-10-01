@@ -52,6 +52,10 @@ import AskQuestion from "@/components/dashboard/community-event/mentor/AskQuesti
 import MySession from "@/components/dashboard/community-event/mentor/MySession";
 import SessionDetails from "@/components/dashboard/community-event/mentor/SessionDetails";
 import RecordedSession from "@/components/dashboard/community-event/mentor/RecordedSession";
+import OSCEStation from "@/components/dashboard/osce/OSCEStation";
+import PracticeWithChecklist from "@/components/dashboard/osce/PracticeWithChecklist";
+import OSCETutorial from "@/components/dashboard/osce/OSCETutorial";
+import CheckListResult from "@/components/dashboard/osce/CheckListResult";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -165,6 +169,22 @@ const dashboardRoutes = {
     {
       path: "osce",
       element: <OSCE />,
+    },
+    {
+      path: "osce-station",
+      element: <OSCEStation />,
+    },
+    {
+      path: "practice-with-checklist/:id",
+      element: <PracticeWithChecklist />,
+    },
+    {
+      path: "osce-tutorial/:id",
+      element: <OSCETutorial />,
+    },
+    {
+      path: "check-list-result",
+      element: <CheckListResult />,
     },
     {
       path: "download-notes",
