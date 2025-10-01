@@ -59,11 +59,11 @@ const MentorQuestionBank = () => {
       <Breadcrumb breadcrumbs={breadcrumbs} />
 
       <DashboardHeading
-        title="Your Expertise, Their Success"
+        title="Track Your Earnings in Real Time"
         titleSize="text-xl"
         titleFont="font-medium"
         titleColor="text-black"
-        description="Connect with students who value your skills and experience"
+        description="Stay updated with every payout, pending balance, and completed transaction"
         descSize="text-sm"
         descColor="text-slate-700"
         className="mb-7"

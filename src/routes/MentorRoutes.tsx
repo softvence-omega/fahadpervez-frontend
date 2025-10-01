@@ -4,6 +4,7 @@ import MentorEarnings from "@/pages/mentor/MentorEarnings";
 import MentorMaterials from "@/pages/mentor/MentorMaterials";
 import MentorQuestionBank from "@/pages/mentor/MentorQuestionBank";
 import MentorSessionDetails from "@/pages/mentor/MentorSessionDetails";
+import RecentTransaction from "@/pages/mentor/RecentTransaction";
 
 const mentorRoutes = {
   path: "/mentor",
@@ -32,6 +33,10 @@ const mentorRoutes = {
     {
       path: "earnings",
       element: <MentorEarnings />,
+    },
+    {
+      path: "recent-transaction",
+      element: <RecentTransaction />,
     },
   ],
 };
