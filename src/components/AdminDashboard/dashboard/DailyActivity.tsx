@@ -7,7 +7,6 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CommonBorderWrapper from "../reuseable/CommonBorderWrapper";
 import CommonHeader from "@/common/header/CommonHeader";
 
@@ -58,22 +57,33 @@ export default function DailyActivity() {
 
       <div>
         <ResponsiveContainer width="100%" height={500}>
-          <LineChart data={activityData}>
+          <LineChart
+            data={activityData}
+            margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+          >
             <CartesianGrid strokeDasharray="0" stroke="#e5e7eb" />
+
             <XAxis
               dataKey="day"
               tick={{ fill: "#000", fontSize: 20, fontWeight: 500 }}
-              axisLine={{ stroke: "#e5e7eb" }}
+              axisLine={false}
               tickLine={false}
+              padding={{ left: 0, right: 0 }}
             />
+
             <YAxis
               domain={[0, 1000]}
               ticks={[0, 250, 500, 750, 1000]}
               tick={{ fill: "#000", fontSize: 20, fontWeight: 500 }}
-              axisLine={{ stroke: "#e5e7eb" }}
+              axisLine={false}
               tickLine={false}
+              padding={{ top: 0, bottom: 0 }}
+              width={50}
             />
+
             <Tooltip content={<CustomTooltip />} />
+
+            {/* Lines */}
             <Line
               type="monotone"
               dataKey="quizzes"

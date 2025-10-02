@@ -6,7 +6,7 @@ import RecentActivity from "./RecentActivity";
 const Activity = () => {
   return (
     <div>
-      <div className=" flex gap-6 ">
+      <div className="w-full flex flex-col xl:flex-row gap-6 ">
         <DailyActivity />
         <MentorShip />
       </div>

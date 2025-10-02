@@ -1,5 +1,4 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LuMessageSquareText } from "react-icons/lu";
 
 import {
   DropdownMenu,

@@ -1,16 +1,22 @@
+import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import CommonHeader from "@/common/header/CommonHeader";
 import MediumHeader from "@/common/header/MediumHeader";
+import { FaPlus } from "react-icons/fa6";
 
 interface ManagementHeaderProps {
   title: string;
   description?: string;
   className?: string;
+  buttonText?: string;
+  action?: () => void;
 }
 
 const DashboardTopSection = ({
   title,
   description,
   className,
+  buttonText,
+  action,
 }: ManagementHeaderProps) => {
   return (
     <div
@@ -24,6 +30,12 @@ const DashboardTopSection = ({
           </div>
         )}
       </div>
+
+      {buttonText && (
+        <ButtonWithIcon icon={FaPlus} className="">
+          <p onClick={action}>{buttonText}</p>
+        </ButtonWithIcon>
+      )}
     </div>
   );
 };

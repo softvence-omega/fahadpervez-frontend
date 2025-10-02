@@ -11,7 +11,7 @@ const CommonHeader: React.FC<CommonHeaderProps> = ({
 }) => {
   return (
     <h2
-      className={`text-base leading-[24px] font-inter font-medium text-black ${className}`}
+      className={`text-base  leading-[24px] font-inter font-medium text-black ${className}`}
       {...props}
     >
       {children}

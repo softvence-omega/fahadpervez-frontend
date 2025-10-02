@@ -9,7 +9,11 @@ interface Props {
   defaultValues?: Partial<UpdatePreferenceData>;
 }
 
-export default function UpdatePreference({ onNext, onBack, defaultValues }: Props) {
+export default function UpdatePreference({
+  onNext,
+  onBack,
+  defaultValues,
+}: Props) {
   const {
     register,
     handleSubmit,
@@ -48,11 +52,17 @@ export default function UpdatePreference({ onNext, onBack, defaultValues }: Prop
     if (type === "subject") {
       const newSubjects = subjectInputs.filter((_, i) => i !== index);
       setSubjectInputs(newSubjects);
-      setValue("subjects", newSubjects.map((s) => getValues(`subjects.${index}`) || ""));
+      setValue(
+        "subjects",
+        newSubjects.map((s) => getValues(`subjects.${index}`) || "")
+      );
     } else {
       const newLanguages = languageInputs.filter((_, i) => i !== index);
       setLanguageInputs(newLanguages);
-      setValue("languages", newLanguages.map((s) => getValues(`languages.${index}`) || ""));
+      setValue(
+        "languages",
+        newLanguages.map((_s) => getValues(`languages.${index}`) || "")
+      );
     }
   };
 
@@ -72,25 +82,28 @@ export default function UpdatePreference({ onNext, onBack, defaultValues }: Prop
         Upload your professional documents to complete verification.
       </p>
 
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-6"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Professional Bio */}
         <div className="border border-slate-300 rounded-lg p-4 bg-white">
-          <label className="block text-sm font-medium mb-2">Professional Bio</label>
+          <label className="block text-sm font-medium mb-2">
+            Professional Bio
+          </label>
           <textarea
             {...register("bio")}
             placeholder="Enter your bio"
             className="w-full p-3 border border-slate-300 rounded-md resize-none h-24"
             defaultValue={defaultValues?.bio || ""}
           />
-          {errors.bio && <p className="text-red-500 text-sm mt-1">{errors.bio.message}</p>}
+          {errors.bio && (
+            <p className="text-red-500 text-sm mt-1">{errors.bio.message}</p>
+          )}
         </div>
 
         {/* Subject You Teach */}
         <div className="border border-slate-300 rounded-lg p-4 bg-white">
-          <label className="block text-sm font-medium mb-2">Subject You Teach</label>
+          <label className="block text-sm font-medium mb-2">
+            Subject You Teach
+          </label>
           {subjectInputs.map((_, index) => (
             <div key={index} className="flex items-center mb-2">
               <input
@@ -119,7 +132,11 @@ export default function UpdatePreference({ onNext, onBack, defaultValues }: Prop
               )}
             </div>
           ))}
-          {errors.subjects && <p className="text-red-500 text-sm mt-1">{errors.subjects.message}</p>}
+          {errors.subjects && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.subjects.message}
+            </p>
+          )}
         </div>
 
         {/* Language */}
@@ -153,13 +170,19 @@ export default function UpdatePreference({ onNext, onBack, defaultValues }: Prop
               )}
             </div>
           ))}
-          {errors.languages && <p className="text-red-500 text-sm mt-1">{errors.languages.message}</p>}
+          {errors.languages && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.languages.message}
+            </p>
+          )}
         </div>
 
         {/* Hourly Rate */}
         <div className="border border-slate-300 rounded-lg p-4 bg-white flex space-x-4">
           <div className="w-1/2">
-            <label className="block text-sm font-medium mb-2">Hourly rate</label>
+            <label className="block text-sm font-medium mb-2">
+              Hourly rate
+            </label>
             <input
               type="number"
               {...register("hourlyRate", { valueAsNumber: true })}
@@ -167,7 +190,11 @@ export default function UpdatePreference({ onNext, onBack, defaultValues }: Prop
               className="w-full p-3 border border-slate-300 rounded-md"
               defaultValue={defaultValues?.hourlyRate || 0}
             />
-            {errors.hourlyRate && <p className="text-red-500 text-sm mt-1">{errors.hourlyRate.message}</p>}
+            {errors.hourlyRate && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.hourlyRate.message}
+              </p>
+            )}
           </div>
           <div className="w-1/2">
             <label className="block text-sm font-medium mb-2">Currency</label>
@@ -186,7 +213,15 @@ export default function UpdatePreference({ onNext, onBack, defaultValues }: Prop
         {/* Availability */}
         <div className="border border-slate-300 rounded-lg p-4 bg-white">
           <label className="block text-sm font-medium mb-2">Availability</label>
-          {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => (
+          {[
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday",
+          ].map((day) => (
             <div key={day} className="flex items-center mb-2">
               <input
                 type="checkbox"
@@ -207,7 +242,9 @@ export default function UpdatePreference({ onNext, onBack, defaultValues }: Prop
               >
                 <option value="">Start Time</option>
                 {timeOptions.map((time) => (
-                  <option key={time} value={time}>{time}</option>
+                  <option key={time} value={time}>
+                    {time}
+                  </option>
                 ))}
               </select>
               <select
@@ -217,12 +254,18 @@ export default function UpdatePreference({ onNext, onBack, defaultValues }: Prop
               >
                 <option value="">End Time</option>
                 {timeOptions.map((time) => (
-                  <option key={time} value={time}>{time}</option>
+                  <option key={time} value={time}>
+                    {time}
+                  </option>
                 ))}
               </select>
             </div>
           ))}
-          {errors.availability && <p className="text-red-500 text-sm mt-1">{errors.availability.message}</p>}
+          {errors.availability && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.availability.message}
+            </p>
+          )}
         </div>
 
         <div className="flex justify-between mt-6">
