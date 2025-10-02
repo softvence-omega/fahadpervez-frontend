@@ -3,6 +3,7 @@ import React from "react";
 interface ActivityItem {
   name: string;
   questions: number;
+  topic?: "Questions" | "Flashcards";
   subject: string;
   author: string;
   timeAgo: string;
@@ -26,7 +27,7 @@ const RecentActivity: React.FC<RecentActivityProps> = ({ activities }) => {
             <div>
               <p className=" text-black font-sans text-base font-normal leading-6 self-stretch">{activity.name}</p>
               <p className="text-black font-sans text-xs font-normal leading-[1.125rem] mt-1">
-                {activity.questions} questions · {activity.subject} · {activity.author}
+                {activity.questions} {activity.topic} · {activity.subject} · {activity.author}
               </p>
             </div>
             <span className="text-xs text-gray-400">{activity.timeAgo}</span>

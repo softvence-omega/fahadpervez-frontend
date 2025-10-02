@@ -35,11 +35,11 @@ const BulkUploadQuestions: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto">
+      <div className=" mx-auto">
         <h1 className="text-2xl font-semibold text-gray-900 mb-1">Bulk Upload Questions</h1>
-        <p className="text-sm text-gray-600 mb-8">Basic concepts in cardiovascular medicine</p>
+        <p className=" mb-8 text-slate-700 font-inter text-sm font-normal leading-5">Basic concepts in cardiovascular medicine</p>
 
-        <div className="bg-white rounded-lg shadow-sm p-8 mb-6">
+        <div className="shadow-sm p-16 mb-6 rounded border border-slate-300 bg-white">
           <UploadDropzone
             label="Upload Question files"
             acceptedFormats=".csv, .xlsx, .xls"
