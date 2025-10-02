@@ -1,6 +1,11 @@
 import CommonWrapper from "@/common/CommonWrapper"
+import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types"
 import MentorNotificationSettings from "@/components/dashboard/mentorSettings/MentorNotificationSettings"
+import MentorPaymentSettings from "@/components/dashboard/mentorSettings/MentorPaymentSettings"
+import MentorPrivacySettings from "@/components/dashboard/mentorSettings/MentorPrivacySettings"
+import MentorSecuritySettings from "@/components/dashboard/mentorSettings/MentorSecuritySettings"
 import SettingsTabs from "@/components/dashboard/mentorSettings/SettingsTabs"
+import Breadcrumb from "@/components/reusable/CommonBreadcrumb"
 import { useState } from "react"
 
 const MentorSettings = () => {
@@ -11,43 +16,25 @@ const MentorSettings = () => {
     switch (activeTab) {
       case "notification":
         return <MentorNotificationSettings />
-      case "profile":
-        return (
-          <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground">
-            Profile Settings content coming soon
-          </div>
-        )
       case "payment":
-        return (
-          <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground">
-            Payment Settings content coming soon
-          </div>
-        )
+        return <MentorPaymentSettings/>
       case "security":
-        return (
-          <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground">
-            Login & Security Settings content coming soon
-          </div>
-        )
+        return <MentorSecuritySettings/>
       case "privacy":
-        return (
-          <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground">
-            Privacy Policy content coming soon
-          </div>
-        )
-      case "terms":
-        return (
-          <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground">
-            Terms & Condition content coming soon
-          </div>
-        )
+        return <MentorPrivacySettings/>
       default:
         return null
     }
   }
 
+  const breadcrumbs: BreadcrumbItem[] = [
+  { name: "Dashboard", link: "/dashboard" },
+  { name: "Mentors", link: "/mentor/mentor-setting" },
+];
+
   return (
     <CommonWrapper>
+      <Breadcrumb breadcrumbs={breadcrumbs} />
       <div className="space-y-6">
         <h1 className="text-2xl font-semibold">Settings</h1>
         <SettingsTabs activeTab={activeTab} onTabChange={setActiveTab} />

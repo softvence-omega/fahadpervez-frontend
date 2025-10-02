@@ -17,7 +17,7 @@ type UserInformationProps = {
         bankName: string;
         accountNumber: string;
     };
-    isUserProfile?: boolean; // ✅ new prop
+    isUserProfile?: boolean; 
 };
 
 const UserInformation = ({ data, isUserProfile }: UserInformationProps) => {

@@ -9,11 +9,9 @@ interface Tab {
 
 const tabs: Tab[] = [
     { id: "notification", label: "Notification Setting" },
-    { id: "profile", label: "Profile Settings" },
     { id: "payment", label: "Payment Setting" },
-    { id: "security", label: "Login & Security Setting" },
-    { id: "privacy", label: "Privacy Policy" },
-    { id: "terms", label: "Terms & Condition" },
+    { id: "privacy", label: "Privacy" },
+    { id: "security", label: "Security" },
 ]
 
 interface SettingsTabsProps {

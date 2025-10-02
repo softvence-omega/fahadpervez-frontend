@@ -1,4 +1,6 @@
+// import MentorCommunityTabs from "@/components/mentorCommunity/MentorCommunityTabs";
 import MentorLayout from "@/Layout/dashboard/MentorLayout";
+import MentorCommunity from "@/pages/mentor/MentorCommunity";
 import MentorDashboard from "@/pages/mentor/MentorDashboard";
 import MentorEarnings from "@/pages/mentor/MentorEarnings";
 import MentorMaterials from "@/pages/mentor/MentorMaterials";
@@ -32,6 +34,10 @@ const mentorRoutes = {
     {
       path: "mentor-setting",
       element: <MentorSettings/>
+    },
+    {
+      path:"mentor-community",
+      element: <MentorCommunity/>
     }
   ],
 };

@@ -20,11 +20,11 @@ const MentorNotificationSettings = () => {
       {/* Section 1 */}
       <div className="bg-white border border-gray-200 rounded-lg">
         {/* Header */}
-        <div className="px-6 py-5 border-b border-gray-200">
+        <div className="px-4 sm:px-6 py-5 border-b border-gray-200">
           <h2 className="text-lg font-semibold text-gray-900">Notification</h2>
 
           {/* All Notification */}
-          <div className="flex items-center gap-4 mt-4 mb-2">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 mt-4 mb-2">
             <button
               role="switch"
               aria-checked={toggles.allNotifications}
@@ -39,17 +39,21 @@ const MentorNotificationSettings = () => {
                 }`}
               />
             </button>
-            <div className="text-sm font-medium text-gray-900">All Notification</div>
+            <div className="text-sm font-medium text-gray-900 mt-2 sm:mt-0">
+              All Notification
+            </div>
           </div>
         </div>
 
         {/* Content */}
-        <div className="px-6 py-6 space-y-6">
+        <div className="px-4 sm:px-6 py-6 space-y-6">
           {/* Session Request Alert */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
             <div>
               <div className="text-sm font-medium text-gray-900">Session Request Alert</div>
-              <div className="text-sm text-gray-500">Celebrate milestones and achievements</div>
+              <div className="text-sm text-gray-500">
+                Celebrate milestones and achievements
+              </div>
             </div>
             <button
               role="switch"
@@ -68,10 +72,12 @@ const MentorNotificationSettings = () => {
           </div>
 
           {/* Community Notifications */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
             <div>
               <div className="text-sm font-medium text-gray-900">Community Notifications</div>
-              <div className="text-sm text-gray-500">Stay updated on community discussions</div>
+              <div className="text-sm text-gray-500">
+                Stay updated on community discussions
+              </div>
             </div>
             <button
               role="switch"
@@ -90,10 +96,12 @@ const MentorNotificationSettings = () => {
           </div>
 
           {/* Event Reminders */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
             <div>
               <div className="text-sm font-medium text-gray-900">Event Reminders</div>
-              <div className="text-sm text-gray-500">Upcoming events and webinars</div>
+              <div className="text-sm text-gray-500">
+                Upcoming events and webinars
+              </div>
             </div>
             <button
               role="switch"
@@ -112,10 +120,12 @@ const MentorNotificationSettings = () => {
           </div>
 
           {/* Forum Replies */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
             <div>
               <div className="text-sm font-medium text-gray-900">Forum Replies</div>
-              <div className="text-sm text-gray-500">Get updates on forum replies</div>
+              <div className="text-sm text-gray-500">
+                Get updates on forum replies
+              </div>
             </div>
             <button
               role="switch"
@@ -137,16 +147,20 @@ const MentorNotificationSettings = () => {
 
       {/* Section 2 */}
       <div className="bg-white border border-gray-200 rounded-lg mt-6">
-        <div className="px-6 py-5 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">General Notification</h2>
+        <div className="px-4 sm:px-6 py-5 border-b border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-900">
+            General Notification
+          </h2>
         </div>
 
-        <div className="px-6 py-6 space-y-6">
+        <div className="px-4 sm:px-6 py-6 space-y-6">
           {/* Email Notifications */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
             <div>
               <div className="text-sm font-medium text-gray-900">Email Notification</div>
-              <div className="text-sm text-gray-500">Receive notifications via email</div>
+              <div className="text-sm text-gray-500">
+                Receive notifications via email
+              </div>
             </div>
             <button
               role="switch"
@@ -165,10 +179,12 @@ const MentorNotificationSettings = () => {
           </div>
 
           {/* Push Notifications */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
             <div>
               <div className="text-sm font-medium text-gray-900">Push Notifications</div>
-              <div className="text-sm text-gray-500">Receive notifications even when app is closed</div>
+              <div className="text-sm text-gray-500">
+                Receive notifications even when app is closed
+              </div>
             </div>
             <button
               role="switch"
