@@ -31,7 +31,7 @@ const MentorNavbar = () => {
 
   const profileItems = [
     { name: "Settings", icon: Settings, href: "/dashboard/settings" },
-    { name: "Profile", icon: User, href: "/dashboard/profile" },
+    { name: "Profile", icon: User, href: "/mentor/mentor-profile" },
     { name: "Help & Support", icon: HelpCircle, href: "/dashboard/help" },
     { name: "Logout", icon: LogOut, href: "#" },
   ];

@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
 
 @import "tailwindcss";
 
@@ -9,10 +10,15 @@
   --color-blue-main: #007bff;
   --color-blue-btn-1: #007bff;
   --color-blue-btn-2: #0058b8;
+  --color-orange: #EA580C;
+  --color-slate: #F8FAFC;
+  --color-border: #CBD5E1;
+
 
   /* Font family configuration */
   --font-inter: "Inter", sans-serif;
   --font-bricolage: "Bricolage Grotesque", sans-serif;
+  --font-geist: "Geist",sans-serif;
 }
 
 @layer base {
@@ -161,4 +167,13 @@
 
 .fc-button:hover {
   background: #e5e7eb !important;
+}
+
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE/Edge */
+  scrollbar-width: none;     /* Firefox */
 }

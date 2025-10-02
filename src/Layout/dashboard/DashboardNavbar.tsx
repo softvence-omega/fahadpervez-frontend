@@ -24,27 +24,26 @@ const DashboardNavbar = () => {
 
   const navigationItems = [
     { name: "Dashboard", href: "/dashboard" },
-    { name: "Community & Event", href: "/dashboard/community-event" },
-    { name: "AI Tutor", href: "/dashboard/ai-tutor" },
     { name: "MCQ Bank", href: "/dashboard/mcq-bank" },
-    { name: "Flashcard Generator", href: "/dashboard/flashcard-page" },
-    { name: "Quiz Generator", href: "/dashboard/quiz-page" },
-
+    { name: "Flash Cards", href: "/dashboard/flashcard-page" },
+    {
+      name: "Clinical Cases",
+      href: "/dashboard/clinical-case-generator",
+    },
+    { name: "Download Notes", href: "/dashboard/download-notes" },
+    { name: "OSCE / Clinical Skills Lab", href: "/dashboard/osce" },
     { name: "Diagram Explorer", href: "/dashboard/diagram-explorer" },
-    { name: "Smart Study", href: "/dashboard/smart-study" },
+    { name: "AI Tutor", href: "/dashboard/ai-tutor" },
     { name: "Gamified Learning", href: "/dashboard/gamified-learning" },
   ];
 
   const moreItems = [
-    {
-      name: "Clinical Case Generator",
-      href: "/dashboard/clinical-case-generator",
-    },
-    { name: "OSCE / Clinical Skills Lab", href: "/dashboard/osce" },
+    { name: " CME/CPD Courses", href: "/dashboard/courses" },
+    { name: "Quiz Generator", href: "/dashboard/quiz-page" },
+    { name: "Community & Event", href: "/dashboard/community-event" },
+    { name: "Smart Study", href: "/dashboard/smart-study" },
     { name: "Drug Cards/Pharmacology", href: "/dashboard/drug-cards" },
-    { name: "CME/CPD Courses", href: "/dashboard/courses" },
     { name: "Mentorship", href: "/dashboard/mentorship" },
-    { name: "Download Notes", href: "/dashboard/download-notes" },
     { name: "Resources", href: "/dashboard/resources" },
   ];
 
