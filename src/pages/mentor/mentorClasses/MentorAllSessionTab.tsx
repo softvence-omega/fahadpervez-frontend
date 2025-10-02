@@ -1,4 +1,4 @@
-import MentorSessionCard from "./MentorSessionCard";
+import MentorSessionCard from "../MentorSessionCard";
 
 export default function MentorAllSessionTab() {
   return (

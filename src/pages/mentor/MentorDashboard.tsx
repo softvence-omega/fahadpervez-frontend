@@ -16,7 +16,7 @@ import {
 import TotalEarningsChart from "./TotalEarningsChart";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import MentorQuestionBankCard from "./MentorQuestionBankCard";
+import MentorQuestionBankCard from "./questionBank/MentorQuestionBankCard";
 import MentorSessionCard from "./MentorSessionCard";
 import MentorAnswerAndSolutionCard from "./MentorAnswerAndSolutionCard";
 

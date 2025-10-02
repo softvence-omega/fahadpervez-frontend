@@ -46,12 +46,14 @@ export default function MentorQuestionBankCard() {
               </div>
             </Link>
             <div className="flex items-center gap-5">
-              <p className="bg-green-700 text-white py-1 px-2 text-xs rounded-full">Published</p>
+              <p className="bg-green-700 text-white py-1 px-2 text-xs rounded-full">
+                Published
+              </p>
               <p className="text-slate-600">20 Question</p>
             </div>
           </div>
           <div className="flex justify-end">
-            <Link to={""}>
+            <Link to={"/mentor/create-question"}>
               <PrimaryButton
                 bgType="solid"
                 iconPosition="left"
