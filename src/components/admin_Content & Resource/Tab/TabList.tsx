@@ -2,6 +2,7 @@ import Tabs from "../Tab/Tabs";
 import Component_Resource_Question_Bank from "@/components/admin_content_res/Question_Bank/Content_Resource_Question_Bank";
 import Upload_Flashcard from "@/components/admin_content_res/Flash_Card/Upload_Flashcard";
 import OSCE_Homepage from "@/components/admin_content_res/OSCE/OSCE_Homepage";
+import Notes_HomePage from "@/components/admin_content_res/Notes/Notes_HomePage";
 
 function TabList() {
   const tabs = [
@@ -23,7 +24,7 @@ function TabList() {
     },
     {
       label: "Notes",
-      content: <p>Notes</p>,
+      content: <Notes_HomePage />,
     },
     {
       label: "Career Resource",
