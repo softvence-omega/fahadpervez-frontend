@@ -20,7 +20,7 @@ const NotificationIcon: React.FC<NotificationIconProps> = ({
       <span className={size}>{icon}</span>
       {count > 0 && (
         <div
-          className={`absolute -top-2 -right-2 ${color} w-5 h-5 rounded-full flex items-center justify-center text-orange text-xs font-medium`}
+          className={`absolute -top-2 -right-2 ${color} w-5 h-5 rounded-full flex items-center justify-center bg-[linear-gradient(103deg,#0076F5_6.94%,#0058B8_99.01%)] text-white text-xs font-medium`}
         >
           {count > 99 ? "99+" : count}
         </div>

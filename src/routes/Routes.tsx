@@ -8,17 +8,12 @@ import mentorRoutes from "./MentorRoutes";
 
 import adminRoutes from "./AdminRoutes";
 
-import rakibAdminUser from "./RakibAdminUser";
-
-
 const routes = createBrowserRouter([
   homeRoutes,
   dashboardRoutes,
   mentorRoutes,
 
   adminRoutes,
-
-
 
   ...authRoutes,
   {

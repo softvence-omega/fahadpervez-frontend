@@ -59,7 +59,7 @@ const sidebarItems: SidebarItem[] = [
     icon: FilePlus,
     label: "Upload Content",
     path: "/admin/upload-content",
-    section: "Content Management",
+    section: "Content & Resources",
   },
   // Mentorship
   {
@@ -79,7 +79,7 @@ const sidebarItems: SidebarItem[] = [
     icon: Calendar,
     label: "Create Events",
     path: "/admin/create-events",
-    section: "Community",
+    section: "Community & Events",
   },
   // Plan
   {
@@ -93,7 +93,7 @@ const sidebarItems: SidebarItem[] = [
     icon: BarChart2,
     label: "Platform Performance",
     path: "/admin/platform-performance",
-    section: "Reports",
+    section: "Analytics & Report",
   },
   //settings
   {

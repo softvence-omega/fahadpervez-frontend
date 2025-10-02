@@ -1,19 +1,19 @@
 import type { LucideIcon } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 import { FC, ReactNode } from "react";
 import Paragraph from "@/common/header/Paragraph";
 import MediumHeader from "@/common/header/MediumHeader";
 import MiniTitle from "@/common/header/MiniTitle";
+import { IconType } from "react-icons/lib";
 
 interface StatCardProps {
   title?: string;
   value?: string | number;
   subtitle?: string;
-  icon?: LucideIcon;
+  icon?: LucideIcon | IconType;
   subtitleColor?: string;
   iconColor?: string;
   className?: string;
-  children?: ReactNode; // allows completely custom content
+  children?: ReactNode;
 }
 
 const DashBoardCard: FC<StatCardProps> = ({

@@ -8,9 +8,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend,
 } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CommonBorderWrapper from "../reuseable/CommonBorderWrapper";
 import CommonHeader from "@/common/header/CommonHeader";
 
@@ -70,25 +68,35 @@ const MentorShip = () => {
       </CommonHeader>
       <div>
         <ResponsiveContainer width="100%" height={500}>
-          <BarChart data={data}>
+          <BarChart
+            data={data}
+            margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+          >
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+
             <XAxis
               dataKey="day"
               tick={{ fill: "#000", fontSize: 20, fontWeight: 400 }}
-              axisLine={{ stroke: "#e5e7eb", strokeWidth: 2 }}
+              axisLine={false}
               tickLine={false}
+              padding={{ left: 0, right: 0 }}
             />
+
             <YAxis
               tick={{ fill: "#000", fontSize: 20, fontWeight: 400 }}
-              axisLine={{ stroke: "#e5e7eb", strokeWidth: 2 }}
+              axisLine={false}
               tickLine={false}
               domain={[0, 1000]}
               ticks={[0, 250, 500, 750, 1000]}
+              padding={{ top: 0, bottom: 0 }}
+              width={50}
             />
+
             <Tooltip
               content={<CustomTooltip />}
               cursor={{ fill: "transparent" }}
             />
+
             <Bar
               dataKey="session"
               fill="#ec4899"

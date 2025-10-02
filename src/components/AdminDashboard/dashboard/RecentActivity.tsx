@@ -1,3 +1,6 @@
+import CommonHeader from "@/common/header/CommonHeader";
+import MiniTitle from "@/common/header/MiniTitle";
+
 interface ActivityItem {
   id: string;
   message: string;
@@ -43,7 +46,7 @@ const getIndicatorColor = (type: ActivityItem["type"]) => {
 const RecentActivity = () => {
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
-      <h2 className="text-xl font-semibold mb-6">Recent Platform Activity</h2>
+      <CommonHeader className=" mb-6">Recent Platform Activity</CommonHeader>
       <div className="space-y-6">
         {activityData.map((activity, index) => (
           <div key={activity.id} className="relative">
@@ -54,12 +57,12 @@ const RecentActivity = () => {
                 )}`}
               />
               <div className="flex-1">
-                <p className="text-gray-900 leading-relaxed">
+                <CommonHeader className="!text-base !text-[#1E293B]">
                   {activity.message}
-                </p>
-                <p className="text-sm text-gray-500 mt-1">
+                </CommonHeader>
+                <MiniTitle className="!text-[#475569] mt-1">
                   {activity.timestamp}
-                </p>
+                </MiniTitle>
               </div>
             </div>
             {index < activityData.length - 1 && (
