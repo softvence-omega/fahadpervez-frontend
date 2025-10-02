@@ -1,13 +1,13 @@
 import React from "react";
-import { BookOpenTextIcon } from "lucide-react";
 
 interface StatsCardProps {
   title: string;
   value: string | number;
   subtitle?: string;
+  icon?: React.ReactNode; // Icon prop
 }
 
-const StatsCard: React.FC<StatsCardProps> = ({ title, value, subtitle }) => {
+const StatsCard: React.FC<StatsCardProps> = ({ title, value, subtitle, icon }) => {
   return (
     <div className="p-4 flex flex-col items-start gap-6 shadow-sm rounded-xl border border-slate-300 bg-white w-full max-w-sm sm:max-w-md md:max-w-lg">
       {/* Header */}
@@ -15,7 +15,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ title, value, subtitle }) => {
         <h3 className="text-[#0A0A0A] font-sans text-sm font-normal leading-5 truncate">
           {title}
         </h3>
-        <BookOpenTextIcon className="h-6 w-6 text-green-600 mt-1" />
+        {icon && <div className="mt-1">{icon}</div>}
       </div>
 
       {/* Content */}
@@ -24,7 +24,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ title, value, subtitle }) => {
           {value}
         </p>
         {subtitle && (
-          <span className="text-black font-sans text-xs font-normal leading-4 truncate">
+          <span className="text-black font-sans text-xs font-normal leading-4 truncate mt-2">
             {subtitle}
           </span>
         )}
