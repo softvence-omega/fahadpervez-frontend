@@ -1,7 +1,13 @@
+// import MentorCommunityTabs from "@/components/mentorCommunity/MentorCommunityTabs";
 import MentorLayout from "@/Layout/dashboard/MentorLayout";
+import MentorCommunity from "@/pages/mentor/MentorCommunity";
 import MentorDashboard from "@/pages/mentor/MentorDashboard";
 import MentorEarnings from "@/pages/mentor/MentorEarnings";
 import MentorMaterials from "@/pages/mentor/MentorMaterials";
+
+import MentorQuestionBank from "@/pages/mentor/MentorQuestionBank";
+import MentorSettings from "@/pages/mentor/MentorSettings";
+
 import MentorProfilePage from "@/pages/mentor/mentorProfilePages/MentorProfilePage";
 import MentorReviewPage from "@/pages/mentor/mentorProfilePages/MentorReviewPage";
 import MentorQuestionBank from "@/pages/mentor/questionBank/MentorQuestionBank";
@@ -10,6 +16,7 @@ import RecentTransaction from "@/pages/mentor/RecentTransaction";
 import CreateQuestionBank from "@/pages/mentor/questionBank/CreateQuestionBank";
 import CreateQuestion from "@/pages/mentor/questionBank/CreateQuestion";
 import MentorClasses from "@/pages/mentor/mentorClasses/MentorClasses";
+
 
 const mentorRoutes = {
   path: "/mentor",
@@ -48,6 +55,15 @@ const mentorRoutes = {
       element: <MentorEarnings />,
     },
     {
+
+      path: "mentor-setting",
+      element: <MentorSettings/>
+    },
+    {
+      path:"mentor-community",
+      element: <MentorCommunity/>
+    }
+
       path: "recent-transaction",
       element: <RecentTransaction />,
     },
@@ -59,6 +75,7 @@ const mentorRoutes = {
       path: "mentor-review",
       element: <MentorReviewPage />,
     },
+
   ],
 };
 
