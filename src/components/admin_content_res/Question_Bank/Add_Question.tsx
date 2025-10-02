@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Upload, ChevronDown } from 'lucide-react';
+import { Upload, ChevronDown, Plus } from 'lucide-react';
+import ButtonWithIcon from '@/common/button/ButtonWithIcon';
 
 const AddQuestion: React.FC = () => {
   const [subject, setSubject] = useState('Cardiology');
@@ -47,20 +48,22 @@ const AddQuestion: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-sm p-8">
+    <div className="min-h-screen w-full bg-gray-50 p-8">
+      <div className="mx-auto ">
         <div className="flex items-center justify-between mb-2">
           <div>
             <h1 className="text-2xl font-semibold text-gray-900">Add Question</h1>
             <p className="text-sm text-gray-600 mt-1">Basic concept in cardiovascular medicine</p>
           </div>
-          <button className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition">
-            <Upload className="w-4 h-4" />
+          <ButtonWithIcon
+            icon={Upload}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition"
+          >
             Bulk Upload
-          </button>
+          </ButtonWithIcon>
         </div>
 
-        <div className="space-y-6 mt-8">
+        <div className="space-y-6 mt-8 bg-white rounded-lg shadow-sm p-8">
           {/* Subject Field */}
           <div>
             <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
@@ -243,23 +246,24 @@ const AddQuestion: React.FC = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition resize-none"
             />
           </div>
-        </div>
-
-        {/* Action Buttons */}
         <div className="flex gap-4 mt-8">
-          <button
+          <ButtonWithIcon
+            icon={Plus}
             onClick={handleSave}
             className="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
-            Save Question
-          </button>
+            Save Question 
+          </ButtonWithIcon>
           <button
             onClick={handleSaveAndAddAnother}
-            className="px-6 py-2.5 text-gray-700 font-medium rounded-md hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
+            className="px-6 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
           >
             Save & Add Another
           </button>
         </div>
+        </div>
+
+        {/* Action Buttons */}
       </div>
     </div>
   );

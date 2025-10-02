@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { X, Plus } from 'lucide-react';
+import React, { useState } from "react";
+import { X, Plus } from "lucide-react";
+import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 
 interface Tag {
   id: string;
@@ -7,45 +8,49 @@ interface Tag {
 }
 
 const CreateQuestionBank: React.FC = () => {
-  const [title, setTitle] = useState('Cardiology question bank');
-  const [subject, setSubject] = useState('Cardiology');
-  const [description, setDescription] = useState('Cardiology');
+  const [title, setTitle] = useState("Cardiology question bank");
+  const [subject, setSubject] = useState("Cardiology");
+  const [description, setDescription] = useState("Cardiology");
   const [tags, setTags] = useState<Tag[]>([
-    { id: '1', label: 'Anatomy' },
-    { id: '2', label: 'Anatomy' }
+    { id: "1", label: "Anatomy" },
+    { id: "2", label: "Anatomy" },
   ]);
-  const [tagInput, setTagInput] = useState('Cardiology');
+  const [tagInput, setTagInput] = useState("Cardiology");
 
   const removeTag = (id: string) => {
-    setTags(tags.filter(tag => tag.id !== id));
+    setTags(tags.filter((tag) => tag.id !== id));
   };
 
   const addTag = () => {
     if (tagInput.trim()) {
       setTags([...tags, { id: Date.now().toString(), label: tagInput.trim() }]);
-      setTagInput('');
+      setTagInput("");
     }
   };
 
   const handleSubmit = () => {
     console.log({ title, subject, tags, description });
-    alert('Question Bank Created!');
+    alert("Question Bank Created!");
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-sm p-8">
+    <div className="min-h-screen w-full bg-gray-50 p-8">
+      <div className="mx-auto ">
         <h1 className="text-2xl font-semibold text-gray-900 mb-2">
           Create New Question Bank
         </h1>
         <p className="text-sm text-gray-600 mb-8">
-          Create a new question bank to organize your questions by subject or topic.
+          Create a new question bank to organize your questions by subject or
+          topic.
         </p>
 
-        <div className="space-y-6">
+        <div className="space-y-6 bg-white rounded-lg shadow-sm p-8">
           {/* Title Field */}
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="title"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Title
             </label>
             <input
@@ -60,7 +65,10 @@ const CreateQuestionBank: React.FC = () => {
 
           {/* Subject Field */}
           <div>
-            <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="subject"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Subject
             </label>
             <input
@@ -75,7 +83,10 @@ const CreateQuestionBank: React.FC = () => {
 
           {/* Tags Field */}
           <div>
-            <label htmlFor="tags" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="tags"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Tags
             </label>
             <div className="relative">
@@ -84,7 +95,7 @@ const CreateQuestionBank: React.FC = () => {
                 type="text"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && addTag()}
+                onKeyPress={(e) => e.key === "Enter" && addTag()}
                 className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
                 placeholder="Enter tag"
               />
@@ -96,7 +107,7 @@ const CreateQuestionBank: React.FC = () => {
                 <Plus className="w-5 h-5" />
               </button>
             </div>
-            
+
             {/* Tag Pills */}
             {tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-3">
@@ -121,7 +132,10 @@ const CreateQuestionBank: React.FC = () => {
 
           {/* Description Field */}
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Description
             </label>
             <input
@@ -137,16 +151,17 @@ const CreateQuestionBank: React.FC = () => {
 
         {/* Action Buttons */}
         <div className="flex gap-4 mt-8">
-          <button
+          <ButtonWithIcon
+            icon={Plus}
             onClick={handleSubmit}
             className="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
-            <Plus className="w-4 h-4" />
             Create Question Bank
-          </button>
+          </ButtonWithIcon>
+
           <button
             onClick={() => window.history.back()}
-            className="px-6 py-2.5 text-gray-700 font-medium rounded-md hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
+            className="px-6 py-2.5 text-gray-700 font-medium rounded-md border border-gray-300 bg-white hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2"
           >
             Back
           </button>

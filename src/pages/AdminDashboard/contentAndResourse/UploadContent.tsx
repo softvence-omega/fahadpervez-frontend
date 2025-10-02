@@ -1,7 +1,16 @@
-import Content_Resource_Question_Bank from "@/components/admin_content_res/Content_Resource_Question_Bank";
+import CommonWrapper from "@/common/CommonWrapper";
+import TabList from "@/components/admin_Content & Resource/Tab/TabList";
+import Upload_Content_Header from "@/components/admin_Content & Resource/Upload_Content_Header";
 
 const UploadContent = () => {
-  return <Content_Resource_Question_Bank />;
+  return (
+    <>
+      <CommonWrapper>
+        <Upload_Content_Header />
+        <TabList />
+      </CommonWrapper>
+    </>
+  );
 };
 
 export default UploadContent;
