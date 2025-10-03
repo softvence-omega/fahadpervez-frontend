@@ -31,7 +31,7 @@ export default function MultiStepRegisterForm() {
   const progressValue = ((step + 1) / stepCount) * 100;
 
   const handleNext = (partial: Partial<MultiStepFormData>) => {
-    setFormData((prev) => ({ ...prev, ...partial }));
+    setFormData((prev: any) => ({ ...prev, ...partial }));
     setStep((s) => Math.min(s + 1, stepCount - 1));
   };
 
@@ -43,7 +43,10 @@ export default function MultiStepRegisterForm() {
     console.log(merged);
 
     // Validate final merged object
-    const check = multiStepSchema.safeParse({ ...merged, role: formData.profile?.role });
+    const check = multiStepSchema.safeParse({
+      ...merged,
+      role: formData.profile?.role,
+    });
     if (!check.success) {
       alert("Validation failed");
       return;
@@ -84,53 +87,79 @@ export default function MultiStepRegisterForm() {
 
       <CommonWrapper>
         <div className="max-w-7xl mx-auto mt-4">
-          <Progress value={progressValue} className="h-2 mb-6 [&>div]:bg-[#0D71CF]" />
+          <Progress
+            value={progressValue}
+            className="h-2 mb-6 [&>div]:bg-[#0D71CF]"
+          />
 
           <div className="min-h-[150px] flex items-center justify-center rounded-lg p-6 mb-6">
             {steps[step] === "AboutYourSelfTab" && (
               <AboutYourSelfTab
                 defaultValues={formData.profile ?? undefined}
-                onNext={(profile) => handleNext({ profile })}
+                onNext={(profile) => handleNext({ profile } as any)}
               />
             )}
-            {steps[step] === "PreparingFor" && (
+            {steps[step] === "PreparingFor" && !isMentor && (
               <PreparingFor
-                defaultValues={formData.preparing ?? undefined}
+                defaultValues={
+                  "preparing" in formData ? formData.preparing : undefined
+                }
                 onBack={handleBack}
                 onNext={(preparing) => handleNext({ preparing })}
               />
             )}
-            {steps[step] === "Preferences" && (
+
+            {steps[step] === "Preferences" && !isMentor && (
               <Preferences
-                defaultValues={formData.preferences ?? undefined}
+                defaultValues={
+                  "preferences" in formData ? formData.preferences : undefined
+                }
                 onBack={handleBack}
                 onNext={(preferences) => handleNext({ preferences })}
               />
             )}
-            {steps[step] === "VerifyProfession" && (
+
+            {steps[step] === "VerifyProfession" && isMentor && (
               <VerifyProfession
-                defaultValues={formData.verifyProfession ?? undefined}
+                defaultValues={
+                  "verifyProfession" in formData
+                    ? formData.verifyProfession
+                    : undefined
+                }
                 onBack={handleBack}
                 onNext={(verifyProfession) => handleNext({ verifyProfession })}
               />
             )}
-            {steps[step] === "UpdatePreference" && (
+
+            {steps[step] === "UpdatePreference" && isMentor && (
               <UpdatePreference
-                defaultValues={formData.updatePreference ?? undefined}
+                defaultValues={
+                  "updatePreference" in formData
+                    ? formData.updatePreference
+                    : undefined
+                }
                 onBack={handleBack}
                 onNext={(updatePreference) => handleNext({ updatePreference })}
               />
             )}
-            {steps[step] === "PlatformTraining" && (
+
+            {steps[step] === "PlatformTraining" && isMentor && (
               <PlatformTraining
-                defaultValues={formData.platformTraining ?? undefined}
+                defaultValues={
+                  "platformTraining" in formData
+                    ? formData.platformTraining
+                    : undefined
+                }
                 onBack={handleBack}
                 onNext={(platformTraining) => handleNext({ platformTraining })}
               />
             )}
-            {steps[step] === "PayoutSetup" && (
+
+            {steps[step] === "PayoutSetup" && isMentor && (
               <PayoutSetup
-                defaultValues={formData.payoutSetup ?? undefined}
+                defaultValues={
+                  "payoutSetup" in formData ? formData.payoutSetup : undefined
+                }
                 onBack={handleBack}
                 onNext={(payoutSetup) => handleNext({ payoutSetup })}
               />

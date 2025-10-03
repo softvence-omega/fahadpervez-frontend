@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UpdatePreferenceData, updatePreferenceSchema } from "./schemas";
 
@@ -27,8 +27,9 @@ export default function UpdatePreference({
       bio: defaultValues?.bio || "",
       subjects: defaultValues?.subjects || [""],
       languages: defaultValues?.languages || [""],
-      hourlyRate: defaultValues?.hourlyRate || 0,
-      availability: defaultValues?.availability || {},
+      hourlyRate: defaultValues?.hourlyRate ?? 0,
+      currency: defaultValues?.currency ?? "Dollar", // ✅ always string
+      availability: defaultValues?.availability ?? {}, // ✅ always object
     },
   });
 
@@ -54,7 +55,7 @@ export default function UpdatePreference({
       setSubjectInputs(newSubjects);
       setValue(
         "subjects",
-        newSubjects.map((s) => getValues(`subjects.${index}`) || "")
+        newSubjects.map((_s) => getValues(`subjects.${index}`) || "")
       );
     } else {
       const newLanguages = languageInputs.filter((_, i) => i !== index);
@@ -66,7 +67,7 @@ export default function UpdatePreference({
     }
   };
 
-  const onSubmit = (data: UpdatePreferenceData) => {
+  const onSubmit: SubmitHandler<UpdatePreferenceData> = (data) => {
     onNext(data);
   };
 
@@ -74,7 +75,6 @@ export default function UpdatePreference({
     const hour = i < 10 ? `0${i}` : `${i}`;
     return `${hour}:00-${hour === "23" ? "00" : `${+hour + 1}:00`}`;
   });
-
   return (
     <div className="w-full max-w-3xl mx-auto p-6">
       <h2 className="text-3xl font-semibold mb-2">Complete Your Profile</h2>
@@ -92,7 +92,6 @@ export default function UpdatePreference({
             {...register("bio")}
             placeholder="Enter your bio"
             className="w-full p-3 border border-slate-300 rounded-md resize-none h-24"
-            defaultValue={defaultValues?.bio || ""}
           />
           {errors.bio && (
             <p className="text-red-500 text-sm mt-1">{errors.bio.message}</p>
@@ -110,7 +109,6 @@ export default function UpdatePreference({
                 {...register(`subjects.${index}` as const)}
                 placeholder="Enter subject"
                 className="w-full p-3 border border-slate-300 rounded-md"
-                defaultValue={defaultValues?.subjects?.[index] || ""}
               />
               {index > 0 && (
                 <button
@@ -148,7 +146,6 @@ export default function UpdatePreference({
                 {...register(`languages.${index}` as const)}
                 placeholder="Enter language"
                 className="w-full p-3 border border-slate-300 rounded-md"
-                defaultValue={defaultValues?.languages?.[index] || ""}
               />
               {index > 0 && (
                 <button
@@ -188,7 +185,6 @@ export default function UpdatePreference({
               {...register("hourlyRate", { valueAsNumber: true })}
               placeholder="Enter hourly rate"
               className="w-full p-3 border border-slate-300 rounded-md"
-              defaultValue={defaultValues?.hourlyRate || 0}
             />
             {errors.hourlyRate && (
               <p className="text-red-500 text-sm mt-1">
@@ -199,9 +195,8 @@ export default function UpdatePreference({
           <div className="w-1/2">
             <label className="block text-sm font-medium mb-2">Currency</label>
             <select
-              {...register("currency", { required: true })}
+              {...register("currency")}
               className="w-full p-3 border border-slate-300 rounded-md"
-              defaultValue={defaultValues?.currency || "Dollar"}
             >
               <option value="Dollar">Dollar</option>
               <option value="Euro">Euro</option>
@@ -261,11 +256,12 @@ export default function UpdatePreference({
               </select>
             </div>
           ))}
-          {errors.availability && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors?.availability.message}
-            </p>
-          )}
+          {errors?.availability &&
+            typeof errors.availability?.message === "string" && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.availability.message}
+              </p>
+            )}
         </div>
 
         <div className="flex justify-between mt-6">
