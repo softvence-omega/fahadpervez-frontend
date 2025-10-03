@@ -263,7 +263,7 @@ export default function UpdatePreference({
           ))}
           {errors.availability && (
             <p className="text-red-500 text-sm mt-1">
-              {errors.availability.message}
+              {errors?.availability.message}
             </p>
           )}
         </div>
