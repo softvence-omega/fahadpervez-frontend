@@ -27,6 +27,8 @@ const MentorNavbar = () => {
     { name: "Materials", href: "/mentor/materials" },
     { name: "Classes", href: "/mentor/classes" },
     { name: "Earnings", href: "/mentor/earnings" },
+    { name: "Settings", href: "/mentor/mentor-setting" },
+    { name: "Community", href: "/mentor/mentor-community" },
   ];
 
   const profileItems = [
