@@ -7,6 +7,8 @@ import signupImage from "../../assets/signUp/signUpImage.png";
 import logo from "../../assets/signUp/logo.png";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
+import { useRegisterUserMutation } from "@/store/features/auth/auth.api";
+import { toast } from "sonner";
 
 const signupSchema = z.object({
   email: z.string().nonempty("Email is required").email("Invalid email format"),
@@ -19,6 +21,8 @@ const signupSchema = z.object({
 type SignupFormInputs = z.infer<typeof signupSchema>;
 
 const Signup = () => {
+  const [registerUser, { isLoading }] = useRegisterUserMutation();
+
   const [showPassword, setShowPassword] = useState(false);
   // const [preview, setPreview] = useState<string | null>(null);
   // const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -26,7 +30,7 @@ const Signup = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { isSubmitting, errors },
   } = useForm<SignupFormInputs>({
     resolver: zodResolver(signupSchema),
   });
@@ -34,13 +38,34 @@ const Signup = () => {
   const navigate = useNavigate();
 
   // Email signup
-  const onSubmit = (data: SignupFormInputs) => {
-    const formData = new FormData();
-    formData.append("email", data.email);
+  const onSubmit = async (data: SignupFormInputs) => {
+    // const formData = new FormData();
+    // formData.append("email", data.email);
     // formData.append("password", data.password);
 
-    console.log("Signup Data:", Object.fromEntries(formData));
-    navigate("/verification-otp");
+    try {
+      // unwrap() will return the resolved data or throw an error
+      const result = await registerUser({
+        email: data.email,
+        password: data.password,
+      }).unwrap(); // ✅ unwrap returns typed data
+
+      // Success toast
+      if (result.success) {
+        toast.success(result.message); // show the success message
+        navigate("/verification-otp");
+      }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      // err is typed as serialized error from RTK Query
+      const errorMessage =
+        err?.data?.message || err?.message || "Something went wrong";
+      toast.error(errorMessage);
+      console.error("Error: ", err);
+    }
+
+    // console.log("Signup Data:", Object.fromEntries(formData));
+    // navigate("/verification-otp");
   };
 
   // Google signup
@@ -123,8 +148,9 @@ const Signup = () => {
             <button
               type="submit"
               className="w-full bg-blue-main text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-blue-600 cursor-pointer"
+              disabled={isSubmitting || isLoading}
             >
-              Sign up with Email
+              {isSubmitting || isLoading ? "Loading..." : "Sign up with Email"}
             </button>
           </form>
 

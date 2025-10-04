@@ -10,10 +10,13 @@ import UpdatePreference from "./UpdatePreference";
 import PlatformTraining from "./PlatformTraining";
 import PayoutSetup from "./PayoutSetup";
 import { MultiStepFormData, multiStepSchema } from "./schemas";
+import { useRegisterUserMutation } from "@/store/features/auth/auth.api";
 
 export default function MultiStepRegisterForm() {
   const [step, setStep] = useState<number>(0);
   const [formData, setFormData] = useState<Partial<MultiStepFormData>>({});
+
+  const [registerUser] = useRegisterUserMutation();
 
   // Determine steps based on role
   const isMentor = formData.profile?.role === "mentor";
@@ -31,6 +34,7 @@ export default function MultiStepRegisterForm() {
   const progressValue = ((step + 1) / stepCount) * 100;
 
   const handleNext = (partial: Partial<MultiStepFormData>) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setFormData((prev: any) => ({ ...prev, ...partial }));
     setStep((s) => Math.min(s + 1, stepCount - 1));
   };
@@ -41,6 +45,47 @@ export default function MultiStepRegisterForm() {
     const merged = { ...formData, ...partial } as MultiStepFormData;
 
     console.log(merged);
+
+    if (merged.profile.role === "student") {
+      const studentData = {
+        role: "STUDENT",
+        student: {
+          firstName: merged.profile.firstName,
+          lastName: merged.profile.lastName,
+          university: merged.profile.university,
+          country: merged.profile.country,
+          year_of_study: merged.profile.academicYear,
+          studentType: merged.profile.subRole, // example: "Dental student"
+          preparingFor: merged.preparing?.exams?.join(", ") || "", // e.g. "usmle1"
+        },
+        preference: {
+          subject: merged.preferences?.subjectPreference,
+          systemPreference: merged.preferences?.systemPreference,
+          topic: merged.preferences?.topic,
+          subTopic: merged.preferences?.subTopic,
+        },
+        bio: merged.upload?.bio,
+      };
+
+      console.log("🚀 Final student payload:", studentData);
+
+      // ✅ Call API
+      // try {
+      //   const res = await registerUser(studentData);
+
+      //   // fetch("/api/register", {
+      //   //   method: "POST",
+      //   //   headers: { "Content-Type": "application/json" },
+      //   //   body: JSON.stringify(studentData),
+      //   // });
+
+      //   if (!res.data.success) throw new Error("Failed to submit");
+      //   alert("Form submitted ✅");
+      // } catch (err) {
+      //   console.error(err);
+      //   alert("Submission failed. See console for details.");
+      // }
+    }
 
     // Validate final merged object
     const check = multiStepSchema.safeParse({
