@@ -1,6 +1,5 @@
 import CommonButton from "@/common/button/CommonButton";
 import CommonHeader from "@/common/header/CommonHeader";
-import Paragraph from "@/common/header/Paragraph";
 import React from "react";
 import { FaCalendarAlt, FaCreditCard } from "react-icons/fa";
 

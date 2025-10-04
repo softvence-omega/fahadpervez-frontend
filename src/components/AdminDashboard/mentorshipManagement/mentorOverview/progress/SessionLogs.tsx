@@ -1,4 +1,3 @@
-import { FaStar } from "react-icons/fa";
 import React from "react";
 import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
 import CommonHeader from "@/common/header/CommonHeader";

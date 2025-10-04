@@ -1,7 +1,4 @@
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
-import CommonDropdown from "@/common/custom/CommonDropdown";
-import CommonHeader from "@/common/header/CommonHeader";
-import { IoFilterSharp } from "react-icons/io5";
 
 import {
   Table,
