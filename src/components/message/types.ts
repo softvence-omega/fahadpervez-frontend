@@ -8,7 +8,7 @@ export interface ChatUser {
   memberCount?: number;
   lastMessage?: string;
   timeAgo?: string;
-  userType: "individual" | "group" | "mentor";
+  userType: "individual" | "group" | "mentor" | "student";
 }
 
 export interface Message {
