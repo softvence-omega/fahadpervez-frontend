@@ -77,19 +77,21 @@ export const updatePreferenceSchema = z.object({
     .array(z.string().min(1, "Language is required"))
     .min(1, "At least one language is required"),
   hourlyRate: z.number().min(0, "Hourly rate must be positive"),
+  currency: z
+    .string()
+    .default("Dollar")
+    .transform((val) => val ?? "Dollar"),
   availability: z
     .record(
+      z.string(),
       z.object({
-        startTime: z.string().min(1, "Start time is required"),
-        endTime: z.string().min(1, "End time is required"),
+        enabled: z.boolean().optional(),
+        startTime: z.string().optional(),
+        endTime: z.string().optional(),
       })
     )
-    .refine(
-      (data) => Object.keys(data).length > 0,
-      "At least one day must be selected"
-    ),
+    .default({}),
 });
-
 
 export const platformTrainingSchema = z.object({
   trainingCompleted: z.boolean().refine((val) => val === true, {

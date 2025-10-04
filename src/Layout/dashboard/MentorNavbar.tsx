@@ -27,11 +27,13 @@ const MentorNavbar = () => {
     { name: "Materials", href: "/mentor/materials" },
     { name: "Classes", href: "/mentor/classes" },
     { name: "Earnings", href: "/mentor/earnings" },
+    { name: "Settings", href: "/mentor/mentor-setting" },
+    { name: "Community", href: "/mentor/mentor-community" },
   ];
 
   const profileItems = [
     { name: "Settings", icon: Settings, href: "/dashboard/settings" },
-    { name: "Profile", icon: User, href: "/dashboard/profile" },
+    { name: "Profile", icon: User, href: "/mentor/mentor-profile" },
     { name: "Help & Support", icon: HelpCircle, href: "/dashboard/help" },
     { name: "Logout", icon: LogOut, href: "#" },
   ];
