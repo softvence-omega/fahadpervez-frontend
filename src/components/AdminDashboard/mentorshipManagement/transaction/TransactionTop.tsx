@@ -2,7 +2,6 @@ import CommonSpace from "@/common/space/CommonSpace";
 import { LuCoins } from "react-icons/lu";
 import DashboardTopSection from "../../reuseable/DashboardTopSection";
 import DashBoardCard from "../../reuseable/DashBoardCard";
-import DashboardSearch from "../../reuseable/DashboardSearch";
 
 const dashboardStats = [
   {

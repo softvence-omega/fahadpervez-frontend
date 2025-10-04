@@ -1,4 +1,4 @@
-import AllStudentProfileTable from "@/components/AdminDashboard/userManagement/student/AllStudentProfiletable";
+import AllStudentProfileTable from "@/components/AdminDashboard/userManagement/student/AllStudentProfileTable";
 import { studentsData } from "@/components/AdminDashboard/userManagement/student/data";
 import StudentTop from "@/components/AdminDashboard/userManagement/student/StudentTop";
 
