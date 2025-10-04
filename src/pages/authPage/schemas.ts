@@ -77,8 +77,11 @@ export const updatePreferenceSchema = z.object({
     .array(z.string().min(1, "Language is required"))
     .min(1, "At least one language is required"),
   hourlyRate: z.number().min(0, "Hourly rate must be positive"),
-  currency: z.string().default("Dollar").transform((val) => val ?? "Dollar"),
-   availability: z
+  currency: z
+    .string()
+    .default("Dollar")
+    .transform((val) => val ?? "Dollar"),
+  availability: z
     .record(
       z.string(),
       z.object({

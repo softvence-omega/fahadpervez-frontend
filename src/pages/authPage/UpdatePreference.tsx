@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UpdatePreferenceData, updatePreferenceSchema } from "./schemas";
 
@@ -21,15 +21,23 @@ export default function UpdatePreference({
     formState: { errors, isSubmitting },
     setValue,
     getValues,
-  } = useForm<UpdatePreferenceData>({
+  } = useForm({
     resolver: zodResolver(updatePreferenceSchema),
     defaultValues: {
       bio: defaultValues?.bio || "",
       subjects: defaultValues?.subjects || [""],
       languages: defaultValues?.languages || [""],
-      hourlyRate: defaultValues?.hourlyRate ?? 0,
-      currency: defaultValues?.currency ?? "Dollar", // ✅ always string
-      availability: defaultValues?.availability ?? {}, // ✅ always object
+      hourlyRate: defaultValues?.hourlyRate || 0,
+      currency: defaultValues?.currency || "Dollar", // ✅ fine, matches schema
+      availability: defaultValues?.availability ||{
+        Monday: { enabled: false, startTime: "", endTime: "" },
+        Tuesday: { enabled: false, startTime: "", endTime: "" },
+        Wednesday: { enabled: false, startTime: "", endTime: "" },
+        Thursday: { enabled: false, startTime: "", endTime: "" },
+        Friday: { enabled: false, startTime: "", endTime: "" },
+        Saturday: { enabled: false, startTime: "", endTime: "" },
+        Sunday: { enabled: false, startTime: "", endTime: "" },
+      },
     },
   });
 
@@ -67,7 +75,7 @@ export default function UpdatePreference({
     }
   };
 
-  const onSubmit: SubmitHandler<UpdatePreferenceData> = (data) => {
+  const onSubmit = (data: UpdatePreferenceData) => {
     onNext(data);
   };
 
@@ -284,3 +292,4 @@ export default function UpdatePreference({
     </div>
   );
 }
+
