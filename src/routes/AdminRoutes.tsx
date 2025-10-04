@@ -1,3 +1,6 @@
+import MentorProfile from "@/components/AdminDashboard/userManagement/profile/MentorProfile";
+import ProfessionalProfile from "@/components/AdminDashboard/userManagement/profile/ProfessionalProfile";
+import StudentProfile from "@/components/AdminDashboard/userManagement/profile/StudentProfile";
 import AdminLayout from "@/Layout/dashboard/AdminLayout";
 import PlatformPerformance from "@/pages/AdminDashboard/analyticAndReport/PlatformPerformance";
 import CreateEvents from "@/pages/AdminDashboard/communityAndEvents/CreateEvents";
@@ -31,6 +34,19 @@ const adminRoutes = {
       path: "mentor",
       element: <Mentor />,
     },
+    {
+      path: "student-profile/:id/:name",
+      element: <StudentProfile />,
+    },
+    {
+      path: "professional-profile/:id/:name",
+      element: <ProfessionalProfile />,
+    },
+    {
+      path: "mentor-profile/:id/:name",
+      element: <MentorProfile />,
+    },
+
     {
       path: "upload-content",
       element: <UploadContent />,

@@ -15,6 +15,7 @@ import { FaRegBell } from "react-icons/fa6";
 import NotificationIcon from "./NotificationIcon";
 import { languages } from "./data";
 import CommonWrapper from "@/common/CommonWrapper";
+import { Link } from "react-router-dom";
 
 const DashboardHeader = () => {
   return (
@@ -22,7 +23,9 @@ const DashboardHeader = () => {
       <CommonWrapper>
         <div className="flex justify-between items-center ">
           <div className="flex items-center gap-7.5">
-            <img className=" w-[95px] h-full" src={logo} alt="logo" />
+            <Link to={"/admin"}>
+              <img className=" w-[95px] h-full" src={logo} alt="logo" />
+            </Link>
             <DashboardSearch />
           </div>
 
