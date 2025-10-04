@@ -4,6 +4,7 @@ import Paragraph from "@/common/header/Paragraph";
 import MediumHeader from "@/common/header/MediumHeader";
 import MiniTitle from "@/common/header/MiniTitle";
 import { IconType } from "react-icons/lib";
+import { FaRegStar } from "react-icons/fa6";
 
 interface StatCardProps {
   title?: string;
@@ -14,6 +15,7 @@ interface StatCardProps {
   iconColor?: string;
   className?: string;
   children?: ReactNode;
+  star?: boolean;
 }
 
 const DashBoardCard: FC<StatCardProps> = ({
@@ -24,6 +26,7 @@ const DashBoardCard: FC<StatCardProps> = ({
   subtitleColor = "text-green-600",
   iconColor = "text-blue-500",
   className = "",
+  star,
   children,
 }) => {
   return (
@@ -41,11 +44,19 @@ const DashBoardCard: FC<StatCardProps> = ({
               {value !== undefined && (
                 <MediumHeader className=" !font-bold">{value}</MediumHeader>
               )}
-              {subtitle && (
-                <MiniTitle className={` ${subtitleColor}`}>
-                  {subtitle}
-                </MiniTitle>
-              )}
+              <div className="flex items-center gap-1">
+                {" "}
+                {star && (
+                  <span className="text-[#CA8A04]">
+                    <FaRegStar />
+                  </span>
+                )}
+                {subtitle && (
+                  <MiniTitle className={` ${subtitleColor}`}>
+                    {subtitle}
+                  </MiniTitle>
+                )}
+              </div>
             </div>
           </>
         )}
