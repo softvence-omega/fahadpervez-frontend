@@ -46,7 +46,7 @@ const PostCard = ({ post, onLike }: PostCardProps) => {
             <p className="text-gray-800 mb-4 leading-relaxed">{post.content}</p>
 
             {post.image && (
-                <img src={post.image || "/placeholder.svg"} alt="Post content" className="w-full sm:max-h-96 object-cover rounded-lg mb-4" />
+                <img src={post.image || "/placeholder.svg"} alt="Post content" className="w-full h-24 sm:h-[256px] object-cover rounded-lg mb-4" />
             )}
 
             {post.hashtags && (

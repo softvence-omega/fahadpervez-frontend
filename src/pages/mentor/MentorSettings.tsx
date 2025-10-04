@@ -1,4 +1,3 @@
-import CommonWrapper from "@/common/CommonWrapper"
 import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types"
 import MentorNotificationSettings from "@/components/dashboard/mentorSettings/MentorNotificationSettings"
 import MentorPaymentSettings from "@/components/dashboard/mentorSettings/MentorPaymentSettings"
@@ -33,14 +32,14 @@ const MentorSettings = () => {
 ];
 
   return (
-    <CommonWrapper>
+    <div>
       <Breadcrumb breadcrumbs={breadcrumbs} />
       <div className="space-y-6">
         <h1 className="text-2xl font-semibold">Settings</h1>
         <SettingsTabs activeTab={activeTab} onTabChange={setActiveTab} />
         {renderTabContent()}
       </div>
-    </CommonWrapper>
+    </div>
   )
 }
 

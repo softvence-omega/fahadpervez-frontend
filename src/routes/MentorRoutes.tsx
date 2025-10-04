@@ -58,7 +58,10 @@ const mentorRoutes = {
       path: "mentor-community",
       element: <MentorCommunity />,
     },
-    { path: "recent-transaction", element: <RecentTransaction /> },
+    {
+      path: "recent-transaction",
+      element: <RecentTransaction />
+    },
     {
       path: "mentor-profile",
       element: <MentorProfilePage />,

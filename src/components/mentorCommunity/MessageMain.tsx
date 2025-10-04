@@ -1,6 +1,6 @@
 import React from "react";
 import { ThumbsUp, MessageSquare, Users, User, Send, ChevronLeft } from "lucide-react";
-import type { Message, ChatUser } from "./types";
+import { ChatUser, Message } from "../message/types";
 
 interface ChatMainProps {
   messages: Message[];
@@ -8,7 +8,7 @@ interface ChatMainProps {
   onBack?: () => void;
 }
 
-const ChatMain: React.FC<ChatMainProps> = ({
+const MessageMain: React.FC<ChatMainProps> = ({
   messages,
   activeUser,
   onBack,
@@ -28,9 +28,8 @@ const ChatMain: React.FC<ChatMainProps> = ({
       ? "Online"
       : `Last seen ${activeUser.lastSeen}`;
   };
-
   return (
-    <div className="flex flex-col h-full bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+   <div className="flex flex-col h-full bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
       {/* Header (fixed) */}
       <div className="bg-white p-4 flex items-center flex-shrink-0 rounded-t-lg overflow-hidden">
         {onBack && (
@@ -131,13 +130,13 @@ const ChatMain: React.FC<ChatMainProps> = ({
             }...`}
             className="flex-1 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 text-sm resize-none"
           />
-          <button className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer">
+          <button className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
             <Send className="w-5 h-5" />
           </button>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ChatMain;
+export default MessageMain
