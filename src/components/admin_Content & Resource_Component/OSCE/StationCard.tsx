@@ -24,17 +24,20 @@ const StationCard: React.FC<StationCardProps> = ({
   onViewStation,
   onDelete,
   onPublish,
-  onClick
+  onClick,
 }) => {
   return (
-    <div className="p-5 hover:shadow-md transition rounded border border-slate-300 bg-white" onClick={onClick} >
-      <div className="flex justify-between items-start">
-        <div className="flex-1">
+    <div
+      className="p-5 hover:shadow-md transition rounded border border-slate-300 bg-white w-full sm:max-w-full"
+      onClick={onClick}
+    >
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex-1 flex flex-col gap-3">
           {/* Title */}
-          <h2 className="text-lg font-semibold text-gray-900 mb-2">{title}</h2>
+          <h2 className="text-lg font-semibold text-gray-900 break-words">{title}</h2>
 
           {/* Meta info */}
-          <div className="flex items-center text-sm text-gray-600 gap-4 mb-3">
+          <div className="flex flex-wrap items-center text-sm text-gray-600 gap-3">
             <span className="flex items-center gap-1.5">
               <List className="w-4 h-4" /> {steps} steps
             </span>
@@ -47,10 +50,10 @@ const StationCard: React.FC<StationCardProps> = ({
           </div>
 
           {/* Description */}
-          <p className="text-gray-700 text-sm mb-4">{description}</p>
+          <p className="text-gray-700 text-sm break-words">{description}</p>
 
-          {/* Category + Action Buttons */}
-          <div className="flex items-center gap-3">
+          {/* Category + Actions */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <span className="text-xs bg-gray-100 text-gray-700 px-3 py-1 rounded-md font-medium">
               {category}
             </span>
@@ -71,12 +74,14 @@ const StationCard: React.FC<StationCardProps> = ({
         </div>
 
         {/* Publish button */}
-        <button
-          onClick={onPublish}
-          className=" text-white px-4 py-1.5 text-sm font-medium hover:scale-105 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ml-6 rounded-full bg-gradient-to-tr from-[#0076F5] to-[#0058B8]"
-        >
-          Publish
-        </button>
+        <div className="flex-shrink-0 w-full sm:w-auto mt-3 sm:mt-0">
+          <button
+            onClick={onPublish}
+            className="w-full sm:w-auto text-white px-4 py-1.5 text-sm font-medium hover:scale-105 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-full bg-gradient-to-tr from-[#0076F5] to-[#0058B8]"
+          >
+            Publish
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -9,35 +9,19 @@ import CommonSpace from "@/common/space/CommonSpace";
 
 function TabList() {
   const tabs = [
-    {
-      label: "Question Bank",
-      content: <Component_Resource_Question_Bank />,
-    },
-    {
-      label: "Flashcard",
-      content: <Upload_Flashcard />,
-    },
-    {
-      label: "Clinical Case",
-      content: <Clinical_Case_Homepage />,
-    },
-    {
-      label: "OSCE",
-      content: <OSCE_Homepage />,
-    },
-    {
-      label: "Notes",
-      content: <Notes_HomePage />,
-    },
-    {
-      label: "Career Resource",
-      content: <Career_Resource_Homepage />,
-    },
+    { label: "Question Bank", content: <Component_Resource_Question_Bank /> },
+    { label: "Flashcard", content: <Upload_Flashcard /> },
+    { label: "Clinical Case", content: <Clinical_Case_Homepage /> },
+    { label: "OSCE", content: <OSCE_Homepage /> },
+    { label: "Notes", content: <Notes_HomePage /> },
+    { label: "Career Resource", content: <Career_Resource_Homepage /> },
   ];
 
   return (
     <CommonSpace>
-      <Tabs tabs={tabs} />
+      <div className="w-full h-full">
+        <Tabs tabs={tabs} />
+      </div>
     </CommonSpace>
   );
 }

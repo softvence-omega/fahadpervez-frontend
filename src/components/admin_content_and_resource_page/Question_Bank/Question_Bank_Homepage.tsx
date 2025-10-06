@@ -17,24 +17,15 @@ const Content_Resource_Question_Bank: React.FC = () => {
 
   const [currentView, setCurrentView] = useState<View>("homepage");
 
-  // If showing Create New Question view
-  if (currentView === "create") {
-    return <Create_New_Question />;
-  }
-
-  // If showing Add Question view
-  if (currentView === "addQuestion") {
-    return <Add_Question />;
-  }
-  // If showing View All Questions view
-  if (currentView === "viewAll") {
-    return <Content_Resource_ALL_QB />;
-  }
+  if (currentView === "create") return <Create_New_Question />;
+  if (currentView === "addQuestion") return <Add_Question />;
+  if (currentView === "viewAll") return <Content_Resource_ALL_QB />;
 
   return (
-    <div className="space-y-6  ">
+    <div className="space-y-6 w-full">
+      {/* ✅ Stats Section */}
       <CommonSpace>
-        <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 justify-items-center sm:justify-items-start sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
           <StatsCard
             title="Total Question Bank"
             value={10}
@@ -47,7 +38,11 @@ const Content_Resource_Question_Bank: React.FC = () => {
             subtitle="Across all subjects"
             icon={<BookOpenTextIcon className="w-6 h-6 text-green-600" />}
           />
-          <StatsCard title="Last Upload" value={180} subtitle="2025-09-12" />
+          <StatsCard
+            title="Last Upload"
+            value={180}
+            subtitle="2025-09-12"
+          />
           <StatsCard
             title="Published"
             value={180}
@@ -56,20 +51,29 @@ const Content_Resource_Question_Bank: React.FC = () => {
           />
         </div>
       </CommonSpace>
-      <div className=" flex flex-col sm:flex-row w-full justify-between items-stretch sm:items-center gap-4">
-        {/* Search */}
-        <div className="flex w-full sm:flex-1">
+
+      {/* ✅ Search + Add Button */}
+      <div className="flex flex-col sm:flex-row w-full justify-between items-stretch sm:items-center gap-3 sm:gap-4">
+        <div className="flex-1 w-full min-w-0">
           <SearchBar
             placeholder="Search Question Bank"
             onChange={(val) => console.log(val)}
           />
         </div>
 
-        {/* Add Button */}
-        <div className="w-full sm:w-auto">
+        <div className="w-full sm:w-auto mt-2 sm:mt-0">
           <ButtonWithIcon
             icon={Plus}
-            className="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-md text-sm sm:text-base"
+            className="
+              w-full sm:w-auto
+              bg-gradient-to-tr from-[#0076F5] to-[#0058B8]
+              hover:from-[#0069DB] hover:to-[#004C9E]
+              text-white font-medium
+              px-4 py-2 sm:px-5 sm:py-2.5
+              rounded-md text-sm sm:text-base
+              flex items-center justify-center gap-2
+              transition-all duration-200
+            "
             onClick={() => setCurrentView("create")}
           >
             Add Question Bank
@@ -77,6 +81,7 @@ const Content_Resource_Question_Bank: React.FC = () => {
         </div>
       </div>
 
+      {/* ✅ Header with View All */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
         <h2 className="text-lg sm:text-xl font-semibold">Question Banks</h2>
         <Link to="">
@@ -90,7 +95,8 @@ const Content_Resource_Question_Bank: React.FC = () => {
         </Link>
       </div>
 
-      <div className="space-y-4 ">
+      {/* ✅ Question Bank Cards */}
+      <div className="grid grid-cols-1 gap-4 sm:gap-6">
         <QuestionBankCard
           title="Anatomy Essentials MCQs"
           description="Basic concepts in cardiovascular medicine"
@@ -110,36 +116,39 @@ const Content_Resource_Question_Bank: React.FC = () => {
         />
       </div>
 
-      <div className="overflow-x-auto">
-        <RecentActivity
-          activities={[
-            {
-              name: "cardiology_questions_v2",
-              questions: 198,
-              topic: "Questions",
-              subject: "Cardiology",
-              author: "Dr. Smith",
-              timeAgo: "2 hour ago",
-            },
-            {
-              name: "cardiology_questions_v2",
-              questions: 198,
-              topic: "Questions",
-              subject: "Cardiology",
-              author: "Admin",
-              timeAgo: "2 hour ago",
-            },
-            {
-              name: "cardiology_questions_v2",
-              questions: 156,
-              topic: "Questions",
-              subject: "Cardiology",
-              author: "Admin",
-              timeAgo: "2 hour ago",
-            },
-          ]}
-        />
-      </div>
+      {/* ✅ Recent Activity */}
+      <CommonSpace>
+        <div className="overflow-x-auto">
+          <RecentActivity
+            activities={[
+              {
+                name: "cardiology_questions_v2",
+                questions: 198,
+                topic: "Questions",
+                subject: "Cardiology",
+                author: "Dr. Smith",
+                timeAgo: "2 hour ago",
+              },
+              {
+                name: "cardiology_questions_v2",
+                questions: 198,
+                topic: "Questions",
+                subject: "Cardiology",
+                author: "Admin",
+                timeAgo: "2 hour ago",
+              },
+              {
+                name: "cardiology_questions_v2",
+                questions: 156,
+                topic: "Questions",
+                subject: "Cardiology",
+                author: "Admin",
+                timeAgo: "2 hour ago",
+              },
+            ]}
+          />
+        </div>
+      </CommonSpace>
     </div>
   );
 };

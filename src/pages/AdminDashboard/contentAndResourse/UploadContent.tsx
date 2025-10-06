@@ -1,11 +1,15 @@
-import CommonWrapper from "@/common/CommonWrapper";
+
 import TabList from "@/components/admin_Content & Resource_Component/Tab/TabList";
-import Upload_Content_Header from "@/components/admin_Content & Resource_Component/Upload_Content_Header";
+import DashboardTopSection from "@/components/AdminDashboard/reuseable/DashboardTopSection";
+
 
 const UploadContent = () => {
   return (
     <>
-      <Upload_Content_Header />
+      <DashboardTopSection
+          title="Content & Resource Management"
+          description="Manage MCQ banks, flashcards, quizzes, and educational resources."
+        />
       <TabList />
     </>
   );
