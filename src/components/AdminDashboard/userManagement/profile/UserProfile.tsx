@@ -5,6 +5,7 @@ import CommonButton from "@/common/button/CommonButton";
 import MediumHeader from "@/common/header/MediumHeader";
 import CommonHeader from "@/common/header/CommonHeader";
 import camera from "@/assets/home/camera.png";
+import { Link } from "react-router-dom";
 
 interface UserProfileProps {
   fullName: string;
@@ -17,6 +18,7 @@ interface UserProfileProps {
   profileImage: string;
   yearOfStudy?: string;
   profession?: string;
+  backLink: string;
 }
 
 const inputClass = {
@@ -37,6 +39,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
   profileImage,
   yearOfStudy,
   profession,
+  backLink,
 }) => {
   const [bannerPreview, setBannerPreview] = useState<string>(bannerDefault);
   const [profilePreview, setProfilePreview] = useState<string>(profileImage);
@@ -61,7 +64,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="">
       <div className="mb-6">
         <p className="text-sm text-gray-500">
           Dashboard &gt;{" "}
@@ -140,7 +143,9 @@ const UserProfile: React.FC<UserProfileProps> = ({
               <CommonButton className="!bg-[#1D4ED8] !text-white ">
                 Deactivate user
               </CommonButton>
-              <CommonButton className="">Back</CommonButton>
+              <CommonButton className="">
+                <Link to={backLink}>Back</Link>
+              </CommonButton>
             </div>
           </div>
 

@@ -32,7 +32,7 @@ const CommonSelect = <T extends string>({
     <Select value={value} onValueChange={onValueChange}>
       <SelectTrigger
         style={{ minWidth: w }}
-        className={` ${className} bg-[#FCFCFC] border border-border px-3 py-5 cursor-pointer rounded-md outline-none text-sm focus:ring-0 focus:border-none hover:border-gray-400 transition-all duration-200`}
+        className={` ${className} bg-[#FCFCFC] border border-border px-3 py-3 cursor-pointer rounded-md outline-none text-sm focus:ring-0 focus:border-none hover:border-gray-400 transition-all duration-200`}
       >
         <SelectValue placeholder="Select an option" />
       </SelectTrigger>

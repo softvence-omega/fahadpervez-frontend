@@ -43,7 +43,9 @@ const sessionData: SessionLog[] = [
 const SessionLogs: React.FC = () => {
   return (
     <CommonBorderWrapper className="">
-      <CommonHeader className=" !font-normal mb-9">Session Logs</CommonHeader>
+      <CommonHeader className=" !font-normal mb-4 sm:mb-9">
+        Session Logs
+      </CommonHeader>
 
       <div className="space-y-4">
         {sessionData.map((session) => (

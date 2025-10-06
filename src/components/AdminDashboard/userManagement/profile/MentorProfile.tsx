@@ -24,6 +24,7 @@ const MentorProfile = () => {
         profileImage={image}
         yearOfStudy={mentor.experience}
         profession="Medical Student"
+        backLink="/admin/mentor"
       />
     </div>
   );

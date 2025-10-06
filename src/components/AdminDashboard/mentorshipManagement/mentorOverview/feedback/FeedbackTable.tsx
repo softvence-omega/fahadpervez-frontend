@@ -17,10 +17,18 @@ import RenderStars from "@/common/custom/RenderStars";
 const tableHeaders = [
   { label: "Mentorship", align: "text-center" },
   { label: "Rating", align: "text-center" },
-  { label: "Comments", align: "text-left" },
-  { label: "Date", align: "text-center" },
+  { label: "Comments", align: "text-left hidden xl:table-cell" },
+  { label: "Date", align: "text-center lg:table-cell hidden" },
   { label: "Action", align: "text-center" },
 ];
+
+const tableDesign = {
+  header:
+    "text-lg font-geist text-[#2C2C2C] font-medium bg-[#EFF6FF] hover:bg-[#EFF6FF] md:h-12",
+  cellHeader: "border border-border px-4 ",
+  bodyRow: "text-[#2C2C2C] font-inter text-sm font-normal md:h-12",
+  cell: "border border-border px-4 text-center",
+};
 interface FeedbackTableProps {
   feedback: Feedback[];
 }
@@ -30,11 +38,11 @@ const FeedbackTable: FC<FeedbackTableProps> = ({ feedback }) => {
     <div>
       <Table>
         <TableHeader>
-          <TableRow className=" text-lg font-geist text-[#2C2C2C] font-medium">
+          <TableRow className={tableDesign.header}>
             {tableHeaders.map((header) => (
               <TableHead
                 key={header.label}
-                className={`border border-border ${header.align} px-4`}
+                className={`${tableDesign.cellHeader} ${header.align} `}
               >
                 {header.label}
               </TableHead>
@@ -44,11 +52,8 @@ const FeedbackTable: FC<FeedbackTableProps> = ({ feedback }) => {
 
         <TableBody>
           {feedback.map((p) => (
-            <TableRow
-              key={p.id}
-              className="hover:bg-gray-50 text-[#2C2C2C] font-inter text-sm font-normal"
-            >
-              <TableCell className="border border-border ">
+            <TableRow key={p.id} className={tableDesign.bodyRow}>
+              <TableCell className={`${tableDesign.cell}`}>
                 <div className="flex items-center gap-1 justify-center">
                   {p.mentorship.firstName}
                   <div className="">
@@ -57,19 +62,24 @@ const FeedbackTable: FC<FeedbackTableProps> = ({ feedback }) => {
                   {p.mentorship.lastName}
                 </div>
               </TableCell>
-              <TableCell className="border border-border ">
+              <TableCell className={`${tableDesign.cell}`}>
                 <div className="flex items-center gap-1 justify-center">
-                  {p.rating} <RenderStars rating={p.rating} />
+                  {p.rating}
+                  <div className=" hidden md:flex">
+                    <RenderStars rating={p.rating} />
+                  </div>
                 </div>
               </TableCell>
-              <TableCell className="border border-border ">
+              <TableCell
+                className={`hidden xl:table-cell !text-left ${tableDesign.cell}`}
+              >
                 <div>{p.comments}</div>
               </TableCell>
-              <TableCell className="border border-border text-center">
+              <TableCell className={`hidden lg:table-cell ${tableDesign.cell}`}>
                 <div>{p.date}</div>
               </TableCell>
 
-              <TableCell className="border border-border text-center">
+              <TableCell className={`${tableDesign.cell}`}>
                 <span className="text-[#1D4ED8] cursor-pointer flex justify-center">
                   <LuEye size={24} />
                 </span>

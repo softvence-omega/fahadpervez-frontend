@@ -32,8 +32,8 @@ const ProgressTracking = () => {
   ] as const;
   return (
     <div className="space-y-6">
-      <div className="flex gap-6">
-        <CommonBorderWrapper className="space-y-9">
+      <div className="flex flex-col lg:flex-row gap-6">
+        <CommonBorderWrapper className="sm:space-y-9 space-y-4">
           <CommonHeader className=" !font-normal">
             Individual Progress Tracking
           </CommonHeader>
@@ -63,11 +63,11 @@ const ProgressTracking = () => {
             <CommonHeader>Sessions Completed: 6/8</CommonHeader>
           </div>
         </CommonBorderWrapper>
-        <CommonBorderWrapper className="space-y-9">
+        <CommonBorderWrapper className="sm:space-y-9 space-y-4">
           <CommonHeader className="!font-normal">
             Progress Milestones
           </CommonHeader>
-          <div className="space-y-9">
+          <div className="sm:space-y-9 space-y-4">
             {sessionReminders.map((item) => (
               <div className="space-y-2">
                 <div className="flex items-center gap-2">

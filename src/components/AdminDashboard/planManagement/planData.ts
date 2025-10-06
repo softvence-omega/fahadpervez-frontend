@@ -93,8 +93,8 @@ export const overviewData: OverviewData[] = [
 export interface SubscriptionData {
   id: number;
   user: string;
-  plan: "Standard" | "Elite";
-  status: "Active" | "Deactive";
+  plan: "Standard" | "Elite" | string;
+  status: "Active" | "Deactive" | string;
   nextBilling: string; // date
   revenue: string;
 }

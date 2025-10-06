@@ -31,7 +31,7 @@ const DashBoardCard: FC<StatCardProps> = ({
 }) => {
   return (
     <div className={`bg-white border border-border rounded-xl ${className}`}>
-      <div className="p-6">
+      <div className="p-4 md:p-6">
         {children ? (
           children
         ) : (
