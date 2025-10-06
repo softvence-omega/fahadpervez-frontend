@@ -24,7 +24,7 @@ const SettingsTabs = ({ activeTab, onTabChange }: SettingsTabsProps) => {
     if (!activeTab) {
       onTabChange("notification")    
     }
-  }, [activeTab, onTabChange])
+  }, [activeTab, onTabChange]);
 
   return (
     <div
