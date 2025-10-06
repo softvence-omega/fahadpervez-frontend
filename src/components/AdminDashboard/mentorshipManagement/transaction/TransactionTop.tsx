@@ -6,7 +6,7 @@ import DashBoardCard from "../../reuseable/DashBoardCard";
 const dashboardStats = [
   {
     title: "Pending Payouts",
-    value: "$",
+    value: "$2500",
     subtitle: "3 month",
     icon: LuCoins,
     subtitleColor: "text-green-500",

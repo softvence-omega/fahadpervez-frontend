@@ -13,7 +13,7 @@ const CommonButton: React.FC<CommonButtonProps> = ({
 }) => {
   return (
     <button
-      className={`px-4 sm:px-6 py-2 border border-border rounded-md font-medium transition text-[#0F172A]  cursor-pointer ${className}`}
+      className={`px-4 sm:px-6 py-2 flex-shrink-0 border border-border rounded-md font-medium transition text-[#0F172A]  cursor-pointer ${className}`}
       {...props}
     >
       {children}

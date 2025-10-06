@@ -1,7 +1,7 @@
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import CommonDropdown from "@/common/custom/CommonDropdown";
 import CommonHeader from "@/common/header/CommonHeader";
-import { IoFilterSharp } from "react-icons/io5";
+import { IoChevronDownSharp } from "react-icons/io5";
 import { BiSolidEdit } from "react-icons/bi";
 
 import {
@@ -25,18 +25,25 @@ const dropdownItems = [
 ];
 
 const tableHeaders = [
-  { label: "SL", align: "text-left" },
+  { label: "SL", align: "text-center sm:table-cell hidden" },
   { label: "Name", align: "text-center" },
-  { label: "Country", align: "text-center" },
-  { label: "Experience", align: "text-center" },
-  { label: "Hospital/Institute", align: "text-center" },
-  { label: "Post-Graduate", align: "text-center" },
+  { label: "Country", align: "text-center sm:table-cell hidden" },
+  { label: "Experience", align: "text-center xl:table-cell hidden" },
+  { label: "Hospital/Institute", align: "text-center xl:table-cell hidden" },
+  { label: "Post-Graduate", align: "text-center lg:table-cell hidden" },
   { label: "Action", align: "text-center" },
 ];
 interface AllStudentProfileTable {
   professional: Professional[];
 }
 
+const tableDesign = {
+  header:
+    "text-lg font-geist text-[#2C2C2C] font-medium bg-[#EFF6FF] hover:bg-[#EFF6FF] md:h-12",
+  cellHeader: "border border-border px-4 ",
+  bodyRow: "text-[#2C2C2C] font-inter text-sm font-normal md:h-12",
+  cell: "border border-border px-4 text-center",
+};
 const ProfessionalTable: FC<AllStudentProfileTable> = ({ professional }) => {
   return (
     <div>
@@ -44,17 +51,24 @@ const ProfessionalTable: FC<AllStudentProfileTable> = ({ professional }) => {
         <CommonHeader>Professional Profile</CommonHeader>
         <CommonDropdown
           items={dropdownItems}
-          trigger={<ButtonWithIcon icon={IoFilterSharp}>Filter</ButtonWithIcon>}
+          trigger={
+            <ButtonWithIcon
+              className="  bg-[#fff] !text-[#09090B] flex !flex-row-reverse"
+              icon={IoChevronDownSharp}
+            >
+              Filter
+            </ButtonWithIcon>
+          }
         />
       </div>
 
       <Table>
         <TableHeader>
-          <TableRow className=" text-lg font-geist text-[#2C2C2C] font-medium">
+          <TableRow className={tableDesign.header}>
             {tableHeaders.map((header) => (
               <TableHead
                 key={header.label}
-                className={`border border-border ${header.align} px-4`}
+                className={`${tableDesign.cellHeader} ${header.align} `}
               >
                 {header.label}
               </TableHead>
@@ -64,29 +78,26 @@ const ProfessionalTable: FC<AllStudentProfileTable> = ({ professional }) => {
 
         <TableBody>
           {professional.map((p) => (
-            <TableRow
-              key={p.id}
-              className="hover:bg-gray-50 text-[#2C2C2C] font-inter text-sm font-normal"
-            >
-              <TableCell className="border border-border px-4">
+            <TableRow key={p.id} className={tableDesign.bodyRow}>
+              <TableCell className={`sm:table-cell hidden ${tableDesign.cell}`}>
                 <div>{p.id}</div>
               </TableCell>
-              <TableCell className="border border-border text-center">
+              <TableCell className={`${tableDesign.cell}`}>
                 <div>{p.name}</div>
               </TableCell>
-              <TableCell className="border border-border text-center">
+              <TableCell className={`sm:table-cell hidden ${tableDesign.cell}`}>
                 <div>{p.country}</div>
               </TableCell>
-              <TableCell className="border border-border text-center">
+              <TableCell className={`xl:table-cell hidden ${tableDesign.cell}`}>
                 <div>{p.experience}</div>
               </TableCell>
-              <TableCell className="border border-border text-center">
+              <TableCell className={`lg:table-cell hidden ${tableDesign.cell}`}>
                 <div>{p.institute}</div>
               </TableCell>
-              <TableCell className="border border-border text-center">
+              <TableCell className={`xl:table-cell hidden ${tableDesign.cell}`}>
                 <div>{p.graduateYear}</div>
               </TableCell>
-              <TableCell className="border border-border">
+              <TableCell className={`${tableDesign.cell}`}>
                 <div className="flex justify-center gap-3  ">
                   <Link
                     to={`/admin/professional-profile/${p.id}/${slugify(

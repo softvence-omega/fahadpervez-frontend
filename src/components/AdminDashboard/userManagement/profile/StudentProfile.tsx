@@ -27,6 +27,7 @@ const StudentProfile = () => {
         profileImage={image}
         yearOfStudy={student.year}
         profession="Medical Student"
+        backLink="/admin/students"
       />
     </div>
   );

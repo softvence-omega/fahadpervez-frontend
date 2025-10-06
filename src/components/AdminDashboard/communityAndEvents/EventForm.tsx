@@ -87,7 +87,7 @@ const EventForm: FC<EventFormProps> = ({ handleCancel }) => {
               Basic Information
             </MediumHeader>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div>
                 <label className={inputClass.label}>Event Title</label>
                 <input
@@ -112,7 +112,7 @@ const EventForm: FC<EventFormProps> = ({ handleCancel }) => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div>
                 <label className={inputClass.label}>Format</label>
                 <CommonSelect<string>
@@ -121,7 +121,7 @@ const EventForm: FC<EventFormProps> = ({ handleCancel }) => {
                     setFormData((prev) => ({ ...prev, format: val }))
                   }
                   item={seminarOptions}
-                  className="w-full mb-4 !border-[#9DA4AE] !bg-white"
+                  className="w-full  !border-[#9DA4AE] !bg-white !outline-none"
                 />
               </div>
 
@@ -133,7 +133,7 @@ const EventForm: FC<EventFormProps> = ({ handleCancel }) => {
                     setFormData((prev) => ({ ...prev, category: val }))
                   }
                   item={seminarOptions}
-                  className="w-full mb-4 !border-[#9DA4AE] !bg-white"
+                  className="w-full  !border-[#9DA4AE] !bg-white"
                 />
               </div>
             </div>
@@ -153,7 +153,7 @@ const EventForm: FC<EventFormProps> = ({ handleCancel }) => {
               Schedule & Duration
             </MediumHeader>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               <div>
                 <label className={inputClass.label}>Date</label>
                 <input
@@ -215,16 +215,17 @@ const EventForm: FC<EventFormProps> = ({ handleCancel }) => {
                   }))
                 }
               />
-              {formData.isPricingEnabled && (
-                <input
-                  name="price"
-                  type="text"
-                  placeholder="Enter price"
-                  value={formData.price}
-                  onChange={handleChange}
-                  className={inputClass.input}
-                />
-              )}
+
+              <input
+                name="price"
+                type="text"
+                placeholder="Enter price"
+                value={formData.price}
+                onChange={handleChange}
+                className={`${
+                  formData.isPricingEnabled ? "invisible" : " visible"
+                } ${inputClass.input}`}
+              />
             </div>
 
             <MediumHeader className="!text-xl !font-normal mb-3">
@@ -244,13 +245,17 @@ const EventForm: FC<EventFormProps> = ({ handleCancel }) => {
               />
             </div>
 
-            <div className="flex gap-4">
-              <CommonButton type="button" onClick={handleCancel}>
+            <div className="flex flex-col sm:flex-row gap-4 pb-5 sm:pb-0">
+              <CommonButton
+                type="button"
+                onClick={handleCancel}
+                className="w-full sm:w-auto"
+              >
                 Cancel
               </CommonButton>
               <CommonButton
                 type="submit"
-                className="!text-white !bg-[linear-gradient(103deg,#0076F5_6.94%,#0058B8_99.01%)]"
+                className="w-full sm:w-auto !text-white !bg-[linear-gradient(103deg,#0076F5_6.94%,#0058B8_99.01%)]"
               >
                 Create and Publish
               </CommonButton>

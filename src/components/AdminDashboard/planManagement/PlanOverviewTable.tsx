@@ -27,12 +27,20 @@ interface PlanOverviewTableProps {
 }
 const tableHeaders = [
   { label: "Plan", align: "text-left" },
-  { label: "Pricing", align: "text-center" },
-  { label: "Subscribers", align: "text-center" },
-  { label: "Revenue", align: "text-center" },
+  { label: "Pricing", align: "text-center  hidden sm:table-cell" },
+  { label: "Subscribers", align: "text-center hidden lg:table-cell" },
+  { label: "Revenue", align: "text-center hidden md:table-cell" },
   { label: "Status", align: "text-center" },
   { label: "Action", align: "text-center" },
 ];
+
+const tableDesign = {
+  header:
+    "text-lg font-geist text-[#2C2C2C] font-medium bg-[#EFF6FF] hover:bg-[#EFF6FF] md:h-12",
+  cellHeader: "border border-border px-4 ",
+  bodyRow: "text-[#2C2C2C] font-inter text-sm font-normal md:h-12",
+  cell: "border border-border px-4 text-center",
+};
 const PlanOverviewTable: FC<PlanOverviewTableProps> = ({
   overview,
   onToggleAvailability,
@@ -41,11 +49,11 @@ const PlanOverviewTable: FC<PlanOverviewTableProps> = ({
   return (
     <Table>
       <TableHeader>
-        <TableRow className=" text-lg font-geist text-[#2C2C2C] font-medium">
+        <TableRow className={tableDesign.header}>
           {tableHeaders.map((header) => (
             <TableHead
               key={header.label}
-              className={`border border-border ${header.align} px-4`}
+              className={`${tableDesign.cellHeader} ${header.align} `}
             >
               {header.label}
             </TableHead>
@@ -55,23 +63,20 @@ const PlanOverviewTable: FC<PlanOverviewTableProps> = ({
 
       <TableBody>
         {overview.map((p) => (
-          <TableRow
-            key={p.id}
-            className="hover:bg-gray-50 text-[#2C2C2C] font-inter text-sm font-normal"
-          >
-            <TableCell className="border border-border px-4">
+          <TableRow key={p.id} className={tableDesign.bodyRow}>
+            <TableCell className={`!text-left ${tableDesign.cell}`}>
               <div>{p.plan}</div>
             </TableCell>
-            <TableCell className="border border-border text-center">
+            <TableCell className={`hidden sm:table-cell   ${tableDesign.cell}`}>
               <div>{p.pricing}</div>
             </TableCell>
-            <TableCell className="border border-border text-center">
+            <TableCell className={` hidden lg:table-cell ${tableDesign.cell}`}>
               <div>{p.subscribers}</div>
             </TableCell>
-            <TableCell className="border border-border text-center">
+            <TableCell className={`hidden md:table-cell ${tableDesign.cell}`}>
               <div>{p.revenue}</div>
             </TableCell>
-            <TableCell className="border border-border text-center">
+            <TableCell className={tableDesign.cell}>
               <div className=" flex justify-center">
                 <CustomSwitch
                   checked={p.isAvailable}
@@ -80,7 +85,7 @@ const PlanOverviewTable: FC<PlanOverviewTableProps> = ({
               </div>
             </TableCell>
 
-            <TableCell className="border border-border">
+            <TableCell className={tableDesign.cell}>
               <div className="flex justify-center gap-3 text-[#B91C1C]">
                 <span className="text-blue-500 cursor-pointer">
                   <BiSolidEdit size={24} />

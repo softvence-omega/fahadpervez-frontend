@@ -11,7 +11,7 @@ const dropdownItems = [
 ];
 const TransactionSearch = () => {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex flex-col xl:flex-row items-start  lg:items-center justify-between">
       <DashboardSearch className=" !rounded-none my-5" />
 
       <div className="flex gap-2">

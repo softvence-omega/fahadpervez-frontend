@@ -12,16 +12,8 @@ import { LuDot } from "react-icons/lu";
 import CommonButton from "@/common/button/CommonButton";
 import { BsFillFileEarmarkPdfFill } from "react-icons/bs";
 import { PaymentProps } from "./data/PaymentHistory";
+import { GoDotFill } from "react-icons/go";
 
-const tableHeaders = [
-  { label: "Session Details", align: "text-left" },
-  { label: "Mentor", align: "text-center" },
-  { label: "Amount Paid", align: "text-center" },
-  { label: "Payment Method", align: "text-center" },
-  { label: "Paid On", align: "text-center" },
-  { label: "Status", align: "text-center" },
-  { label: "Action", align: "text-center" },
-];
 interface AllStudentProfileTable {
   payment: PaymentProps[];
 }
@@ -33,16 +25,33 @@ const getStatusClasses = (status: string) => {
   return "text-gray-700 bg-gray-100";
 };
 
+const tableDesign = {
+  header:
+    "text-lg font-geist text-[#2C2C2C] font-medium bg-[#EFF6FF] hover:bg-[#EFF6FF] md:h-12",
+  cellHeader: "border border-border px-4 ",
+  bodyRow: "text-[#2C2C2C] font-inter text-sm font-normal md:h-12",
+  cell: "border border-border px-4 text-center",
+};
+
+const tableHeaders = [
+  { label: "Session Details", align: "text-left" },
+  { label: "Mentor", align: "text-center xl:table-cell hidden" },
+  { label: "Amount Paid", align: "text-center hidden 2xl:table-cell" },
+  { label: "Payment Method", align: "text-center xl:table-cell hidden" },
+  { label: "Paid On", align: "text-center 2xl:table-cell hidden" },
+  { label: "Status", align: "text-center" },
+  { label: "Action", align: "text-center" },
+];
 const PaymentHistory: FC<AllStudentProfileTable> = ({ payment }) => {
   return (
     <div className="pb-10">
       <Table>
         <TableHeader>
-          <TableRow className=" text-lg font-geist text-[#2C2C2C] font-medium">
+          <TableRow className={tableDesign.header}>
             {tableHeaders.map((header) => (
               <TableHead
                 key={header.label}
-                className={`border border-border ${header.align} px-4`}
+                className={`${tableDesign.cellHeader} ${header.align} `}
               >
                 {header.label}
               </TableHead>
@@ -52,10 +61,7 @@ const PaymentHistory: FC<AllStudentProfileTable> = ({ payment }) => {
 
         <TableBody>
           {payment.map((p) => (
-            <TableRow
-              key={p.id}
-              className="hover:bg-gray-50 text-[#2C2C2C] font-inter text-sm font-normal"
-            >
+            <TableRow key={p.id} className={tableDesign.bodyRow}>
               <TableCell className="border border-border px-4 ">
                 <div className="">
                   <div>{p.sessionDetails.name}</div>
@@ -72,13 +78,15 @@ const PaymentHistory: FC<AllStudentProfileTable> = ({ payment }) => {
                   </CommonButton>
                 </div>
               </TableCell>
-              <TableCell className="border border-border text-center">
+              <TableCell className={`xl:table-cell hidden ${tableDesign.cell}`}>
                 <div className="flex flex-col">
                   <div> {p.mentor.name}</div>
                   <div> {p.mentor.email}</div>
                 </div>
               </TableCell>
-              <TableCell className="border border-border text-center">
+              <TableCell
+                className={`2xl:table-cell hidden ${tableDesign.cell}`}
+              >
                 <div className="flex flex-col">
                   <p className="text-[#15803D] font-medium font-geist text-lg">
                     {p.amountPaid}
@@ -86,20 +94,35 @@ const PaymentHistory: FC<AllStudentProfileTable> = ({ payment }) => {
 
                   <p>After fees</p>
                 </div>
-              </TableCell>{" "}
-              <TableCell className="border border-border text-center">
-                <div className="flex flex-col">
-                  <div> {p.paymentMethod}</div>
+              </TableCell>
+              <TableCell
+                className={`xl:table-cell hidden  ${tableDesign.cell}`}
+              >
+                <div className="flex flex-col items-center">
+                  <div className="flex items-center">
+                    <span
+                      className={
+                        p.paymentMethod === "PayPal"
+                          ? "text-[#9810FA]"
+                          : "text-[#155DFC]"
+                      }
+                    >
+                      <GoDotFill size={20} />
+                    </span>
+                    {p.paymentMethod}
+                  </div>
                   <div> {p.mentor.email}</div>
                 </div>
               </TableCell>
-              <TableCell className="border border-border text-center">
+              <TableCell
+                className={`2xl:table-cell hidden ${tableDesign.cell}`}
+              >
                 <div className="flex flex-col">
                   <div> {p.paidOn.date}</div>
                   <div> {p.paidOn.time}</div>
                 </div>
               </TableCell>
-              <TableCell className={`border border-border text-center }`}>
+              <TableCell className={`${tableDesign.cell}`}>
                 <div>
                   <button
                     className={` ${getStatusClasses(
@@ -110,7 +133,7 @@ const PaymentHistory: FC<AllStudentProfileTable> = ({ payment }) => {
                   </button>
                 </div>
               </TableCell>
-              <TableCell className="border border-border">
+              <TableCell className={`${tableDesign.cell}`}>
                 <div className="flex items-center justify-center gap-3  ">
                   <span>
                     <BsFillFileEarmarkPdfFill size={20} />

@@ -50,7 +50,7 @@ const Session = () => {
   const [mentorSelection, setMentorSelection] = useState<string[]>([]);
   return (
     <div>
-      <div className="flex  gap-6">
+      <div className="flex flex-col xl:flex-row  gap-6">
         <CommonBorderWrapper className="space-y-9">
           <CommonHeader className=" !font-normal">
             Program Settings

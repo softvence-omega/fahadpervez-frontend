@@ -28,8 +28,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs }) => {
           rounded-2xl 
           border-slate-300 
           bg-white
-          w-fit
-          mx-10
+          w-fit  
         "
       >
         {tabs.map((tab, index) => (
@@ -37,7 +36,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs }) => {
             key={index}
             onClick={() => setActiveIndex(index)}
             className={`
-              px-3 sm:px-4 py-2 
+              px-3 sm:px-4 py-2  cursor-pointer
               rounded-2xl text-sm sm:text-base font-medium 
               whitespace-nowrap transition
               ${
@@ -53,7 +52,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs }) => {
       </div>
 
       {/* Tab Content */}
-      <div className="mt-4 sm:mt-6 w-full p-3 sm:p-4 bg-gray-50 rounded-lg">
+      <div className="w-full  bg-gray-50 rounded-lg">
         {tabs[activeIndex].content}
       </div>
     </div>
