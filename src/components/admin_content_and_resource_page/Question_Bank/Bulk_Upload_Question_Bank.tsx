@@ -1,10 +1,15 @@
 import React, { useState } from "react";
+import { ArrowLeft } from "lucide-react";
 import UploadDropzone from "@/components/admin_Content & Resource_Component/Bulk Update Components/UpdateDropZone";
 import RequiredColumnsList from "@/components/admin_Content & Resource_Component/Bulk Update Components/RequiredColumsList";
 import UploadPreview from "@/components/admin_Content & Resource_Component/Bulk Update Components/UploadPreview";
 import ActionButtons from "@/components/admin_Content & Resource_Component/Bulk Update Components/ActionButtons";
 
-const BulkUploadQuestions: React.FC = () => {
+interface AddQuestionProps {
+  onBack?: () => void;
+}
+
+const BulkUploadQuestions: React.FC<AddQuestionProps> = ({ onBack }) => {
   const [detectedCount, setDetectedCount] = useState(0);
 
   const columns = [
@@ -33,12 +38,26 @@ const BulkUploadQuestions: React.FC = () => {
   };
 
   const handleCancel = () => {
-    window.history.back();
+    if (onBack) onBack();
+    else window.history.back();
+  };
+
+  const handleBack = () => {
+    if (onBack) onBack();
+    else window.history.back();
   };
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className=" mx-auto">
+        {/* Top Back Button */}
+        <button
+          onClick={handleBack}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span className="text-sm font-medium">Back</span>
+        </button>
         <h1 className="text-2xl font-semibold text-gray-900 mb-1">
           Bulk Upload Questions
         </h1>

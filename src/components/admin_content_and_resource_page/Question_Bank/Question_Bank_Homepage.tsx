@@ -17,9 +17,9 @@ const Content_Resource_Question_Bank: React.FC = () => {
 
   const [currentView, setCurrentView] = useState<View>("homepage");
 
-  if (currentView === "create") return <Create_New_Question />;
-  if (currentView === "addQuestion") return <Add_Question />;
-  if (currentView === "viewAll") return <Content_Resource_ALL_QB />;
+  if (currentView === "create") return <Create_New_Question onBack={() => setCurrentView("homepage")}/>;
+  if (currentView === "addQuestion") return <Add_Question onBack={() => setCurrentView("homepage")}/>;
+  if (currentView === "viewAll") return <Content_Resource_ALL_QB onBack={() => setCurrentView("homepage")}/>;
 
   return (
     <div className="space-y-6 w-full">

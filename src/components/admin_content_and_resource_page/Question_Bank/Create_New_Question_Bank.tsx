@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, Plus } from "lucide-react";
+import { X, Plus, ArrowLeft } from "lucide-react";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 
 interface Tag {
@@ -7,7 +7,11 @@ interface Tag {
   label: string;
 }
 
-const CreateQuestionBank: React.FC = () => {
+interface AddQuestionProps {
+  onBack?: () => void;
+}
+
+const CreateQuestionBank: React.FC<AddQuestionProps> = ({ onBack }) => {
   const [title, setTitle] = useState("Cardiology question bank");
   const [subject, setSubject] = useState("Cardiology");
   const [description, setDescription] = useState("Cardiology");
@@ -17,9 +21,7 @@ const CreateQuestionBank: React.FC = () => {
   ]);
   const [tagInput, setTagInput] = useState("Cardiology");
 
-  const removeTag = (id: string) => {
-    setTags(tags.filter((tag) => tag.id !== id));
-  };
+  const removeTag = (id: string) => setTags(tags.filter((tag) => tag.id !== id));
 
   const addTag = () => {
     if (tagInput.trim()) {
@@ -33,23 +35,38 @@ const CreateQuestionBank: React.FC = () => {
     alert("Question Bank Created!");
   };
 
+  const handleBack = () => {
+    if (onBack) onBack();
+    else window.history.back();
+  };
+
   return (
-    <div className="min-h-screen w-full bg-gray-50 p-8">
-      <div className="mx-auto ">
-        <h1 className="text-2xl font-semibold text-gray-900 mb-2">
+    <div className="min-h-screen w-full bg-gray-50">
+      <div className="max-w-full mx-auto">
+        {/* 🔙 Back Button */}
+        <button
+          onClick={handleBack}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 sm:mb-6 transition-colors duration-200"
+        >
+          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="text-sm sm:text-base font-medium">Back</span>
+        </button>
+
+        {/* 🏷️ Page Header */}
+        <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-1 sm:mb-2">
           Create New Question Bank
         </h1>
-        <p className="text-sm text-gray-600 mb-8">
-          Create a new question bank to organize your questions by subject or
-          topic.
+        <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 leading-relaxed">
+          Create a new question bank to organize your questions by subject or topic.
         </p>
 
-        <div className="space-y-6 bg-white rounded-lg shadow-sm p-8">
+        {/* 🧩 Form Card */}
+        <div className="space-y-6 bg-white rounded-lg shadow-sm p-4 sm:p-6 lg:p-8">
           {/* Title Field */}
           <div>
             <label
               htmlFor="title"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm sm:text-base font-medium text-gray-700 mb-1 sm:mb-2"
             >
               Title
             </label>
@@ -58,7 +75,7 @@ const CreateQuestionBank: React.FC = () => {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 rounded-md text-sm sm:text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
               placeholder="Enter title"
             />
           </div>
@@ -67,7 +84,7 @@ const CreateQuestionBank: React.FC = () => {
           <div>
             <label
               htmlFor="subject"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm sm:text-base font-medium text-gray-700 mb-1 sm:mb-2"
             >
               Subject
             </label>
@@ -76,7 +93,7 @@ const CreateQuestionBank: React.FC = () => {
               type="text"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 rounded-md text-sm sm:text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
               placeholder="Enter subject"
             />
           </div>
@@ -85,7 +102,7 @@ const CreateQuestionBank: React.FC = () => {
           <div>
             <label
               htmlFor="tags"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm sm:text-base font-medium text-gray-700 mb-1 sm:mb-2"
             >
               Tags
             </label>
@@ -96,7 +113,7 @@ const CreateQuestionBank: React.FC = () => {
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && addTag()}
-                className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                className="w-full px-3 sm:px-4 py-2 sm:py-2.5 pr-10 sm:pr-12 border border-gray-300 rounded-md text-sm sm:text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
                 placeholder="Enter tag"
               />
               <button
@@ -104,7 +121,7 @@ const CreateQuestionBank: React.FC = () => {
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
                 aria-label="Add tag"
               >
-                <Plus className="w-5 h-5" />
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
 
@@ -114,7 +131,7 @@ const CreateQuestionBank: React.FC = () => {
                 {tags.map((tag) => (
                   <span
                     key={tag.id}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs sm:text-sm"
                   >
                     {tag.label}
                     <button
@@ -122,7 +139,7 @@ const CreateQuestionBank: React.FC = () => {
                       className="hover:text-gray-900 transition"
                       aria-label={`Remove ${tag.label} tag`}
                     >
-                      <X className="w-3.5 h-3.5" />
+                      <X className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     </button>
                   </span>
                 ))}
@@ -134,34 +151,34 @@ const CreateQuestionBank: React.FC = () => {
           <div>
             <label
               htmlFor="description"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm sm:text-base font-medium text-gray-700 mb-1 sm:mb-2"
             >
               Description
             </label>
-            <input
+            <textarea
               id="description"
-              type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+              rows={3}
+              className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 rounded-md text-sm sm:text-base resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
               placeholder="Enter description"
             />
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-4 mt-8">
+        {/* ⚙️ Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 sm:mt-8">
           <ButtonWithIcon
             icon={Plus}
             onClick={handleSubmit}
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             Create Question Bank
           </ButtonWithIcon>
 
           <button
-            onClick={() => window.history.back()}
-            className="px-6 py-2.5 text-gray-700 font-medium rounded-md border border-gray-300 bg-white hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2"
+            onClick={handleBack}
+            className="w-full sm:w-auto px-5 sm:px-6 py-2.5 text-gray-700 font-medium rounded-md border border-gray-300 bg-white hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2"
           >
             Back
           </button>

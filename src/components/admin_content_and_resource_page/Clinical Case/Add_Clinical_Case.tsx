@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronDown, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, ChevronDown, Plus, Trash2 } from "lucide-react";
 import Multiple_Choice from "@/components/admin_Content & Resource_Component/Clinical Case/Multiple_Choice";
 
 interface AddClinicalCasePageProps {
@@ -126,8 +126,16 @@ const AddClinicalCasePage: React.FC<AddClinicalCasePageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-full">
+        {/* 🔙 Back Button */}
+        <button
+          onClick={handleCancel}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200 mb-4"
+        >
+          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="text-sm sm:text-base font-medium">Back</span>
+        </button>
         {/* Header */}
         <div className="mb-6">
           <h1 className=" mb-1 text-black font-inter text-2xl font-semibold leading-8 tracking-[-0.009rem]">

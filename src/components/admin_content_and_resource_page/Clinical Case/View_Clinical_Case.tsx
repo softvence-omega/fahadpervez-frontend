@@ -7,9 +7,14 @@ import {
   Image,
   CircleCheckBigIcon,
   BookOpenIcon,
+  ArrowLeft,
 } from "lucide-react";
 
-const ClinicalCasePage = () => {
+interface Bulk_Upload_Clinical_CaseProps {
+  onBack?: () => void;
+}
+
+const ClinicalCasePage: React.FC<Bulk_Upload_Clinical_CaseProps> = ({ onBack }) => {
   const [expandedSections, setExpandedSections] = useState({
     presentation: true,
     history: true,
@@ -39,10 +44,26 @@ const toggleSection = (section: SectionKey) => {
     }));
 };
 
+const handleBack = () => {
+    if (onBack) {
+        onBack();
+    } else {
+        window.history.back();
+    }
+};
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-full mx-auto">
+        {/* 🔙 Back Button */}
+        <button
+          onClick={handleBack}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200 mb-4"
+        >
+          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="text-sm sm:text-base font-medium">Back</span>
+        </button>
+
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-black mb-2 font-inter text-3xl font-semibold leading-9 tracking-[-0.01406rem]">
