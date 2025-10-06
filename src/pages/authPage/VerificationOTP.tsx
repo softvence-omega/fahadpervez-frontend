@@ -5,6 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import signupImage from "../../assets/signUp/signUpImage.png";
 import logo from "../../assets/signUp/logo.png";
+import {
+  useResendOTPMutation,
+  useVerifyOTPMutation,
+} from "@/store/features/auth/auth.api";
+import { toast } from "sonner";
+import Cookies from "js-cookie";
 
 const otpSchema = z.object({
   otp: z.string().length(6, "OTP must be 6 digits"),
@@ -13,6 +19,9 @@ const otpSchema = z.object({
 type OtpFormInputs = z.infer<typeof otpSchema>;
 
 export default function VerificationOTP() {
+  const [verifyOTP, { isLoading }] = useVerifyOTPMutation();
+  const [resendOTP, { isLoading: resendOTPIsLoading }] = useResendOTPMutation();
+
   const {
     // register,
     handleSubmit,
@@ -41,16 +50,40 @@ export default function VerificationOTP() {
     }
   };
 
-  // Form submit
-  const onSubmit = (data: OtpFormInputs) => {
-    console.log("OTP Submitted:", data.otp);
+  // OTP submit
+  const onSubmit = async (data: OtpFormInputs) => {
+    // console.log("OTP Submitted:", data.otp);
 
-    // 👉 API call here
-    if (data.otp === "123456") {
-      alert("OTP Verified Successfully ✅");
-      navigate("/dashboard");
-    } else {
-      alert("Invalid OTP ❌");
+    const email = localStorage.getItem("setVerificationEmail");
+
+    try {
+      const result = await verifyOTP({ email, otp: data.otp }).unwrap();
+
+      if (result.success === true) {
+        toast.success(result.message);
+        Cookies.set("accessToken", result.data.accessToken);
+        navigate("/multi-step-register");
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log("Error:", error);
+      toast.error(error?.data?.message || "Verification failed");
+    }
+  };
+
+  // Resend OTP
+  const handleResendOTP = async () => {
+    const email = localStorage.getItem("setVerificationEmail");
+
+    try {
+      const result = await resendOTP({ email });
+
+      if (result.data && result.data.success === true) {
+        toast.success(result.data.message);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(error.data.message);
     }
   };
 
@@ -78,11 +111,13 @@ export default function VerificationOTP() {
       {/* Right Side (OTP Verification) */}
       <div className="flex w-full md:w-1/2 items-center justify-center p-6">
         <div className="w-full max-w-[400px] text-center border border-[#E2E8F0] p-8 rounded-[8px]">
-          <h2 className="text-2xl font-semibold text-[#020617]">Verification</h2>
+          <h2 className="text-2xl font-semibold text-[#020617]">
+            Verification
+          </h2>
           <p className="w-[325px] mx-auto text-sm font-normal text-slate-500 leading-5 mb-6 mt-2">
-            We've sent a 6-digit code to <b>test@test12309u.com</b>. Enter it below.
+            We've sent a 6-digit code to <b>test@test12309u.com</b>. Enter it
+            below.
           </p>
-
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* OTP Inputs */}
             <div className="flex justify-center gap-2">
@@ -106,11 +141,21 @@ export default function VerificationOTP() {
             <button
               type="submit"
               className="w-full bg-blue-main text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-blue-600 cursor-pointer"
+              disabled={isLoading}
             >
-              Verify OTP
+              {isLoading ? "Loading..." : "Verify OTP"}
             </button>
           </form>
 
+          {/* Resend OTP */}
+          <button
+            type="submit"
+            className="w-full bg-white border border-slate-300 text-sm font-medium text-slate-700 p-3 rounded-md hover:bg-black hover:text-white cursor-pointer mt-3"
+            disabled={resendOTPIsLoading}
+            onClick={handleResendOTP}
+          >
+            {resendOTPIsLoading ? "Loading..." : "Resend OTP"}
+          </button>
           {/* Back + Sign up */}
           <button
             onClick={() => navigate(-1)}
@@ -118,7 +163,6 @@ export default function VerificationOTP() {
           >
             ← Back
           </button>
-
           <p className="text-sm text-center font-medium text-[#020617] mt-2">
             Don't have an account?{" "}
             <span

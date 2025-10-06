@@ -7,6 +7,8 @@ import signupImage from "../../assets/signUp/signUpImage.png";
 import logo from "../../assets/signUp/logo.png";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
+import { useRegisterUserMutation } from "@/store/features/auth/auth.api";
+import { toast } from "sonner";
 
 const signupSchema = z.object({
   email: z.string().nonempty("Email is required").email("Invalid email format"),
@@ -19,27 +21,54 @@ const signupSchema = z.object({
 type SignupFormInputs = z.infer<typeof signupSchema>;
 
 const Signup = () => {
+  const [registerUser, { isLoading }] = useRegisterUserMutation();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { isSubmitting, errors },
   } = useForm<SignupFormInputs>({
     resolver: zodResolver(signupSchema),
   });
 
   const navigate = useNavigate();
 
-  const onSubmit = (data: SignupFormInputs) => {
-    const formData = new FormData();
-    formData.append("email", data.email);
-    console.log("Signup Data:", Object.fromEntries(formData));
-    navigate("/verification-otp");
+  // Email signup
+  const onSubmit = async (data: SignupFormInputs) => {
+    // const formData = new FormData();
+    // formData.append("email", data.email);
+    // formData.append("password", data.password);
+
+    try {
+      // unwrap() will return the resolved data or throw an error
+      const result = await registerUser({
+        email: data.email,
+        password: data.password,
+      }).unwrap();
+
+      // Success toast
+      if (result.success) {
+        toast.success(result.message);
+
+        // Save email to localStorage
+        localStorage.setItem("setVerificationEmail", data.email);
+
+        navigate("/verification-otp");
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      const errorMessage =
+        err?.data?.message || err?.message || "Something went wrong";
+      toast.error(errorMessage);
+      console.error("Error: ", err);
+    }
   };
 
   const handleGoogleSignup = () => {
     console.log("Google signup triggered");
+    // Later: integrate Firebase/Auth0/NextAuth/etc.
   };
 
   return (
@@ -112,8 +141,9 @@ const Signup = () => {
             <button
               type="submit"
               className="w-full bg-blue-main text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-blue-600 cursor-pointer"
+              disabled={isSubmitting || isLoading}
             >
-              Sign up with Email
+              {isSubmitting || isLoading ? "Loading..." : "Sign up with Email"}
             </button>
           </form>
 

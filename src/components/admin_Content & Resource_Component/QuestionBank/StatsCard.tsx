@@ -24,7 +24,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ title, value, subtitle, icon }) =
           {value}
         </p>
         {subtitle && (
-          <span className="text-black font-sans text-xs font-normal leading-4 truncate mt-2">
+          <span className="text-black font-sans text-xs font-normal mt-2 leading-4 truncate text-wrap">
             {subtitle}
           </span>
         )}

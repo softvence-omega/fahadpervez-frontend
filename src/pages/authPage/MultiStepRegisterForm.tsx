@@ -10,10 +10,16 @@ import UpdatePreference from "./UpdatePreference";
 import PlatformTraining from "./PlatformTraining";
 import PayoutSetup from "./PayoutSetup";
 import { MultiStepFormData, multiStepSchema } from "./schemas";
+import { useUpdateInitialProfileMutation } from "@/store/features/auth/auth.api";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export default function MultiStepRegisterForm() {
   const [step, setStep] = useState<number>(0);
   const [formData, setFormData] = useState<Partial<MultiStepFormData>>({});
+  const navigate = useNavigate();
+
+  const [updateInitialProfile] = useUpdateInitialProfileMutation();
 
   // Determine steps based on role
   const isMentor = formData.profile?.role === "mentor";
@@ -31,6 +37,7 @@ export default function MultiStepRegisterForm() {
   const progressValue = ((step + 1) / stepCount) * 100;
 
   const handleNext = (partial: Partial<MultiStepFormData>) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setFormData((prev: any) => ({ ...prev, ...partial }));
     setStep((s) => Math.min(s + 1, stepCount - 1));
   };
@@ -41,6 +48,76 @@ export default function MultiStepRegisterForm() {
     const merged = { ...formData, ...partial } as MultiStepFormData;
 
     console.log(merged);
+
+    if (merged.profile.role === "student" && "preferences" in merged && merged.preferences) {
+      // Prepare the JS payload
+      const studentData = {
+        role: "STUDENT",
+        student: {
+          firstName: merged.profile.firstName,
+          lastName: merged.profile.lastName,
+          university: merged.profile.university,
+          country: merged.profile.country,
+          year_of_study: merged.profile.academicYear,
+          studentType: merged.profile.subRole,
+          preparingFor: merged.preparing?.exams?.join(", ") || "",
+        },
+        preference: {
+          subject: merged.preferences.subjectPreference,
+          systemPreference: merged.preferences.systemPreference,
+          topic: merged.preferences.topic,
+          subTopic: merged.preferences.subTopic,
+        },
+        bio: merged.upload?.bio || "",
+      };
+
+      // Validate payload
+      if (!studentData.student || !studentData.preference) {
+        console.error("Data is incomplete!");
+        toast.error("Please fill all required fields");
+        return;
+      }
+
+      // Create FormData
+      const formDataToSend = new FormData();
+
+      // Append image (if available)
+      if (merged.upload?.photo) {
+        formDataToSend.append("image", merged.upload.photo);
+      }
+
+      // Append the rest of data as JSON string under "data"
+      formDataToSend.append("data", JSON.stringify(studentData));
+
+      // Call the RTK Query mutation
+      try {
+        if (!studentData || !studentData.student || !studentData.preference) {
+          console.error("Data is incomplete!");
+        }
+
+        const res = await updateInitialProfile(formDataToSend).unwrap();
+
+        console.log(res);
+        // console.log(res.data);
+
+        if (res.success === true) {
+          toast.success(res.message);
+          navigate("/dashboard");
+        }
+
+        // fetch("/api/register", {
+        //   method: "POST",
+        //   headers: { "Content-Type": "application/json" },
+        //   body: JSON.stringify(studentData),
+        // });
+
+        // if (!res.data.success) throw new Error("Failed to submit");
+        // alert("Form submitted ✅");
+      } catch (err) {
+        console.error("Error:", err);
+        alert("Submission failed. See console for details.");
+      }
+    }
 
     // Validate final merged object
     const check = multiStepSchema.safeParse({
@@ -96,6 +173,7 @@ export default function MultiStepRegisterForm() {
             {steps[step] === "AboutYourSelfTab" && (
               <AboutYourSelfTab
                 defaultValues={formData.profile ?? undefined}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onNext={(profile) => handleNext({ profile } as any)}
               />
             )}

@@ -99,7 +99,7 @@ export default function MentorReviewPage() {
                     4.8 <span>(60 Reviews)</span>
                   </p>
                 </div>
-                <div className="flex items-center justify-between mt-3">
+                <div className="flex items-center justify-between flex-wrap mt-3">
                   <p className="flex flex-col text-sm font-medium">
                     Completion Rate
                     <span className="text-sm font-normal text-[#475569]">
@@ -118,7 +118,7 @@ export default function MentorReviewPage() {
         </div>
 
         {/* Review section */}
-        <div className="col-span-2 pb-10">
+        <div className="md:col-span-2 pb-10">
           <div className="bg-white rounded-xl  border border-border p-7.5 flex flex-col gap-6">
             <h2 className="flex items-center gap-3 text-[#212529] !text-2xl">
               <Star /> Reviews
@@ -129,8 +129,8 @@ export default function MentorReviewPage() {
             </p>
 
             {reviews.map((review) => (
-              <div key={review.id} className="">
-                <div className="flex items-center gap-3">
+              <div key={review.id} className="my-2">
+                <div className="flex flex-col md:flex-row items-center gap-3">
                   <img
                     src={
                       "https://media.istockphoto.com/id/2194078950/photo/profile-picture-of-smiling-confident-arabic-businessman.webp?a=1&b=1&s=612x612&w=0&k=20&c=42Z7FDi1u5Ogevtd0xMUkTWM7hDzrre4YOlbHKvK_T8="
@@ -139,10 +139,10 @@ export default function MentorReviewPage() {
                     className="w-10 h-10 rounded-full object-cover"
                   />
                   <div>
-                    <h3 className="font-semibold text-[#111827]">
+                    <h3 className="font-semibold text-center md:text-start text-[#111827]">
                       {review.name}
                     </h3>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-col md:flex-row items-center gap-2">
                       <Rating
                         style={{ maxWidth: 130 }}
                         value={3}

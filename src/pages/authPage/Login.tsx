@@ -4,13 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import signupImage from "../../assets/signUp/signUpImage.png";
-import logo from "../../assets/signUp/logo.png"
+import logo from "../../assets/signUp/logo.png";
+import { useLoginMutation } from "@/store/features/auth/auth.api";
+import { toast } from "sonner";
+import Cookies from "js-cookie";
 
 const loginSchema = z.object({
-  email: z
-    .string()
-    .nonempty("Email is required")
-    .email("Invalid email format"),
+  email: z.string().nonempty("Email is required").email("Invalid email format"),
   password: z
     .string()
     .nonempty("Password is required")
@@ -28,16 +28,34 @@ const Login = () => {
     resolver: zodResolver(loginSchema),
   });
 
+  const [login, { isLoading }] = useLoginMutation();
+
   const navigate = useNavigate();
 
-  // Email signup
-  const onSubmit = (data: LoginFormInputs) => {
-    const formData = new FormData();
-    formData.append("email", data.email);
-    formData.append("password", data.password);
+  // Email login
+  const onSubmit = async (loginFormData: LoginFormInputs) => {
+    try {
+      const result = await login({
+        email: loginFormData.email,
+        password: loginFormData.password,
+      }).unwrap();
 
-    console.log("Signup Data:", Object.fromEntries(formData));
-    // navigate("/login");
+      console.log(result);
+      Cookies.set("accessToken", result.data.accessToken);
+
+      // ✅ Success toast only once
+      toast.success(result.message || "Login successful");
+
+      // // Example: save token
+      // localStorage.setItem("token", result.token);
+
+      // Navigate after login
+      navigate("/dashboard");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      // ✅ Error toast from API error
+      toast.error(err?.data?.message || "Login failed");
+    }
   };
 
   // Google signup
@@ -56,9 +74,6 @@ const Login = () => {
           className="h-full w-full object-cover"
         />
         <div className="absolute top-6 left-6">
-          {/* <h1 className="text-blue-600 font-bold text-lg">
-            Medical Student Hub
-          </h1> */}
           <img src={logo} alt="" />
         </div>
         <div className="absolute bottom-6 left-6 bg-white/80 p-4 rounded-lg text-sm max-w-sm">
@@ -74,12 +89,16 @@ const Login = () => {
       <div className="flex w-full md:w-1/2 items-center justify-center p-6">
         <div className="w-full max-w-[450px] border border-[#E2E8F0] p-8 rounded-[8px]">
           <h2 className="text-2xl font-semibold text-[#09090B]">Login</h2>
-          <p className="text-sm font-normal text-[#64748B] leading-5 mb-6 mt-2">Enter your email below to login to your account</p>
+          <p className="text-sm font-normal text-[#64748B] leading-5 mb-6 mt-2">
+            Enter your email below to login to your account
+          </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Email */}
             <div>
-              <h3 className="text-sm text-[#020617] font-medium leading-5 mb-2 mt-4">Email</h3>
+              <h3 className="text-sm text-[#020617] font-medium leading-5 mb-2 mt-4">
+                Email
+              </h3>
               <input
                 type="email"
                 placeholder="name@example.com"
@@ -87,13 +106,16 @@ const Login = () => {
                 className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-black"
               />
               {errors.email && (
-                <p className="text-red-500 text-sm">{errors?.email?.message}</p>
+                <p className="text-red-500 text-sm">{errors.email.message}</p>
               )}
             </div>
+
             {/* Password */}
             <div>
               <div className="flex justify-between items-center">
-                <h3 className="text-sm text-[#020617] font-medium leading-5 mb-2 mt-4">Password</h3>
+                <h3 className="text-sm text-[#020617] font-medium leading-5 mb-2 mt-4">
+                  Password
+                </h3>
                 <button
                   type="button"
                   onClick={() => navigate("/forgot-password")}
@@ -104,25 +126,25 @@ const Login = () => {
               </div>
               <input
                 type="password"
-                placeholder=""
                 {...register("password")}
                 className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-black"
               />
               {errors.password && (
-                <p className="text-red-500 text-sm">{errors?.password?.message}</p>
+                <p className="text-red-500 text-sm">
+                  {errors.password.message}
+                </p>
               )}
             </div>
 
             {/* Login button */}
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isLoading}
               className="w-full bg-blue-main text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
-              {isSubmitting ? "Loading..." : "Login"}
+              {isSubmitting || isLoading ? "Loading..." : "Login"}
             </button>
           </form>
-
 
           {/* Google button */}
           <button

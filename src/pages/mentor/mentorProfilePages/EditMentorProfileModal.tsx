@@ -38,14 +38,14 @@ export default function EditMentorProfileModal({ open, setOpen }: any) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[800px]">
+      <DialogContent className="sm:max-w-[800px] overflow-y-scroll max-h-[700px] lg:overflow-hidden">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <UserRound /> Profile Information
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4 space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4 space-y-2">
           <div className="grid gap-2">
             <Label>First Name</Label>
             <Input
@@ -66,7 +66,7 @@ export default function EditMentorProfileModal({ open, setOpen }: any) {
             />
           </div>
 
-          <div className="col-span-2 grid gap-2">
+          <div className="md:col-span-2 grid gap-2">
             <Label>Email Address</Label>
             <Input
               value={email}
@@ -117,7 +117,7 @@ export default function EditMentorProfileModal({ open, setOpen }: any) {
             />
           </div>
 
-          <div className="grid col-span-2 gap-2">
+          <div className="grid col-span-1 md:col-span-2 gap-2">
             <Label>Bio</Label>
             <Textarea
               value={bio}
