@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,47 +28,57 @@ export default function UploadProfile({
   } = useForm<FormValues>({
     resolver: zodResolver(uploadProfileSchema),
     defaultValues: {
-      photo: "",
+      photo: undefined,
       bio: "",
       ...(defaultValues ?? {}),
     },
   });
 
   const [dragActive, setDragActive] = useState(false);
-  const preview = watch("photo");
+  const photo = watch("photo");
   const bio = watch("bio");
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const maxLength = 200;
 
-  // Sync when defaultValues change
+  // 🧠 Update preview when photo changes
+  useEffect(() => {
+    if (photo && photo instanceof File) {
+      const url = URL.createObjectURL(photo);
+      setPreviewUrl(url);
+      return () => URL.revokeObjectURL(url);
+    } else {
+      setPreviewUrl(null);
+    }
+  }, [photo]);
+
+  // Sync default values
   useEffect(() => {
     if (defaultValues) reset({ ...defaultValues });
   }, [defaultValues, reset]);
 
-  // Handle file input or drag drop
+  // 📂 Handle file input or drag-drop
   const handleFiles = (files: FileList | null) => {
     if (!files || files.length === 0) return;
     const file = files[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setValue("photo", reader.result as string, { shouldValidate: true });
-    };
-    reader.readAsDataURL(file);
+    setValue("photo", file, { shouldValidate: true });
   };
 
-  // Handle drop event
+  // 🧲 Handle drag events
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setDragActive(false);
     handleFiles(e.dataTransfer.files);
   };
 
-  // Remove image
+  // ❌ Remove image
   const removeImage = () => {
-    setValue("photo", "", { shouldValidate: true });
+    setValue("photo", null, { shouldValidate: true });
+    setPreviewUrl(null);
     const input = document.getElementById("fileInput") as HTMLInputElement;
     if (input) input.value = "";
   };
 
+  // 🧾 Submit handler
   const onSubmit = (data: FormValues) => {
     onNext(data);
   };
@@ -100,14 +109,13 @@ export default function UploadProfile({
           <div className="flex flex-col items-center gap-2">
             <span className="relative">
               {/* Preview OR Placeholder */}
-              {preview ? (
+              {previewUrl ? (
                 <div className="relative">
                   <img
-                    src={preview}
+                    src={previewUrl}
                     alt="preview"
                     className="w-32 h-32 object-cover rounded-full border-2 border-gray-300"
                   />
-                  {/* Remove Button */}
                   <button
                     type="button"
                     onClick={(e) => {
@@ -139,6 +147,7 @@ export default function UploadProfile({
             onChange={(e) => handleFiles(e.target.files)}
           />
         </div>
+
         {errors.photo && (
           <p className="text-red-500 text-sm">{errors.photo.message}</p>
         )}
