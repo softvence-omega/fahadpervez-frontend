@@ -10,13 +10,16 @@ import UpdatePreference from "./UpdatePreference";
 import PlatformTraining from "./PlatformTraining";
 import PayoutSetup from "./PayoutSetup";
 import { MultiStepFormData, multiStepSchema } from "./schemas";
-import { useRegisterUserMutation } from "@/store/features/auth/auth.api";
+import { useUpdateInitialProfileMutation } from "@/store/features/auth/auth.api";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export default function MultiStepRegisterForm() {
   const [step, setStep] = useState<number>(0);
   const [formData, setFormData] = useState<Partial<MultiStepFormData>>({});
+  const navigate = useNavigate();
 
-  const [registerUser] = useRegisterUserMutation();
+  const [updateInitialProfile] = useUpdateInitialProfileMutation();
 
   // Determine steps based on role
   const isMentor = formData.profile?.role === "mentor";
@@ -46,7 +49,8 @@ export default function MultiStepRegisterForm() {
 
     console.log(merged);
 
-    if (merged.profile.role === "student") {
+    if (merged.profile.role === "student" && "preferences" in merged && merged.preferences) {
+      // Prepare the JS payload
       const studentData = {
         role: "STUDENT",
         student: {
@@ -55,36 +59,64 @@ export default function MultiStepRegisterForm() {
           university: merged.profile.university,
           country: merged.profile.country,
           year_of_study: merged.profile.academicYear,
-          studentType: merged.profile.subRole, // example: "Dental student"
-          preparingFor: merged.preparing?.exams?.join(", ") || "", // e.g. "usmle1"
+          studentType: merged.profile.subRole,
+          preparingFor: merged.preparing?.exams?.join(", ") || "",
         },
         preference: {
-          subject: merged.preferences?.subjectPreference,
-          systemPreference: merged.preferences?.systemPreference,
-          topic: merged.preferences?.topic,
-          subTopic: merged.preferences?.subTopic,
+          subject: merged.preferences.subjectPreference,
+          systemPreference: merged.preferences.systemPreference,
+          topic: merged.preferences.topic,
+          subTopic: merged.preferences.subTopic,
         },
-        bio: merged.upload?.bio,
+        bio: merged.upload?.bio || "",
       };
 
-      console.log("🚀 Final student payload:", studentData);
+      // Validate payload
+      if (!studentData.student || !studentData.preference) {
+        console.error("Data is incomplete!");
+        toast.error("Please fill all required fields");
+        return;
+      }
 
-      // ✅ Call API
-      // try {
-      //   const res = await registerUser(studentData);
+      // Create FormData
+      const formDataToSend = new FormData();
 
-      //   // fetch("/api/register", {
-      //   //   method: "POST",
-      //   //   headers: { "Content-Type": "application/json" },
-      //   //   body: JSON.stringify(studentData),
-      //   // });
+      // Append image (if available)
+      if (merged.upload?.photo) {
+        formDataToSend.append("image", merged.upload.photo);
+      }
 
-      //   if (!res.data.success) throw new Error("Failed to submit");
-      //   alert("Form submitted ✅");
-      // } catch (err) {
-      //   console.error(err);
-      //   alert("Submission failed. See console for details.");
-      // }
+      // Append the rest of data as JSON string under "data"
+      formDataToSend.append("data", JSON.stringify(studentData));
+
+      // Call the RTK Query mutation
+      try {
+        if (!studentData || !studentData.student || !studentData.preference) {
+          console.error("Data is incomplete!");
+        }
+
+        const res = await updateInitialProfile(formDataToSend).unwrap();
+
+        console.log(res);
+        // console.log(res.data);
+
+        if (res.success === true) {
+          toast.success(res.message);
+          navigate("/dashboard");
+        }
+
+        // fetch("/api/register", {
+        //   method: "POST",
+        //   headers: { "Content-Type": "application/json" },
+        //   body: JSON.stringify(studentData),
+        // });
+
+        // if (!res.data.success) throw new Error("Failed to submit");
+        // alert("Form submitted ✅");
+      } catch (err) {
+        console.error("Error:", err);
+        alert("Submission failed. See console for details.");
+      }
     }
 
     // Validate final merged object
@@ -141,6 +173,7 @@ export default function MultiStepRegisterForm() {
             {steps[step] === "AboutYourSelfTab" && (
               <AboutYourSelfTab
                 defaultValues={formData.profile ?? undefined}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onNext={(profile) => handleNext({ profile } as any)}
               />
             )}

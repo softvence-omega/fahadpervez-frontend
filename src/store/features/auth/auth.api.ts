@@ -25,6 +25,22 @@ export const userAPI = baseAPI.injectEndpoints({
         body: data,
       }),
     }),
+
+    resendOTP: build.mutation({
+      query: (data) => ({
+        url: "/auth/new-verification-otp",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    updateInitialProfile: build.mutation({
+      query: (data) => ({
+        url: "/auth/update-initial-profile",
+        method: "PATCH",
+        body: data,
+      }),
+    }),
     // verifyOTP: build.mutation({
     //   query: (data) => ({
     //     url: "/auth/signup-verify-otp",
@@ -75,6 +91,8 @@ export const {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useVerifyOTPMutation,
+  useResendOTPMutation,
+  useUpdateInitialProfileMutation,
   // useVerifyOTPMutation,
   // useRegisterMutation,
   // useUpdatePasswordMutation,

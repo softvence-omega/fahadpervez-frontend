@@ -127,10 +127,15 @@ export default function ProfileSetupTab({ onNext, defaultValues }: Props) {
                 <option value="">Select</option>
                 {role === "student" ? (
                   <>
-                    <option value="Medical student">Medical student</option>
-                    <option value="Nursing student">Nursing student</option>
-                    <option value="Pharmacy student">Pharmacy student</option>
-                    <option value="Dental student">Dental student</option>
+                    <option value="MEDICAL_STUDENT">MEDICAL STUDENT</option>
+                    <option value="NURSING_STUDENT">NURSING STUDENT</option>
+                    <option value="DENTAL_STUDENT">DENTAL STUDENT</option>
+                    <option value="PHARMACY_STUDENT">PHARMACY STUDENT</option>
+                    <option value="PUBLIC_HEALTH_STUDENT">PUBLIC HEALTH STUDENT</option>
+                    <option value="DENTAL_HYGIENE_STUDENT">DENTAL HYGIENE STUDENT</option>
+                    <option value="MEDICAL_LAB_TECHNOLOGY_STUDENT">MEDICAL LAB TECHNOLOGY STUDENT</option>
+                    <option value="RADIOLOGY_STUDENT">RADIOLOGY STUDENT</option>
+                    <option value="PHYSIOTHERAPY_STUDENT">PHYSIOTHERAPY STUDENT</option>
                   </>
                 ) : (
                   <>

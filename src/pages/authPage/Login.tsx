@@ -7,6 +7,7 @@ import signupImage from "../../assets/signUp/signUpImage.png";
 import logo from "../../assets/signUp/logo.png";
 import { useLoginMutation } from "@/store/features/auth/auth.api";
 import { toast } from "sonner";
+import Cookies from "js-cookie";
 
 const loginSchema = z.object({
   email: z.string().nonempty("Email is required").email("Invalid email format"),
@@ -38,6 +39,9 @@ const Login = () => {
         email: loginFormData.email,
         password: loginFormData.password,
       }).unwrap();
+
+      console.log(result);
+      Cookies.set("accessToken", result.data.accessToken);
 
       // ✅ Success toast only once
       toast.success(result.message || "Login successful");

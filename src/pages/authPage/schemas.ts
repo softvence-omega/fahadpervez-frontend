@@ -52,8 +52,11 @@ export const preferencesSchema = z.object({
 });
 
 export const uploadProfileSchema = z.object({
-  photo: z.string().min(1, "Profile photo is required (data URL)"),
-  bio: z.string().min(1, "Bio is required").max(300, "Bio max 300 characters"),
+  photo: z.instanceof(File).nullable(),
+  bio: z
+    .string()
+    .min(1, "Bio is required")
+    .max(300, "Bio can be at most 300 characters"),
 });
 
 // mentor onboarding details

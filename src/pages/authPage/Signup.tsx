@@ -48,30 +48,30 @@ const Signup = () => {
       const result = await registerUser({
         email: data.email,
         password: data.password,
-      }).unwrap(); // ✅ unwrap returns typed data
+      }).unwrap();
 
       // Success toast
       if (result.success) {
-        toast.success(result.message); // show the success message
+        toast.success(result.message);
+
+        // Save email to localStorage
+        localStorage.setItem("setVerificationEmail", data.email);
+
         navigate("/verification-otp");
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      // err is typed as serialized error from RTK Query
       const errorMessage =
         err?.data?.message || err?.message || "Something went wrong";
       toast.error(errorMessage);
       console.error("Error: ", err);
     }
-
-    // console.log("Signup Data:", Object.fromEntries(formData));
-    // navigate("/verification-otp");
   };
 
   // Google signup
   const handleGoogleSignup = () => {
     console.log("Google signup triggered");
-    // 👉 Later: integrate Firebase/Auth0/NextAuth/etc.
+    // Later: integrate Firebase/Auth0/NextAuth/etc.
   };
 
   return (

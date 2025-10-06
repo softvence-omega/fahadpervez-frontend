@@ -1,14 +1,15 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { RootState } from "../store";
+import Cookies from "js-cookie";
 
 const baseQueryAPI = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL,
   credentials: "include",
-  prepareHeaders(headers, { getState }) {
-    const token = (getState() as RootState).auth.token;
+  prepareHeaders(headers) {
+    // const token = (getState() as RootState).auth.token;
+    const accessToken = Cookies.get("accessToken");
 
-    if (token) {
-      headers.set("authorization", `Bearer ${token}`);
+    if (accessToken) {
+      headers.set("authorization", `${accessToken}`);
     }
     return headers;
   },
@@ -17,8 +18,6 @@ const baseQueryAPI = fetchBaseQuery({
 export const baseAPI = createApi({
   reducerPath: "baseAPI",
   baseQuery: baseQueryAPI,
-  tagTypes: [
-   ""
-  ],
+  tagTypes: [""],
   endpoints: () => ({}),
 });
