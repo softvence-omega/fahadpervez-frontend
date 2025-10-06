@@ -1,5 +1,5 @@
-import { useState, ChangeEvent } from 'react';
-import { Upload, ChevronDown } from 'lucide-react';
+import React, { useState, ChangeEvent } from 'react';
+import { Upload, ChevronDown, ArrowLeft } from 'lucide-react';
 
 interface FormData {
   title: string;
@@ -21,16 +21,11 @@ const Upload_New_Note: React.FC<Upload_New_NoteProps> = ({ onBack }) => {
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  // Input change handler
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // File upload handler
   const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
     setSelectedFile(file);
@@ -43,21 +38,26 @@ const Upload_New_Note: React.FC<Upload_New_NoteProps> = ({ onBack }) => {
   const handleSubmit = () => {
     console.log('Form Data:', formData);
     console.log('File:', selectedFile);
-    // After successful submission, you can call onBack to return to homepage
-    // if (onBack) onBack();
+    if (onBack) onBack();
   };
 
   const handleBack = () => {
-    if (onBack) {
-      onBack();
-    } else {
-      window.history.back();
-    }
+    if (onBack) onBack();
+    else window.history.back();
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-full">
+        {/* Back to Homepage Button */}
+        <button
+          onClick={handleBack}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span className="text-sm font-medium">Back</span>
+        </button>
+
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Upload New Notes</h1>
@@ -69,7 +69,6 @@ const Upload_New_Note: React.FC<Upload_New_NoteProps> = ({ onBack }) => {
         {/* Form Container */}
         <div className="bg-white rounded-lg border border-gray-200 p-8">
           <h2 className="text-lg font-semibold text-gray-900 mb-6">Upload Notes</h2>
-
           <div className="space-y-5">
             {/* Notes Title */}
             <div>
@@ -88,9 +87,7 @@ const Upload_New_Note: React.FC<Upload_New_NoteProps> = ({ onBack }) => {
 
             {/* Subject */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Subject
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
               <div className="relative">
                 <select
                   name="subject"
@@ -110,9 +107,7 @@ const Upload_New_Note: React.FC<Upload_New_NoteProps> = ({ onBack }) => {
 
             {/* System */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                System
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">System</label>
               <input
                 type="text"
                 name="system"
@@ -125,9 +120,7 @@ const Upload_New_Note: React.FC<Upload_New_NoteProps> = ({ onBack }) => {
 
             {/* Topic */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Topic
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Topic</label>
               <input
                 type="text"
                 name="topic"
@@ -142,13 +135,9 @@ const Upload_New_Note: React.FC<Upload_New_NoteProps> = ({ onBack }) => {
             <div className="pt-4">
               <div className="flex items-center gap-2 mb-2">
                 <Upload className="w-4 h-4 text-gray-700" />
-                <label className="text-sm font-medium text-gray-700">
-                  Upload Media
-                </label>
+                <label className="text-sm font-medium text-gray-700">Upload Media</label>
               </div>
-              <p className="text-xs text-gray-500 mb-4">
-                Upload Images or Videos For Practice OSCE
-              </p>
+              <p className="text-xs text-gray-500 mb-4">Upload Images or Videos For Practice OSCE</p>
 
               {/* File Upload Area */}
               <div 
@@ -166,16 +155,10 @@ const Upload_New_Note: React.FC<Upload_New_NoteProps> = ({ onBack }) => {
                   <div className="bg-blue-50 p-3 rounded-full mb-3">
                     <Upload className="w-6 h-6 text-blue-600" />
                   </div>
-                  <p className="text-sm font-medium text-gray-700 mb-1">
-                    Click to Upload study notes file
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    PDF, DOC (Max 25MB)
-                  </p>
+                  <p className="text-sm font-medium text-gray-700 mb-1">Click to Upload study notes file</p>
+                  <p className="text-xs text-gray-500">PDF, DOC (Max 25MB)</p>
                   {selectedFile && (
-                    <p className="mt-3 text-sm text-green-600 font-medium">
-                      Selected: {selectedFile.name}
-                    </p>
+                    <p className="mt-3 text-sm text-green-600 font-medium">Selected: {selectedFile.name}</p>
                   )}
                 </div>
               </div>

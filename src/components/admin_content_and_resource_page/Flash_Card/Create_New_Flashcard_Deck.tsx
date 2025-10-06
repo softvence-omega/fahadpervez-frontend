@@ -1,8 +1,12 @@
 import React, { useState } from "react";
-import { Plus, ChevronDown } from "lucide-react";
+import { Plus, ChevronDown, ArrowLeft } from "lucide-react";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 
-const CreateFlashcardDeck: React.FC = () => {
+interface AddQuestionProps {
+  onBack?: () => void;
+}
+
+const CreateFlashcardDeck: React.FC<AddQuestionProps> = ({ onBack }) => {
   const [deckName, setDeckName] = useState("Anatomy - Cardiology System");
   const [subject, setSubject] = useState("Cardiology");
   const [description, setDescription] = useState("Cardiology");
@@ -22,9 +26,24 @@ const CreateFlashcardDeck: React.FC = () => {
     alert("Flashcard Deck Created!");
   };
 
+  const handleBack = () => {
+    if (onBack) onBack();
+    else window.history.back();
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+    <div className="min-h-screen bg-gray-50">
       <div className=" mx-auto ">
+        {/* 🔙 Back Button */}
+        <button
+          onClick={handleBack}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors duration-200"
+        >
+          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="text-sm sm:text-base font-medium">Back</span>
+        </button>
+
+        {/* 🏷️ Page Header */}
         <h1 className="text-2xl font-semibold text-gray-900 mb-2">
           Create New Flashcard Deck
         </h1>
@@ -128,7 +147,7 @@ const CreateFlashcardDeck: React.FC = () => {
           </ButtonWithIcon>
 
           <button
-            onClick={() => window.history.back()}
+            onClick={handleBack}
             className="px-6 py-2.5 text-gray-700 font-medium rounded-md border border-gray-300 bg-white hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2"
           >
             Back

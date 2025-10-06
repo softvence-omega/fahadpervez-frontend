@@ -1,22 +1,26 @@
-import React, { useState } from 'react';
-import { Upload, ChevronDown, Plus } from 'lucide-react';
-import ButtonWithIcon from '@/common/button/ButtonWithIcon';
+import React, { useState } from "react";
+import { Upload, ChevronDown, Plus, ArrowLeft } from "lucide-react";
+import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 
-const AddQuestion: React.FC = () => {
-  const [subject, setSubject] = useState('Cardiology');
-  const [system, setSystem] = useState('Cardiology');
-  const [topic, setTopic] = useState('Cardiology');
-  const [difficultyLabel, setDifficultyLabel] = useState('Medium');
-  const [questionType, setQuestionType] = useState('Multiple Choice');
-  const [question, setQuestion] = useState('');
-  const [options, setOptions] = useState(['', '', '', '']);
-  const [correctAnswer, setCorrectAnswer] = useState('Option A');
-  const [explanation, setExplanation] = useState('');
+interface AddQuestionProps {
+  onBack?: () => void;
+}
+
+const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
+  const [subject, setSubject] = useState("Cardiology");
+  const [system, setSystem] = useState("Cardiology");
+  const [topic, setTopic] = useState("Cardiology");
+  const [difficultyLabel, setDifficultyLabel] = useState("Medium");
+  const [questionType, setQuestionType] = useState("Multiple Choice");
+  const [question, setQuestion] = useState("");
+  const [options, setOptions] = useState(["", "", "", ""]);
+  const [correctAnswer, setCorrectAnswer] = useState("Option A");
+  const [explanation, setExplanation] = useState("");
   const [isDifficultyOpen, setIsDifficultyOpen] = useState(false);
   const [isCorrectAnswerOpen, setIsCorrectAnswerOpen] = useState(false);
 
-  const difficulties = ['Easy', 'Medium', 'Hard'];
-  const answerOptions = ['Option A', 'Option B', 'Option C', 'Option D'];
+  const difficulties = ["Easy", "Medium", "Hard"];
+  const answerOptions = ["Option A", "Option B", "Option C", "Option D"];
 
   const handleOptionChange = (index: number, value: string) => {
     const newOptions = [...options];
@@ -34,43 +38,65 @@ const AddQuestion: React.FC = () => {
       question,
       options,
       correctAnswer,
-      explanation
+      explanation,
     });
-    alert('Question Saved!');
+    alert("Question Saved!");
   };
 
   const handleSaveAndAddAnother = () => {
     handleSave();
-    // Reset form
-    setQuestion('');
-    setOptions(['', '', '', '']);
-    setExplanation('');
+    setQuestion("");
+    setOptions(["", "", "", ""]);
+    setExplanation("");
+  };
+
+  const handleBack = () => {
+    if (onBack) onBack();
+    else window.history.back();
   };
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 p-8">
-      <div className="mx-auto ">
-        <div className="flex items-center justify-between mb-2">
+    <div className="min-h-screen w-full bg-gray-50">
+      <div className="max-w-full mx-auto flex flex-col gap-6 sm:gap-8">
+        {/* 🔙 Back Button */}
+        <button
+          onClick={handleBack}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
+        >
+          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="text-sm sm:text-base font-medium">Back</span>
+        </button>
+
+        {/* 🏷️ Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">Add Question</h1>
-            <p className="text-sm text-gray-600 mt-1">Basic concept in cardiovascular medicine</p>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-900">
+              Add Question
+            </h1>
+            <p className="text-sm text-gray-600 mt-1">
+              Basic concept in cardiovascular medicine
+            </p>
           </div>
-          <ButtonWithIcon
-            icon={Upload}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition"
-          >
-            Bulk Upload
-          </ButtonWithIcon>
+
+          <div className="w-full sm:w-auto mt-2 sm:mt-0">
+            <ButtonWithIcon
+              icon={Upload}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition"
+            >
+              Bulk Upload
+            </ButtonWithIcon>
+          </div>
         </div>
 
-        <div className="space-y-6 mt-8 bg-white rounded-lg shadow-sm p-8">
-          {/* Subject Field */}
+        {/* 🧩 Form Section */}
+
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 lg:p-8 space-y-6">
+          {/* Subject */}
           <div>
-            <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Subject
             </label>
             <input
-              id="subject"
               type="text"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
@@ -78,13 +104,12 @@ const AddQuestion: React.FC = () => {
             />
           </div>
 
-          {/* System Field */}
+          {/* System */}
           <div>
-            <label htmlFor="system" className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               System
             </label>
             <input
-              id="system"
               type="text"
               value={system}
               onChange={(e) => setSystem(e.target.value)}
@@ -92,13 +117,12 @@ const AddQuestion: React.FC = () => {
             />
           </div>
 
-          {/* Topic Field */}
+          {/* Topic */}
           <div>
-            <label htmlFor="topic" className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Topic
             </label>
             <input
-              id="topic"
               type="text"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
@@ -106,7 +130,7 @@ const AddQuestion: React.FC = () => {
             />
           </div>
 
-          {/* Difficulty Label Dropdown */}
+          {/* Difficulty Dropdown */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Difficulty Label
@@ -115,12 +139,15 @@ const AddQuestion: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsDifficultyOpen(!isDifficultyOpen)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white text-left flex items-center justify-between"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white text-left flex items-center justify-between transition"
               >
                 <span className="text-gray-900">{difficultyLabel}</span>
-                <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${isDifficultyOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown
+                  className={`w-5 h-5 text-gray-400 transition-transform ${
+                    isDifficultyOpen ? "rotate-180" : ""
+                  }`}
+                />
               </button>
-              
               {isDifficultyOpen && (
                 <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
                   {difficulties.map((diff) => (
@@ -132,7 +159,9 @@ const AddQuestion: React.FC = () => {
                         setIsDifficultyOpen(false);
                       }}
                       className={`w-full px-4 py-2 text-left hover:bg-gray-100 transition ${
-                        difficultyLabel === diff ? 'bg-blue-50 text-blue-600' : 'text-gray-900'
+                        difficultyLabel === diff
+                          ? "bg-blue-50 text-blue-600"
+                          : "text-gray-900"
                       }`}
                     >
                       {diff}
@@ -143,13 +172,12 @@ const AddQuestion: React.FC = () => {
             </div>
           </div>
 
-          {/* Select Question Type */}
+          {/* Question Type */}
           <div>
-            <label htmlFor="questionType" className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Select Question Type
             </label>
             <input
-              id="questionType"
               type="text"
               value={questionType}
               onChange={(e) => setQuestionType(e.target.value)}
@@ -157,29 +185,30 @@ const AddQuestion: React.FC = () => {
             />
           </div>
 
-          {/* Question Field */}
+          {/* Question */}
           <div>
-            <label htmlFor="question" className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Question
             </label>
             <textarea
-              id="question"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               rows={4}
-              placeholder="Question Text"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition resize-none"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none transition"
             />
           </div>
 
           {/* Answer Options */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Answer Option
+              Answer Options
             </label>
             <div className="space-y-3">
               {options.map((option, index) => (
-                <div key={index} className="flex items-center gap-3">
+                <div
+                  key={index}
+                  className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3"
+                >
                   <span className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-600 text-sm font-medium flex-shrink-0">
                     {String.fromCharCode(65 + index)}
                   </span>
@@ -187,7 +216,9 @@ const AddQuestion: React.FC = () => {
                     type="text"
                     value={option}
                     onChange={(e) => handleOptionChange(index, e.target.value)}
-                    placeholder={`Enter option ${String.fromCharCode(65 + index)}`}
+                    placeholder={`Enter option ${String.fromCharCode(
+                      65 + index
+                    )}`}
                     className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
                   />
                 </div>
@@ -195,7 +226,7 @@ const AddQuestion: React.FC = () => {
             </div>
           </div>
 
-          {/* Correct Answer Dropdown */}
+          {/* Correct Answer */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Correct Answer
@@ -204,12 +235,15 @@ const AddQuestion: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsCorrectAnswerOpen(!isCorrectAnswerOpen)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white text-left flex items-center justify-between"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white text-left flex items-center justify-between transition"
               >
                 <span className="text-gray-900">{correctAnswer}</span>
-                <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${isCorrectAnswerOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown
+                  className={`w-5 h-5 text-gray-400 transition-transform ${
+                    isCorrectAnswerOpen ? "rotate-180" : ""
+                  }`}
+                />
               </button>
-              
               {isCorrectAnswerOpen && (
                 <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
                   {answerOptions.map((ans) => (
@@ -221,7 +255,9 @@ const AddQuestion: React.FC = () => {
                         setIsCorrectAnswerOpen(false);
                       }}
                       className={`w-full px-4 py-2 text-left hover:bg-gray-100 transition ${
-                        correctAnswer === ans ? 'bg-blue-50 text-blue-600' : 'text-gray-900'
+                        correctAnswer === ans
+                          ? "bg-blue-50 text-blue-600"
+                          : "text-gray-900"
                       }`}
                     >
                       {ans}
@@ -232,38 +268,44 @@ const AddQuestion: React.FC = () => {
             </div>
           </div>
 
-          {/* Explanation Field */}
+          {/* Explanation */}
           <div>
-            <label htmlFor="explanation" className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Explanation
             </label>
             <textarea
-              id="explanation"
               value={explanation}
               onChange={(e) => setExplanation(e.target.value)}
               rows={4}
-              placeholder="Explain"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition resize-none"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none transition"
             />
           </div>
-        <div className="flex gap-4 mt-8">
-          <ButtonWithIcon
-            icon={Plus}
-            onClick={handleSave}
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            Save Question 
-          </ButtonWithIcon>
-          <button
-            onClick={handleSaveAndAddAnother}
-            className="px-6 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
-          >
-            Save & Add Another
-          </button>
-        </div>
-        </div>
 
-        {/* Action Buttons */}
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6">
+            <button
+              onClick={handleBack}
+              className="w-full sm:w-auto px-6 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-50 transition"
+            >
+              Back
+            </button>
+
+            <ButtonWithIcon
+              icon={Plus}
+              onClick={handleSave}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition"
+            >
+              Save Question
+            </ButtonWithIcon>
+
+            <button
+              onClick={handleSaveAndAddAnother}
+              className="w-full sm:w-auto px-6 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-100 transition"
+            >
+              Save & Add Another
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

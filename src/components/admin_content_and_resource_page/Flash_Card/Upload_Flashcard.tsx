@@ -17,9 +17,9 @@ const Upload_Flashcard: React.FC = () => {
 
   const [currentView, setCurrentView] = useState<View>("homepage");
 
-  if (currentView === "create") return <Create_New_Flashcard_Deck />;
-  if (currentView === "addFlashcard") return <AddFlashcard />;
-  if (currentView === "viewAll") return <All_Flashcard />;
+  if (currentView === "create") return <Create_New_Flashcard_Deck onBack={() => setCurrentView("homepage")} />;
+  if (currentView === "addFlashcard") return <AddFlashcard onBack={() => setCurrentView("homepage")} />;
+  if (currentView === "viewAll") return <All_Flashcard onBack={() => setCurrentView("homepage")} />;
 
   return (
     <div className="space-y-6 w-full">
@@ -82,7 +82,7 @@ const Upload_Flashcard: React.FC = () => {
       </div>
 
       {/* ✅ Flashcard Decks List */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
         {[...Array(6)].map((_, i) => (
           <FlashcardDeckCard
             key={i}

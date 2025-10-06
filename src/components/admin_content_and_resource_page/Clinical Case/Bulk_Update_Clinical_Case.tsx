@@ -2,6 +2,7 @@ import React from "react";
 import UploadDropzone from "@/components/admin_Content & Resource_Component/Bulk Update Components/UpdateDropZone";
 import RequiredColumnsList from "@/components/admin_Content & Resource_Component/Bulk Update Components/RequiredColumsList";
 import ActionButtons from "@/components/admin_Content & Resource_Component/Bulk Update Components/ActionButtons";
+import { ArrowLeft } from "lucide-react";
 
 interface Bulk_Upload_Clinical_CaseProps {
   onBack?: () => void;
@@ -55,8 +56,16 @@ const Bulk_Upload_Clinical_Case: React.FC<Bulk_Upload_Clinical_CaseProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-full mx-auto">
+        {/* 🔙 Back Button */}
+        <button
+          onClick={handleCancel}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200 mb-4"
+        >
+          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="text-sm sm:text-base font-medium">Back</span>
+        </button>
         <h1 className="text-2xl font-semibold text-gray-900 mb-1">
           Bulk Upload Questions
         </h1>
