@@ -65,41 +65,47 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
   }
 
   return (
-    <div>
+    <div className="w-full px-4 sm:px-6 lg:px-8">
       {/* Back Button */}
       <button
         onClick={onBack}
-        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6"
+        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 sm:mb-6 text-sm sm:text-base"
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="w-5 h-5 cursor-pointer" />
         Back to Forums
       </button>
 
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+      <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2 text-center sm:text-left">
           Create New Discussion
         </h2>
-        <p className="text-gray-600 mb-6">
+        <p className="text-gray-600 mb-6 text-sm sm:text-base text-center sm:text-left">
           Connect, learn, and grow with the medical education community
         </p>
 
         {/* ✅ react-hook-form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 
-          {/* Title + Category side by side */}
+          {/* Title + Category side by side on desktop */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Title */}
             <div>
-              <label className="block text-sm font-medium mb-2">Post Title</label>
+              <label className="block text-sm font-medium mb-2">
+                Post Title
+              </label>
               <Input placeholder="Type your title" {...register("title")} />
               {errors.title && (
-                <p className="text-sm text-red-500 mt-1">{errors.title.message}</p>
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.title.message}
+                </p>
               )}
             </div>
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-medium mb-2">Category</label>
+              <label className="block text-sm font-medium mb-2">
+                Category
+              </label>
               <Select
                 onValueChange={(val) =>
                   setValue("category", val, { shouldValidate: true })
@@ -125,21 +131,27 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
 
           {/* Content */}
           <div>
-            <label className="block text-sm font-medium mb-2">Detailed Content</label>
+            <label className="block text-sm font-medium mb-2">
+              Detailed Content
+            </label>
             <Textarea
               placeholder="Provide more details about your discussion"
-              className="min-h-[150px] resize-none"
+              className="min-h-[120px] sm:min-h-[150px] resize-none"
               {...register("content")}
             />
             {errors.content && (
-              <p className="text-sm text-red-500 mt-1">{errors.content.message}</p>
+              <p className="text-sm text-red-500 mt-1">
+                {errors.content.message}
+              </p>
             )}
           </div>
 
           {/* Tags */}
           <div>
-            <label className="block text-sm font-medium mb-2">Tags (optional)</label>
-            <div className="flex gap-2 mb-2">
+            <label className="block text-sm font-medium mb-2">
+              Tags (optional)
+            </label>
+            <div className="flex flex-col sm:flex-row gap-2 mb-2">
               <Input
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
@@ -148,7 +160,7 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
                 }
                 placeholder="Type a tag"
               />
-              <Button type="button" onClick={handleAddTag}>
+              <Button type="button" onClick={handleAddTag} className="sm:w-auto w-full">
                 Add Tag
               </Button>
             </div>
@@ -174,15 +186,20 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-3 pt-4">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <Button
               type="submit"
-              className="flex-1 w-full justify-center items-center gap-3 px-6 py-3 bg-teal-700 text-white rounded-lg hover:bg-teal-800 transition-colors font-medium"
+              className="flex w-full sm:flex-1 justify-center items-center gap-2 px-6 py-3 bg-teal-700 text-white rounded-lg hover:bg-teal-800 transition-colors font-medium"
             >
               <img src={arrow} alt="arrow icon" className="w-4 h-4" />
               Post to Forum
             </Button>
-            <Button type="button" onClick={onBack} variant="outline">
+            <Button
+              type="button"
+              onClick={onBack}
+              variant="outline"
+              className="w-full sm:w-auto"
+            >
               Cancel
             </Button>
           </div>

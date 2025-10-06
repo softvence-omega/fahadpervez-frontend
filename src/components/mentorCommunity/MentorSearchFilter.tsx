@@ -1,8 +1,18 @@
+import { useState } from "react"
 import { Search } from "lucide-react"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 const MentorSearchFilter = () => {
+  const [filterType, setFilterType] = useState("all")
+
   return (
-    <div className=" bg-white rounded-lg shadow-sm p-4 h-fit sticky top-28 w-full">
+    <div className="bg-white rounded-lg shadow-sm p-4 h-fit sticky top-28 w-full">
       <h3 className="font-semibold text-gray-900 mb-4">Search & Filter</h3>
 
       <div className="space-y-4">
@@ -17,12 +27,17 @@ const MentorSearchFilter = () => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Filter by type</label>
-          <select className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option>All Posts</option>
-            <option>Questions</option>
-            <option>Discussions</option>
-            <option>Resources</option>
-          </select>
+          <Select value={filterType} onValueChange={setFilterType}>
+            <SelectTrigger className="w-full border-gray-300 focus:ring-2 focus:ring-blue-500">
+              <SelectValue placeholder="All Posts" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Posts</SelectItem>
+              <SelectItem value="questions">Questions</SelectItem>
+              <SelectItem value="discussions">Discussions</SelectItem>
+              <SelectItem value="resources">Resources</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
     </div>
