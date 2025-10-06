@@ -24,8 +24,6 @@ const Signup = () => {
   const [registerUser, { isLoading }] = useRegisterUserMutation();
 
   const [showPassword, setShowPassword] = useState(false);
-  // const [preview, setPreview] = useState<string | null>(null);
-  // const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const {
     register,
@@ -68,7 +66,6 @@ const Signup = () => {
     }
   };
 
-  // Google signup
   const handleGoogleSignup = () => {
     console.log("Google signup triggered");
     // Later: integrate Firebase/Auth0/NextAuth/etc.
@@ -84,9 +81,6 @@ const Signup = () => {
           className="h-full w-full object-cover"
         />
         <div className="absolute top-6 left-6">
-          {/* <h1 className="text-blue-600 font-bold text-lg">
-            Medical Student Hub
-          </h1> */}
           <img src={logo} alt="" />
         </div>
         <div className="absolute bottom-6 left-6 bg-white/80 p-4 rounded-lg text-sm max-w-sm">
@@ -125,17 +119,16 @@ const Signup = () => {
             {/* Password */}
             <div className="relative">
               <input
-                type={`${showPassword ? "password" : "text"}`}
-                placeholder="*****"
+                type={showPassword ? "text" : "password"}
+                placeholder="********"
                 {...register("password")}
                 className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-black"
               />
-              <div onClick={() => setShowPassword((prev) => !prev)}>
-                {showPassword ? (
-                  <Eye className="absolute top-3 right-2" />
-                ) : (
-                  <EyeOff className="absolute top-3 right-2" />
-                )}
+              <div
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute top-3 right-2 cursor-pointer text-gray-600 hover:text-gray-800"
+              >
+                {showPassword ? <Eye /> : <EyeOff />}
               </div>
               {errors.password && (
                 <p className="text-red-500 text-sm">
