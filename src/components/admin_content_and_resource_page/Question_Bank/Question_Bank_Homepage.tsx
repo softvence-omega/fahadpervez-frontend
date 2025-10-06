@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import Create_New_Question from "./Create_New_Question_Bank";
 import Add_Question from "./Add_Question";
 import Content_Resource_ALL_QB from "./Content_Resource_All_QB";
+import CommonSpace from "@/common/space/CommonSpace";
 
 const Content_Resource_Question_Bank: React.FC = () => {
   type View = "homepage" | "create" | "addQuestion" | "viewAll";
@@ -31,32 +32,31 @@ const Content_Resource_Question_Bank: React.FC = () => {
   }
 
   return (
-    <div className="p-4 sm:p-6 space-y-6">
-      {/* ✅ Stats Section */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatsCard
-          title="Total Question Bank"
-          value={10}
-          subtitle="Across all subjects"
-          icon={<BookOpenTextIcon className="w-6 h-6 text-green-600" />}
-        />
-        <StatsCard
-          title="Total Question Imported"
-          value={3420}
-          subtitle="Across all subjects"
-          icon={<BookOpenTextIcon className="w-6 h-6 text-green-600" />}
-        />
-        <StatsCard title="Last Upload" value={180} subtitle="2025-09-12" />
-        <StatsCard
-          title="Published"
-          value={180}
-          subtitle="MCQ Bank Published"
-          icon={<BookOpenTextIcon className="w-6 h-6 text-green-600" />}
-        />
-      </div>
-
-      {/* ✅ Search + Add Button */}
-      <div className="mt-8 flex flex-col sm:flex-row w-full justify-between items-stretch sm:items-center gap-4">
+    <div className="space-y-6  ">
+      <CommonSpace>
+        <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          <StatsCard
+            title="Total Question Bank"
+            value={10}
+            subtitle="Across all subjects"
+            icon={<BookOpenTextIcon className="w-6 h-6 text-green-600" />}
+          />
+          <StatsCard
+            title="Total Question Imported"
+            value={3420}
+            subtitle="Across all subjects"
+            icon={<BookOpenTextIcon className="w-6 h-6 text-green-600" />}
+          />
+          <StatsCard title="Last Upload" value={180} subtitle="2025-09-12" />
+          <StatsCard
+            title="Published"
+            value={180}
+            subtitle="MCQ Bank Published"
+            icon={<BookOpenTextIcon className="w-6 h-6 text-green-600" />}
+          />
+        </div>
+      </CommonSpace>
+      <div className=" flex flex-col sm:flex-row w-full justify-between items-stretch sm:items-center gap-4">
         {/* Search */}
         <div className="flex w-full sm:flex-1">
           <SearchBar
@@ -77,7 +77,6 @@ const Content_Resource_Question_Bank: React.FC = () => {
         </div>
       </div>
 
-      {/* ✅ Header with View All */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
         <h2 className="text-lg sm:text-xl font-semibold">Question Banks</h2>
         <Link to="">
@@ -91,8 +90,7 @@ const Content_Resource_Question_Bank: React.FC = () => {
         </Link>
       </div>
 
-      {/* ✅ Question Banks List */}
-      <div className="space-y-4">
+      <div className="space-y-4 ">
         <QuestionBankCard
           title="Anatomy Essentials MCQs"
           description="Basic concepts in cardiovascular medicine"
@@ -112,7 +110,6 @@ const Content_Resource_Question_Bank: React.FC = () => {
         />
       </div>
 
-      {/* ✅ Recent Activity */}
       <div className="overflow-x-auto">
         <RecentActivity
           activities={[

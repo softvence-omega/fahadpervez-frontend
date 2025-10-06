@@ -29,22 +29,29 @@ interface PlanSubscriptionTableProps {
 }
 const tableHeaders = [
   { label: "Event", align: "text-left" },
-  { label: "Type & Format", align: "text-center" },
-  { label: "Registrations", align: "text-center" },
-  { label: "Date & Time", align: "text-center" },
-  { label: "Price", align: "text-center" },
+  { label: "Type & Format", align: "text-center xl:table-cell hidden" },
+  { label: "Registrations", align: "text-center lg:table-cell hidden" },
+  { label: "Price", align: "text-center md:table-cell hidden" },
+  { label: "Date & Time", align: "text-center lg:table-cell hidden" },
   { label: "Action", align: "text-center" },
 ];
 
+const tableDesign = {
+  header:
+    "text-lg font-geist text-[#2C2C2C] font-medium bg-[#EFF6FF] hover:bg-[#EFF6FF] md:h-12",
+  cellHeader: "border border-border px-4 ",
+  bodyRow: "text-[#2C2C2C] font-inter text-sm font-normal md:h-12",
+  cell: "border border-border px-4 text-center",
+};
 const AllEvent: FC<PlanSubscriptionTableProps> = ({ events, onDelete }) => {
   return (
     <Table>
       <TableHeader>
-        <TableRow className=" text-lg font-geist text-[#2C2C2C] font-medium">
+        <TableRow className={tableDesign.header}>
           {tableHeaders.map((header) => (
             <TableHead
               key={header.label}
-              className={`border border-border ${header.align} px-4`}
+              className={`${tableDesign.cellHeader} ${header.align} `}
             >
               {header.label}
             </TableHead>
@@ -54,15 +61,12 @@ const AllEvent: FC<PlanSubscriptionTableProps> = ({ events, onDelete }) => {
 
       <TableBody>
         {events.map((p) => (
-          <TableRow
-            key={p.id}
-            className="hover:bg-gray-50 text-[#2C2C2C] font-inter text-sm font-normal"
-          >
-            <TableCell className="border border-border px-4">
+          <TableRow key={p.id} className={tableDesign.bodyRow}>
+            <TableCell className={`${tableDesign.cell}`}>
               <div>{p.event.eventName}</div>
               <div>by {p.event.doctorName}</div>
             </TableCell>
-            <TableCell className="border border-border text-center">
+            <TableCell className={`hidden xl:table-cell ${tableDesign.cell}`}>
               <div className="flex gap-1 justify-center">
                 {p.type}, online
                 <span>
@@ -70,16 +74,16 @@ const AllEvent: FC<PlanSubscriptionTableProps> = ({ events, onDelete }) => {
                 </span>
               </div>
             </TableCell>
-            <TableCell className="border border-border text-center">
+            <TableCell className={`lg:table-cell  hidden ${tableDesign.cell}`}>
               <div>{p.registration}</div>
             </TableCell>
-            <TableCell className="border border-border text-center">
+            <TableCell className={`hidden md:table-cell ${tableDesign.cell}`}>
               <div>{p.price}</div>
             </TableCell>
-            <TableCell className="border border-border text-center">
+            <TableCell className={`hidden lg:table-cell ${tableDesign.cell}`}>
               <div>{p.date}</div>
             </TableCell>
-            <TableCell className="border border-border">
+            <TableCell className={`${tableDesign.cell}`}>
               <div className="flex justify-center gap-3 text-[#B91C1C] ">
                 <span className="text-blue-500 cursor-pointer">
                   <BiSolidEdit size={24} />

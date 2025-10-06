@@ -5,6 +5,7 @@ import OSCE_Homepage from "@/components/admin_content_and_resource_page/OSCE/OSC
 import Notes_HomePage from "@/components/admin_content_and_resource_page/Notes/Notes_HomePage";
 import Career_Resource_Homepage from "@/components/admin_content_and_resource_page/Career Resource/Career_Resource_Homepage";
 import Clinical_Case_Homepage from "@/components/admin_content_and_resource_page/Clinical Case/Clinical_Case_Homepage";
+import CommonSpace from "@/common/space/CommonSpace";
 
 function TabList() {
   const tabs = [
@@ -35,9 +36,9 @@ function TabList() {
   ];
 
   return (
-    <div className="">
+    <CommonSpace>
       <Tabs tabs={tabs} />
-    </div>
+    </CommonSpace>
   );
 }
 

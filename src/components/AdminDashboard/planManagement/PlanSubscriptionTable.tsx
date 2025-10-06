@@ -9,13 +9,15 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
+import CommonButton from "@/common/button/CommonButton";
 
 export interface SubscriptionData {
   id: number;
   user: string;
-  plan: "Standard" | "Elite";
-  status: "Active" | "Deactive";
-  nextBilling: string; // date
+  plan: "Standard" | "Elite" | string;
+  status: "Active" | "Deactive" | string;
+
+  nextBilling: string;
   revenue: string;
 }
 
@@ -24,14 +26,21 @@ interface PlanSubscriptionTableProps {
   onDelete?: (provider: SubscriptionData) => void;
 }
 const tableHeaders = [
-  { label: "User", align: "text-left" },
+  { label: "User", align: "text-left md:table-cell hidden" },
   { label: "Plan", align: "text-center" },
-  { label: "Next Billing", align: "text-center" },
-  { label: "Revenue", align: "text-center" },
   { label: "Status", align: "text-center" },
+  { label: "Next Billing", align: "text-center lg:table-cell hidden" },
+  { label: "Revenue", align: "text-center lg:table-cell hidden" },
   { label: "Action", align: "text-center" },
 ];
 
+const tableDesign = {
+  header:
+    "text-lg font-geist text-[#2C2C2C] font-medium bg-[#EFF6FF] hover:bg-[#EFF6FF] md:h-12",
+  cellHeader: "border border-border px-4 ",
+  bodyRow: "text-[#2C2C2C] font-inter text-sm font-normal md:h-12",
+  cell: "border border-border px-4 text-center",
+};
 const PlanSubscriptionTable: FC<PlanSubscriptionTableProps> = ({
   subscription,
   onDelete,
@@ -39,11 +48,11 @@ const PlanSubscriptionTable: FC<PlanSubscriptionTableProps> = ({
   return (
     <Table>
       <TableHeader>
-        <TableRow className=" text-lg font-geist text-[#2C2C2C] font-medium">
+        <TableRow className={tableDesign.header}>
           {tableHeaders.map((header) => (
             <TableHead
               key={header.label}
-              className={`border border-border ${header.align} px-4`}
+              className={`${tableDesign.cellHeader} ${header.align}`}
             >
               {header.label}
             </TableHead>
@@ -53,26 +62,31 @@ const PlanSubscriptionTable: FC<PlanSubscriptionTableProps> = ({
 
       <TableBody>
         {subscription.map((p) => (
-          <TableRow
-            key={p.id}
-            className="hover:bg-gray-50 text-[#2C2C2C] font-inter text-sm font-normal"
-          >
-            <TableCell className="border border-border px-4">
+          <TableRow key={p.id} className={tableDesign.bodyRow}>
+            <TableCell
+              className={`hidden md:table-cell !text-left ${tableDesign.cell}`}
+            >
               <div>{p.user}</div>
             </TableCell>
-            <TableCell className="border border-border text-center">
+            <TableCell className={` ${tableDesign.cell}`}>
               <div>{p.plan}</div>
             </TableCell>
-            <TableCell className="border border-border text-center">
-              <div>{p.status}</div>
+            <TableCell className={` ${tableDesign.cell}`}>
+              <CommonButton
+                className={
+                  p.status === "Active" ? "!bg-[#F0FDF4] !text-[#15803D]" : ""
+                }
+              >
+                {p.status}
+              </CommonButton>
             </TableCell>
-            <TableCell className="border border-border text-center">
+            <TableCell className={`hidden lg:table-cell ${tableDesign.cell}`}>
               <div>{p.nextBilling}</div>
             </TableCell>
-            <TableCell className="border border-border text-center">
+            <TableCell className={` hidden lg:table-cell ${tableDesign.cell}`}>
               <div>{p.revenue}</div>
             </TableCell>
-            <TableCell className="border border-border">
+            <TableCell className={` ${tableDesign.cell}`}>
               <div className="flex justify-center gap-3 text-[#B91C1C] ">
                 <span className="text-blue-500 cursor-pointer">
                   <BiSolidEdit size={24} />

@@ -48,15 +48,15 @@ const registrations = [
 
 const UpcomingEvent = () => {
   return (
-    <div className=" grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className=" grid grid-cols-1 xl:grid-cols-2 gap-6">
       <CommonBorderWrapper className=" flex flex-col gap-4">
-        <CommonHeader className="!mb-9">Upcoming Events</CommonHeader>
+        <CommonHeader className="sm:!mb-9">Upcoming Events</CommonHeader>
         {UpcomingEvents.map((event) => (
           <EventCard key={event.id} event={event} />
         ))}
       </CommonBorderWrapper>
       <CommonBorderWrapper className=" flex flex-col gap-4">
-        <CommonHeader className="!mb-9">Recent Registrations</CommonHeader>
+        <CommonHeader className="sm:!mb-9">Recent Registrations</CommonHeader>
         {registrations.map((event) => (
           <EventCard key={event.id} event={event} />
         ))}

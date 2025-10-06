@@ -27,16 +27,16 @@ interface EventCardProps {
 // Reusable EventCard component
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
   return (
-    <div className="bg-white p-5  flex justify-between border border-border rounded-xl">
+    <div className="bg-white p-4 md:p-5  flex justify-between border border-border rounded-xl">
       <div className="flex gap-5 items-center">
         <div
-          className={`${event.iconColor} w-15 h-15 flex items-center justify-center rounded-full`}
+          className={`${event.iconColor} w-15 h-15 sm:flex items-center justify-center rounded-full hidden`}
         >
           <span className={` ${event.textColor} `}>
             <HiOutlineVideoCamera size={24} />
           </span>
         </div>
-        <div className="">
+        <div className=" ">
           <CommonHeader className="!font-normal">{event.title}</CommonHeader>
           <CommonHeader className="!font-normal">{event.name}</CommonHeader>
           <CommonHeader className="!font-normal">{event.email}</CommonHeader>

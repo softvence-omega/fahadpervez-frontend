@@ -274,7 +274,7 @@ const PlanForm: React.FC<PlanFormProps> = ({ handleCancel }) => {
               </div>
             </div>
 
-            <div className="flex space-x-4 pt-6">
+            <div className="flex space-x-4 pt-6 pb-5 sm:pb-0 ">
               <CommonButton type="button" onClick={handleCancel} className="">
                 Cancel
               </CommonButton>

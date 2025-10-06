@@ -11,7 +11,7 @@ const CommonBorderWrapper: React.FC<CommonBorderWrapper> = ({
 }) => {
   return (
     <div
-      className={`w-full border border-[#CBD5E1] p-7.5 rounded-2xl bg-white ${className}`}
+      className={`w-full border border-[#CBD5E1] p-4 md:p-7.5 rounded-2xl bg-white ${className}`}
     >
       {children}
     </div>
