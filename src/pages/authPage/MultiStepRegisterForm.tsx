@@ -25,13 +25,13 @@ export default function MultiStepRegisterForm() {
   const isMentor = formData.profile?.role === "mentor";
   const steps = isMentor
     ? [
-        "AboutYourSelfTab",
-        "VerifyProfession",
-        "UpdatePreference",
-        "PlatformTraining",
-        "PayoutSetup",
-        "UploadProfile",
-      ]
+      "AboutYourSelfTab",
+      "VerifyProfession",
+      "UpdatePreference",
+      "PlatformTraining",
+      "PayoutSetup",
+      "UploadProfile",
+    ]
     : ["AboutYourSelfTab", "PreparingFor", "Preferences", "UploadProfile"];
   const stepCount = steps.length;
   const progressValue = ((step + 1) / stepCount) * 100;
@@ -97,7 +97,7 @@ export default function MultiStepRegisterForm() {
 
         const res = await updateInitialProfile(formDataToSend).unwrap();
 
-        console.log(res);
+        console.log("response ", res);
         // console.log(res.data);
 
         if (res.success === true) {

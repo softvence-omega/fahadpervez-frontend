@@ -47,6 +47,8 @@ const Signup = () => {
         email: data.email,
         password: data.password,
       }).unwrap();
+      console.log(result,"df dfdskfjd");
+      
 
       // Success toast
       if (result.success) {

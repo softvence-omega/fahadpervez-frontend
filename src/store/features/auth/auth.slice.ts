@@ -4,12 +4,12 @@ import { TUser } from "@/store/storeTypes/user";
 
 type Tstate = {
   user: TUser | null;
-  token: string | null;
+  accessToken: string | null;
 };
 
 const initialState: Tstate = {
   user: null,
-  token: null,
+  accessToken: null,
 };
 
 const authSlice = createSlice({
@@ -17,19 +17,19 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const { user, token } = action.payload || {};
+      const { user, accessToken } = action.payload || {};
 
-      if (!user || !token) {
+      if (!user || !accessToken) {
         console.error("Invalid payload received:", action.payload);
         return;
       }
 
-      state.token = token;
+      state.accessToken = accessToken;
       state.user = user;
     },
     logout: (state) => {
       state.user = null;
-      state.token = null;
+      state.accessToken = null;
     },
   },
 });
@@ -37,7 +37,7 @@ const authSlice = createSlice({
 export const { setUser, logout } = authSlice.actions;
 
 export const selectUser = (state: RootState) => state.auth?.user;
-export const selectToken = (state: RootState) => state.auth?.token;
+export const selectToken = (state: RootState) => state.auth?.accessToken;
 
 const authReducer = authSlice.reducer;
 export default authReducer;
