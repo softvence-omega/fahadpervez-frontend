@@ -38,7 +38,7 @@ const Bulk_Upload_Flashcard: React.FC<AddQuestionProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50">
       <div className="mx-auto">
         {/* Top Back Button */}
         <button

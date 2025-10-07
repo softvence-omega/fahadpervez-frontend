@@ -200,7 +200,7 @@ const MCQComponent: React.FC<MCQComponentProps> = ({ onQuestionsChange }) => {
           </div>
           <button
             onClick={handleAddQuestion}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors text-nowrap text-xs sm:text-sm"
           >
             <Plus className="w-4 h-4" />
             {editingId !== null ? 'Update Question' : 'Add Question'}

@@ -8,8 +8,39 @@ import ResourceCard from "@/components/admin_Content & Resource_Component/Career
 import Upload_New_Resource from "./Upload_New_Resource";
 import CommonSpace from "@/common/space/CommonSpace";
 
+interface ResourceType {
+  title: string;
+  description: string;
+  tags: string[];
+  downloads: number;
+  published: boolean;
+}
+
 const Career_Resource_Homepage: React.FC = () => {
   const [showUploadPage, setShowUploadPage] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Sample resource data
+  const [resources, setResources] = useState<ResourceType[]>([
+    { title: "Sample Resource 1", description: "This is a sample description for the resource.", tags: ["Residency Disease", "USA"], downloads: 10, published: true },
+    { title: "Sample Resource 2", description: "This is a sample description for the resource.", tags: ["Residency Disease"], downloads: 20, published: false },
+    { title: "Sample Resource 3", description: "This is a sample description for the resource.", tags: ["USA"], downloads: 15, published: true },
+    { title: "Sample Resource 4", description: "This is a sample description for the resource.", tags: ["Residency Disease", "Canada"], downloads: 5, published: false },
+    { title: "Sample Resource 5", description: "This is a sample description for the resource.", tags: ["Canada"], downloads: 12, published: true },
+    { title: "Sample Resource 6", description: "This is a sample description for the resource.", tags: ["USA"], downloads: 18, published: false },
+  ]);
+
+  // Delete handler
+  const handleDelete = (title: string) => {
+    setResources((prev) => prev.filter((res) => res.title !== title));
+  };
+
+  // Filter resources by title or tags
+  const filteredResources = resources.filter(
+    (res) =>
+      res.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      res.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
 
   if (showUploadPage) {
     return <Upload_New_Resource onBack={() => setShowUploadPage(false)} />;
@@ -17,7 +48,7 @@ const Career_Resource_Homepage: React.FC = () => {
 
   return (
     <div className="space-y-6 w-full">
-      {/* ✅ Stats Section */}
+      {/* Stats Section */}
       <CommonSpace>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 justify-items-center sm:justify-items-start gap-4 sm:gap-6">
           <StatsCard
@@ -47,12 +78,12 @@ const Career_Resource_Homepage: React.FC = () => {
         </div>
       </CommonSpace>
 
-      {/* ✅ Search + Add Button */}
+      {/* Search + Add Button */}
       <div className="flex flex-col sm:flex-row w-full justify-between items-stretch sm:items-center gap-3 sm:gap-4">
         <div className="flex-1 w-full min-w-0">
           <SearchBar
             placeholder="Search Resources"
-            onChange={(val) => console.log(val)}
+            onChange={(val) => setSearchQuery(val)}
           />
         </div>
 
@@ -67,7 +98,7 @@ const Career_Resource_Homepage: React.FC = () => {
         </div>
       </div>
 
-      {/* ✅ Header with View All */}
+      {/* Header with View All */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
         <h2 className="text-lg sm:text-xl font-semibold">Resources</h2>
         <Link to="/upload-content/all_osce_stations">
@@ -77,18 +108,23 @@ const Career_Resource_Homepage: React.FC = () => {
         </Link>
       </div>
 
-      {/* ✅ Resources Grid */}
+      {/* Resources Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        {[...Array(6)].map((_, i) => (
-          <ResourceCard
-            key={i}
-            title={`Sample Resource ${i + 1}`}
-            description="This is a sample description for the resource."
-            tags={["Residency Disease", "USA"]}
-            downloads={i * 10}
-            published={i % 2 === 0}
-          />
-        ))}
+        {filteredResources.length > 0 ? (
+          filteredResources.map((res, i) => (
+            <ResourceCard
+              key={i}
+              title={res.title}
+              description={res.description}
+              tags={res.tags}
+              downloads={res.downloads}
+              published={res.published}
+              onDelete={() => handleDelete(res.title)}
+            />
+          ))
+        ) : (
+          <p className="text-gray-500 text-center col-span-full">No results found.</p>
+        )}
       </div>
     </div>
   );

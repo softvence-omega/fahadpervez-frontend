@@ -1,4 +1,3 @@
-// components/ResourceCard.tsx
 import React from "react";
 import { FaRegFileAlt, FaRegStar } from "react-icons/fa";
 import { Trash2, DownloadIcon, StarIcon } from "lucide-react";
@@ -10,6 +9,7 @@ type ResourceCardProps = {
   downloads: number;
   published: boolean;
   isFavorite?: boolean;
+  onDelete: () => void; // <-- new prop
 };
 
 const ResourceCard: React.FC<ResourceCardProps> = ({
@@ -19,15 +19,15 @@ const ResourceCard: React.FC<ResourceCardProps> = ({
   downloads,
   published,
   isFavorite = false,
+  onDelete, // <-- destructure it
 }) => {
-  function onDelete(
+  function handleDelete(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ): void {
     event.preventDefault();
-    // You might want to show a confirmation dialog or call a prop callback here.
-    // For now, we'll just log to the console.
-    console.log(`Delete requested for resource: ${title}`);
+    onDelete(); // <-- call parent callback
   }
+
   return (
     <div className="shadow-sm hover:shadow-md transition flex flex-col p-5 gap-4 sm:gap-6 rounded-lg border border-slate-300 bg-white w-full">
       {/* Header */}
@@ -79,8 +79,8 @@ const ResourceCard: React.FC<ResourceCardProps> = ({
           {published ? "Published Resource" : "Publish Resource"}
         </button>
         <button
-          onClick={onDelete}
-          className="p-1.5 border border-gray-300 rounded-md text-red-600 hover:bg-red-50 transition focus:outline-none focus:ring-2 focus:ring-red-300"
+          onClick={handleDelete} // <-- call the callback
+          className="p-2.5 border border-red-100 rounded-md text-red-600 hover:bg-red-100 transition"
           aria-label="Delete station"
         >
           <Trash2 className="w-4 h-4" />

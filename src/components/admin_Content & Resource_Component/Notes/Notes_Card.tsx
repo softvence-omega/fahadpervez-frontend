@@ -8,7 +8,7 @@ interface Notes_CardProps {
   pages: number;
   status: "draft" | "published";
   onPublish?: () => void;
-  onDelete?: () => void;
+  onDelete?: () => void; // <-- add prop
 }
 
 const Notes_Card: React.FC<Notes_CardProps> = ({
@@ -71,8 +71,8 @@ const Notes_Card: React.FC<Notes_CardProps> = ({
 
         {/* Delete button */}
         <button
-          onClick={onDelete}
-          className="p-2.5 bg-red-50 hover:bg-red-100 rounded-md border border-red-100 transition-colors duration-200"
+          onClick={onDelete} // <-- trigger delete
+          className="p-2.5 hover:bg-red-100 rounded-md border border-red-100 transition-colors duration-200"
         >
           <Trash2 className="w-4 h-4 text-red-600" />
         </button>

@@ -24,12 +24,12 @@ const QuestionBankCard: React.FC<QuestionBankCardProps> = ({
       <div className="flex flex-col sm:flex-row justify-between items-start w-full gap-4">
         {/* Left Content */}
         <div className="flex items-start gap-3 min-w-0 flex-1 flex-wrap">
-          <CircleChevronRight className="h-6 w-6 text-gray-400 shrink-0" />
+          <CircleChevronRight className="h-6 w-6 text-gray-400 shrink-0 hidden sm:block" />
           <div className="flex items-start gap-2 min-w-0 flex-1 flex-wrap">
             <BookOpenTextIcon className="h-6 w-6 text-black shrink-0 hidden sm:block" />
             <div className="flex flex-col gap-1 min-w-0 flex-1">
-              <h4 className="text-lg font-semibold text-gray-800 truncate">{title}</h4>
-              <p className="text-sm text-gray-600 truncate">{description}</p>
+              <h4 className="text-lg font-semibold text-gray-800">{title}</h4>
+              <p className="text-sm text-gray-600">{description}</p>
               <div className="flex flex-wrap gap-2 mt-1">
                 {tags.map((tag) => (
                   <span

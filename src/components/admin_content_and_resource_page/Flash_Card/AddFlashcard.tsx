@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Upload, Plus, ArrowLeft } from "lucide-react";
 import CommonSpace from "@/common/space/CommonSpace";
+import Bulk_Upload_Flashcard from "./Bulk_Upload_Flashcard";
 
 interface AddQuestionProps {
   onBack?: () => void;
@@ -12,6 +13,13 @@ const AddFlashcard: React.FC<AddQuestionProps> = ({ onBack }) => {
   const [backSide, setBackSide] = useState("");
   const [explanation, setExplanation] = useState("");
 
+  type View = "addQuestion" | "bulkQuestion";
+
+  const [currentView, setCurrentView] = useState<View>("addQuestion");
+
+  if (currentView === "bulkQuestion")
+    return <Bulk_Upload_Flashcard onBack={() => setCurrentView("addQuestion")} />;
+
   const handleSave = () => {
     console.log({ subject, frontSide, backSide, explanation });
     alert("Flashcard Saved!");
@@ -22,10 +30,6 @@ const AddFlashcard: React.FC<AddQuestionProps> = ({ onBack }) => {
     setFrontSide("");
     setBackSide("");
     setExplanation("");
-  };
-
-  const handleBulkUpload = () => {
-    alert("Bulk Upload feature");
   };
 
   const handleBack = () => {
@@ -58,7 +62,7 @@ const AddFlashcard: React.FC<AddQuestionProps> = ({ onBack }) => {
           </div>
 
           <button
-            onClick={handleBulkUpload}
+            onClick={( ) => setCurrentView("bulkQuestion")}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-md text-sm sm:text-base transition-all duration-200 shadow-sm hover:shadow-md"
           >
             <Upload className="w-4 h-4" />

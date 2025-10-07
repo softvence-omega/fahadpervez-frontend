@@ -14,12 +14,37 @@ import CommonSpace from "@/common/space/CommonSpace";
 
 const Upload_Flashcard: React.FC = () => {
   type View = "homepage" | "create" | "addFlashcard" | "viewAll";
-
   const [currentView, setCurrentView] = useState<View>("homepage");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  if (currentView === "create") return <Create_New_Flashcard_Deck onBack={() => setCurrentView("homepage")} />;
-  if (currentView === "addFlashcard") return <AddFlashcard onBack={() => setCurrentView("homepage")} />;
-  if (currentView === "viewAll") return <All_Flashcard onBack={() => setCurrentView("homepage")} />;
+  // ✅ Stateful flashcard list
+  const [flashcardDecks, setFlashcardDecks] = useState([
+    { title: "Sample Flashcard Deck 1", cards: 10, subject: "Anatomy", created: "2024-06-01" },
+    { title: "Sample Flashcard Deck 2", cards: 12, subject: "Cardiology", created: "2024-06-02" },
+    { title: "Sample Flashcard Deck 3", cards: 8, subject: "Physiology", created: "2024-06-03" },
+    { title: "Sample Flashcard Deck 4", cards: 15, subject: "Pathology", created: "2024-06-04" },
+    { title: "Sample Flashcard Deck 5", cards: 20, subject: "Pharmacology", created: "2024-06-05" },
+    { title: "Sample Flashcard Deck 6", cards: 25, subject: "Microbiology", created: "2024-06-06" },
+  ]);
+
+  // ✅ Delete handler
+  const handleDeleteDeck = (title: string) => {
+    setFlashcardDecks((prev) => prev.filter((deck) => deck.title !== title));
+  };
+
+  // ✅ Apply search filtering (case-insensitive)
+  const filteredDecks = flashcardDecks.filter(
+    (deck) =>
+      deck.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      deck.subject.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (currentView === "create")
+    return <Create_New_Flashcard_Deck onBack={() => setCurrentView("homepage")} />;
+  if (currentView === "addFlashcard")
+    return <AddFlashcard onBack={() => setCurrentView("homepage")} />;
+  if (currentView === "viewAll")
+    return <All_Flashcard onBack={() => setCurrentView("homepage")} />;
 
   return (
     <div className="space-y-6 w-full">
@@ -29,7 +54,13 @@ const Upload_Flashcard: React.FC = () => {
           {[...Array(4)].map((_, i) => (
             <StatsCard
               key={i}
-              title={i === 0 ? "Total Flash Set" : i === 3 ? "Published" : "Total Question Imported"}
+              title={
+                i === 0
+                  ? "Total Flash Set"
+                  : i === 3
+                  ? "Published"
+                  : "Total Question Imported"
+              }
               value={i === 0 ? 10 : 3420}
               subtitle="Across all subjects"
               icon={<RectangleHorizontalIcon className="w-6 h-6 text-orange-500 rotate-36" />}
@@ -43,7 +74,7 @@ const Upload_Flashcard: React.FC = () => {
         <div className="flex-1 w-full min-w-0">
           <SearchBar
             placeholder="Search Flashcard Deck"
-            onChange={(val) => console.log(val)}
+            onChange={(val) => setSearchTerm(val)}
           />
         </div>
 
@@ -83,16 +114,23 @@ const Upload_Flashcard: React.FC = () => {
 
       {/* ✅ Flashcard Decks List */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
-        {[...Array(6)].map((_, i) => (
-          <FlashcardDeckCard
-            key={i}
-            title={`Sample Flashcard Deck ${i + 1}`}
-            cards={10}
-            subject="Anatomy"
-            created="2024-06-01"
-            onAddCard={() => setCurrentView("addFlashcard")}
-          />
-        ))}
+        {filteredDecks.length > 0 ? (
+          filteredDecks.map((deck, i) => (
+            <FlashcardDeckCard
+              key={i}
+              title={deck.title}
+              cards={deck.cards}
+              subject={deck.subject}
+              created={deck.created}
+              onAddCard={() => setCurrentView("addFlashcard")}
+              onDelete={() => handleDeleteDeck(deck.title)}
+            />
+          ))
+        ) : (
+          <p className="text-gray-500 text-center col-span-full py-10">
+            No flashcard decks found.
+          </p>
+        )}
       </div>
 
       {/* ✅ Recent Activity */}

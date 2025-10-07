@@ -278,7 +278,7 @@ const AddClinicalCasePage: React.FC<AddClinicalCasePageProps> = ({
                         handleVitalSignChange(vs.id, e.target.value)
                       }
                       placeholder="Description"
-                      className="flex-1 px-3 py-2focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm resize-none h-20 rounded-md border border-slate-300 bg-[rgba(239,246,255,0.6)]"
+                      className="flex-1 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm resize-none h-20 rounded-md border border-slate-300 bg-[rgba(239,246,255,0.6)]"
                     />
                   ) : (
                     <input
