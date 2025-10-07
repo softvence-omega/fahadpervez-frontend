@@ -50,7 +50,7 @@ export const userAPI = baseAPI.injectEndpoints({
     //   }),
     // }),
 
-    getMe: build.mutation({
+    getMe: build.query({
       query: () => ({
         url: "/auth/me",
         method: "GET",
@@ -82,7 +82,8 @@ export const {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useVerifyOTPMutation,
-  useGetMeMutation,
+  useLazyGetMeQuery,
+  useGetMeQuery,
   useResendOTPMutation,
   useUpdateInitialProfileMutation,
   // useVerifyOTPMutation,

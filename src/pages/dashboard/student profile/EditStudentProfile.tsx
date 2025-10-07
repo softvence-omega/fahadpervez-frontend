@@ -1,31 +1,31 @@
 import profileBg from "@/assets/dashboard/profileBg.png";
 import { Button } from "@/components/ui/button";
 import EditStudentProfileModal from "./EditStudentProfileModal";
-import { useEffect, useState } from "react";
-import { useGetMeMutation } from "@/store/features/auth/auth.api";
+import { useState } from "react";
+// import { useGetMeMutation } from "@/store/features/auth/auth.api";
 
 export default function EditStudentProfile() {
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useState();
-  const [accountInfo, setAccountInfo] = useState();
-  const [getMe] = useGetMeMutation();
+  const [user] = useState();
+  const [accountInfo] = useState();
+  // const [getMe] = useGetMeMutation();
 
   console.log(user);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const result = await getMe(undefined).unwrap();
-        console.log(result);
-        setUser(result.data.profile);
-        setAccountInfo(result.data.account);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     try {
+  //       const result = await getMe(undefined).unwrap();
+  //       console.log(result);
+  //       setUser(result.data.profile);
+  //       setAccountInfo(result.data.account);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
 
-    fetchUser();
-  }, [getMe]);
+  //   fetchUser();
+  // }, [getMe]);
 
   return (
     <div className="my-8 md:my-10">
