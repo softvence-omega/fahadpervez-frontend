@@ -5,10 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import signupImage from "../../assets/signUp/signUpImage.png";
 import logo from "../../assets/signUp/logo.png";
-import { useLoginMutation } from "@/store/features/auth/auth.api";
+import { useLazyGetMeQuery, useLoginMutation } from "@/store/features/auth/auth.api";
 import { toast } from "sonner";
 import Cookies from "js-cookie";
+import { useAppDispatch } from "@/store/hook";
+import { setUser } from "@/store/features/auth/auth.slice";
 
+// ✅ Validation schema
 const loginSchema = z.object({
   email: z.string().nonempty("Email is required").email("Invalid email format"),
   password: z
@@ -29,39 +32,49 @@ const Login = () => {
   });
 
   const [login, { isLoading }] = useLoginMutation();
-
+  const [getMeTrigger] = useLazyGetMeQuery(); // lazy query trigger
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  // Email login
   const onSubmit = async (loginFormData: LoginFormInputs) => {
     try {
-      const result = await login({
+      // 1️⃣ Login
+      const res = await login({
         email: loginFormData.email,
         password: loginFormData.password,
       }).unwrap();
 
-      console.log(result);
-      Cookies.set("accessToken", result.data.accessToken);
+      if (res?.success) {
+        const { accessToken } = res.data;
 
-      // ✅ Success toast only once
-      toast.success(result.message || "Login successful");
+        // 2️⃣ Save token
+        Cookies.set("accessToken", accessToken);
 
-      // // Example: save token
-      // localStorage.setItem("token", result.token);
+        // 3️⃣ Trigger getMe manually
+        const meData = await getMeTrigger(undefined, false).unwrap();
 
-      // Navigate after login
-      navigate("/dashboard");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // 4️⃣ Dispatch to Redux
+        dispatch(
+          setUser({
+            accessToken,
+            user: meData?.data
+          })
+        );
+
+        toast.success(res.message || "Login successful!");
+        navigate("/dashboard"); // ✅ navigate after fetching user info
+      } else {
+        toast.error(res?.error?.data?.message || "Login failed");
+      }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      // ✅ Error toast from API error
-      toast.error(err?.data?.message || "Login failed");
+      console.error("❌ Login error:", err);
+      toast.error(err?.data?.message || "Something went wrong. Please try again.");
     }
   };
-
-  // Google signup
+  // Google signup handler
   const handleGoogleSignup = () => {
     console.log("Google signup triggered");
-    // 👉 Later: integrate Firebase/Auth0/NextAuth/etc.
   };
 
   return (
@@ -74,7 +87,7 @@ const Login = () => {
           className="h-full w-full object-cover"
         />
         <div className="absolute top-6 left-6">
-          <img src={logo} alt="" />
+          <img src={logo} alt="Logo" />
         </div>
         <div className="absolute bottom-6 left-6 bg-white/80 p-4 rounded-lg text-sm max-w-sm">
           <p className="italic text-gray-700">
