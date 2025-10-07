@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import StatsCard from "@/components/admin_Content & Resource_Component/QuestionBank/StatsCard";
 import SearchBar from "@/components/admin_Content & Resource_Component/QuestionBank/SearchBar";
 import { Button } from "../../ui/button";
-import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import { NotebookIcon, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import Clinical_Case_Card from "@/components/admin_Content & Resource_Component/Clinical Case/Clinical_Case_Card";
@@ -78,17 +77,15 @@ const OSCE_Homepage: React.FC = () => {
             onChange={(val) => setSearchQuery(val)}
           />
         </div>
-
         <div className="w-full sm:w-auto mt-2 sm:mt-0">
-          <ButtonWithIcon
-            icon={Plus}
+          <button
             onClick={() => setCurrentView("add")}
-            className="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 sm:px-5 sm:py-2.5 rounded-md text-sm sm:text-base flex items-center justify-center gap-2 transition-all duration-200"
+            className="border border-slate-300  cursor-pointer font-Geist w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 sm:px-5 sm:py-2.5 rounded-md text-sm sm:text-base flex items-center justify-center gap-2 transition-all duration-200"
           >
-            Add Clinical Case
-          </ButtonWithIcon>
+            <Plus className="w-4 h-4 " />
+            <p className="md:hidden lg:block">Add Clinical Case</p>
+          </button>
         </div>
-
         <div className="w-full sm:w-auto mt-2 sm:mt-0">
           <button
             onClick={() => setCurrentView("bulk")}
