@@ -8,9 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 type ForumView = "list" | "detail" | "create"
 
 const Forums = () => {
+
   const [view, setView] = useState<ForumView>("list")
   const [selectedForumId, setSelectedForumId] = useState<string | null>(null)
-  const [selectedCategory, setSelectedCategory] = useState<string>("")
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const handleForumClick = (id: string) => {
     setSelectedForumId(id)
@@ -55,7 +56,7 @@ const Forums = () => {
                 className="w-full h-10 pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 text-sm sm:text-base"
               />
             </div>
-            
+
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
               <SelectTrigger className="h-10 w-full sm:w-[180px] bg-white">
                 <SelectValue placeholder="Categories" />

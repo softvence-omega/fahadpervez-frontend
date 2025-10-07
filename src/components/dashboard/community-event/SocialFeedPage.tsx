@@ -11,6 +11,12 @@ const SocialFeedPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <div className="mb-4 md:mb-8 space-y-2">
+        <h4 className="text-[16px] md:text-[20px] font-semibold text-[#0F172A]">
+          Social Feed
+        </h4>
+        <p className="text-[14px] md:text-[16px] text-gray-600">Share knowledge, ask questions, and connect with the medical community</p>
+      </div>
       {/* Header */}
       <div className="flex relative flex-col sm:flex-row items-center justify-between h-auto sm:h-16 gap-3 py-4">
 

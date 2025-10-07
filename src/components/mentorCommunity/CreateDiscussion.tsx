@@ -15,6 +15,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
+import { useSocialPostForumMutation } from "@/store/features/forum/forum.api"
+import { toast } from "sonner"
 
 // ✅ Zod Schema
 const formSchema = z.object({
@@ -30,6 +32,7 @@ interface CreateDiscussionProps {
 }
 
 const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
+  const [createForumPost] = useSocialPostForumMutation();
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState("")
 
@@ -58,11 +61,27 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
     setTags(tags.filter((tag) => tag !== tagToRemove))
   }
 
-  const onSubmit = (values: FormData) => {
-    const payload = { ...values, tags }
-    console.log("Form Data:", payload)
-    onBack()
-  }
+  const onSubmit = async (values: FormData) => {
+    const payload = { ...values, tags };
+
+    try {
+      console.log("Posting payload:", payload);
+
+      const res = await createForumPost(payload).unwrap();
+      console.log("Forum post created successfully:", res);
+
+      // Optionally show toast/success message
+      // toast.success("Post created successfully!");
+      toast.success(res.message);
+
+      onBack(); // Go back after success
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      const errorMessage = error?.data?.message || "Something went wrong";
+      toast.error(errorMessage);
+    }
+  };
+
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8">
@@ -160,7 +179,7 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
                 }
                 placeholder="Type a tag"
               />
-              <Button type="button" onClick={handleAddTag} className="sm:w-auto w-full">
+              <Button type="button" onClick={handleAddTag} className="sm:w-auto w-full cursor-pointer">
                 Add Tag
               </Button>
             </div>
@@ -169,7 +188,7 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
                 {tags.map((tag, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm flex items-center gap-2"
+                    className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm flex items-center gap-2 cursor-pointer"
                   >
                     {tag}
                     <button
@@ -189,7 +208,7 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <Button
               type="submit"
-              className="flex w-full sm:flex-1 justify-center items-center gap-2 px-6 py-3 bg-teal-700 text-white rounded-lg hover:bg-teal-800 transition-colors font-medium"
+              className="flex w-full sm:flex-1 justify-center items-center gap-2 px-6 py-3 bg-teal-700 text-white rounded-lg hover:bg-teal-800 transition-colors font-medium cursor-pointer"
             >
               <img src={arrow} alt="arrow icon" className="w-4 h-4" />
               Post to Forum
@@ -198,7 +217,7 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
               type="button"
               onClick={onBack}
               variant="outline"
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto cursor-pointer"
             >
               Cancel
             </Button>
