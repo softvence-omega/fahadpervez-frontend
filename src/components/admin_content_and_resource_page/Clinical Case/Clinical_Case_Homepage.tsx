@@ -19,7 +19,7 @@ const OSCE_Homepage: React.FC = () => {
   // Render based on current view
   if (currentView === "add") return <AddClinicalCasePage onBack={() => setCurrentView("homepage")} />;
   if (currentView === "bulk") return <Bulk_Upload_Clinical_Case onBack={() => setCurrentView("homepage")} />;
-  if (currentView === "view") return <ClinicalCasePage />;
+  if (currentView === "view") return <ClinicalCasePage onBack={() => setCurrentView("homepage")} />;
 
   return (
     <div className="space-y-6 w-full">
@@ -63,7 +63,7 @@ const OSCE_Homepage: React.FC = () => {
         <div className="w-full sm:w-auto mt-2 sm:mt-0">
           <button
             onClick={() => setCurrentView("bulk")}
-            className="flex items-center gap-1 w-full sm:w-auto px-4 py-2 text-sm sm:text-base rounded-md border border-slate-300 bg-white text-black hover:bg-gray-100 cursor-pointer font-Geist transition-all duration-200"
+            className="flex items-center justify-center gap-1 w-full sm:w-auto px-4 py-2 text-sm sm:text-base rounded-md border border-slate-300 bg-white text-black hover:bg-gray-100 cursor-pointer font-Geist transition-all duration-200"
           >
             <Plus className="w-4 h-4" />
             Bulk Upload

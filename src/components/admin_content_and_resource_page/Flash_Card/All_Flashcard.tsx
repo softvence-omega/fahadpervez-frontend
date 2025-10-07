@@ -1,88 +1,68 @@
 import React, { useState } from "react";
-import StatsCard from "@/components/admin_Content & Resource_Component/QuestionBank/StatsCard";
 import SearchBar from "@/components/admin_Content & Resource_Component/QuestionBank/SearchBar";
-import { Button } from "../../ui/button";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
-import { Link } from "react-router-dom";
-import { RectangleHorizontalIcon, Plus } from "lucide-react";
+import { Plus, ArrowLeft } from "lucide-react";
 import FlashcardDeckCard from "../../admin_Content & Resource_Component/Flashcard/FlashCardDeck";
-import Pagination from "../../reusable/Pagination";
+import Pagination from "@/components/admin_Content & Resource_Component/Pagination";
 import Create_New_Flashcard_Deck from "./Create_New_Flashcard_Deck";
 import AddFlashcard from "./AddFlashcard";
+import CommonSpace from "@/common/space/CommonSpace";
 
-const All_Flashcard: React.FC = () => {
+interface AllFlashcardProps {
+  onBack?: () => void;
+}
+
+const All_Flashcard: React.FC<AllFlashcardProps> = ({ onBack }) => {
   type View = "homepage" | "create" | "addFlashcard" | "viewAll";
-
   const [currentView, setCurrentView] = useState<View>("homepage");
 
-  // If showing Create New Flashcard Deck view
-  if (currentView === "create") {
-    return <Create_New_Flashcard_Deck />;
-  }
+  // Internal navigation
+  if (currentView === "create")
+    return <Create_New_Flashcard_Deck onBack={() => setCurrentView("homepage")} />;
+  if (currentView === "addFlashcard")
+    return <AddFlashcard onBack={() => setCurrentView("homepage")} />;
+  if (currentView === "viewAll")
+    return <All_Flashcard onBack={() => setCurrentView("homepage")} />;
 
-  // If showing Add Flashcard view
-  if (currentView === "addFlashcard") {
-    return <AddFlashcard />;
-  }
-  // If showing View All Flashcards view
-  if (currentView === "viewAll") {
-    return <All_Flashcard />;
-  }
+  const handleBack = () => {
+    if (onBack) onBack();
+    else window.history.back();
+  };
 
   return (
-    <div className="p-4 sm:p-6 space-y-6">
-      {/* ✅ Stats Section */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatsCard
-          title="Total Flash Set"
-          value={10}
-          subtitle="Across all subjects"
-          icon={
-            <RectangleHorizontalIcon className="w-6 h-6 text-orange-500 rotate-36" />
-          }
-        />
-        <StatsCard
-          title="Total Question Imported"
-          value={3420}
-          subtitle="Across all subjects"
-          icon={
-            <RectangleHorizontalIcon className="w-6 h-6 text-orange-500 rotate-36" />
-          }
-        />
-        <StatsCard
-          title="Total Question Imported"
-          value={3420}
-          subtitle="Across all subjects"
-          icon={
-            <RectangleHorizontalIcon className="w-6 h-6 text-orange-500 rotate-36" />
-          }
-        />
-        <StatsCard
-          title="Published"
-          value={180}
-          subtitle="MCQ Bank Published"
-          icon={
-            <RectangleHorizontalIcon className="w-6 h-6 text-orange-500 rotate-36" />
-          }
-        />
-      </div>
+    <div className="space-y-6 w-full">
+      {/* 🔙 Back Button */}
+      <button
+        onClick={handleBack}
+        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
+      >
+        <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+        <span className="text-sm sm:text-base font-medium">Back</span>
+      </button>
 
       {/* ✅ Search + Add Button */}
-      <div className="flex flex-col sm:flex-row w-full justify-between items-stretch sm:items-center gap-4">
-        {/* Search */}
-        <div className="flex w-full sm:flex-1">
+      <div className="flex flex-col sm:flex-row w-full justify-between items-stretch sm:items-center gap-3 sm:gap-4">
+        <div className="flex-1 w-full min-w-0">
           <SearchBar
-            placeholder="Search Question Bank"
+            placeholder="Search Flashcard Decks"
             onChange={(val) => console.log(val)}
           />
         </div>
 
-        {/* Add Button */}
-        <div className="w-full sm:w-auto">
+        <div className="w-full sm:w-auto mt-2 sm:mt-0">
           <ButtonWithIcon
             icon={Plus}
-            className="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-md text-sm sm:text-base"
             onClick={() => setCurrentView("create")}
+            className="
+              w-full sm:w-auto
+              bg-gradient-to-tr from-[#0076F5] to-[#0058B8]
+              hover:from-[#0069DB] hover:to-[#004C9E]
+              text-white font-medium
+              px-4 py-2 sm:px-5 sm:py-2.5
+              rounded-md text-sm sm:text-base
+              flex items-center justify-center gap-2
+              transition-all duration-200
+            "
           >
             Add Flashcard Deck
           </ButtonWithIcon>
@@ -91,82 +71,33 @@ const All_Flashcard: React.FC = () => {
 
       {/* ✅ Header with View All */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
-        <h2 className="text-lg sm:text-xl font-semibold">Flashcard Deck</h2>
-        <Link to="/upload-content/all_flashcard_deck">
-          <Button
-            variant="link"
-            className="p-0 text-sm sm:text-base"
-            onClick={() => setCurrentView("viewAll")}
-          >
-            View All
-          </Button>
-        </Link>
+        <h2 className="text-lg sm:text-xl font-semibold">All Flashcard Decks</h2>
       </div>
 
-      {/* ✅ Question Banks List */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <FlashcardDeckCard
-          title="Sample Flashcard Deck"
-          cards={10}
-          subject="Anatomy"
-          created="2024-06-01"
-          onAddCard={() => setCurrentView("addFlashcard")}
-        />
-        <FlashcardDeckCard
-          title="Sample Flashcard Deck"
-          cards={10}
-          subject="Anatomy"
-          created="2024-06-01"
-          onAddCard={() => setCurrentView("addFlashcard")}
-        />
-        <FlashcardDeckCard
-          title="Sample Flashcard Deck"
-          cards={10}
-          subject="Anatomy"
-          created="2024-06-01"
-          onAddCard={() => setCurrentView("addFlashcard")}
-        />
-        <FlashcardDeckCard
-          title="Sample Flashcard Deck"
-          cards={10}
-          subject="Anatomy"
-          created="2024-06-01"
-          onAddCard={() => setCurrentView("addFlashcard")}
-        />
-        <FlashcardDeckCard
-          title="Sample Flashcard Deck"
-          cards={10}
-          subject="Anatomy"
-          created="2024-06-01"
-          onAddCard={() => setCurrentView("addFlashcard")}
-        />
-        <FlashcardDeckCard
-          title="Sample Flashcard Deck"
-          cards={10}
-          subject="Anatomy"
-          created="2024-06-01"
-          onAddCard={() => setCurrentView("addFlashcard")}
-        />
-        <FlashcardDeckCard
-          title="Sample Flashcard Deck"
-          cards={10}
-          subject="Anatomy"
-          created="2024-06-01"
-          onAddCard={() => setCurrentView("addFlashcard")}
-        />
+      {/* ✅ Flashcard Decks List */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+        {[...Array(6)].map((_, i) => (
+          <FlashcardDeckCard
+            key={i}
+            title={`Sample Flashcard Deck ${i + 1}`}
+            cards={10}
+            subject="Anatomy"
+            created="2024-06-01"
+            onAddCard={() => setCurrentView("addFlashcard")}
+          />
+        ))}
       </div>
-      <div className="flex justify-center mt-6 ">
-        <Pagination
-          title="Flashcard Decks"
-          showText="true"
-          totalPages={5}
-          currentPage={1}
-          onPageChange={(page: number) => {
-            // handle page change here
-            console.log("Page changed to:", page);
-          }}
-        />
-      </div>
+
+      {/* ✅ Pagination */}
+      <CommonSpace>
+        <div className="flex justify-center mt-4 sm:mt-6">
+          <Pagination
+            totalPages={5}
+            currentPage={1}
+            onPageChange={(page: number) => console.log("Page changed to:", page)}
+          />
+        </div>
+      </CommonSpace>
     </div>
   );
 };
