@@ -11,25 +11,32 @@ import {
   Bell,
   Globe,
 } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import CommonWrapper from "@/common/CommonWrapper";
+import { useAppDispatch } from "@/store/hook";
+import { logout } from "@/store/features/auth/auth.slice";
+import Cookies from "js-cookie";
 
 const DashboardNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
 
-  // Get current location to determine active route
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout()); // Clear Redux state
+    Cookies.remove("accessToken"); // Remove token
+    navigate("/login"); // Redirect to login
+  };
 
   const navigationItems = [
     { name: "Dashboard", href: "/dashboard" },
     { name: "MCQ Bank", href: "/dashboard/mcq-bank" },
     { name: "Flash Cards", href: "/dashboard/flashcard-page" },
-    {
-      name: "Clinical Cases",
-      href: "/dashboard/clinical-case-generator",
-    },
+    { name: "Clinical Cases", href: "/dashboard/clinical-case-generator" },
     { name: "Download Notes", href: "/dashboard/download-notes" },
     { name: "OSCE / Clinical Skills Lab", href: "/dashboard/osce" },
     { name: "Diagram Explorer", href: "/dashboard/diagram-explorer" },
@@ -38,7 +45,7 @@ const DashboardNavbar = () => {
   ];
 
   const moreItems = [
-    { name: " CME/CPD Courses", href: "/dashboard/courses" },
+    { name: "CME/CPD Courses", href: "/dashboard/courses" },
     { name: "Quiz Generator", href: "/dashboard/quiz-page" },
     { name: "Community & Event", href: "/dashboard/community-event" },
     { name: "Smart Study", href: "/dashboard/smart-study" },
@@ -51,35 +58,25 @@ const DashboardNavbar = () => {
     { name: "Settings", icon: Settings, href: "/dashboard/settings" },
     { name: "Profile", icon: User, href: "/dashboard/student-profile" },
     { name: "Help & Support", icon: HelpCircle, href: "/dashboard/help" },
-    { name: "Logout", icon: LogOut, href: "#" },
+    { name: "Logout", icon: LogOut, href: "#", action: handleLogout },
   ];
 
-  // Function to check if route is active
   const isActiveRoute = (href: string) => {
-    if (href === "/dashboard") {
-      // For dashboard, only match exact path
-      return location.pathname === "/dashboard";
-    }
-    // For other routes, check if current path starts with the href
+    if (href === "/dashboard") return location.pathname === "/dashboard";
     return location.pathname.startsWith(href);
   };
 
-  // Function to check if any route in "more" items is active
-  const isMoreSectionActive = () => {
-    return moreItems.some((item) => isActiveRoute(item.href));
-  };
+  const isMoreSectionActive = () => moreItems.some((item) => isActiveRoute(item.href));
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <CommonWrapper>
         <div className="flex justify-between items-center">
-          {/* Logo */}
+          {/* Logo + Search */}
           <div className="flex items-center gap-4 md:gap-6">
             <Link to="/dashboard">
               <img src="/logo1.svg " className="h-16" alt="" />
             </Link>
-
-            {/* Search Bar */}
             <div className="flex-1 max-w-md">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -94,13 +91,12 @@ const DashboardNavbar = () => {
             </div>
           </div>
 
-          {/* Right side items */}
+          {/* Right side */}
           <div className="flex items-center gap-4">
             {/* Language & Notifications */}
             <div className="hidden lg:flex items-center space-x-3">
               <button className="text-gray-400 hover:text-gray-600 flex items-center gap-2">
-                <Globe className="h-5 w-5" />
-                <span className="">En</span>
+                <Globe className="h-5 w-5" /> <span>En</span>
               </button>
               <button className="text-gray-400 hover:text-gray-600">
                 <Bell className="h-5 w-5" />
@@ -116,9 +112,7 @@ const DashboardNavbar = () => {
                 <div className="w-8 h-8 bg-gradient-to-r from-pink-400 to-orange-400 rounded-full flex items-center justify-center">
                   <span className="text-white text-xs font-semibold">EH</span>
                 </div>
-                <span className="hidden lg:block text-gray-700 font-medium">
-                  Emma Harrison
-                </span>
+                <span className="hidden lg:block text-gray-700 font-medium">Emma Harrison</span>
                 <ChevronDown className="h-4 w-4 text-gray-500" />
               </button>
 
@@ -130,22 +124,22 @@ const DashboardNavbar = () => {
                   ></div>
                   <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-20">
                     <div className="px-4 py-3 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-900">
-                        Profile & Settings
-                      </p>
+                      <p className="text-sm font-medium text-gray-900">Profile & Settings</p>
                     </div>
                     {profileItems.map((item) => (
-                      <Link
+                      <button
                         key={item.name}
-                        to={item.href}
-                        className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                        onClick={() => setIsProfileOpen(false)}
+                        onClick={() => {
+                          setIsProfileOpen(false);
+                          if (item.action) item.action();
+                        }}
+                        className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
                       >
                         <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mr-3">
                           <item.icon className="h-4 w-4 text-gray-600" />
                         </div>
                         {item.name}
-                      </Link>
+                      </button>
                     ))}
                   </div>
                 </>
@@ -157,70 +151,63 @@ const DashboardNavbar = () => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="lg:hidden text-gray-600 hover:text-gray-900 focus:outline-none"
             >
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
-        <div>
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex flex-wrap justify-between lg:items-center  lg:space-x-2 mt-2">
-            {navigationItems.slice(0, 10).map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`px-3 py-2 font-medium text-sm transition-colors duration-200 text-nowrap  ${
-                  isActiveRoute(item.href)
-                    ? "bg-blue-50 text-blue-700 border-b-2 border-blue-700"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
 
-            {/* More Dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => setIsMoreOpen(!isMoreOpen)}
-                className={`flex items-center px-3 py-2 text-sm font-medium transition-colors duration-200 ${
-                  isMoreSectionActive()
-                    ? "bg-blue-50 text-blue-700 border-b-2 border-blue-700"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                }`}
-              >
-                More
-                <ChevronDown className="ml-1 h-4 w-4" />
-              </button>
+        {/* Desktop Navigation */}
+        <div className="hidden lg:flex flex-wrap justify-between lg:items-center lg:space-x-2 mt-2">
+          {navigationItems.slice(0, 10).map((item) => (
+            <Link
+              key={item.name}
+              to={item.href}
+              className={`px-3 py-2 font-medium text-sm transition-colors duration-200 text-nowrap ${
+                isActiveRoute(item.href)
+                  ? "bg-blue-50 text-blue-700 border-b-2 border-blue-700"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+              }`}
+            >
+              {item.name}
+            </Link>
+          ))}
 
-              {isMoreOpen && (
-                <>
-                  <div
-                    className="fixed inset-0 z-10"
-                    onClick={() => setIsMoreOpen(false)}
-                  ></div>
-                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-20">
-                    {moreItems.map((item) => (
-                      <Link
-                        key={item.name}
-                        to={item.href}
-                        className={`block px-4 py-3 text-sm transition-colors duration-200 ${
-                          isActiveRoute(item.href)
-                            ? "bg-blue-50 text-blue-700 font-medium"
-                            : "text-gray-700 hover:bg-gray-50"
-                        }`}
-                        onClick={() => setIsMoreOpen(false)}
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
+          {/* More Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setIsMoreOpen(!isMoreOpen)}
+              className={`flex items-center px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+                isMoreSectionActive()
+                  ? "bg-blue-50 text-blue-700 border-b-2 border-blue-700"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+              }`}
+            >
+              More <ChevronDown className="ml-1 h-4 w-4" />
+            </button>
+            {isMoreOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setIsMoreOpen(false)}
+                ></div>
+                <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-20">
+                  {moreItems.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className={`block px-4 py-3 text-sm transition-colors duration-200 ${
+                        isActiveRoute(item.href)
+                          ? "bg-blue-50 text-blue-700 font-medium"
+                          : "text-gray-700 hover:bg-gray-50"
+                      }`}
+                      onClick={() => setIsMoreOpen(false)}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </CommonWrapper>
@@ -263,6 +250,17 @@ const DashboardNavbar = () => {
                 </Link>
               ))}
             </div>
+
+            {/* Mobile Logout */}
+            <button
+              onClick={() => {
+                handleLogout();
+                setIsMenuOpen(false);
+              }}
+              className="w-full text-white px-4 py-2 rounded-md bg-red-600 font-medium hover:bg-red-700 cursor-pointer mt-2"
+            >
+              Logout
+            </button>
           </div>
         </div>
       )}

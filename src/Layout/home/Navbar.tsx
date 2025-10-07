@@ -1,14 +1,25 @@
-"use client";
 import React, { useState } from "react";
 import { Link as ScrollLink } from "react-scroll";
 import CommonWrapper from "@/common/CommonWrapper";
 import { Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
+import { logout, selectUser } from "@/store/features/auth/auth.slice";
+import Cookies from "js-cookie";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-
   const toggleMenu = () => setIsOpen(!isOpen);
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const user = useAppSelector(selectUser); // get logged in user
+
+  const handleLogout = () => {
+    dispatch(logout()); // clear Redux state
+    Cookies.remove("accessToken"); // remove token
+    navigate("/login"); // redirect
+  };
 
   const navLinks = [
     { to: "hero", label: "Home" },
@@ -34,9 +45,9 @@ const Navbar: React.FC = () => {
                 <ScrollLink
                   key={link.to}
                   to={link.to}
-                  smooth={true}
+                  smooth
                   duration={500}
-                  offset={-70} // Adjust for sticky navbar height
+                  offset={-70}
                   className="hover:text-[#0058B8] px-3 py-2 rounded-md cursor-pointer"
                 >
                   {link.label}
@@ -46,12 +57,29 @@ const Navbar: React.FC = () => {
 
             {/* Right Side Buttons */}
             <div className="hidden md:flex space-x-4">
-              <Link to="/signup" className="bg-white px-4 py-2 rounded-[6px] text-[#0058B8] font-medium cursor-pointer">
-                Registration
-              </Link>
-              <Link to="/login" className="text-white px-8 py-2 rounded-[6px] bg-[#0058B8] font-medium cursor-pointer">
-                Login
-              </Link>
+              {user ? (
+                <button
+                  onClick={handleLogout}
+                  className="text-white px-8 py-2 rounded-[6px] bg-red-600 font-medium hover:bg-red-700 cursor-pointer"
+                >
+                  Logout
+                </button>
+              ) : (
+                <>
+                  <Link
+                    to="/signup"
+                    className="bg-white px-4 py-2 rounded-[6px] text-[#0058B8] font-medium cursor-pointer"
+                  >
+                    Registration
+                  </Link>
+                  <Link
+                    to="/login"
+                    className="text-white px-8 py-2 rounded-[6px] bg-[#0058B8] font-medium cursor-pointer"
+                  >
+                    Login
+                  </Link>
+                </>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -76,7 +104,7 @@ const Navbar: React.FC = () => {
               <ScrollLink
                 key={link.to}
                 to={link.to}
-                smooth={true}
+                smooth
                 duration={500}
                 offset={-70}
                 className="block text-[#09090B] hover:text-[#0058B8] px-3 py-2 rounded-md font-medium cursor-pointer"
@@ -85,6 +113,19 @@ const Navbar: React.FC = () => {
                 {link.label}
               </ScrollLink>
             ))}
+
+            {/* Mobile Logout */}
+            {user && (
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setIsOpen(false);
+                }}
+                className="w-full text-white px-4 py-2 rounded-md bg-red-600 font-medium hover:bg-red-700 cursor-pointer"
+              >
+                Logout
+              </button>
+            )}
           </div>
         </div>
       )}
