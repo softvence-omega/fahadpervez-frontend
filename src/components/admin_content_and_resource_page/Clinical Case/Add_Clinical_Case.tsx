@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { ArrowLeft, ChevronDown, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, Trash2 } from "lucide-react";
 import Multiple_Choice from "@/components/admin_Content & Resource_Component/Clinical Case/Multiple_Choice";
+import CustomDropdown from "@/components/admin_Content & Resource_Component/CustomDropdown";
 
 interface AddClinicalCasePageProps {
   onBack?: () => void;
@@ -23,14 +24,16 @@ const AddClinicalCasePage: React.FC<AddClinicalCasePageProps> = ({
   const [vitalSigns, setVitalSigns] = useState([
     { id: 1, value: "" },
     { id: 2, value: "" },
-    { id: 3, value: "" },
   ]);
+
+  const [vitalSignsDescription, setVitalSignsDescription] = useState("");
 
   const [labs, setLabs] = useState([
     { id: 1, value: "" },
     { id: 2, value: "" },
-    { id: 3, value: "" },
   ]);
+
+  const [labsDescription, setLabsDescription] = useState("");
 
   interface FormData {
     caseTitle: string;
@@ -112,7 +115,9 @@ const AddClinicalCasePage: React.FC<AddClinicalCasePageProps> = ({
   const handleSubmit = () => {
     console.log("Form Data:", formData);
     console.log("Vital Signs:", vitalSigns);
+    console.log("Vital Signs Description:", vitalSignsDescription);
     console.log("Labs:", labs);
+    console.log("Labs Description:", labsDescription);
     // After successful submission, you can call onBack to return to homepage
     // if (onBack) onBack();
   };
@@ -179,7 +184,7 @@ const AddClinicalCasePage: React.FC<AddClinicalCasePageProps> = ({
           </div>
 
           {/* Patient Details Row */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Patient Age
@@ -194,41 +199,27 @@ const AddClinicalCasePage: React.FC<AddClinicalCasePageProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Patient Gender
-              </label>
               <div className="relative">
-                <select
-                  name="patientGender"
+                <CustomDropdown
+                  label="Patient Gender"
                   value={formData.patientGender}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm appearance-none bg-white"
-                >
-                  <option value="">Select</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                  onChange={(value) =>
+                    setFormData({ ...formData, patientGender: value })
+                  }
+                  options={["Male", "Female", "Other"]}
+                />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Difficulty Level
-              </label>
               <div className="relative">
-                <select
-                  name="difficultyLevel"
+                <CustomDropdown
+                  label="Difficulty Level"
                   value={formData.difficultyLevel}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm appearance-none bg-white"
-                >
-                  <option value="">Beginner</option>
-                  <option value="Beginner">Beginner</option>
-                  <option value="Intermediate">Intermediate</option>
-                  <option value="Advanced">Advanced</option>
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                  onChange={(value) =>
+                    setFormData({ ...formData, difficultyLevel: value })
+                  }
+                  options={["Beginner", "Intermediate", "Advanced"]}
+                />
               </div>
             </div>
           </div>
@@ -271,44 +262,41 @@ const AddClinicalCasePage: React.FC<AddClinicalCasePageProps> = ({
             <div className="space-y-3">
               {vitalSigns.map((vs, index) => (
                 <div key={vs.id} className="flex items-start gap-2">
-                  {index === 2 ? (
-                    <textarea
-                      value={vs.value}
-                      onChange={(e) =>
-                        handleVitalSignChange(vs.id, e.target.value)
-                      }
-                      placeholder="Description"
-                      className="flex-1 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm resize-none h-20 rounded-md border border-slate-300 bg-[rgba(239,246,255,0.6)]"
-                    />
-                  ) : (
-                    <input
-                      type="text"
-                      value={vs.value}
-                      onChange={(e) =>
-                        handleVitalSignChange(vs.id, e.target.value)
-                      }
-                      placeholder={index === 0 ? "Temperature" : "Heart rate"}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm"
-                    />
-                  )}
+                  <input
+                    type="text"
+                    value={vs.value}
+                    onChange={(e) =>
+                      handleVitalSignChange(vs.id, e.target.value)
+                    }
+                    placeholder={index === 0 ? "Temperature" : "Heart rate"}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm"
+                  />
 
                   {index === 0 ? (
                     <button
                       onClick={addVitalSign}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                      className="p-2 text-blue-600 hover:bg-blue-100 rounded-md transition-colors border border-blue-100"
                     >
                       <Plus className="w-4 h-4" />
                     </button>
-                  ) : index !== 2 ? (
+                  ) : (
                     <button
                       onClick={() => removeVitalSign(vs.id)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                      className="p-2 text-red-600 hover:bg-red-100 rounded-md transition-colors border border-red-100"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
-                  ) : null}
+                  )}
                 </div>
               ))}
+
+              {/* Description Textarea - Always at the end */}
+              <textarea
+                value={vitalSignsDescription}
+                onChange={(e) => setVitalSignsDescription(e.target.value)}
+                placeholder="Description"
+                className="flex-1 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm resize-none h-20 rounded-md border border-slate-300 bg-[rgba(239,246,255,0.6)] w-full"
+              />
             </div>
           </div>
 
@@ -320,40 +308,39 @@ const AddClinicalCasePage: React.FC<AddClinicalCasePageProps> = ({
             <div className="space-y-3">
               {labs.map((lab, index) => (
                 <div key={lab.id} className="flex items-start gap-2">
-                  {index === 2 ? (
-                    <textarea
-                      value={lab.value}
-                      onChange={(e) => handleLabChange(lab.id, e.target.value)}
-                      placeholder="Description"
-                      className="flex-1 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm resize-none h-20 rounded-md border border-slate-300 bg-[rgba(239,246,255,0.6)]"
-                    />
-                  ) : (
-                    <input
-                      type="text"
-                      value={lab.value}
-                      onChange={(e) => handleLabChange(lab.id, e.target.value)}
-                      placeholder={index === 0 ? "Hemoglobin" : "Hematocrit"}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm"
-                    />
-                  )}
+                  <input
+                    type="text"
+                    value={lab.value}
+                    onChange={(e) => handleLabChange(lab.id, e.target.value)}
+                    placeholder={index === 0 ? "Hemoglobin" : "Hematocrit"}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm"
+                  />
 
                   {index === 0 ? (
                     <button
                       onClick={addLab}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                      className="p-2 text-blue-600 hover:bg-blue-100 rounded-md transition-colors border border-blue-100"
                     >
                       <Plus className="w-4 h-4" />
                     </button>
-                  ) : index !== 2 ? (
+                  ) : (
                     <button
                       onClick={() => removeLab(lab.id)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                      className="p-2 text-red-600 hover:bg-red-50 rounded-md transition-colors border border-red-100"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
-                  ) : null}
+                  )}
                 </div>
               ))}
+
+              {/* Description Textarea - Always at the end */}
+              <textarea
+                value={labsDescription}
+                onChange={(e) => setLabsDescription(e.target.value)}
+                placeholder="Description"
+                className="flex-1 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm resize-none h-20 rounded-md border border-slate-300 bg-[rgba(239,246,255,0.6)] w-full"
+              />
             </div>
           </div>
 
