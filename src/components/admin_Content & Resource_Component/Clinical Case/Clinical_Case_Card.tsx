@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Eye, Trash2, StethoscopeIcon, UserIcon, PencilLineIcon } from 'lucide-react';
 
@@ -19,7 +18,7 @@ const Clinical_Case_Card: React.FC<Clinical_Case_CardProps> = ({
   title,
   category,
   gender,
-    questionNumber = 0,
+  questionNumber = 0,
   questionType,
   difficulty,
   status,
@@ -36,7 +35,7 @@ const Clinical_Case_Card: React.FC<Clinical_Case_CardProps> = ({
         <h3 className="text-base font-semibold text-gray-900 flex-1 pr-4">
           {title}
         </h3>
-        <button className={`${statusColor} text-white text-xs font-medium px-4 py-1.5 rounded-full  bg-[linear-gradient(103deg,#0076F5_6.94%,#0058B8_99.01%)]`}>
+        <button className={`${statusColor} text-white text-xs font-medium px-4 py-1.5 rounded-full bg-[linear-gradient(103deg,#0076F5_6.94%,#0058B8_99.01%)]`}>
           {status}
         </button>
       </div>
@@ -44,7 +43,7 @@ const Clinical_Case_Card: React.FC<Clinical_Case_CardProps> = ({
       {/* Info Row */}
       <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
         <div className="flex items-center gap-1.5">
-        <StethoscopeIcon className="w-4 h-4 text-zinc-950" />
+          <StethoscopeIcon className="w-4 h-4 text-zinc-950" />
           <span>{category}</span>
         </div>
         <div className="flex items-center gap-1.5">
@@ -76,8 +75,11 @@ const Clinical_Case_Card: React.FC<Clinical_Case_CardProps> = ({
           <span>View Case</span>
         </button>
         <button
-          onClick={onDelete}
-          className="p-2 text-red-800 border border-gray-200 rounded-md hover:bg-red-100 transition-colors"
+          onClick={(e) => {
+            e.stopPropagation(); // ✅ Prevent card click
+            onDelete?.();
+          }}
+          className="p-2 text-red-500 border border-red-100 rounded-md hover:bg-red-100 transition-colors"
         >
           <Trash2 className="w-4 h-4" />
         </button>

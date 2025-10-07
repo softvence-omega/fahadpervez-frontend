@@ -90,7 +90,7 @@ const handleBack = () => {
         </div>
 
         {/* Navigation Tabs */}
-        <div className=" shadow-sm border border-gray-200 mb-6 rounded-[var(--radius)] bg-[var(--secondary)]">
+        <div className="text-sm sm:text-lg text-nowrap shadow-sm border border-gray-200 mb-6 rounded-[var(--radius)] bg-[var(--secondary)]">
           <div className="grid grid-cols-4 divide-x divide-gray-200">
             <button className="flex items-center justify-center gap-2 py-2 hover:bg-gray-50 transition-colors rounded-sm bg-[var(--background)] shadow-sm">
               <FileText className="w-5 h-5 text-gray-600" />
@@ -117,7 +117,7 @@ const handleBack = () => {
             onClick={() => toggleSection("presentation")}
             className="w-full flex items-center justify-between p-6 hover:bg-gray-50 transition-colors"
           >
-            <h3 className="text-xl font-bold text-gray-900">
+            <h3 className="text-sm sm:text-xl text-nowrap font-semibold text-gray-900 ">
               Patient Presentation
             </h3>
             <ChevronDown
@@ -128,7 +128,7 @@ const handleBack = () => {
           </button>
           {expandedSections.presentation && (
             <div className="px-6 pb-6">
-              <div className="grid grid-cols-4 gap-4 bg-gray-50 p-4 rounded-lg mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-lg mb-4">
                 <div>
                   <span className="text-gray-600 text-sm">Age:</span>
                   <span className="ml-2 text-gray-900 font-medium">
@@ -167,7 +167,7 @@ const handleBack = () => {
             onClick={() => toggleSection("history")}
             className="w-full flex items-center justify-between p-6 hover:bg-gray-50 transition-colors"
           >
-            <h3 className="text-xl font-bold text-gray-900">
+            <h3 className="text-sm sm:text-xl text-nowrap font-semibold text-gray-900">
               History of Present Illness
             </h3>
             <ChevronDown
@@ -204,7 +204,7 @@ const handleBack = () => {
             onClick={() => toggleSection("physical")}
             className="w-full flex items-center justify-between p-6 hover:bg-gray-50 transition-colors"
           >
-            <h3 className="text-xl font-bold text-gray-900">
+            <h3 className="text-sm sm:text-xl text-nowrap font-semibold text-gray-900">
               Physical Examination Findings
             </h3>
             <ChevronDown
@@ -324,7 +324,7 @@ const handleBack = () => {
             onClick={() => toggleSection("investigations")}
             className="w-full flex items-center justify-between p-6 hover:bg-gray-50 transition-colors"
           >
-            <h3 className="text-xl font-bold text-gray-900">
+            <h3 className="text-sm sm:text-xl text-nowrap font-semibold text-gray-900">
               Initial Investigations
             </h3>
             <ChevronDown
@@ -404,7 +404,7 @@ const handleBack = () => {
             onClick={() => toggleSection("imaging")}
             className="w-full flex items-center justify-between p-6 hover:bg-gray-50 transition-colors"
           >
-            <h3 className="text-xl font-bold text-gray-900">Imaging Studies</h3>
+            <h3 className="text-sm sm:text-xl text-nowrap font-semibold text-gray-900">Imaging Studies</h3>
             <ChevronDown
               className={`w-5 h-5 text-gray-600 transition-transform ${
                 expandedSections.imaging ? "rotate-180" : ""
@@ -429,7 +429,7 @@ const handleBack = () => {
             onClick={() => toggleSection("questions")}
             className="w-full flex items-center justify-between p-6 hover:bg-gray-50 transition-colors"
           >
-            <h3 className="text-xl font-bold text-gray-900">
+            <h3 className="text-sm sm:text-xl text-nowrap font-semibold text-gray-900">
               Multiple Choice Questions
             </h3>
             <ChevronDown

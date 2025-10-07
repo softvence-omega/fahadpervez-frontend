@@ -46,7 +46,7 @@ const FlashcardDeckCard: React.FC<FlashcardDeckCardProps> = ({
       </div>
 
       {/* Actions */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 mt-2">
+      <div className="flex flex-row items-stretch sm:items-center gap-2 sm:gap-3 mt-2">
         <button
           onClick={onAddCard}
           className="rounded-sm bg-gradient-to-tr from-[#0076F5] to-[#0058B8] flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm sm:text-base font-medium transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
@@ -56,7 +56,7 @@ const FlashcardDeckCard: React.FC<FlashcardDeckCardProps> = ({
         </button>
         <button
           onClick={onDelete}
-          className="p-2 text-red-600 hover:bg-red-50 rounded-md transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 flex-shrink-0"
+          className="p-2 text-red-600 hover:bg-red-50 rounded-md transition focus:outline-none flex-shrink-0"
           aria-label="Delete deck"
         >
           <Trash2 className="w-5 h-5" />

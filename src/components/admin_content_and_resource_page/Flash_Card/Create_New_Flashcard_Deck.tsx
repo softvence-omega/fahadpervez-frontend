@@ -137,11 +137,11 @@ const CreateFlashcardDeck: React.FC<AddQuestionProps> = ({ onBack }) => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-4 mt-8">
+        <div className="flex flex-col sm:flex-row gap-4 mt-8">
           <ButtonWithIcon
             icon={Plus}
             onClick={handleSubmit}
-            className="rounded-sm bg-gradient-to-tr from-[#0076F5] to-[#0058B8] inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white font-medium hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="rounded-sm bg-gradient-to-tr text-nowrap from-[#0076F5] to-[#0058B8] inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white font-medium hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             Create Flashcard Deck 
           </ButtonWithIcon>

@@ -9,7 +9,7 @@ interface StationCardProps {
   description: string;
   category: string;
   onViewStation?: () => void;
-  onDelete?: () => void;
+  onDelete?: () => void; // <-- add delete callback
   onPublish?: () => void;
   onClick?: () => void;
 }
@@ -34,7 +34,9 @@ const StationCard: React.FC<StationCardProps> = ({
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex-1 flex flex-col gap-3">
           {/* Title */}
-          <h2 className="text-lg font-semibold text-gray-900 break-words">{title}</h2>
+          <h2 className="text-lg font-semibold text-gray-900 break-words">
+            {title}
+          </h2>
 
           {/* Meta info */}
           <div className="flex flex-wrap items-center text-sm text-gray-600 gap-3">
@@ -42,7 +44,8 @@ const StationCard: React.FC<StationCardProps> = ({
               <List className="w-4 h-4" /> {steps} steps
             </span>
             <span className="flex items-center gap-1.5">
-              <PlayCircle className="w-4 h-4" /> {videos.toString().padStart(2, "0")} videos
+              <PlayCircle className="w-4 h-4" />{" "}
+              {videos.toString().padStart(2, "0")} videos
             </span>
             <span className="flex items-center gap-1.5">
               <Clock className="w-4 h-4" /> {duration}
@@ -64,8 +67,11 @@ const StationCard: React.FC<StationCardProps> = ({
               <Eye className="w-4 h-4" /> View Station
             </button>
             <button
-              onClick={onDelete}
-              className="p-1.5 border border-gray-300 rounded-md text-red-600 hover:bg-red-50 transition focus:outline-none focus:ring-2 focus:ring-red-300"
+              onClick={(e) => {
+                e.stopPropagation(); // ✅ Prevent card click
+                onDelete?.(); // ✅ Call the delete callback
+              }}
+              className="p-2 border border-red-100 rounded-md text-red-600 hover:bg-red-100 transition"
               aria-label="Delete station"
             >
               <Trash2 className="w-4 h-4" />

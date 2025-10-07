@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Upload, ChevronDown, Plus, ArrowLeft } from "lucide-react";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
+import BulkUploadQuestions from "./Bulk_Upload_Question_Bank";
 
 interface AddQuestionProps {
   onBack?: () => void;
@@ -18,6 +19,14 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
   const [explanation, setExplanation] = useState("");
   const [isDifficultyOpen, setIsDifficultyOpen] = useState(false);
   const [isCorrectAnswerOpen, setIsCorrectAnswerOpen] = useState(false);
+
+  type View = "addQuestion" | "bulkQuestion";
+
+  const [currentView, setCurrentView] = useState<View>("addQuestion");
+
+  if (currentView === "bulkQuestion")
+    return <BulkUploadQuestions onBack={() => setCurrentView("addQuestion")} />;
+
 
   const difficulties = ["Easy", "Medium", "Hard"];
   const answerOptions = ["Option A", "Option B", "Option C", "Option D"];
@@ -82,6 +91,7 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
             <ButtonWithIcon
               icon={Upload}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition"
+              onClick={() => setCurrentView("bulkQuestion")}
             >
               Bulk Upload
             </ButtonWithIcon>
