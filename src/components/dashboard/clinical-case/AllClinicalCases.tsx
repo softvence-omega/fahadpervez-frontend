@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { useNavigate } from "react-router-dom";
+import { useGetAllClinicalCaseQuery } from "@/store/features/clinicalCase/clinicalCase.api";
 
 // Type definitions
 interface CaseData {
@@ -166,6 +167,9 @@ const AllClinicalCases: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>("All Cases");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const navigate = useNavigate();
+
+  const { data } = useGetAllClinicalCaseQuery(undefined);
+  console.log(data);
 
   const casesPerPage = 6;
 

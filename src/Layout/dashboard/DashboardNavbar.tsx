@@ -32,6 +32,13 @@ const DashboardNavbar = () => {
     navigate("/login"); // Redirect to login
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleItemClick = (item: any) => {
+    setIsProfileOpen(false);
+    if (item.action) item.action();
+    else navigate(item.href);
+  };
+
   const navigationItems = [
     { name: "Dashboard", href: "/dashboard" },
     { name: "MCQ Bank", href: "/dashboard/mcq-bank" },
@@ -66,7 +73,8 @@ const DashboardNavbar = () => {
     return location.pathname.startsWith(href);
   };
 
-  const isMoreSectionActive = () => moreItems.some((item) => isActiveRoute(item.href));
+  const isMoreSectionActive = () =>
+    moreItems.some((item) => isActiveRoute(item.href));
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -112,7 +120,9 @@ const DashboardNavbar = () => {
                 <div className="w-8 h-8 bg-gradient-to-r from-pink-400 to-orange-400 rounded-full flex items-center justify-center">
                   <span className="text-white text-xs font-semibold">EH</span>
                 </div>
-                <span className="hidden lg:block text-gray-700 font-medium">Emma Harrison</span>
+                <span className="hidden lg:block text-gray-700 font-medium">
+                  Emma Harrison
+                </span>
                 <ChevronDown className="h-4 w-4 text-gray-500" />
               </button>
 
@@ -124,16 +134,15 @@ const DashboardNavbar = () => {
                   ></div>
                   <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-20">
                     <div className="px-4 py-3 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-900">Profile & Settings</p>
+                      <p className="text-sm font-medium text-gray-900">
+                        Profile & Settings
+                      </p>
                     </div>
                     {profileItems.map((item) => (
                       <button
                         key={item.name}
-                        onClick={() => {
-                          setIsProfileOpen(false);
-                          if (item.action) item.action();
-                        }}
-                        className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                        onClick={() => handleItemClick(item)}
+                        className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
                       >
                         <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mr-3">
                           <item.icon className="h-4 w-4 text-gray-600" />
@@ -151,7 +160,11 @@ const DashboardNavbar = () => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="lg:hidden text-gray-600 hover:text-gray-900 focus:outline-none"
             >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>

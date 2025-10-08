@@ -127,7 +127,7 @@ const dashboardRoutes = {
       element: <McqBank />,
     },
     {
-      path: "practice-mcq",
+      path: "practice-mcq/:id",
       element: <PracticeMCQ />,
     },
     {

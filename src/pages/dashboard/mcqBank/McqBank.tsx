@@ -1,45 +1,47 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
-import mcqBankImg from "@/assets/dashboard/MCQ Bank img.png"
+import mcqBankImg from "@/assets/dashboard/MCQ Bank img.png";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { Link } from "react-router-dom";
 import { Clock10, Cog, FileText, Plus, Target } from "lucide-react";
 import TestOverviewCard from "@/components/reusable/TestOverviewCard";
+import { useGllMCQBankQuery } from "@/store/features/MCQBank/MCQBank.api";
 
-
-
-const resources = [
-  {
-    id: 1,
-    title: "Anatomy Essentials MCQs",
-    questions: "100 Question",
-    tags: ["Anatomy", "Anatomy"],
-    uploader: "DR. Root Silva",
-  },
-  {
-    id: 2,
-    title: "Physiology Quick Review",
-    questions: "80 Question",
-    tags: ["Physiology", "Medical"],
-    uploader: "Prof. Jane Doe",
-  },
-  {
-    id: 3,
-    title: "Pathology Exam Prep",
-    questions: "120 Question",
-    tags: ["Pathology"],
-    uploader: "Dr. Khan",
-  },
-];
-
-
+// const resources = [
+//   {
+//     id: 1,
+//     title: "Anatomy Essentials MCQs",
+//     questions: "100 Question",
+//     tags: ["Anatomy", "Anatomy"],
+//     uploader: "DR. Root Silva",
+//   },
+//   {
+//     id: 2,
+//     title: "Physiology Quick Review",
+//     questions: "80 Question",
+//     tags: ["Physiology", "Medical"],
+//     uploader: "Prof. Jane Doe",
+//   },
+//   {
+//     id: 3,
+//     title: "Pathology Exam Prep",
+//     questions: "120 Question",
+//     tags: ["Pathology"],
+//     uploader: "Dr. Khan",
+//   },
+// ];
 
 const McqBank = () => {
   const breadcrumbs: BreadcrumbItem[] = [
     { name: "Dashboard", link: "/dashboard" },
     { name: "MCQ Bank", link: "/dashboard/mcq-bank" },
   ];
+
+  const { data } = useGllMCQBankQuery(undefined);
+  const MCQBank = data?.data;
+  console.log(MCQBank);
 
   return (
     <div className="my-6 md:my-10">
@@ -48,8 +50,14 @@ const McqBank = () => {
       <div className="md:flex items-center gap-8 border border-slate-300 rounded-[8px] py-6 px-10">
         <img src={mcqBankImg} alt="" className="mx-auto" />
         <div>
-          <h3 className="text-xl text-slate-800 font-semibold mb-3">Create a Quiz From Question Bank Session</h3>
-          <p className="text-slate-600">Create a session based on an exam, clinical subject, Article, organ system, symptom, difficulty level or the number of times you have already seen specific questions in previous Qbank sessions.</p>
+          <h3 className="text-xl text-slate-800 font-semibold mb-3">
+            Create a Quiz From Question Bank Session
+          </h3>
+          <p className="text-slate-600">
+            Create a session based on an exam, clinical subject, Article, organ
+            system, symptom, difficulty level or the number of times you have
+            already seen specific questions in previous Qbank sessions.
+          </p>
         </div>
       </div>
 
@@ -69,7 +77,8 @@ const McqBank = () => {
             bgType="solid"
             iconPosition="left"
             bgColor="bg-blue-btn-1"
-            className="h-10 mb-4 hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer">
+            className="h-10 mb-4 hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer"
+          >
             Create Quiz
           </PrimaryButton>
         </Link>
@@ -117,17 +126,19 @@ const McqBank = () => {
           className="mt-12 mb-8"
         />
         {/* <Link to={"/dashboard/view-more"}> */}
-        <button className="cursor-pointer text-blue-main underline font-medium">View More</button>
+        <button className="cursor-pointer text-blue-main underline font-medium">
+          View More
+        </button>
         {/* </Link> */}
       </div>
 
       <div className="space-y-6 my-6">
-        {resources.map((item) => (
+        {MCQBank?.map((mcq: any) => (
           <div
-            key={item.id}
+            key={mcq.id}
             className="border border-slate-300 rounded-lg py-4 px-5"
           >
-            <Link to={"/dashboard/practice-mcq"}>
+            <Link to={`/dashboard/practice-mcq/${mcq?._id}`}>
               <div className="sm:flex items-center gap-10">
                 {/* Icon */}
                 <div className="sm:border-r-2 border-r-slate-300 pr-4">
@@ -137,32 +148,32 @@ const McqBank = () => {
                 {/* Content */}
                 <div className="space-y-2">
                   <h4 className="text-lg text-slate-900 font-medium">
-                    {item.title}
+                    {mcq.mcqBankTitle}
                   </h4>
                   <div className="flex flex-wrap items-center gap-4">
-                    <p className="text-slate-600">{item.questions}</p>
+                    <p className="text-slate-600">{mcq.totalMcq}</p>
                     <div className="flex flex-wrap items-center gap-2">
-                      {item.tags.map((tag, idx) => (
-                        <p
-                          key={idx}
-                          className="border border-slate-300 rounded-full px-2"
-                        >
-                          {tag}
-                        </p>
-                      ))}
+                      {/* {mcq.tags.map((tag, idx) => ( */}
+                      <p
+                        // key={idx}
+                        className="border border-slate-300 rounded-full px-2"
+                      >
+                        {mcq.subjectName}
+                      </p>
+                      {/* ))} */}
                     </div>
                   </div>
                   <p className="text-sm text-slate-700">
-                    Uploaded By: {item.uploader}
+                    Uploaded By: {mcq.uploadedBy}
                   </p>
                 </div>
-              </div></Link>
+              </div>
+            </Link>
           </div>
         ))}
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default McqBank
+export default McqBank;
