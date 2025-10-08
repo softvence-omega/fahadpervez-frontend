@@ -1,163 +1,268 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { ArrowLeft } from "lucide-react";
 import message from "@/assets/dashboard/message-circle.svg";
+import {
+    useSingleForumGetQuery, 
+    useForumComentUpdateMutation
+} from "@/store/features/forum/forum.api";
+import { useNavigate, useParams } from "react-router-dom";
+import GlobalLoader from "@/common/GlobalLoader";
+import Breadcrumb from "../reusable/CommonBreadcrumb";
+import { BreadcrumbItem } from "../dashboard/gamified-learning/types";
+import { SingleForumPost } from "@/store/storeTypes/forum";
+import { toast } from "sonner";
 
-interface ForumDetailProps {
-    forumId: string
-    onBack: () => void
+interface CommentFormData {
+    comment: string;
 }
 
-interface Answer {
-    id: string
-    author: {
-        name: string
-        avatar: string
-        badge?: string
-    }
-    timeAgo: string
-    content: string
-}
-
-const ForumDetail = ({ forumId, onBack }: ForumDetailProps) => {
-    console.log(forumId)
-    const [answer, setAnswer] = useState("")
-    const [answers] = useState<Answer[]>([
-        {
-            id: "1",
-            author: {
-                name: "Alex Thompson",
-                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
-                badge: "MODERATOR",
-            },
-            timeAgo: "4 hours ago",
-            content:
-                "I highly recommend 'The ECG Made Easy' by John Hampton. It's concise but comprehensive. Also, try the ECG tutor app - it has great practice cases with step-by-step explanations. For blocks specifically, focus on understanding the AV node, QRS width, and rhythm patterns. Practice with real cases daily!",
-        },
-        {
-            id: "2",
-            author: {
-                name: "Alex Thompson",
-                avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
-                badge: "MODERATOR",
-            },
-            timeAgo: "4 hours ago",
-            content:
-                "I highly recommend 'The ECG Made Easy' by John Hampton. It's concise but comprehensive. Also, try the ECG tutor app - it has great practice cases with step-by-step explanations. For blocks specifically, focus on understanding the AV node, QRS width, and rhythm patterns. Practice with real cases daily!",
-        },
-    ])
-
-    const handleSubmitAnswer = () => {
-        if (answer.trim()) {
-            // Handle answer submission
-            setAnswer("")
+const ForumDetail = () => {
+    const { id } = useParams<{ id: string }>();
+    const { data: forumData, isLoading, isError, refetch } = useSingleForumGetQuery(id);
+    const [forumComentUpdate, { isLoading: isPosting }] = useForumComentUpdateMutation();
+    const navigate = useNavigate();
+    
+    // React Hook Form
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors, isValid }
+    } = useForm<CommentFormData>({
+        mode: "onChange",
+        defaultValues: {
+            comment: ""
         }
+    });
+
+    console.log("this is forum data", forumData);
+
+    const handleOnBack = () => navigate(-1);
+
+    if (isLoading) return <GlobalLoader />;
+    if (isError || !forumData) {
+        return (
+            <div>
+                <button
+                    onClick={handleOnBack}
+                    className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 sm:mb-6"
+                >
+                    <ArrowLeft className="w-4 h-4 cursor-pointer" />
+                    <span className="text-sm sm:text-base">Back to Forums</span>
+                </button>
+                <div className="text-center text-gray-500">Error loading forum post</div>
+            </div>
+        );
     }
+
+    const post: SingleForumPost = forumData.data;
+
+    // ✅ Handle Comment Submit with React Hook Form - FIXED BODY STRUCTURE
+    const onSubmit = async (data: CommentFormData) => {
+        try {
+            // Send comment directly in the body
+            const body = data.comment.trim();
+            const bodyData = { comment: body };
+
+            const res = await forumComentUpdate({
+                id,
+                body: bodyData, // Directly sending the comment string
+            }).unwrap();
+            
+            console.log("Comment response:", res);
+            
+            if (res.success) {
+                toast.success(res.message || "Comment posted successfully! ");
+                reset();
+                
+                //  Immediately refetch the forum data to show the new comment
+                refetch(); // This will update the comments list without page reload
+            }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            console.error("Error posting comment:", error);
+            toast.error(error?.data?.message || "Failed to post comment. Please try again.");
+        }
+    };
+
+    const handleCancel = () => {
+        reset();
+    };
+
+    const breadcrumbs: BreadcrumbItem[] = [
+        { name: "Dashboard", link: "/dashboard" },
+        { name: "Group Study", link: "/dashboard/mentor-community" },
+    ];
 
     return (
         <div>
-            <button onClick={onBack} className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 sm:mb-6">
-                <ArrowLeft className="w-4 h-4" />
-                <span className="text-sm sm:text-base">Back to Forums</span>
-            </button>
+            <Breadcrumb breadcrumbs={breadcrumbs} />
+            <div className="flex items-center gap-4 mb-8">
+                <button
+                    onClick={handleOnBack}
+                    className="flex gap-2 text-gray-600 hover:text-gray-900 mb-4 sm:mb-6"
+                >
+                    <ArrowLeft className="w-5 h-5 cursor-pointer" />
+                </button>
+                <div className="flex-1">
+                    <h2 className="text-xl text-left sm:text-2xl font-semibold text-gray-900">
+                        Forums
+                    </h2>
+                    <p className="text-gray-600 text-sm sm:text-base">
+                        Connect, learn, and grow with the medical education community
+                    </p>
+                </div>
+            </div>
 
+            {/* Forum Post */}
             <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 sm:mb-6">
                 <div className="flex items-start gap-3 mb-4">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10  rounded-full flex items-center justify-center">
-                        <img src={message} />
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center">
+                        <img src={message} alt="Forum icon" />
                     </div>
                     <div className="flex-1">
                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
-                            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Best mnemonics for remembering cranial nerves?</h2>
-                            <span className="px-2 py-1 sm:px-3 sm:py-1 bg-red-500 text-white text-xs rounded-full w-fit">Anatomy</span>
+                            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
+                                {post.title}
+                            </h2>
+                            <span className="px-2 py-1 sm:px-3 sm:py-1 bg-red-500 text-white text-xs rounded-full w-fit">
+                                {post.category}
+                            </span>
                         </div>
+
                         <p className="text-gray-600 mb-4 text-sm sm:text-base">
-                            I'm currently in my 3rd year and I'm really struggling with ECG interpretation. Despite going through
-                            several textbooks and online resources, I still find it challenging to identify different arrhythmias and
-                            interpret complex ECGs.
+                            {post.content}
                         </p>
-                        <p className="text-gray-700 mb-2 text-sm sm:text-base">I've tried:</p>
-                        <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1 text-sm sm:text-base">
-                            <li>Dubin's Rapid Interpretation of EKG's</li>
-                            <li>Online ECG tutorials</li>
-                            <li>Practicing with various sources</li>
-                        </ul>
-                        <p className="text-gray-700 mb-4 text-sm sm:text-base">
-                            But I still feel like I'm missing something fundamental. Can anyone recommend resources that really helped
-                            them master ECG interpretation? I'm particularly struggling with:
-                        </p>
-                        <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1 text-sm sm:text-base">
-                            <li>Identifying different types of blocks</li>
-                            <li>ST segment interpretation</li>
-                            <li>Complex arrhythmias</li>
-                        </ul>
-                        <p className="text-gray-600 text-sm sm:text-base">Any advice would be greatly appreciated!</p>
+
                         <div className="flex flex-wrap gap-2 mt-4">
-                            <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">#DumbTips</span>
-                            <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">#Neurology</span>
+                            {post.tags.map((tag: string, index: number) => (
+                                <span
+                                    key={index}
+                                    className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded"
+                                >
+                                    #{tag}
+                                </span>
+                            ))}
                         </div>
-                        <p className="text-xs sm:text-sm text-gray-500 mt-3">Sumi M • 2nd Year • 2 hours ago</p>
+
+                        <p className="text-xs sm:text-sm text-gray-500 mt-3">
+                            {post?.postedBy?.firstName} {post?.postedBy?.lastName} •{" "}
+                            {new Date(post.createdAt).toLocaleString()}
+                        </p>
                     </div>
                 </div>
             </div>
 
+            {/* Comments Section */}
             <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 sm:mb-6">
                 <div className="flex items-center gap-2 mb-4">
                     <div className="w-5 h-5 sm:w-6 sm:h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
                         <span className="text-blue-600 text-xs sm:text-sm">💡</span>
                     </div>
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-900">Answers & Solutions ({answers.length})</h3>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900">
+                        Answers & Solutions ({post?.comments?.length || 0})
+                    </h3>
                 </div>
-                <p className="text-gray-600 mb-6 text-sm sm:text-base">Share your knowledge and help fellow students</p>
-                <div className=" pt-4 sm:pt-6 bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-                    <h4 className="font-semibold text-gray-900 mb-3 text-sm sm:text-base">Your Answer</h4>
-                    <textarea
-                        value={answer}
-                        onChange={(e) => setAnswer(e.target.value)}
-                        placeholder="What's on your mind? Share a study tip, ask a question, or start a discussion..."
-                        className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px] sm:min-h-[120px] resize-none mb-4 text-sm sm:text-base"
-                    />
-                    <div className="flex sm:justify-end gap-4">
-                        <div className="flex gap-2 self-end sm:self-auto">
-                            <button
-                                onClick={handleSubmitAnswer}
-                                className="px-3 py-2 sm:px-4 sm:py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm sm:text-base cursor-pointer"
-                            >
-                                Post
-                            </button>
-                            <button className="px-3 py-2 sm:px-4 sm:py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-sm sm:text-base cursor-pointer">Cancel</button>
 
+                <p className="text-gray-600 mb-6 text-sm sm:text-base">
+                    Share your knowledge and help fellow students
+                </p>
+
+                {/* Answer Input - Using React Hook Form */}
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="pt-4 sm:pt-6 bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                        <h4 className="font-semibold text-gray-900 mb-3 text-sm sm:text-base">
+                            Your Answer
+                        </h4>
+                        <textarea
+                            {...register("comment", {
+                                required: "Comment is required",
+                                minLength: {
+                                    value: 1,
+                                    message: "Comment cannot be empty"
+                                },
+                                validate: (value) => 
+                                    value.trim() !== "" || "Comment cannot be only whitespace"
+                            })}
+                            placeholder="What's on your mind?"
+                            className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px] sm:min-h-[120px] resize-none mb-2 text-sm sm:text-base"
+                            disabled={isPosting}
+                        />
+                        {errors.comment && (
+                            <p className="text-red-500 text-xs mb-4">
+                                {errors.comment.message}
+                            </p>
+                        )}
+                        <div className="flex sm:justify-end gap-4">
+                            <button
+                                type="submit"
+                                disabled={!isValid || isPosting}
+                                className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm sm:text-base disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2"
+                            >
+                                {isPosting ? (
+                                    <>
+                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                        Posting...
+                                    </>
+                                ) : (
+                                    "Post"
+                                )}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleCancel}
+                                disabled={isPosting}
+                                className="px-4 py-2 cursor-pointer text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-sm sm:text-base disabled:bg-gray-300 disabled:cursor-not-allowed"
+                            >
+                                Cancel
+                            </button>
                         </div>
                     </div>
-                </div>
+                </form>
 
+                {/* Comments List - Fixed Structure */}
                 <div className="space-y-6 my-6">
-                    {answers.map((ans) => (
-                        <div key={ans.id} className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-                            <div className="flex items-start gap-3 mb-3">
-                                <img
-                                    src={ans.author.avatar || "/placeholder.svg"}
-                                    alt={ans.author.name}
-                                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex-shrink-0"
-                                />
-                                <div className="flex-1">
-                                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                                        <h4 className="font-semibold text-gray-900 text-sm sm:text-base">{ans.author.name}</h4>
-                                        {ans.author.badge && (
-                                            <span className="px-2 py-0.5 bg-gray-900 text-white text-xs rounded-[25px] w-fit">{ans.author.badge}</span>
-                                        )}
+                    {post.comments && post.comments.length > 0 ? (
+                        post.comments.map((comment, index) => (
+                            <div
+                                key={index}
+                                className="bg-white rounded-lg shadow-sm p-4 border border-gray-200"
+                            >
+                                <div className="flex items-start gap-3 mb-3">
+                                    <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                                        {/* <span className="text-sm font-medium">
+                                            {comment?.name?.split(' ').map(n => n.charAt(0)).join('') || 'US'}
+                                        </span> */}
+                                        <img className="w-8 h-8 sm:w-12 sm:h-12 rounded-full object-cover" src={comment?.photo} />
                                     </div>
-                                    <p className="text-xs sm:text-sm text-gray-500">{ans.timeAgo}</p>
+                                    <div className="flex-1">
+                                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                                            <h4 className="font-semibold text-gray-900 text-sm sm:text-base">
+                                                {comment?.name || "Anonymous User"}
+                                            </h4>
+                                            <span className="px-2 py-0.5 bg-gray-900 text-white text-xs rounded-[25px] w-fit">
+                                                {comment?.studentType?.replace(/_/g, " ") || "Student"}
+                                            </span>
+                                        </div>
+                                        <p className="text-xs sm:text-sm text-gray-500">
+                                            {new Date(comment?.createdAt).toLocaleString()}
+                                        </p>
+                                    </div>
                                 </div>
+                                <p className="text-gray-700 text-sm sm:text-base">
+                                    {comment.comment}
+                                </p>
                             </div>
-                            <p className="text-gray-700 text-sm sm:text-base">{ans.content}</p>
+                        ))
+                    ) : (
+                        <div className="text-center py-8 text-gray-500">
+                            No answers yet. Be the first to respond!
                         </div>
-                    ))}
+                    )}
                 </div>
-
-
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default ForumDetail;
