@@ -91,7 +91,7 @@ export default function EditStudentProfile() {
           </div>
         </div>
       </div>
-      <EditStudentProfileModal open={open} setOpen={setOpen} />
+      <EditStudentProfileModal open={open} setOpen={setOpen} user={user} />
     </div>
   );
 }

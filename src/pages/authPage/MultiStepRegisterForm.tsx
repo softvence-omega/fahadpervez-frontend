@@ -102,7 +102,7 @@ export default function MultiStepRegisterForm() {
 
         if (res.success === true) {
           toast.success(res.message);
-          navigate("/dashboard");
+          navigate("/login");
         }
 
         // fetch("/api/register", {
