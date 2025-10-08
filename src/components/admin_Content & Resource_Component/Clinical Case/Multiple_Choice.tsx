@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Plus, ChevronDown, Trash2 } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
+import CustomDropdown from '../CustomDropdown';
 
 interface Option {
   id: number;
@@ -134,7 +135,7 @@ const MCQComponent: React.FC<MCQComponentProps> = ({ onQuestionsChange }) => {
     <div className="space-y-6">
       {/* Added Questions List */}
       {questions.length > 0 && (
-        <div className="bg-white rounded-lg border border-gray-200">
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
           <h3 className="text-base font-semibold text-gray-900 mb-4">
             Added Questions ({questions.length})
           </h3>
@@ -200,9 +201,9 @@ const MCQComponent: React.FC<MCQComponentProps> = ({ onQuestionsChange }) => {
           </div>
           <button
             onClick={handleAddQuestion}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors text-nowrap text-[.70rem] sm:text-sm"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 hidden sm:block" />
             {editingId !== null ? 'Update Question' : 'Add Question'}
           </button>
         </div>
@@ -289,18 +290,15 @@ const MCQComponent: React.FC<MCQComponentProps> = ({ onQuestionsChange }) => {
             Correct Answer & Explanation
           </label>
           <div className="relative mb-3">
-            <select
-              value={currentQuestion.correctAnswer}
-              onChange={(e) => setCurrentQuestion(prev => ({ ...prev, correctAnswer: e.target.value }))}
-              className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm appearance-none bg-white pr-10"
-            >
-              <option value="">Select correct answer</option>
-              <option value="A">Option A</option>
-              <option value="B">Option B</option>
-              <option value="C">Option C</option>
-              <option value="D">Option D</option>
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            <CustomDropdown
+        label="Correct Answer"
+        value={currentQuestion.correctAnswer}
+        onChange={(value) =>
+          setCurrentQuestion((prev) => ({ ...prev, correctAnswer: value }))
+        }
+        options={["Option A", "Option B", "Option C", "Option D"]}
+        placeholder="Select correct answer"
+      />
           </div>
           <textarea
             value={currentQuestion.explanation}

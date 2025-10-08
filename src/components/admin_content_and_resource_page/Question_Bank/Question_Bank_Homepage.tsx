@@ -16,11 +16,54 @@ const Content_Resource_Question_Bank: React.FC = () => {
   type View = "homepage" | "create" | "addQuestion" | "viewAll";
 
   const [currentView, setCurrentView] = useState<View>("homepage");
+  const [searchTerm, setSearchTerm] = useState(""); // 🔍 For live search
 
-  if (currentView === "create") return <Create_New_Question onBack={() => setCurrentView("homepage")}/>;
-  if (currentView === "addQuestion") return <Add_Question onBack={() => setCurrentView("homepage")}/>;
-  if (currentView === "viewAll") return <Content_Resource_ALL_QB onBack={() => setCurrentView("homepage")}/>;
+  // ✅ Question bank data (homepage preview)
+  const questionBanks = [
+    {
+      title: "Anatomy Essentials MCQs",
+      description: "Basic concepts in cardiovascular medicine",
+      tags: ["Anatomy", "Neurology"],
+      status: "Published",
+      questionCount: 20,
+    },
+    {
+      title: "Physiology Core Questions",
+      description: "Fundamental physiology principles",
+      tags: ["Physiology", "Biology"],
+      status: "Draft",
+      questionCount: 0,
+    },
+    {
+      title: "Pathology Practice Set",
+      description: "Disease mechanisms and diagnostics",
+      tags: ["Pathology", "Medicine"],
+      status: "Published",
+      questionCount: 15,
+    },
+  ];
 
+  // ✅ Filtered items based on search
+  const filteredBanks = questionBanks.filter((bank) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      bank.title.toLowerCase().includes(term) ||
+      bank.description.toLowerCase().includes(term) ||
+      bank.tags.some((tag) => tag.toLowerCase().includes(term))
+    );
+  });
+
+  // ✅ Routing logic
+  if (currentView === "create")
+    return <Create_New_Question onBack={() => setCurrentView("homepage")} />;
+  if (currentView === "addQuestion")
+    return <Add_Question onBack={() => setCurrentView("homepage")} />;
+  if (currentView === "viewAll")
+    return (
+      <Content_Resource_ALL_QB onBack={() => setCurrentView("homepage")} />
+    );
+
+  // ✅ Homepage view
   return (
     <div className="space-y-6 w-full">
       {/* ✅ Stats Section */}
@@ -38,11 +81,7 @@ const Content_Resource_Question_Bank: React.FC = () => {
             subtitle="Across all subjects"
             icon={<BookOpenTextIcon className="w-6 h-6 text-green-600" />}
           />
-          <StatsCard
-            title="Last Upload"
-            value={180}
-            subtitle="2025-09-12"
-          />
+          <StatsCard title="Last Upload" value={180} subtitle="2025-09-12" />
           <StatsCard
             title="Published"
             value={180}
@@ -57,7 +96,7 @@ const Content_Resource_Question_Bank: React.FC = () => {
         <div className="flex-1 w-full min-w-0">
           <SearchBar
             placeholder="Search Question Bank"
-            onChange={(val) => console.log(val)}
+            onChange={(val) => setSearchTerm(val)} // ✅ make search dynamic
           />
         </div>
 
@@ -82,12 +121,14 @@ const Content_Resource_Question_Bank: React.FC = () => {
       </div>
 
       {/* ✅ Header with View All */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
-        <h2 className="text-lg sm:text-xl font-semibold">Question Banks</h2>
+      <div className="flex justify-between items-center w-full gap-2">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
+          Question Banks
+        </h2>
         <Link to="">
           <Button
             variant="link"
-            className="p-0 text-sm sm:text-base"
+            className="p-0 text-sm sm:text-base text-blue-600 hover:underline"
             onClick={() => setCurrentView("viewAll")}
           >
             View All
@@ -95,25 +136,25 @@ const Content_Resource_Question_Bank: React.FC = () => {
         </Link>
       </div>
 
-      {/* ✅ Question Bank Cards */}
+      {/* ✅ Filtered Question Bank Cards */}
       <div className="grid grid-cols-1 gap-4 sm:gap-6">
-        <QuestionBankCard
-          title="Anatomy Essentials MCQs"
-          description="Basic concepts in cardiovascular medicine"
-          tags={["Anatomy", "Neurology"]}
-          status="Published"
-          questionCount={20}
-          onAdd={() => setCurrentView("addQuestion")}
-        />
-
-        <QuestionBankCard
-          title="Anatomy Essentials MCQs"
-          description="Basic concepts in cardiovascular medicine"
-          tags={["Anatomy", "Neurology"]}
-          status="Draft"
-          questionCount={0}
-          onAdd={() => setCurrentView("addQuestion")}
-        />
+        {filteredBanks.length > 0 ? (
+          filteredBanks.map((bank, index) => (
+            <QuestionBankCard
+              key={index}
+              title={bank.title}
+              description={bank.description}
+              tags={bank.tags}
+              status={bank.status as "Published" | "Draft"}
+              questionCount={bank.questionCount}
+              onAdd={() => setCurrentView("addQuestion")}
+            />
+          ))
+        ) : (
+          <p className="text-gray-500 text-center py-6">
+            No question banks found.
+          </p>
+        )}
       </div>
 
       {/* ✅ Recent Activity */}
@@ -130,20 +171,12 @@ const Content_Resource_Question_Bank: React.FC = () => {
                 timeAgo: "2 hour ago",
               },
               {
-                name: "cardiology_questions_v2",
-                questions: 198,
-                topic: "Questions",
-                subject: "Cardiology",
-                author: "Admin",
-                timeAgo: "2 hour ago",
-              },
-              {
-                name: "cardiology_questions_v2",
+                name: "physiology_set_v1",
                 questions: 156,
                 topic: "Questions",
-                subject: "Cardiology",
+                subject: "Physiology",
                 author: "Admin",
-                timeAgo: "2 hour ago",
+                timeAgo: "3 hour ago",
               },
             ]}
           />
