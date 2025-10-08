@@ -1,5 +1,5 @@
 import React from "react";
-import DashboardTopSection from "../AdminDashboard/reuseable/DashboardTopSection";
+import DashboardTopSection from "../reuseable/DashboardTopSection";
 
 const Upload_Content_Header: React.FC = () => {
   return (

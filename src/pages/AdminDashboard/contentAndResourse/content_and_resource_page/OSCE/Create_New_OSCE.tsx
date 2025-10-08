@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { ArrowLeft } from "lucide-react";
-import BasicInfo from "@/components/admin_Content & Resource_Component/OSCE/BasicInfo";
-import Instructions from "@/components/admin_Content & Resource_Component/OSCE/Instructions";
-import Stepper from "@/components/admin_Content & Resource_Component/OSCE/Stepper";
-import ExaminerChecklist from "@/components/admin_Content & Resource_Component/OSCE/ExaminerChecklist";
-import UploadStep from "@/components/admin_Content & Resource_Component/OSCE/UploadStep";
-import PatientScript from "@/components/admin_Content & Resource_Component/OSCE/PatientScript";
+import BasicInfo from "@/components/AdminDashboard/Content & Resource_Component/OSCE/BasicInfo";
+import Instructions from "@/components/AdminDashboard/Content & Resource_Component/OSCE/Instructions";
+import Stepper from "@/components/AdminDashboard/Content & Resource_Component/OSCE/Stepper";
+import ExaminerChecklist from "@/components/AdminDashboard/Content & Resource_Component/OSCE/ExaminerChecklist";
+import UploadStep from "@/components/AdminDashboard/Content & Resource_Component/OSCE/UploadStep";
+import PatientScript from "@/components/AdminDashboard/Content & Resource_Component/OSCE/PatientScript";
 
 type Step = "basic" | "instruction" | "script" | "checklist" | "upload";
 
@@ -112,14 +112,14 @@ const Create_New_OSCE: React.FC<Create_New_OSCEProps> = ({ onBack }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-full">
-      {/* Back to Homepage Button */}
-      <button
-        onClick={onBack}
-        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 sm:mb-6 transition-colors"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        <span className="text-sm sm:text-base font-medium">Back</span>
-      </button>
+        {/* Back to Homepage Button */}
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 sm:mb-6 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span className="text-sm sm:text-base font-medium">Back</span>
+        </button>
 
         <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 mb-1">
           Create New OSCE Station

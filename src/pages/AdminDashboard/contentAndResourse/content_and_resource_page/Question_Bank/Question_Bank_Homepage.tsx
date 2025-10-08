@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import StatsCard from "@/components/admin_Content & Resource_Component/QuestionBank/StatsCard";
-import SearchBar from "@/components/admin_Content & Resource_Component/QuestionBank/SearchBar";
-import QuestionBankCard from "@/components/admin_Content & Resource_Component/QuestionBank/QuestionBankCard";
-import RecentActivity from "@/components/admin_Content & Resource_Component/QuestionBank/RecentActivity";
-import { Button } from "../../ui/button";
+import StatsCard from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/StatsCard";
+import SearchBar from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/SearchBar";
+import QuestionBankCard from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/QuestionBankCard";
+import RecentActivity from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/RecentActivity";
+import { Button } from "@/components/ui/button";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import { BookOpenTextIcon, Plus } from "lucide-react";
 import { Link } from "react-router-dom";

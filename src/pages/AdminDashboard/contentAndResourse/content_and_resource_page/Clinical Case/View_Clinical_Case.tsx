@@ -14,8 +14,19 @@ interface Bulk_Upload_Clinical_CaseProps {
   onBack?: () => void;
 }
 
-const ClinicalCasePage: React.FC<Bulk_Upload_Clinical_CaseProps> = ({ onBack }) => {
-  const [expandedSections, setExpandedSections] = useState({
+interface ExpandedSections {
+  presentation: boolean;
+  history: boolean;
+  physical: boolean;
+  investigations: boolean;
+  imaging: boolean;
+  questions: boolean;
+}
+
+const ClinicalCasePage: React.FC<Bulk_Upload_Clinical_CaseProps> = ({
+  onBack,
+}) => {
+  const [expandedSections, setExpandedSections] = useState<ExpandedSections>({
     presentation: true,
     history: true,
     physical: true,
@@ -26,31 +37,34 @@ const ClinicalCasePage: React.FC<Bulk_Upload_Clinical_CaseProps> = ({ onBack }) 
 
   // Removed unused activeTab state
 
-interface ExpandedSections {
-    presentation: boolean;
-    history: boolean;
-    physical: boolean;
-    investigations: boolean;
-    imaging: boolean;
-    questions: boolean;
-}
+  type SectionKey = keyof ExpandedSections;
 
-type SectionKey = keyof ExpandedSections;
-
-const toggleSection = (section: SectionKey) => {
+  const toggleSection = (section: SectionKey) => {
     setExpandedSections((prev: ExpandedSections) => ({
-        ...prev,
-        [section]: !prev[section],
+      ...prev,
+      [section]: !prev[section],
     }));
-};
+  };
 
-const handleBack = () => {
+  const handleBack = () => {
     if (onBack) {
-        onBack();
+      onBack();
     } else {
-        window.history.back();
+      window.history.back();
     }
-};
+  };
+
+  // Scroll to section and expand it
+  const scrollToSection = (section: SectionKey) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [section]: true,
+    }));
+    const element = document.getElementById(`${section}`);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -90,24 +104,28 @@ const handleBack = () => {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="text-sm sm:text-lg text-nowrap shadow-sm border border-gray-200 mb-6 rounded-[var(--radius)] bg-[var(--secondary)]">
+        <div className="text-sm sm:text-lg text-nowrap shadow-sm border border-gray-200 mb-6 rounded-lg bg-gray-100">
           <div className="grid grid-cols-4 divide-x divide-gray-200">
-            <button className="flex items-center justify-center gap-2 py-2 hover:bg-gray-50 transition-colors rounded-sm bg-[var(--background)] shadow-sm">
-              <FileText className="w-5 h-5 text-gray-600" />
-              <span className="text-gray-700 font-medium">History</span>
-            </button>
-            <button className="flex items-center justify-center gap-2 py-2 hover:bg-gray-50 transition-colors">
-              <Activity className="w-5 h-5 text-gray-600" />
-              <span className="text-gray-700 font-medium">Vitals</span>
-            </button>
-            <button className="flex items-center justify-center gap-2 py-2 hover:bg-gray-50 transition-colors">
-              <FlaskConical className="w-5 h-5 text-gray-600" />
-              <span className="text-gray-700 font-medium">Labs</span>
-            </button>
-            <button className="flex items-center justify-center gap-2 py-2 hover:bg-gray-50 transition-colors">
-              <Image className="w-5 h-5 text-gray-600" />
-              <span className="text-gray-700 font-medium">Imaging</span>
-            </button>
+            {[
+              { key: "history", label: "History", icon: FileText },
+              { key: "physical", label: "Vitals", icon: Activity },
+              { key: "investigations", label: "Labs", icon: FlaskConical },
+              { key: "imaging", label: "Imaging", icon: Image },
+            ].map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => scrollToSection(tab.key as SectionKey)}
+                  className="flex items-center justify-center gap-2 py-2 transition-colors rounded-sm hover:bg-gray-50"
+                >
+                  <Icon className="w-5 h-5 text-gray-600 hidden sm:block" />
+                  <span className="font-medium text-gray-700 sm:text-base text-sm truncate">
+                    {tab.label}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -162,7 +180,10 @@ const handleBack = () => {
         </div>
 
         {/* History of Present Illness */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+        <div
+          id="history"
+          className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6"
+        >
           <button
             onClick={() => toggleSection("history")}
             className="w-full flex items-center justify-between p-6 hover:bg-gray-50 transition-colors"
@@ -199,7 +220,10 @@ const handleBack = () => {
         </div>
 
         {/* Physical Examination */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+        <div
+          id="physical"
+          className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6"
+        >
           <button
             onClick={() => toggleSection("physical")}
             className="w-full flex items-center justify-between p-6 hover:bg-gray-50 transition-colors"
@@ -319,7 +343,10 @@ const handleBack = () => {
         </div>
 
         {/* Initial Investigations */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+        <div
+          id="investigations"
+          className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6"
+        >
           <button
             onClick={() => toggleSection("investigations")}
             className="w-full flex items-center justify-between p-6 hover:bg-gray-50 transition-colors"
@@ -399,12 +426,17 @@ const handleBack = () => {
         </div>
 
         {/* Imaging Studies Section */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+        <div
+          id="imaging"
+          className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6"
+        >
           <button
             onClick={() => toggleSection("imaging")}
             className="w-full flex items-center justify-between p-6 hover:bg-gray-50 transition-colors"
           >
-            <h3 className="text-sm sm:text-xl text-nowrap font-semibold text-gray-900">Imaging Studies</h3>
+            <h3 className="text-sm sm:text-xl text-nowrap font-semibold text-gray-900">
+              Imaging Studies
+            </h3>
             <ChevronDown
               className={`w-5 h-5 text-gray-600 transition-transform ${
                 expandedSections.imaging ? "rotate-180" : ""

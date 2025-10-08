@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import SearchBar from "@/components/admin_Content & Resource_Component/QuestionBank/SearchBar";
+import SearchBar from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/SearchBar";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import { Plus, ArrowLeft } from "lucide-react";
-import FlashcardDeckCard from "../../admin_Content & Resource_Component/Flashcard/FlashCardDeck";
-import Pagination from "@/components/admin_Content & Resource_Component/Pagination";
+import FlashcardDeckCard from "@/components/AdminDashboard/Content & Resource_Component/Flashcard/FlashCardDeck";
+import Pagination from "@/components/AdminDashboard/Content & Resource_Component/Pagination";
 import Create_New_Flashcard_Deck from "./Create_New_Flashcard_Deck";
 import AddFlashcard from "./AddFlashcard";
 import CommonSpace from "@/common/space/CommonSpace";
@@ -21,24 +21,114 @@ const All_Flashcard: React.FC<AllFlashcardProps> = ({ onBack }) => {
 
   // ✅ Flashcards data
   const [flashcardDecks, setFlashcardDecks] = useState([
-    { title: "Anatomy Basics", cards: 25, subject: "Anatomy", created: "2024-06-01" },
-    { title: "Physiology Concepts", cards: 30, subject: "Physiology", created: "2024-06-02" },
-    { title: "Pathology Review", cards: 20, subject: "Pathology", created: "2024-06-03" },
-    { title: "Pharmacology Drugs", cards: 40, subject: "Pharmacology", created: "2024-06-04" },
-    { title: "Biochemistry Essentials", cards: 15, subject: "Biochemistry", created: "2024-06-05" },
-    { title: "Microbiology Organisms", cards: 35, subject: "Microbiology", created: "2024-06-06" },
-    { title: "Clinical Medicine Cases", cards: 28, subject: "Clinical Medicine", created: "2024-06-07" },
-    { title: "Surgery Procedures", cards: 22, subject: "Surgery", created: "2024-06-08" },
-    { title: "Pediatrics Milestones", cards: 18, subject: "Pediatrics", created: "2024-06-09" },
-    { title: "OB/GYN Topics", cards: 24, subject: "OB/GYN", created: "2024-06-10" },
-    { title: "Psychiatry Disorders", cards: 32, subject: "Psychiatry", created: "2024-06-11" },
-    { title: "Radiology Imaging", cards: 16, subject: "Radiology", created: "2024-06-12" },
-    { title: "Emergency Medicine", cards: 38, subject: "Emergency", created: "2024-06-13" },
-    { title: "Dermatology Conditions", cards: 19, subject: "Dermatology", created: "2024-06-14" },
-    { title: "Cardiology Heart", cards: 27, subject: "Cardiology", created: "2024-06-15" },
-    { title: "Neurology Brain", cards: 23, subject: "Neurology", created: "2024-06-16" },
-    { title: "Orthopedics Bones", cards: 21, subject: "Orthopedics", created: "2024-06-17" },
-    { title: "Ophthalmology Eyes", cards: 14, subject: "Ophthalmology", created: "2024-06-18" },
+    {
+      title: "Anatomy Basics",
+      cards: 25,
+      subject: "Anatomy",
+      created: "2024-06-01",
+    },
+    {
+      title: "Physiology Concepts",
+      cards: 30,
+      subject: "Physiology",
+      created: "2024-06-02",
+    },
+    {
+      title: "Pathology Review",
+      cards: 20,
+      subject: "Pathology",
+      created: "2024-06-03",
+    },
+    {
+      title: "Pharmacology Drugs",
+      cards: 40,
+      subject: "Pharmacology",
+      created: "2024-06-04",
+    },
+    {
+      title: "Biochemistry Essentials",
+      cards: 15,
+      subject: "Biochemistry",
+      created: "2024-06-05",
+    },
+    {
+      title: "Microbiology Organisms",
+      cards: 35,
+      subject: "Microbiology",
+      created: "2024-06-06",
+    },
+    {
+      title: "Clinical Medicine Cases",
+      cards: 28,
+      subject: "Clinical Medicine",
+      created: "2024-06-07",
+    },
+    {
+      title: "Surgery Procedures",
+      cards: 22,
+      subject: "Surgery",
+      created: "2024-06-08",
+    },
+    {
+      title: "Pediatrics Milestones",
+      cards: 18,
+      subject: "Pediatrics",
+      created: "2024-06-09",
+    },
+    {
+      title: "OB/GYN Topics",
+      cards: 24,
+      subject: "OB/GYN",
+      created: "2024-06-10",
+    },
+    {
+      title: "Psychiatry Disorders",
+      cards: 32,
+      subject: "Psychiatry",
+      created: "2024-06-11",
+    },
+    {
+      title: "Radiology Imaging",
+      cards: 16,
+      subject: "Radiology",
+      created: "2024-06-12",
+    },
+    {
+      title: "Emergency Medicine",
+      cards: 38,
+      subject: "Emergency",
+      created: "2024-06-13",
+    },
+    {
+      title: "Dermatology Conditions",
+      cards: 19,
+      subject: "Dermatology",
+      created: "2024-06-14",
+    },
+    {
+      title: "Cardiology Heart",
+      cards: 27,
+      subject: "Cardiology",
+      created: "2024-06-15",
+    },
+    {
+      title: "Neurology Brain",
+      cards: 23,
+      subject: "Neurology",
+      created: "2024-06-16",
+    },
+    {
+      title: "Orthopedics Bones",
+      cards: 21,
+      subject: "Orthopedics",
+      created: "2024-06-17",
+    },
+    {
+      title: "Ophthalmology Eyes",
+      cards: 14,
+      subject: "Ophthalmology",
+      created: "2024-06-18",
+    },
   ]);
 
   // ✅ Delete handler
@@ -63,7 +153,9 @@ const All_Flashcard: React.FC<AllFlashcardProps> = ({ onBack }) => {
 
   // ✅ Internal view navigation
   if (currentView === "create")
-    return <Create_New_Flashcard_Deck onBack={() => setCurrentView("homepage")} />;
+    return (
+      <Create_New_Flashcard_Deck onBack={() => setCurrentView("homepage")} />
+    );
   if (currentView === "addFlashcard")
     return <AddFlashcard onBack={() => setCurrentView("homepage")} />;
 
@@ -117,10 +209,15 @@ const All_Flashcard: React.FC<AllFlashcardProps> = ({ onBack }) => {
 
       {/* ✅ Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
-        <h2 className="text-lg sm:text-xl font-semibold">All Flashcard Decks</h2>
+        <h2 className="text-lg sm:text-xl font-semibold">
+          All Flashcard Decks
+        </h2>
         <p className="text-gray-600">
-          Showing {filteredDecks.length > 0 ? `${startIndex + 1}-${Math.min(endIndex, filteredDecks.length)}` : "0"} of{" "}
-          {filteredDecks.length} flashcard decks
+          Showing{" "}
+          {filteredDecks.length > 0
+            ? `${startIndex + 1}-${Math.min(endIndex, filteredDecks.length)}`
+            : "0"}{" "}
+          of {filteredDecks.length} flashcard decks
         </p>
       </div>
 
@@ -139,7 +236,9 @@ const All_Flashcard: React.FC<AllFlashcardProps> = ({ onBack }) => {
             />
           ))
         ) : (
-          <p className="text-gray-500 text-center col-span-full py-10">No flashcard decks found.</p>
+          <p className="text-gray-500 text-center col-span-full py-10">
+            No flashcard decks found.
+          </p>
         )}
       </div>
 

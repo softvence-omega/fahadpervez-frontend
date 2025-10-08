@@ -17,7 +17,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs }) => {
   return (
     <div className="flex flex-col w-full h-full">
       {/* --- Tabs for large screens --- */}
-      <div className="hidden lg:flex items-center justify-start gap-4 px-4 py-2 bg-white border-b border-slate-200 rounded-full">
+      <div className="hidden xl:flex items-center justify-start gap-4 px-4 py-2 bg-white border-b border-slate-200 rounded-full">
         {tabs.map((tab, index) => (
           <button
             key={index}
@@ -40,7 +40,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs }) => {
       </div>
 
       {/* --- Mobile: Hamburger Menu --- */}
-      <div className="lg:hidden flex items-center justify-between px-3 py-2 bg-white border-b border-slate-200 rounded-full">
+      <div className="xl:hidden flex items-center justify-between px-3 py-2 bg-white border-b border-slate-200 rounded-full">
         <span className="font-medium text-sm text-gray-900">
           {tabs[activeIndex].label}
         </span>
@@ -55,7 +55,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs }) => {
 
       {/* --- Mobile Menu Content --- */}
       {mobileMenuOpen && (
-        <div className="lg:hidden flex flex-col gap-2 px-3 py-2 bg-white border-b border-slate-200 rounded-b-lg shadow-md">
+        <div className="xl:hidden flex flex-col gap-2 px-4 py-2 bg-white border-b border-slate-200 rounded-b-lg shadow-md">
           {tabs.map((tab, index) => (
             <button
               key={index}
@@ -64,7 +64,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs }) => {
                 setMobileMenuOpen(false);
               }}
               className={`
-                w-full text-left px-3 py-2 rounded-lg transition-all duration-200
+                w-full text-left px-4 py-2 rounded-lg transition-all duration-200
                 ${
                   activeIndex === index
                     ? "bg-gradient-to-tr from-[#0076F5] to-[#0058B8] text-white"

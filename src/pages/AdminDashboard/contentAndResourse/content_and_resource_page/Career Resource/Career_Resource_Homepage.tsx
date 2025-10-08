@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import StatsCard from "@/components/admin_Content & Resource_Component/QuestionBank/StatsCard";
-import SearchBar from "@/components/admin_Content & Resource_Component/QuestionBank/SearchBar";
+import StatsCard from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/StatsCard";
+import SearchBar from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/SearchBar";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import { NotepadTextIcon, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
-import ResourceCard from "@/components/admin_Content & Resource_Component/Career Resource/ResourceCard";
+import ResourceCard from "@/components/AdminDashboard/Content & Resource_Component/Career Resource/ResourceCard";
 import Upload_New_Resource from "./Upload_New_Resource";
 import CommonSpace from "@/common/space/CommonSpace";
 
@@ -22,12 +22,48 @@ const Career_Resource_Homepage: React.FC = () => {
 
   // Sample resource data
   const [resources, setResources] = useState<ResourceType[]>([
-    { title: "Sample Resource 1", description: "This is a sample description for the resource.", tags: ["Residency Disease", "USA"], downloads: 10, published: true },
-    { title: "Sample Resource 2", description: "This is a sample description for the resource.", tags: ["Residency Disease"], downloads: 20, published: false },
-    { title: "Sample Resource 3", description: "This is a sample description for the resource.", tags: ["USA"], downloads: 15, published: true },
-    { title: "Sample Resource 4", description: "This is a sample description for the resource.", tags: ["Residency Disease", "Canada"], downloads: 5, published: false },
-    { title: "Sample Resource 5", description: "This is a sample description for the resource.", tags: ["Canada"], downloads: 12, published: true },
-    { title: "Sample Resource 6", description: "This is a sample description for the resource.", tags: ["USA"], downloads: 18, published: false },
+    {
+      title: "Sample Resource 1",
+      description: "This is a sample description for the resource.",
+      tags: ["Residency Disease", "USA"],
+      downloads: 10,
+      published: true,
+    },
+    {
+      title: "Sample Resource 2",
+      description: "This is a sample description for the resource.",
+      tags: ["Residency Disease"],
+      downloads: 20,
+      published: false,
+    },
+    {
+      title: "Sample Resource 3",
+      description: "This is a sample description for the resource.",
+      tags: ["USA"],
+      downloads: 15,
+      published: true,
+    },
+    {
+      title: "Sample Resource 4",
+      description: "This is a sample description for the resource.",
+      tags: ["Residency Disease", "Canada"],
+      downloads: 5,
+      published: false,
+    },
+    {
+      title: "Sample Resource 5",
+      description: "This is a sample description for the resource.",
+      tags: ["Canada"],
+      downloads: 12,
+      published: true,
+    },
+    {
+      title: "Sample Resource 6",
+      description: "This is a sample description for the resource.",
+      tags: ["USA"],
+      downloads: 18,
+      published: false,
+    },
   ]);
 
   // Delete handler
@@ -39,7 +75,9 @@ const Career_Resource_Homepage: React.FC = () => {
   const filteredResources = resources.filter(
     (res) =>
       res.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      res.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+      res.tags.some((tag) =>
+        tag.toLowerCase().includes(searchQuery.toLowerCase())
+      )
   );
 
   if (showUploadPage) {
@@ -123,7 +161,9 @@ const Career_Resource_Homepage: React.FC = () => {
             />
           ))
         ) : (
-          <p className="text-gray-500 text-center col-span-full">No results found.</p>
+          <p className="text-gray-500 text-center col-span-full">
+            No results found.
+          </p>
         )}
       </div>
     </div>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Upload, ChevronDown, Plus, ArrowLeft } from "lucide-react";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import BulkUploadQuestions from "./Bulk_Upload_Question_Bank";
+import CustomDropdown from "@/components/AdminDashboard/Content & Resource_Component/CustomDropdown";
 
 interface AddQuestionProps {
   onBack?: () => void;
@@ -14,10 +15,14 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
   const [difficultyLabel, setDifficultyLabel] = useState("Medium");
   const [questionType, setQuestionType] = useState("Multiple Choice");
   const [question, setQuestion] = useState("");
-  const [options, setOptions] = useState(["", "", "", ""]);
+  const [answerOptions, setAnswerOptions] = useState([
+    { label: "A", text: "", reasoning: "", correct: false },
+    { label: "B", text: "", reasoning: "", correct: false },
+    { label: "C", text: "", reasoning: "", correct: false },
+    { label: "D", text: "", reasoning: "", correct: false },
+  ]);
   const [correctAnswer, setCorrectAnswer] = useState("Option A");
   const [explanation, setExplanation] = useState("");
-  const [isDifficultyOpen, setIsDifficultyOpen] = useState(false);
   const [isCorrectAnswerOpen, setIsCorrectAnswerOpen] = useState(false);
 
   type View = "addQuestion" | "bulkQuestion";
@@ -27,15 +32,7 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
   if (currentView === "bulkQuestion")
     return <BulkUploadQuestions onBack={() => setCurrentView("addQuestion")} />;
 
-
-  const difficulties = ["Easy", "Medium", "Hard"];
-  const answerOptions = ["Option A", "Option B", "Option C", "Option D"];
-
-  const handleOptionChange = (index: number, value: string) => {
-    const newOptions = [...options];
-    newOptions[index] = value;
-    setOptions(newOptions);
-  };
+  const correctAnswerOptions = ["Option A", "Option B", "Option C", "Option D"];
 
   const handleSave = () => {
     console.log({
@@ -45,7 +42,7 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
       difficultyLabel,
       questionType,
       question,
-      options,
+      answerOptions,
       correctAnswer,
       explanation,
     });
@@ -55,7 +52,12 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
   const handleSaveAndAddAnother = () => {
     handleSave();
     setQuestion("");
-    setOptions(["", "", "", ""]);
+    setAnswerOptions([
+      { label: "A", text: "", reasoning: "", correct: false },
+      { label: "B", text: "", reasoning: "", correct: false },
+      { label: "C", text: "", reasoning: "", correct: false },
+      { label: "D", text: "", reasoning: "", correct: false },
+    ]);
     setExplanation("");
   };
 
@@ -64,6 +66,9 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
     else window.history.back();
   };
 
+  function setDifficulty(value: string): void {
+    setDifficultyLabel(value);
+  }
   return (
     <div className="min-h-screen w-full bg-gray-50">
       <div className="max-w-full mx-auto flex flex-col gap-6 sm:gap-8">
@@ -99,7 +104,6 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
         </div>
 
         {/* 🧩 Form Section */}
-
         <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 lg:p-8 space-y-6">
           {/* Subject */}
           <div>
@@ -142,44 +146,13 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
 
           {/* Difficulty Dropdown */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Difficulty Label
-            </label>
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setIsDifficultyOpen(!isDifficultyOpen)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white text-left flex items-center justify-between transition"
-              >
-                <span className="text-gray-900">{difficultyLabel}</span>
-                <ChevronDown
-                  className={`w-5 h-5 text-gray-400 transition-transform ${
-                    isDifficultyOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              {isDifficultyOpen && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
-                  {difficulties.map((diff) => (
-                    <button
-                      key={diff}
-                      type="button"
-                      onClick={() => {
-                        setDifficultyLabel(diff);
-                        setIsDifficultyOpen(false);
-                      }}
-                      className={`w-full px-4 py-2 text-left hover:bg-gray-100 transition ${
-                        difficultyLabel === diff
-                          ? "bg-blue-50 text-blue-600"
-                          : "text-gray-900"
-                      }`}
-                    >
-                      {diff}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            <CustomDropdown
+              label="Difficulty Label"
+              value={difficultyLabel}
+              onChange={setDifficulty}
+              options={["Beginner", "Intermediate", "Advanced"]}
+              placeholder="Select difficulty"
+            />
           </div>
 
           {/* Question Type */}
@@ -208,29 +181,60 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
             />
           </div>
 
-          {/* Answer Options */}
+          {/* Answer Options - NEW DESIGN */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-3 ">
               Answer Options
             </label>
             <div className="space-y-3">
-              {options.map((option, index) => (
+              {answerOptions.map((option, index) => (
                 <div
                   key={index}
-                  className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3"
+                  className="flex gap-3 items-start rounded-md border border-gray-200 bg-[rgba(239,246,255,0.6)] p-4"
                 >
-                  <span className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-600 text-sm font-medium flex-shrink-0">
-                    {String.fromCharCode(65 + index)}
-                  </span>
-                  <input
-                    type="text"
-                    value={option}
-                    onChange={(e) => handleOptionChange(index, e.target.value)}
-                    placeholder={`Enter option ${String.fromCharCode(
-                      65 + index
-                    )}`}
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                  />
+                  <div className="flex items-center gap-2 pt-2">
+                    <span className="text-sm font-medium text-black w-6 h-6 bg-slate-200 flex items-center justify-center rounded-full">
+                      {option.label}
+                    </span>
+                    {/* <input
+                      type="radio"
+                      name="correctAnswer"
+                      checked={option.correct}
+                      onChange={() => {
+                        const updated = answerOptions.map((opt, i) => ({
+                          ...opt,
+                          correct: i === index
+                        }));
+                        setAnswerOptions(updated);
+                        setCorrectAnswer(`Option ${option.label}`);
+                      }}
+                      className="w-4 h-4 text-blue-600"
+                    /> */}
+                  </div>
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      placeholder={`Enter option ${option.label}`}
+                      value={option.text}
+                      onChange={(e) => {
+                        const updated = [...answerOptions];
+                        updated[index].text = e.target.value;
+                        setAnswerOptions(updated);
+                      }}
+                      className="w-full px-3 py-2 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-2"
+                    />
+                    <textarea
+                      placeholder="Explanation (optional)"
+                      rows={2}
+                      value={option.reasoning}
+                      onChange={(e) => {
+                        const updated = [...answerOptions];
+                        updated[index].reasoning = e.target.value;
+                        setAnswerOptions(updated);
+                      }}
+                      className="w-full px-3 py-2 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
+                    />
+                  </div>
                 </div>
               ))}
             </div>
@@ -256,7 +260,7 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
               </button>
               {isCorrectAnswerOpen && (
                 <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
-                  {answerOptions.map((ans) => (
+                  {correctAnswerOptions.map((ans) => (
                     <button
                       key={ans}
                       type="button"
@@ -276,19 +280,6 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
                 </div>
               )}
             </div>
-          </div>
-
-          {/* Explanation */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Explanation
-            </label>
-            <textarea
-              value={explanation}
-              onChange={(e) => setExplanation(e.target.value)}
-              rows={4}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none transition"
-            />
           </div>
 
           {/* Action Buttons */}
