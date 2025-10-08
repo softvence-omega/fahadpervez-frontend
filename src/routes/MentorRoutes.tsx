@@ -13,6 +13,8 @@ import RecentTransaction from "@/pages/mentor/RecentTransaction";
 import CreateQuestionBank from "@/pages/mentor/questionBank/CreateQuestionBank";
 import CreateQuestion from "@/pages/mentor/questionBank/CreateQuestion";
 import MentorClasses from "@/pages/mentor/mentorClasses/MentorClasses";
+import ForumDetail from "@/components/mentorCommunity/ForumDetail";
+
 
 const mentorRoutes = {
   path: "/mentor",
@@ -57,6 +59,10 @@ const mentorRoutes = {
     {
       path: "mentor-community",
       element: <MentorCommunity />,
+    },
+    {
+      path:"forum-details/:id",
+      element: <ForumDetail/>
     },
     {
       path: "recent-transaction",

@@ -1,25 +1,16 @@
+// Forums.tsx
 import { useState } from "react"
 import { Search, Plus } from "lucide-react"
 import ForumList from "./ForumList"
-import ForumDetail from "./ForumDetail"
-import CreateDiscussion from "./CreateDiscussion"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
-type ForumView = "list" | "detail" | "create"
+import CreateDiscussion from "./CreateDiscussion"
 
 const Forums = () => {
-  const [view, setView] = useState<ForumView>("list")
-  const [selectedForumId, setSelectedForumId] = useState<string | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string>("")
-
-  const handleForumClick = (id: string) => {
-    setSelectedForumId(id)
-    setView("detail")
-  }
+  const [view, setView] = useState<"list" | "create">("list")
 
   const handleBackToList = () => {
     setView("list")
-    setSelectedForumId(null)
   }
 
   const handleCreateNew = () => {
@@ -36,7 +27,7 @@ const Forums = () => {
               <p className="text-gray-600 text-sm sm:text-base">Connect, learn, and grow with the medical education community</p>
             </div>
             <div className="flex gap-2">
-              <button
+              <button 
                 onClick={handleCreateNew}
                 className="px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm sm:text-base cursor-pointer"
               >
@@ -55,7 +46,7 @@ const Forums = () => {
                 className="w-full h-10 pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 text-sm sm:text-base"
               />
             </div>
-            
+
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
               <SelectTrigger className="h-10 w-full sm:w-[180px] bg-white">
                 <SelectValue placeholder="Categories" />
@@ -70,11 +61,9 @@ const Forums = () => {
             </Select>
           </div>
 
-          <ForumList onForumClick={handleForumClick} />
+          <ForumList />
         </div>
       )}
-
-      {view === "detail" && selectedForumId && <ForumDetail forumId={selectedForumId} onBack={handleBackToList} />}
 
       {view === "create" && <CreateDiscussion onBack={handleBackToList} />}
     </div>
