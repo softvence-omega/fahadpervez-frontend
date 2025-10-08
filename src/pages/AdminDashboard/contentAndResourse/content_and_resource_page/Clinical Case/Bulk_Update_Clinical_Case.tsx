@@ -1,7 +1,7 @@
 import React from "react";
-import UploadDropzone from "@/components/admin_Content & Resource_Component/Bulk Update Components/UpdateDropZone";
-import RequiredColumnsList from "@/components/admin_Content & Resource_Component/Bulk Update Components/RequiredColumsList";
-import ActionButtons from "@/components/admin_Content & Resource_Component/Bulk Update Components/ActionButtons";
+import UploadDropzone from "@/components/AdminDashboard/Content & Resource_Component/Bulk Update Components/UpdateDropZone";
+import RequiredColumnsList from "@/components/AdminDashboard/Content & Resource_Component/Bulk Update Components/RequiredColumsList";
+import ActionButtons from "@/components/AdminDashboard/Content & Resource_Component/Bulk Update Components/ActionButtons";
 import { ArrowLeft } from "lucide-react";
 
 interface Bulk_Upload_Clinical_CaseProps {

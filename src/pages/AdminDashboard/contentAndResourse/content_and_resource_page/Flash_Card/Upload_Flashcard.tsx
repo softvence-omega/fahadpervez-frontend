@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import StatsCard from "@/components/admin_Content & Resource_Component/QuestionBank/StatsCard";
-import SearchBar from "@/components/admin_Content & Resource_Component/QuestionBank/SearchBar";
-import RecentActivity from "@/components/admin_Content & Resource_Component/QuestionBank/RecentActivity";
-import { Button } from "../../ui/button";
+import StatsCard from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/StatsCard";
+import SearchBar from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/SearchBar";
+import RecentActivity from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/RecentActivity";
+import { Button } from "../../../../../components/ui/button";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import { Link } from "react-router-dom";
 import { RectangleHorizontalIcon, Plus } from "lucide-react";
-import FlashcardDeckCard from "../../admin_Content & Resource_Component/Flashcard/FlashCardDeck";
+import FlashcardDeckCard from "@/components/AdminDashboard/Content & Resource_Component/Flashcard/FlashCardDeck";
 import Create_New_Flashcard_Deck from "./Create_New_Flashcard_Deck";
 import All_Flashcard from "./All_Flashcard";
 import AddFlashcard from "./AddFlashcard";
@@ -19,12 +19,42 @@ const Upload_Flashcard: React.FC = () => {
 
   // ✅ Stateful flashcard list
   const [flashcardDecks, setFlashcardDecks] = useState([
-    { title: "Sample Flashcard Deck 1", cards: 10, subject: "Anatomy", created: "2024-06-01" },
-    { title: "Sample Flashcard Deck 2", cards: 12, subject: "Cardiology", created: "2024-06-02" },
-    { title: "Sample Flashcard Deck 3", cards: 8, subject: "Physiology", created: "2024-06-03" },
-    { title: "Sample Flashcard Deck 4", cards: 15, subject: "Pathology", created: "2024-06-04" },
-    { title: "Sample Flashcard Deck 5", cards: 20, subject: "Pharmacology", created: "2024-06-05" },
-    { title: "Sample Flashcard Deck 6", cards: 25, subject: "Microbiology", created: "2024-06-06" },
+    {
+      title: "Sample Flashcard Deck 1",
+      cards: 10,
+      subject: "Anatomy",
+      created: "2024-06-01",
+    },
+    {
+      title: "Sample Flashcard Deck 2",
+      cards: 12,
+      subject: "Cardiology",
+      created: "2024-06-02",
+    },
+    {
+      title: "Sample Flashcard Deck 3",
+      cards: 8,
+      subject: "Physiology",
+      created: "2024-06-03",
+    },
+    {
+      title: "Sample Flashcard Deck 4",
+      cards: 15,
+      subject: "Pathology",
+      created: "2024-06-04",
+    },
+    {
+      title: "Sample Flashcard Deck 5",
+      cards: 20,
+      subject: "Pharmacology",
+      created: "2024-06-05",
+    },
+    {
+      title: "Sample Flashcard Deck 6",
+      cards: 25,
+      subject: "Microbiology",
+      created: "2024-06-06",
+    },
   ]);
 
   // ✅ Delete handler
@@ -40,7 +70,9 @@ const Upload_Flashcard: React.FC = () => {
   );
 
   if (currentView === "create")
-    return <Create_New_Flashcard_Deck onBack={() => setCurrentView("homepage")} />;
+    return (
+      <Create_New_Flashcard_Deck onBack={() => setCurrentView("homepage")} />
+    );
   if (currentView === "addFlashcard")
     return <AddFlashcard onBack={() => setCurrentView("homepage")} />;
   if (currentView === "viewAll")
@@ -63,7 +95,9 @@ const Upload_Flashcard: React.FC = () => {
               }
               value={i === 0 ? 10 : 3420}
               subtitle="Across all subjects"
-              icon={<RectangleHorizontalIcon className="w-6 h-6 text-orange-500 rotate-36" />}
+              icon={
+                <RectangleHorizontalIcon className="w-6 h-6 text-orange-500 rotate-36" />
+              }
             />
           ))}
         </div>

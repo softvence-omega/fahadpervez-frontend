@@ -1,21 +1,27 @@
 import React, { useState } from "react";
-import UploadDropzone from "@/components/admin_Content & Resource_Component/Bulk Update Components/UpdateDropZone";
-import RequiredColumnsList from "@/components/admin_Content & Resource_Component/Bulk Update Components/RequiredColumsList";
-import UploadPreview from "@/components/admin_Content & Resource_Component/Bulk Update Components/UploadPreview";
-import ActionButtons from "@/components/admin_Content & Resource_Component/Bulk Update Components/ActionButtons";
 import { ArrowLeft } from "lucide-react";
+import UploadDropzone from "@/components/AdminDashboard/Content & Resource_Component/Bulk Update Components/UpdateDropZone";
+import RequiredColumnsList from "@/components/AdminDashboard/Content & Resource_Component/Bulk Update Components/RequiredColumsList";
+import UploadPreview from "@/components/AdminDashboard/Content & Resource_Component/Bulk Update Components/UploadPreview";
+import ActionButtons from "@/components/AdminDashboard/Content & Resource_Component/Bulk Update Components/ActionButtons";
 
 interface AddQuestionProps {
   onBack?: () => void;
 }
 
-const Bulk_Upload_Flashcard: React.FC<AddQuestionProps> = ({ onBack }) => {
+const BulkUploadQuestions: React.FC<AddQuestionProps> = ({ onBack }) => {
   const [detectedCount, setDetectedCount] = useState(0);
 
   const columns = [
     { label: "Subject", description: "Subject category" },
-    { label: "Front Side", description: "Basic: Front Side (Question/Term)" },
-    { label: "Back Side", description: "Back Side (Answer/Definition)" },
+    { label: "Difficulty", description: "Basic, Intermediate, or Advanced" },
+    { label: "Question Type", description: "The question Type text" },
+    { label: "Question", description: "The question text" },
+    { label: "Option A", description: "First answer option" },
+    { label: "Option B", description: "Second answer option" },
+    { label: "Option C", description: "Third answer option" },
+    { label: "Option D", description: "Fourth answer option" },
+    { label: "Correct Answer", description: "A, B, C, or D" },
     {
       label: "Explanation",
       description: "Detailed explanation for correct answer",
@@ -28,9 +34,13 @@ const Bulk_Upload_Flashcard: React.FC<AddQuestionProps> = ({ onBack }) => {
   };
 
   const handleImport = () => {
-    alert("Cards imported successfully!");
+    alert("Questions imported successfully!");
   };
 
+  const handleCancel = () => {
+    if (onBack) onBack();
+    else window.history.back();
+  };
 
   const handleBack = () => {
     if (onBack) onBack();
@@ -39,7 +49,7 @@ const Bulk_Upload_Flashcard: React.FC<AddQuestionProps> = ({ onBack }) => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto">
+      <div className=" mx-auto">
         {/* Top Back Button */}
         <button
           onClick={handleBack}
@@ -48,12 +58,10 @@ const Bulk_Upload_Flashcard: React.FC<AddQuestionProps> = ({ onBack }) => {
           <ArrowLeft className="w-4 h-4" />
           <span className="text-sm font-medium">Back</span>
         </button>
-
-        {/* 🏷️ Page Header */}
         <h1 className="text-2xl font-semibold text-gray-900 mb-1">
           Bulk Upload Questions
         </h1>
-        <p className="text-sm text-gray-600 mb-8">
+        <p className=" mb-8 text-slate-700 font-inter text-sm font-normal leading-5">
           Basic concepts in cardiovascular medicine
         </p>
 
@@ -70,12 +78,12 @@ const Bulk_Upload_Flashcard: React.FC<AddQuestionProps> = ({ onBack }) => {
         <UploadPreview detectedCount={detectedCount} label="Upload Preview" />
         <ActionButtons
           onImport={handleImport}
-          onCancel={handleBack}
-          importLabel="Import Cards"
+          onCancel={handleCancel}
+          importLabel="Import Questions"
         />
       </div>
     </div>
   );
 };
 
-export default Bulk_Upload_Flashcard;
+export default BulkUploadQuestions;

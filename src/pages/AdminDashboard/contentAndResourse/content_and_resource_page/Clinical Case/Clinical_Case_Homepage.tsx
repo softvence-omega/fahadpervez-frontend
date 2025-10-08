@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import StatsCard from "@/components/admin_Content & Resource_Component/QuestionBank/StatsCard";
-import SearchBar from "@/components/admin_Content & Resource_Component/QuestionBank/SearchBar";
-import { Button } from "../../ui/button";
+import StatsCard from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/StatsCard";
+import SearchBar from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/SearchBar";
+import { Button } from "../../../../../components/ui/button";
 import { NotebookIcon, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
-import Clinical_Case_Card from "@/components/admin_Content & Resource_Component/Clinical Case/Clinical_Case_Card";
+import Clinical_Case_Card from "@/components/AdminDashboard/Content & Resource_Component/Clinical Case/Clinical_Case_Card";
 import AddClinicalCasePage from "./Add_Clinical_Case";
 import Bulk_Upload_Clinical_Case from "./Bulk_Update_Clinical_Case";
 import ClinicalCasePage from "./View_Clinical_Case";
@@ -30,9 +30,33 @@ const OSCE_Homepage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const [clinicalCases, setClinicalCases] = useState<ClinicalCase[]>([
-    { title: "Cardiology Case Study", category: "Heart", gender: "Male", questionNumber: 12, questionType: "MCQ", difficulty: "Beginner", status: "Publish" },
-    { title: "Neurology Practical", category: "Brain", gender: "Female", questionNumber: 8, questionType: "Questions", difficulty: "Intermediate", status: "Draft" },
-    { title: "Gastroenterology Analysis", category: "Stomach", gender: "Other", questionNumber: 10, questionType: "Theory", difficulty: "Advanced", status: "Publish" },
+    {
+      title: "Cardiology Case Study",
+      category: "Heart",
+      gender: "Male",
+      questionNumber: 12,
+      questionType: "MCQ",
+      difficulty: "Beginner",
+      status: "Publish",
+    },
+    {
+      title: "Neurology Practical",
+      category: "Brain",
+      gender: "Female",
+      questionNumber: 8,
+      questionType: "Questions",
+      difficulty: "Intermediate",
+      status: "Draft",
+    },
+    {
+      title: "Gastroenterology Analysis",
+      category: "Stomach",
+      gender: "Other",
+      questionNumber: 10,
+      questionType: "Theory",
+      difficulty: "Advanced",
+      status: "Publish",
+    },
   ]);
 
   // Filtered Cases based on Search
@@ -48,9 +72,14 @@ const OSCE_Homepage: React.FC = () => {
   };
 
   // Conditional Views
-  if (currentView === "add") return <AddClinicalCasePage onBack={() => setCurrentView("homepage")} />;
-  if (currentView === "bulk") return <Bulk_Upload_Clinical_Case onBack={() => setCurrentView("homepage")} />;
-  if (currentView === "view") return <ClinicalCasePage onBack={() => setCurrentView("homepage")} />;
+  if (currentView === "add")
+    return <AddClinicalCasePage onBack={() => setCurrentView("homepage")} />;
+  if (currentView === "bulk")
+    return (
+      <Bulk_Upload_Clinical_Case onBack={() => setCurrentView("homepage")} />
+    );
+  if (currentView === "view")
+    return <ClinicalCasePage onBack={() => setCurrentView("homepage")} />;
 
   return (
     <div className="space-y-6 w-full">
@@ -115,7 +144,9 @@ const OSCE_Homepage: React.FC = () => {
               key={i}
               onClick={(e) => {
                 // Prevent click if delete button is clicked
-                if ((e.target as HTMLElement).closest(".clinical-case-delete-btn")) {
+                if (
+                  (e.target as HTMLElement).closest(".clinical-case-delete-btn")
+                ) {
                   e.stopPropagation();
                   return;
                 }

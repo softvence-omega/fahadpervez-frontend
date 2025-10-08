@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import StatsCard from "@/components/admin_Content & Resource_Component/QuestionBank/StatsCard";
-import SearchBar from "@/components/admin_Content & Resource_Component/QuestionBank/SearchBar";
+import StatsCard from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/StatsCard";
+import SearchBar from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/SearchBar";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import { NotepadTextIcon, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
-import Notes_Card from "@/components/admin_Content & Resource_Component/Notes/Notes_Card";
+import Notes_Card from "@/components/AdminDashboard/Content & Resource_Component/Notes/Notes_Card";
 import Upload_New_Note from "./Upload_New_Note";
 import CommonSpace from "@/common/space/CommonSpace";
 
@@ -24,12 +24,51 @@ const Notes_HomePage: React.FC = () => {
 
   // ✅ Notes data
   const [notes, setNotes] = useState<NoteType[]>([
-    { title: "Types of Shock 1", category: "Heart Sounds", description: "Shock is a life-threatening condition where tissue perfusion is inadequate to meet cellular demands, leading to cellular dysfunction and organ failure.", pages: 20, status: "published" },
-    { title: "Types of Shock 2", category: "Heart Sounds", description: "Shock is a life-threatening condition where tissue perfusion is inadequate to meet cellular demands, leading to cellular dysfunction and organ failure.", pages: 20, status: "draft" },
-    { title: "Heart Failure Basics", category: "Heart Sounds", description: "Understanding the pathophysiology and management of heart failure.", pages: 15, status: "published" },
-    { title: "ECG Interpretation", category: "Heart Sounds", description: "Learn the basics of ECG reading and interpretation.", pages: 10, status: "published" },
-    { title: "Cardiogenic Shock", category: "Heart Sounds", description: "Detailed notes on cardiogenic shock and its management.", pages: 18, status: "draft" },
-    { title: "Acute Myocardial Infarction", category: "Heart Sounds", description: "Comprehensive overview of AMI presentation and management.", pages: 25, status: "published" },
+    {
+      title: "Types of Shock 1",
+      category: "Heart Sounds",
+      description:
+        "Shock is a life-threatening condition where tissue perfusion is inadequate to meet cellular demands, leading to cellular dysfunction and organ failure.",
+      pages: 20,
+      status: "published",
+    },
+    {
+      title: "Types of Shock 2",
+      category: "Heart Sounds",
+      description:
+        "Shock is a life-threatening condition where tissue perfusion is inadequate to meet cellular demands, leading to cellular dysfunction and organ failure.",
+      pages: 20,
+      status: "draft",
+    },
+    {
+      title: "Heart Failure Basics",
+      category: "Heart Sounds",
+      description:
+        "Understanding the pathophysiology and management of heart failure.",
+      pages: 15,
+      status: "published",
+    },
+    {
+      title: "ECG Interpretation",
+      category: "Heart Sounds",
+      description: "Learn the basics of ECG reading and interpretation.",
+      pages: 10,
+      status: "published",
+    },
+    {
+      title: "Cardiogenic Shock",
+      category: "Heart Sounds",
+      description: "Detailed notes on cardiogenic shock and its management.",
+      pages: 18,
+      status: "draft",
+    },
+    {
+      title: "Acute Myocardial Infarction",
+      category: "Heart Sounds",
+      description: "Comprehensive overview of AMI presentation and management.",
+      pages: 25,
+      status: "published",
+    },
   ]);
 
   // Delete handler
@@ -125,7 +164,9 @@ const Notes_HomePage: React.FC = () => {
             />
           ))
         ) : (
-          <p className="text-gray-500 text-center col-span-full">No results found.</p>
+          <p className="text-gray-500 text-center col-span-full">
+            No results found.
+          </p>
         )}
       </div>
     </div>
