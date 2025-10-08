@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import StatsCard from "@/components/admin_Content & Resource_Component/QuestionBank/StatsCard";
-import SearchBar from "@/components/admin_Content & Resource_Component/QuestionBank/SearchBar";
+import StatsCard from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/StatsCard";
+import SearchBar from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/SearchBar";
 import { Plus, BookOpen } from "lucide-react";
-import StationCard from "@/components/admin_Content & Resource_Component/OSCE/StationCard";
+import StationCard from "@/components/AdminDashboard/Content & Resource_Component/OSCE/StationCard";
 import Create_New_OSCE from "./Create_New_OSCE";
 import Clinical_Skill_Lab from "./Clinical_Skill_Lab";
 import CommonSpace from "@/common/space/CommonSpace";
@@ -29,7 +29,8 @@ const OSCE_Homepage: React.FC = () => {
       steps: 12,
       videos: 1,
       duration: "~15 min",
-      description: "Complete cardiovascular system examination including inspection, palpation, and auscultation",
+      description:
+        "Complete cardiovascular system examination including inspection, palpation, and auscultation",
       category: "Cardiovascular",
     },
     {
@@ -37,7 +38,8 @@ const OSCE_Homepage: React.FC = () => {
       steps: 10,
       videos: 2,
       duration: "~20 min",
-      description: "Comprehensive neurological assessment including cranial nerves, reflexes, and motor examination",
+      description:
+        "Comprehensive neurological assessment including cranial nerves, reflexes, and motor examination",
       category: "Neurology",
     },
     {
@@ -45,7 +47,8 @@ const OSCE_Homepage: React.FC = () => {
       steps: 8,
       videos: 1,
       duration: "~12 min",
-      description: "Thorough respiratory system examination with inspection, palpation, percussion, and auscultation",
+      description:
+        "Thorough respiratory system examination with inspection, palpation, percussion, and auscultation",
       category: "Respiratory",
     },
   ]);
@@ -61,8 +64,10 @@ const OSCE_Homepage: React.FC = () => {
   );
 
   // Conditional Views
-  if (currentView === "create") return <Create_New_OSCE onBack={() => setCurrentView("homepage")} />;
-  if (currentView === "clinical") return <Clinical_Skill_Lab onBack={() => setCurrentView("homepage")} />;
+  if (currentView === "create")
+    return <Create_New_OSCE onBack={() => setCurrentView("homepage")} />;
+  if (currentView === "clinical")
+    return <Clinical_Skill_Lab onBack={() => setCurrentView("homepage")} />;
 
   return (
     <div className="space-y-6 w-full">

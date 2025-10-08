@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Upload, ChevronDown, Plus, ArrowLeft } from "lucide-react";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import BulkUploadQuestions from "./Bulk_Upload_Question_Bank";
-import CustomDropdown from "@/components/admin_Content & Resource_Component/CustomDropdown";
+import CustomDropdown from "@/components/AdminDashboard/Content & Resource_Component/CustomDropdown";
 
 interface AddQuestionProps {
   onBack?: () => void;
@@ -19,7 +19,7 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
     { label: "A", text: "", reasoning: "", correct: false },
     { label: "B", text: "", reasoning: "", correct: false },
     { label: "C", text: "", reasoning: "", correct: false },
-    { label: "D", text: "", reasoning: "", correct: false }
+    { label: "D", text: "", reasoning: "", correct: false },
   ]);
   const [correctAnswer, setCorrectAnswer] = useState("Option A");
   const [explanation, setExplanation] = useState("");
@@ -56,7 +56,7 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
       { label: "A", text: "", reasoning: "", correct: false },
       { label: "B", text: "", reasoning: "", correct: false },
       { label: "C", text: "", reasoning: "", correct: false },
-      { label: "D", text: "", reasoning: "", correct: false }
+      { label: "D", text: "", reasoning: "", correct: false },
     ]);
     setExplanation("");
   };
@@ -188,9 +188,14 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
             </label>
             <div className="space-y-3">
               {answerOptions.map((option, index) => (
-                <div key={index} className="flex gap-3 items-start rounded-md border border-gray-200 bg-[rgba(239,246,255,0.6)] p-4">
+                <div
+                  key={index}
+                  className="flex gap-3 items-start rounded-md border border-gray-200 bg-[rgba(239,246,255,0.6)] p-4"
+                >
                   <div className="flex items-center gap-2 pt-2">
-                    <span className="text-sm font-medium text-black w-6 h-6 bg-slate-200 flex items-center justify-center rounded-full">{option.label}</span>
+                    <span className="text-sm font-medium text-black w-6 h-6 bg-slate-200 flex items-center justify-center rounded-full">
+                      {option.label}
+                    </span>
                     {/* <input
                       type="radio"
                       name="correctAnswer"

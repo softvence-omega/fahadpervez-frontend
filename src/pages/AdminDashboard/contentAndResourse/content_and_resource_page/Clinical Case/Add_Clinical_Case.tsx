@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ArrowLeft, Plus, Trash2 } from "lucide-react";
-import Multiple_Choice from "@/components/admin_Content & Resource_Component/Clinical Case/Multiple_Choice";
-import CustomDropdown from "@/components/admin_Content & Resource_Component/CustomDropdown";
+import Multiple_Choice from "@/components/AdminDashboard/Content & Resource_Component/Clinical Case/Multiple_Choice";
+import CustomDropdown from "@/components/AdminDashboard/Content & Resource_Component/CustomDropdown";
 
 interface AddClinicalCasePageProps {
   onBack?: () => void;
