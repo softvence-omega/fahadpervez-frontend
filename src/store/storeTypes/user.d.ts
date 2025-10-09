@@ -47,3 +47,26 @@ export type TUser = {
     updatedAt: string;
   } | null;
 };
+
+export interface getUserResponse {
+  success: boolean;
+  message: string;
+  data: {
+    account: {
+      _id: string;
+      email: string;
+      password: string;
+      isDeleted: boolean;
+      accountStatus: "ACTIVE" | "INACTIVE" | string;
+      role: "ADMIN" | "MENTOR" | "STUDENT" | string;
+      profile_type: string;
+      authType: string;
+      isSubscribed: boolean;
+      createdAt: string;
+      updatedAt: string;
+      profile_id: string;
+    };
+    profile: string | null;
+  };
+  meta: unknown | null;
+}

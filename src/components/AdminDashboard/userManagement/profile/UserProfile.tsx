@@ -6,11 +6,12 @@ import MediumHeader from "@/common/header/MediumHeader";
 import CommonHeader from "@/common/header/CommonHeader";
 import camera from "@/assets/home/camera.png";
 import { Link } from "react-router-dom";
+import image from "@/assets/home/mentor1.png";
 
 interface UserProfileProps {
   fullName: string;
   email: string;
-  phone: string;
+  phone: string | number;
   country?: string;
   university?: string;
   preparingFor?: string;
@@ -99,7 +100,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
             <div className="bg-white rounded-md flex flex-col items-center w-full max-w-[415px] px-6 pb-10">
               <div className="relative">
                 <img
-                  src={profilePreview}
+                  src={profilePreview || profileImage || image}
                   alt="Profile"
                   className="w-32 h-32 rounded-full object-cover border-4 border-white -mt-10"
                 />

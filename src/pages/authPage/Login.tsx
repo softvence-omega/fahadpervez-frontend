@@ -5,13 +5,15 @@ import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import signupImage from "../../assets/signUp/signUpImage.png";
 import logo from "../../assets/signUp/logo.png";
-import { useLazyGetMeQuery, useLoginMutation } from "@/store/features/auth/auth.api";
+import {
+  useLazyGetMeQuery,
+  useLoginMutation,
+} from "@/store/features/auth/auth.api";
 import { toast } from "sonner";
 import Cookies from "js-cookie";
 import { useAppDispatch } from "@/store/hook";
 import { setUser } from "@/store/features/auth/auth.slice";
 
-// ✅ Validation schema
 const loginSchema = z.object({
   email: z.string().nonempty("Email is required").email("Invalid email format"),
   password: z
@@ -38,41 +40,38 @@ const Login = () => {
 
   const onSubmit = async (loginFormData: LoginFormInputs) => {
     try {
-      // 1️⃣ Login
       const res = await login({
         email: loginFormData.email,
         password: loginFormData.password,
       }).unwrap();
 
       if (res?.success) {
-        const { accessToken } = res.data;
-
-        // 2️⃣ Save token
+        const { accessToken, role } = res.data;
         Cookies.set("accessToken", accessToken);
-
-        // 3️⃣ Trigger getMe manually
         const meData = await getMeTrigger(undefined, false).unwrap();
-
-        // 4️⃣ Dispatch to Redux
         dispatch(
           setUser({
             accessToken,
-            user: meData?.data
+            user: meData?.data,
           })
         );
-
-        toast.success(res.message || "Login successful!");
-        navigate("/dashboard"); // ✅ navigate after fetching user info
+        if (role === "ADMIN") {
+          navigate("/admin");
+        } else if (role === "MENTOR") {
+          navigate("/mentor");
+        } else if (role === "STUDENT") {
+          navigate("/dashboard");
+        }
       } else {
         toast.error(res?.error?.data?.message || "Login failed");
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      console.error("❌ Login error:", err);
-      toast.error(err?.data?.message || "Something went wrong. Please try again.");
+      console.error(" Login error:", err);
+      toast.error(
+        err?.data?.message || "Something went wrong. Please try again."
+      );
     }
   };
-  // Google signup handler
   const handleGoogleSignup = () => {
     console.log("Google signup triggered");
   };
@@ -149,7 +148,6 @@ const Login = () => {
               )}
             </div>
 
-            {/* Login button */}
             <button
               type="submit"
               disabled={isSubmitting || isLoading}
@@ -159,7 +157,6 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Google button */}
           <button
             onClick={handleGoogleSignup}
             className="w-full flex items-center justify-center text-sm text-[#3F3F46] font-medium border border-[#D2D6DB] p-[8px] rounded-lg hover:bg-gray-100 mt-2 cursor-pointer"

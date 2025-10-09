@@ -1,4 +1,5 @@
 import { baseAPI } from "@/store/api/baseApi";
+import { getUserResponse } from "@/store/storeTypes/user";
 
 export const userAPI = baseAPI.injectEndpoints({
   endpoints: (build) => ({
@@ -50,7 +51,7 @@ export const userAPI = baseAPI.injectEndpoints({
     //   }),
     // }),
 
-    getMe: build.query({
+    getMe: build.query<getUserResponse, void>({
       query: () => ({
         url: "/auth/me",
         method: "GET",

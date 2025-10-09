@@ -3,6 +3,7 @@ import DashBoardCard from "../reuseable/DashBoardCard";
 import DashboardTopSection from "../reuseable/DashboardTopSection";
 
 import { LuUsers } from "react-icons/lu";
+// import { useGetDashboardDataQuery } from "@/store/features/adminDashboard/UserManagement/studentsManagementApi";
 
 const dashboardStats = [
   {
@@ -41,6 +42,9 @@ const dashboardStats = [
 ];
 
 const TopSectionCard = () => {
+  // const { data, isError, isLoading, error, refetch, isSuccess } =
+  //   useGetDashboardDataQuery(undefined);
+
   return (
     <div>
       <DashboardTopSection
