@@ -27,9 +27,18 @@ const DashboardNavbar = () => {
   const dispatch = useAppDispatch();
 
   const handleLogout = () => {
-    dispatch(logout());
-    Cookies.remove("accessToken");
-    navigate("/login");
+
+    Cookies.remove("accessToken"); // Remove token
+    dispatch(logout()); // Clear Redux state
+    navigate("/login"); // Redirect to login
+
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleItemClick = (item: any) => {
+    setIsProfileOpen(false);
+    if (item.action) item.action();
+    else navigate(item.href);
   };
 
   const navigationItems = [
@@ -134,11 +143,8 @@ const DashboardNavbar = () => {
                     {profileItems.map((item) => (
                       <button
                         key={item.name}
-                        onClick={() => {
-                          setIsProfileOpen(false);
-                          if (item.action) item.action();
-                        }}
-                        className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                        onClick={() => handleItemClick(item)}
+                        className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
                       >
                         <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mr-3">
                           <item.icon className="h-4 w-4 text-gray-600" />

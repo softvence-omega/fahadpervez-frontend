@@ -15,12 +15,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
+import { useSocialPostForumMutation } from "@/store/features/mentor-dashboard/forum/forum.api"
+import { toast } from "sonner"
 
 // ✅ Zod Schema
 const formSchema = z.object({
-  title: z.string().min(3, "Title is required"),
+  title: z.string().min(3, "Title must be at least 3 characters"),
   category: z.string().min(1, "Category is required"),
-  content: z.string().min(5, "Content is required"),
+  content: z.string().min(5, "Content must be at least 5 characters"),
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -30,6 +32,7 @@ interface CreateDiscussionProps {
 }
 
 const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
+  const [createForumPost, { isLoading }] = useSocialPostForumMutation();
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState("")
 
@@ -37,7 +40,8 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
     register,
     handleSubmit,
     setValue,
-    formState: { errors },
+    watch,
+    formState: { errors, isValid },
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,7 +49,11 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
       category: "",
       content: "",
     },
+    mode: "onChange"
   })
+
+  // Watch form values for real-time validation
+  const watchedValues = watch()
 
   const handleAddTag = () => {
     if (tagInput.trim() && !tags.includes(tagInput.trim())) {
@@ -58,9 +66,39 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
     setTags(tags.filter((tag) => tag !== tagToRemove))
   }
 
-  const onSubmit = (values: FormData) => {
-    const payload = { ...values, tags }
-    console.log("Form Data:", payload)
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      handleAddTag()
+    }
+  }
+
+  const onSubmit = async (values: FormData) => {
+    const payload = {
+      ...values,
+      tags
+    };
+
+    try {
+      console.log("Posting payload:", payload);
+
+      const res = await createForumPost(payload).unwrap();
+      console.log("Forum post created successfully:", res);
+
+      toast.success(res.message || "Discussion created successfully!");
+      onBack(); // Go back after success
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      const errorMessage = error?.data?.message || "Something went wrong";
+      toast.error(errorMessage);
+      console.error("Error creating forum post:", error);
+    }
+  };
+
+  const handleCancel = () => {
+    // Reset form and tags
+    setTags([])
+    setTagInput("")
     onBack()
   }
 
@@ -68,10 +106,10 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
     <div className="w-full px-4 sm:px-6 lg:px-8">
       {/* Back Button */}
       <button
-        onClick={onBack}
-        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 sm:mb-6 text-sm sm:text-base"
+        onClick={handleCancel}
+        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 sm:mb-6 text-sm sm:text-base cursor-pointer"
       >
-        <ArrowLeft className="w-5 h-5 cursor-pointer" />
+        <ArrowLeft className="w-5 h-5" />
         Back to Forums
       </button>
 
@@ -91,9 +129,13 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
             {/* Title */}
             <div>
               <label className="block text-sm font-medium mb-2">
-                Post Title
+                Post Title *
               </label>
-              <Input placeholder="Type your title" {...register("title")} />
+              <Input
+                placeholder="Type your title"
+                {...register("title")}
+                className={errors.title ? "border-red-500" : ""}
+              />
               {errors.title && (
                 <p className="text-sm text-red-500 mt-1">
                   {errors.title.message}
@@ -104,14 +146,15 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
             {/* Category */}
             <div>
               <label className="block text-sm font-medium mb-2">
-                Category
+                Category *
               </label>
               <Select
                 onValueChange={(val) =>
                   setValue("category", val, { shouldValidate: true })
                 }
+                value={watchedValues.category}
               >
-                <SelectTrigger>
+                <SelectTrigger className={errors.category ? "border-red-500" : ""}>
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -119,6 +162,8 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
                   <SelectItem value="cardiology">Cardiology</SelectItem>
                   <SelectItem value="neurology">Neurology</SelectItem>
                   <SelectItem value="pharmacology">Pharmacology</SelectItem>
+                  <SelectItem value="biology">Biology</SelectItem>
+                  <SelectItem value="physiology">Physiology</SelectItem>
                 </SelectContent>
               </Select>
               {errors.category && (
@@ -132,11 +177,11 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
           {/* Content */}
           <div>
             <label className="block text-sm font-medium mb-2">
-              Detailed Content
+              Detailed Content *
             </label>
             <Textarea
               placeholder="Provide more details about your discussion"
-              className="min-h-[120px] sm:min-h-[150px] resize-none"
+              className={`min-h-[120px] sm:min-h-[150px] resize-none ${errors.content ? "border-red-500" : ""}`}
               {...register("content")}
             />
             {errors.content && (
@@ -155,12 +200,15 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
               <Input
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
-                onKeyDown={(e) =>
-                  e.key === "Enter" && (e.preventDefault(), handleAddTag())
-                }
-                placeholder="Type a tag"
+                onKeyDown={handleKeyDown}
+                placeholder="Type a tag and press Enter or click Add Tag"
               />
-              <Button type="button" onClick={handleAddTag} className="sm:w-auto w-full">
+              <Button
+                type="button"
+                onClick={handleAddTag}
+                className="sm:w-auto w-full cursor-pointer"
+                disabled={!tagInput.trim()}
+              >
                 Add Tag
               </Button>
             </div>
@@ -171,11 +219,11 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
                     key={index}
                     className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm flex items-center gap-2"
                   >
-                    {tag}
+                    #{tag}
                     <button
                       type="button"
                       onClick={() => handleRemoveTag(tag)}
-                      className="text-gray-500 hover:text-gray-700"
+                      className="text-gray-500 hover:text-gray-700 cursor-pointer"
                     >
                       ×
                     </button>
@@ -189,16 +237,27 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <Button
               type="submit"
-              className="flex w-full sm:flex-1 justify-center items-center gap-2 px-6 py-3 bg-teal-700 text-white rounded-lg hover:bg-teal-800 transition-colors font-medium"
+              disabled={!isValid || isLoading}
+              className="flex w-full sm:flex-1 justify-center items-center gap-2 px-6 py-3 bg-teal-700 text-white rounded-lg hover:bg-teal-800 transition-colors font-medium cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-              <img src={arrow} alt="arrow icon" className="w-4 h-4" />
-              Post to Forum
+              {isLoading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Posting...
+                </>
+              ) : (
+                <>
+                  <img src={arrow} alt="arrow icon" className="w-4 h-4" />
+                  Post to Forum
+                </>
+              )}
             </Button>
             <Button
               type="button"
-              onClick={onBack}
+              onClick={handleCancel}
               variant="outline"
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto cursor-pointer"
+              disabled={isLoading}
             >
               Cancel
             </Button>

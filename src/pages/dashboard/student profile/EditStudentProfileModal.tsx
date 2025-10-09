@@ -12,32 +12,98 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { UserRound } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+import {
+  useLazyGetMeQuery,
+  useUpdateInitialProfileMutation,
+} from "@/store/features/auth/auth.api";
+import { useAppDispatch } from "@/hooks/useRedux";
+import { setUser } from "@/store/features/auth/auth.slice";
+import Cookies from "js-cookie";
 
-export default function EditStudentProfileModal({
-  open,
-  setOpen,
-}: //   onFinalSubmit,
-any) {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [country, setCountry] = useState("");
-  const [university, setUniversity] = useState("");
-  const [preparingFor, setPreparingFor] = useState("");
-  const [bio, setBio] = useState("");
+export default function EditStudentProfileModal({ open, setOpen, user }: any) {
+  const dispatch = useAppDispatch();
+  const [updateInitialProfile, { isLoading }] =
+    useUpdateInitialProfileMutation();
+  const [getMe] = useLazyGetMeQuery();
+  // const { data } = useGetMeQuery(undefined);
+  console.log(user);
 
-  const handleSubmit = () => {
-    console.log({
-      fullName,
-      email,
-      phoneNumber,
-      country,
-      university,
-      bio,
-      preparingFor,
-    });
-    setOpen(false);
+  const [firstName, setFirstName] = useState(user.profile?.firstName);
+  const [lastName, setLastName] = useState(user.profile?.lastName);
+  const [university, setUniversity] = useState(user.profile?.university);
+  const [country, setCountry] = useState(user.profile?.country);
+  const [yearOfStudy, setYearOfStudy] = useState(user.profile?.year_of_study);
+  const [studentType, setStudentType] = useState(user.profile?.studentType);
+  const [preparingFor, setPreparingFor] = useState(user.profile?.preparingFor);
+  const [bio, setBio] = useState(user.profile?.bio);
+  // const [photo, setPhoto] = useState<File | null>(null);
+
+  const handleSubmit = async () => {
+    try {
+      // Construct data object
+      const studentData = {
+        role: user.account?.role,
+        student: {
+          firstName,
+          lastName,
+          university,
+          country,
+          year_of_study: yearOfStudy,
+          studentType,
+          preparingFor,
+        },
+
+        // those field not set in frontend
+        preference: {
+          subject: user?.profile?.preference?.subject,
+          systemPreference: user?.profile?.preference?.systemPreference,
+          topic: user?.profile?.preference?.topic,
+          subTopic: user?.profile?.preference?.subTopic,
+        },
+        bio,
+      };
+
+      // Validate
+      if (!firstName || !lastName || !university || !country || !yearOfStudy) {
+        toast.error("Please fill all required fields");
+        return;
+      }
+
+      // ✅ Prepare FormData
+      const formDataToSend = new FormData();
+
+      // if (photo) {
+      //   formDataToSend.append("image", photo);
+      // }
+
+      formDataToSend.append("data", JSON.stringify(studentData));
+
+      // ✅ API call
+      const res = await updateInitialProfile(formDataToSend).unwrap();
+
+      if (res.success) {
+        const meRes = await getMe(undefined).unwrap();
+
+        console.log(meRes.data);
+        dispatch(
+          setUser({
+            accessToken: Cookies.get("accessToken"),
+            user: meRes?.data,
+          })
+        );
+
+        toast.success("Profile updated successfully!");
+        console.log("Response:", res);
+      }
+
+      setOpen(false);
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error?.message || "Failed to update profile");
+    }
   };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[800px]">
@@ -49,39 +115,20 @@ any) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
           <div className="grid gap-2">
-            <Label>Full Name</Label>
+            <Label>First Name</Label>
             <Input
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="Cardiology Quiz"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="John"
             />
           </div>
 
           <div className="grid gap-2">
-            <Label>Email Address</Label>
+            <Label>Last Name</Label>
             <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Anatomy"
-            />
-          </div>
-
-          <div className="grid gap-2">
-            <Label>Phone Number</Label>
-            <Input
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              placeholder="Cardiovascular System"
-            />
-          </div>
-
-          <div className="grid gap-2">
-            <Label>Country</Label>
-            <Input
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              placeholder=""
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Doe"
             />
           </div>
 
@@ -90,7 +137,34 @@ any) {
             <Input
               value={university}
               onChange={(e) => setUniversity(e.target.value)}
-              placeholder=""
+              placeholder="National University"
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label>Country</Label>
+            <Input
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              placeholder="Bangladesh"
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label>Year of Study</Label>
+            <Input
+              value={yearOfStudy}
+              onChange={(e) => setYearOfStudy(e.target.value)}
+              placeholder="4th Year"
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label>Student Type</Label>
+            <Input
+              value={studentType}
+              onChange={(e) => setStudentType(e.target.value)}
+              placeholder="Undergraduate"
             />
           </div>
 
@@ -99,7 +173,7 @@ any) {
             <Input
               value={preparingFor}
               onChange={(e) => setPreparingFor(e.target.value)}
-              placeholder="PLAB"
+              placeholder={preparingFor}
             />
           </div>
 
@@ -108,26 +182,35 @@ any) {
             <Textarea
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              rows={8}
-              cols={10}
-              placeholder="I'm a homeowner who loves working with skilled professionals to tmprove my property. I value quality work and clear communication."
+              rows={6}
+              placeholder={bio}
             />
           </div>
+
+          {/* <div className="grid col-span-2 gap-2">
+            <Label>Profile Image</Label>
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setPhoto(e.target.files?.[0] || null)}
+            />
+          </div> */}
         </div>
 
         <DialogFooter>
           <Button
             variant="outline"
             onClick={() => setOpen(false)}
-            className=" cursor-pointer"
+            className="cursor-pointer"
           >
             Cancel
           </Button>
           <Button
+            disabled={isLoading}
             onClick={handleSubmit}
             className="bg-blue-main hover:bg-blue-600 text-white cursor-pointer"
           >
-            Update Profile
+            {isLoading ? "Updating..." : "Update Profile"}
           </Button>
         </DialogFooter>
       </DialogContent>

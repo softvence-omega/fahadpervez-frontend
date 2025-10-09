@@ -12,15 +12,15 @@ const ClinicalCaseGenerator = () => {
     <div className="my-10">
       {/* heading */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-10 text-center md:text-left gap-6">
-        <div >
+        <div>
           <DashboardHeading
-                   title="Community & Events"
-                   titleSize="text-xl md:text-2xl"
-                   titleColor="text-[#0A0A0A]"
-                   description="Connect, learn, and grow with the medical education community"
-                   descColor="text-[#4A5565]"
-                   descFont="text-sm"
-                 />
+            title="Community & Events"
+            titleSize="text-xl md:text-2xl"
+            titleColor="text-[#0A0A0A]"
+            description="Connect, learn, and grow with the medical education community"
+            descColor="text-[#4A5565]"
+            descFont="text-sm"
+          />
         </div>
         <PrimaryButton icon={<Plus className="w-4 h-4" />} iconPosition="left">
           Create Clinical Case
@@ -57,7 +57,9 @@ const ClinicalCaseGenerator = () => {
       {/* All Cases */}
       <div>
         {/* filter */}
-        <div><AllClinicalCases/> </div>
+        <div>
+          <AllClinicalCases />{" "}
+        </div>
         {/* cards + pagination */}
         <div></div>
       </div>

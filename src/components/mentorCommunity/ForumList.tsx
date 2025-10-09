@@ -1,91 +1,109 @@
+import { useState, useMemo } from "react";
 import question from "@/assets/dashboard/question.svg";
+import GlobalLoader from "@/common/GlobalLoader";
+import { useAllForumGetQuery } from "@/store/features/mentor-dashboard/forum/forum.api";
+import { TForumGet } from "@/store/storeTypes/forum";
+import { Link } from "react-router-dom";
+import Pagination from "../reusable/Pagination";
 
-interface ForumPost {
-  id: string
-  title: string
-  description: string
-  author: string
-  timeAgo: string
-  tags: string[]
-  category: string
-}
+const ForumList = () => {
+  const { data, isLoading, isError } = useAllForumGetQuery(undefined);
+  const posts: TForumGet[] = useMemo(() => data?.data ?? [], [data]);
 
-interface ForumListProps {
-  onForumClick: (id: string) => void
-}
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showAll, setShowAll] = useState(false);
+  const productsPerPage = 5; // items per page
 
-const ForumList = ({ onForumClick }: ForumListProps) => {
-  const forums: ForumPost[] = [
-    {
-      id: "1",
-      title: "Best mnemonics for remembering cranial nerves?",
-      description:
-        "I'm struggling to memorize all 12 cranial nerves and their functions. What mnemonics have worked best for you?",
-      author: "Sumi M",
-      timeAgo: "2 hours ago",
-      tags: ["#CranTips", "#Neurology"],
-      category: "Anatomy",
-    },
-    {
-      id: "2",
-      title: "Best mnemonics for remembering cranial nerves?",
-      description:
-        "I'm struggling to memorize all 12 cranial nerves and their functions. What mnemonics have worked best for you?",
-      author: "Sumi M",
-      timeAgo: "2 hours ago",
-      tags: ["#CranTips", "#Neurology"],
-      category: "Anatomy",
-    },
-    {
-      id: "3",
-      title: "Best mnemonics for remembering cranial nerves?",
-      description:
-        "I'm struggling to memorize all 12 cranial nerves and their functions. What mnemonics have worked best for you?",
-      author: "Sumi M",
-      timeAgo: "2 hours ago",
-      tags: ["#CranTips", "#Neurology"],
-      category: "Anatomy",
-    },
-  ]
+  const totalProducts = posts.length;
+  const totalPages = Math.ceil(totalProducts / productsPerPage);
+
+  // Slice data for pagination
+  const currentPosts = useMemo(() => {
+    if (showAll) return posts;
+    const startIndex = (currentPage - 1) * productsPerPage;
+    return posts.slice(startIndex, startIndex + productsPerPage);
+  }, [posts, currentPage, showAll]);
+
+  const handleShowAll = () => setShowAll((prev) => !prev);
+
+  // Loading state
+  if (isLoading) return <GlobalLoader />;
+  if (isError || totalProducts === 0)
+    return <p className="text-center text-gray-500">No forum posts available</p>;
+
+  // Start & end range for display text
+  const start = showAll ? 1 : (currentPage - 1) * productsPerPage + 1;
+  const end = showAll
+    ? totalProducts
+    : Math.min(currentPage * productsPerPage, totalProducts);
 
   return (
     <div className="space-y-4">
-      {forums.map((forum) => (
-        <div
-          key={forum.id}
-          onClick={() => onForumClick(forum.id)}
-          className="bg-white rounded-lg shadow-sm p-4 sm:p-6 cursor-pointer hover:shadow-md transition-shadow"
-        >
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2 sm:gap-0">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <img src={question} alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
+      {currentPosts.map((post) => (
+        <Link to={`/mentor/forum-details/${post._id}`} key={post._id}>
+          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 hover:shadow-md transition-shadow mt-6 cursor-pointer">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <img src={question} alt="icon" className="w-3 h-3 sm:w-4 sm:h-4" />
+                </div>
+                <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
+                  {post.title}
+                </h3>
               </div>
-              <h3 className="font-semibold text-gray-900 text-sm sm:text-base">{forum.title}</h3>
+              <span className="px-2 py-1 bg-red-500 text-white text-xs rounded-full w-fit">
+                {post.category}
+              </span>
             </div>
-            <span className="px-2 py-1 sm:px-3 sm:py-1 bg-red-500 text-white text-xs rounded-full w-fit">
-              {forum.category}
-            </span>
-          </div>
 
-          <p className="text-gray-600 mb-3 text-sm sm:text-base">{forum.description}</p>
-          
-          <div className="mt-4 sm:mt-6 space-y-2">
-            <div className="flex gap-2 flex-wrap">
-              {forum.tags.map((tag, index) => (
-                <span key={index} className="px-2 py-1 bg-gray-100 text-black text-xs rounded">
-                  {tag}
-                </span>
-              ))}
+            <p className="text-gray-600 mb-3 text-sm sm:text-base">{post.content}</p>
+
+            <div className="mt-4 sm:mt-6 space-y-2">
+              <div className="flex gap-2 flex-wrap">
+                {post.tags.map((tag, i) => (
+                  <span key={i} className="px-2 py-1 bg-gray-100 text-black text-xs rounded">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+              <p className="text-sm text-gray-500">
+                {post.postedBy.firstName} {post.postedBy.lastName} •{" "}
+                {new Date(post.createdAt).toLocaleString()}
+              </p>
             </div>
-            <p className="text-sm text-gray-500 ">
-              {forum.author} • {forum.timeAgo}
-            </p>
           </div>
-        </div>
+        </Link>
       ))}
+
+      {/* ✅ Pagination */}
+      <div className="mt-16 mb-32 flex justify-center space-x-5">
+        {!showAll && totalPages > 1 && (
+          <Pagination
+            title="All Forums"
+            showText={`Showing ${start} to ${end} of ${totalProducts} Forums`}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            onToggleShowAll={handleShowAll}
+            showAll={showAll}
+          />
+        )}
+
+        {/* ✅ Show All Button (Optional) */}
+        {showAll && (
+          <div className="flex justify-center">
+            <button
+              onClick={handleShowAll}
+              className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+            >
+              Show Less
+            </button>
+          </div>
+        )}
+      </div>
     </div>
-  )
-}
+  );
+};
 
 export default ForumList;

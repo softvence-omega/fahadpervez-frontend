@@ -87,7 +87,4 @@ export const {
   useGetMeQuery,
   useResendOTPMutation,
   useUpdateInitialProfileMutation,
-  // useVerifyOTPMutation,
-  // useRegisterMutation,
-  // useUpdatePasswordMutation,
 } = userAPI;

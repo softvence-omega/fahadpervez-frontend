@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import {
   ArrowLeft,
   ChevronDown,
@@ -13,149 +13,80 @@ import {
   Sparkles,
 } from "lucide-react";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useGetSingleClinicalCaseQuery } from "@/store/features/clinicalCase/clinicalCase.api";
 
-// Enhanced type definitions
-interface PatientInfo {
-  age: string;
+// Updated type definitions based on backend response
+interface PatientDetails {
+  age: number;
   sex: string;
   ethnicity: string;
   occupation: string;
+  remark?: string;
 }
 
 interface VitalSigns {
-  temperature: { value: string; unit: string; isAbnormal?: boolean };
-  heartRate: { value: string; unit: string; isAbnormal?: boolean };
-  bloodPressure: { value: string; unit: string; isAbnormal?: boolean };
-  respiratoryRate: { value: string; unit: string; isAbnormal?: boolean };
-}
-
-interface LabResult {
-  test: string;
-  value: string;
-  unit: string;
-  isAbnormal?: boolean;
-  referenceRange?: string;
-}
-
-interface ImagingStudy {
-  type: string;
-  findings: string;
-}
-
-interface CaseData {
-  title: string;
-  specialty: string;
-  difficulty: string;
-  description: string;
-  patientInfo: PatientInfo;
-  presentation: string;
-  historyOfPresentIllness: string[];
-  vitalSigns: VitalSigns;
+  temperature: string;
+  heartRate: string;
+  bloodPressure: string;
+  respiratoryRate: string;
   generalAppearance: string[];
   abdominalExamination: string[];
-  labResults: LabResult[];
-  imagingStudies: ImagingStudy[];
+}
+
+interface LabSubTest {
+  testName: string;
+  testResult: string;
+  refValue: string;
+}
+
+interface LaboratoryResult {
+  testName: string;
+  testResult: string;
+  subTest: LabSubTest[];
+}
+
+interface StudentDecision {
+  question: string;
+  supportingEvidence: string[];
+  refutingEvidence: string[];
+  isCorrect: boolean;
+}
+
+interface DetailedExplanation {
+  explanation: string;
+  keyFeatures: string[];
+}
+
+interface PublishedBy {
+  firstName: string;
+  lastName: string;
+  // Add other fields if needed
+}
+
+interface ClinicalCaseData {
+  _id: string;
+  caseName: string;
+  topic: string;
+  patientDetails: PatientDetails;
+  caseHistory: string;
+  vital_signs: VitalSigns;
+  laboratory_result: LaboratoryResult;
+  imaging_studies: string[];
+  caseTips: string[];
+  studentDecision: StudentDecision[];
+  detailedExplanation: DetailedExplanation;
+  isAIGenerated: boolean;
+  createdAt: string;
+  updatedAt: string;
+  publishedBy?: PublishedBy;
 }
 
 interface CaseDetailProps {
   onBack?: () => void;
-  caseData?: CaseData;
 }
 
-// Default case data
-const defaultCaseData: CaseData = {
-  title: "Case: Acute Abdominal Pain in a Young Female",
-  specialty: "Gastroenterology",
-  difficulty: "Beginner",
-  description: "Sharpen your diagnostic skills. Ready for your next challenge?",
-  patientInfo: {
-    age: "24 years",
-    sex: "Female",
-    ethnicity: "Caucasian",
-    occupation: "Student",
-  },
-  presentation:
-    "A 24-year-old female student presents to the emergency department with a 6-hour history of severe abdominal pain. The patient appears uncomfortable and is requesting pain medication.",
-  historyOfPresentIllness: [
-    "The patient reports that the pain began gradually around 6 hours ago as a dull ache around the umbilical area. Over the past 2-3 hours, the pain has migrated to the right lower quadrant and has become increasingly severe and colicky.",
-    "She describes the current pain as sharp and stabbing, rated 8/10 in intensity. The pain is worsened by movement, coughing, walking. She has experienced nausea and vomiting over the past 2 hours, initially containing food particles and later just bile.",
-    "The patient denies diarrhea but reports decreased appetite since yesterday. She has not had a bowel movement since yesterday morning. She denies urinary symptoms, vaginal discharge, or recent sexual activity.",
-    "Her last menstrual period was 2 weeks ago and was normal. She is not currently taking any medications and denies any known allergies.",
-  ],
-  vitalSigns: {
-    temperature: { value: "38.2", unit: "°C", isAbnormal: true },
-    heartRate: { value: "102", unit: "bpm", isAbnormal: true },
-    bloodPressure: { value: "118/76", unit: "mmHg" },
-    respiratoryRate: { value: "20", unit: "/min" },
-  },
-  generalAppearance: [
-    "Patient appears uncomfortable and prefers to lie still",
-    "Mild dehydration evident",
-    "Alert and oriented",
-  ],
-  abdominalExamination: [
-    "Tenderness in right lower quadrant, maximal at McBurney's point",
-    "Positive rebound tenderness",
-    "Positive Rovsing's sign",
-    "Guarding present in right lower quadrant",
-    "Bowel sounds diminished",
-    "No palpable masses",
-  ],
-  labResults: [
-    {
-      test: "WBC Count",
-      value: "13,500",
-      unit: "/μL",
-      isAbnormal: true,
-      referenceRange: "4,000-11,000",
-    },
-    {
-      test: "Hemoglobin",
-      value: "12.8",
-      unit: "g/dL",
-      referenceRange: "12-15.5",
-    },
-    {
-      test: "Platelets",
-      value: "285,000",
-      unit: "/μL",
-      referenceRange: "150,000-450,000",
-    },
-    {
-      test: "CRP",
-      value: "45",
-      unit: "mg/L",
-      isAbnormal: true,
-      referenceRange: "<3",
-    },
-    {
-      test: "Creatinine",
-      value: "0.9",
-      unit: "mg/dL",
-      referenceRange: "0.6-1.1",
-    },
-    { test: "β-hCG", value: "Negative", unit: "", referenceRange: "Negative" },
-    { test: "Urinalysis", value: "Normal", unit: "", referenceRange: "Normal" },
-  ],
-  imagingStudies: [
-    {
-      type: "Abdominal Ultrasound",
-      findings:
-        "Non-compressible, thick-walled appendix measuring 8mm in diameter. Surrounding hyperechoic fat suggestive of inflammation. Small amount of free fluid in the pelvis.",
-    },
-    {
-      type: "CT Abdomen (if performed)",
-      findings:
-        "Dilated appendix with wall thickening and periappendiceal fat stranding consistent with acute appendicitis.",
-    },
-  ],
-};
-
-const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
-  onBack,
-  caseData = defaultCaseData,
-}) => {
+const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
   const [expandedSections, setExpandedSections] = useState<
     Record<string, boolean>
   >({
@@ -166,30 +97,32 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
     imaging: true,
   });
 
-  const [readingProgress, setReadingProgress] = useState(0);
   const [activeTab, setActiveTab] = useState("history");
 
   // Refs for each section
-  const presentationRef = useRef<HTMLDivElement | null>(null);
-  const historyRef = useRef<HTMLDivElement | null>(null);
-  const vitalsRef = useRef<HTMLDivElement | null>(null);
-  const labsRef = useRef<HTMLDivElement | null>(null);
-  const imagingRef = useRef<HTMLDivElement | null>(null);
+  const presentationRef = useRef<HTMLDivElement>(
+    null
+  ) as React.RefObject<HTMLDivElement>;
+  const historyRef = useRef<HTMLDivElement>(
+    null
+  ) as React.RefObject<HTMLDivElement>;
+  const vitalsRef = useRef<HTMLDivElement>(
+    null
+  ) as React.RefObject<HTMLDivElement>;
+  const labsRef = useRef<HTMLDivElement>(
+    null
+  ) as React.RefObject<HTMLDivElement>;
+  const imagingRef = useRef<HTMLDivElement>(
+    null
+  ) as React.RefObject<HTMLDivElement>;
+
   const { id } = useParams();
+  const { data, isLoading, error } = useGetSingleClinicalCaseQuery(
+    id as string
+  );
+  const clinicalCase = data?.data as ClinicalCaseData;
 
   const navigate = useNavigate();
-
-  // Simulate reading progress
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setReadingProgress((prev) => {
-        if (prev < 100) return prev + 1;
-        clearInterval(timer);
-        return 100;
-      });
-    }, 100);
-    return () => clearInterval(timer);
-  }, []);
 
   const scrollToSection = (
     ref: React.RefObject<HTMLDivElement>,
@@ -242,6 +175,24 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
       colors[specialty.toLowerCase() as keyof typeof colors] ||
       "bg-blue-100 text-blue-800"
     );
+  };
+
+  // Helper function to parse vital sign values and units
+  const parseVitalSign = (vitalString: string) => {
+    // Simple parser for vital signs like "38.2°C", "102 bpm", etc.
+    const match = vitalString.match(/([\d./]+)\s*(.*)/);
+    if (match) {
+      return {
+        value: match[1],
+        unit: match[2],
+        isAbnormal: false, // You might want to add logic to determine this
+      };
+    }
+    return {
+      value: vitalString,
+      unit: "",
+      isAbnormal: false,
+    };
   };
 
   const SectionHeader: React.FC<{
@@ -314,6 +265,22 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
     </div>
   );
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
+
+  if (error || !clinicalCase) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Error loading clinical case
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen">
       <div>
@@ -325,7 +292,10 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
                 onClick={onBack}
                 className="flex items-center text-gray-600 hover:text-gray-800"
               >
-                <ArrowLeft size={20} />
+                <Link to={'/dashboard/clinical-case-generator'}>
+                  {" "}
+                  <ArrowLeft size={20} />
+                </Link>
                 <span className="ml-2 font-medium">Clinical Case</span>
               </button>
             </div>
@@ -338,28 +308,30 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
           </div>
 
           <div className="mt-4">
-            <p className="text-gray-600 text-sm">{caseData.description}</p>
+            <p className="text-gray-600 text-sm">
+              Sharpen your diagnostic skills. Ready for your next challenge?
+            </p>
           </div>
 
           <div className="mt-6 flex items-center gap-4">
             <span
               className={`px-3 py-1 rounded-full text-sm font-medium ${getSpecialtyColor(
-                caseData.specialty
+                clinicalCase.topic
               )}`}
             >
-              {caseData.specialty}
+              {clinicalCase.topic}
             </span>
             <span
               className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(
-                caseData.difficulty
+                "Intermediate" // You might want to add difficulty to your backend
               )}`}
             >
-              {caseData.difficulty}
+              Intermediate
             </span>
           </div>
 
           <h1 className="text-2xl font-bold text-gray-900 mt-4 mb-6">
-            {caseData.title}
+            {clinicalCase.caseName}
           </h1>
 
           {/* Navigation Tabs */}
@@ -377,8 +349,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
             ].map(({ key, label, icon: Icon, ref }) => (
               <button
                 key={key}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                onClick={() => scrollToSection(ref as any, key)}
+                onClick={() => scrollToSection(ref, key)}
                 className={`flex items-center gap-2 pb-3 border-b-2 transition-colors px-4 ${
                   activeTab === key
                     ? "border-blue-main text-blue-main"
@@ -411,10 +382,11 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
 
               {expandedSections.presentation && (
                 <div className="px-6 pb-6">
+                  {/* Patient Details */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                    {Object.entries(caseData.patientInfo).map(
+                    {Object.entries(clinicalCase.patientDetails).map(
                       ([key, value]) => (
-                        <div key={key}>
+                        <div key={key} className="flex items-center gap-2">
                           <span className="text-sm font-medium text-gray-500 capitalize">
                             {key}:
                           </span>
@@ -423,8 +395,20 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
                       )
                     )}
                   </div>
+
+                  {clinicalCase.patientDetails.remark && (
+                    <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
+                      <span className="text-sm font-medium text-gray-500">
+                        Remark:{" "}
+                      </span>
+                      <span className="text-gray-700">
+                        {clinicalCase.patientDetails.remark}
+                      </span>
+                    </div>
+                  )}
+
                   <p className="text-gray-700 leading-relaxed">
-                    {caseData.presentation}
+                    {clinicalCase.caseHistory}
                   </p>
                 </div>
               )}
@@ -436,7 +420,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
               className="bg-white rounded-lg shadow-sm border border-gray-200"
             >
               <SectionHeader
-                title="History of Present Illness"
+                title="Case History"
                 icon={<History size={20} />}
                 isExpanded={expandedSections.history}
                 onToggle={() => toggleSection("history")}
@@ -445,11 +429,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
               {expandedSections.history && (
                 <div className="px-6 pb-6">
                   <div className="space-y-4 text-gray-700 leading-relaxed">
-                    {caseData.historyOfPresentIllness.map(
-                      (paragraph, index) => (
-                        <p key={index}>{paragraph}</p>
-                      )
-                    )}
+                    <p>{clinicalCase.caseHistory}</p>
                   </div>
                 </div>
               )}
@@ -467,86 +447,116 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
                 onToggle={() => toggleSection("physical")}
               />
 
-              {expandedSections.physical && (
+              {expandedSections.physical && clinicalCase.vital_signs && (
                 <div className="px-6 pb-6">
                   <div className="mb-6">
                     <h3 className="font-semibold text-gray-900 mb-3">
                       Vital Signs
                     </h3>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                      {Object.entries(caseData.vitalSigns).map(
-                        ([key, vital]) => (
+                      {Object.entries({
+                        temperature: clinicalCase.vital_signs.temperature,
+                        heartRate: clinicalCase.vital_signs.heartRate,
+                        bloodPressure: clinicalCase.vital_signs.bloodPressure,
+                        respiratoryRate:
+                          clinicalCase.vital_signs.respiratoryRate,
+                      }).map(([key, value]) => {
+                        const parsed = parseVitalSign(value);
+                        return (
                           <VitalSignCard
                             key={key}
                             label={
                               key.charAt(0).toUpperCase() +
                               key.slice(1).replace(/([A-Z])/g, " $1")
                             }
-                            value={vital.value}
-                            unit={vital.unit}
-                            isAbnormal={vital.isAbnormal}
+                            value={parsed.value}
+                            unit={parsed.unit}
+                            isAbnormal={parsed.isAbnormal}
                           />
-                        )
-                      )}
+                        );
+                      })}
                     </div>
                   </div>
 
-                  <div className="mb-6">
-                    <h3 className="font-semibold text-gray-900 mb-3">
-                      General Appearance
-                    </h3>
-                    <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                      {caseData.generalAppearance.map((finding, index) => (
-                        <li key={index}>{finding}</li>
-                      ))}
-                    </ul>
-                  </div>
+                  {clinicalCase.vital_signs.generalAppearance && (
+                    <div className="mb-6">
+                      <h3 className="font-semibold text-gray-900 mb-3">
+                        General Appearance
+                      </h3>
+                      <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
+                        {clinicalCase.vital_signs.generalAppearance.map(
+                          (finding, index) => (
+                            <li key={index}>{finding}</li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  )}
 
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-3">
-                      Abdominal Examination
-                    </h3>
-                    <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                      {caseData.abdominalExamination.map((finding, index) => (
-                        <li key={index}>{finding}</li>
-                      ))}
-                    </ul>
-                  </div>
+                  {clinicalCase.vital_signs.abdominalExamination && (
+                    <div>
+                      <h3 className="font-semibold text-gray-900 mb-3">
+                        Abdominal Examination
+                      </h3>
+                      <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
+                        {clinicalCase.vital_signs.abdominalExamination.map(
+                          (finding, index) => (
+                            <li key={index}>{finding}</li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
 
-            {/* Initial Investigations */}
+            {/* Laboratory Results */}
             <div
               ref={labsRef}
               className="bg-white rounded-lg shadow-sm border border-gray-200"
             >
               <SectionHeader
-                title="Initial Investigations"
+                title="Laboratory Results"
                 icon={<Microscope size={20} />}
                 isExpanded={expandedSections.investigations}
                 onToggle={() => toggleSection("investigations")}
               />
 
-              {expandedSections.investigations && (
-                <div className="px-6 pb-6">
-                  <h3 className="font-semibold text-gray-900 mb-4">
-                    Laboratory Results
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {caseData.labResults.map((result, index) => (
-                      <LabResultCard
-                        key={index}
-                        test={result.test}
-                        value={result.value}
-                        unit={result.unit}
-                        isAbnormal={result.isAbnormal}
-                        referenceRange={result.referenceRange}
-                      />
-                    ))}
+              {expandedSections.investigations &&
+                clinicalCase.laboratory_result && (
+                  <div className="px-6 pb-6">
+                    <div className="mb-4">
+                      <h3 className="font-semibold text-gray-900 mb-2">
+                        {clinicalCase.laboratory_result.testName}
+                      </h3>
+                      <p className="text-gray-700">
+                        {clinicalCase.laboratory_result.testResult}
+                      </p>
+                    </div>
+
+                    {clinicalCase.laboratory_result.subTest && (
+                      <>
+                        <h3 className="font-semibold text-gray-900 mb-4">
+                          Detailed Results
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {clinicalCase.laboratory_result.subTest.map(
+                            (test, index) => (
+                              <LabResultCard
+                                key={index}
+                                test={test.testName}
+                                value={test.testResult}
+                                unit=""
+                                referenceRange={test.refValue}
+                              />
+                            )
+                          )}
+                        </div>
+                      </>
+                    )}
                   </div>
-                </div>
-              )}
+                )}
             </div>
 
             {/* Imaging Studies */}
@@ -561,45 +571,50 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
                 onToggle={() => toggleSection("imaging")}
               />
 
-              {expandedSections.imaging && (
+              {expandedSections.imaging && clinicalCase.imaging_studies && (
                 <div className="px-6 pb-6 space-y-4">
-                  {caseData.imagingStudies.map((study, index) => (
+                  {clinicalCase.imaging_studies.map((study, index) => (
                     <div key={index}>
                       <h3 className="font-semibold text-gray-900 mb-2">
-                        {study.type}:
+                        Imaging Study {index + 1}:
                       </h3>
-                      <p className="text-gray-700">{study.findings}</p>
+                      <p className="text-gray-700">{study}</p>
                     </div>
                   ))}
                 </div>
               )}
             </div>
+
+            {/* Case Tips */}
+            {clinicalCase.caseTips && clinicalCase.caseTips.length > 0 && (
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+                <SectionHeader
+                  title="Clinical Tips"
+                  icon={<Sparkles size={20} />}
+                  isExpanded={true}
+                  onToggle={() => {}}
+                />
+                <div className="px-6 pb-6">
+                  <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
+                    {clinicalCase.caseTips.map((tip, index) => (
+                      <li key={index}>{tip}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Sidebar */}
-          <div className=" space-y-6">
+          <div className="space-y-6">
             {/* Reading Progress */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h3 className="font-semibold text-gray-900 mb-3">
-                Reading Progress
+                Case Progress
               </h3>
-              <div className="mb-3">
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className="bg-blue-main h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${readingProgress}%` }}
-                  ></div>
-                </div>
-              </div>
-              <p className="text-sm text-gray-600 mb-4">
-                {readingProgress < 100
-                  ? "Continue reading to unlock the next step"
-                  : "Ready to make your decision!"}
-              </p>
               <PrimaryButton
                 className="w-full px-4 py-2 text-base"
                 onClick={handleMakeDecision}
-                // disabled={readingProgress < 100}
               >
                 Make Your Decision
               </PrimaryButton>
@@ -625,6 +640,36 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({
                     <span>{label}</span>
                   </button>
                 ))}
+              </div>
+            </div>
+
+            {/* Case Information */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h3 className="font-semibold text-gray-900 mb-4">
+                Case Information
+              </h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Created:</span>
+                  <span className="text-gray-700">
+                    {new Date(clinicalCase.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">AI Generated:</span>
+                  <span className="text-gray-700">
+                    {clinicalCase.isAIGenerated ? "Yes" : "No"}
+                  </span>
+                </div>
+                {clinicalCase.publishedBy && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Published by:</span>
+                    <span className="text-gray-700">
+                      {clinicalCase.publishedBy.firstName}{" "}
+                      {clinicalCase.publishedBy.lastName}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
