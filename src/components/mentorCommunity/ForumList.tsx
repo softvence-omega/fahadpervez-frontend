@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import question from "@/assets/dashboard/question.svg";
 import GlobalLoader from "@/common/GlobalLoader";
-import { useAllForumGetQuery } from "@/store/features/forum/forum.api";
+import { useAllForumGetQuery } from "@/store/features/mentor-dashboard/forum/forum.api";
 import { TForumGet } from "@/store/storeTypes/forum";
 import { Link } from "react-router-dom";
 import Pagination from "../reusable/Pagination";
