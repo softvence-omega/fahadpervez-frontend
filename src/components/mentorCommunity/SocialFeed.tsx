@@ -261,7 +261,7 @@ const SocialFeed = () => {
 
                 {/* Conditional Views */}
                 {view === "detail" && selectedForumId && (
-                    <ForumDetail forumId={selectedForumId} onBack={handleBackToList} />
+                    <ForumDetail />
                 )}
                 {view === "create" && <CreateDiscussion onBack={handleBackToList} />}
 
