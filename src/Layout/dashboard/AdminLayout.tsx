@@ -1,10 +1,12 @@
 import AdminSidebar from "@/components/AdminDashboard/reuseable/AdminSidebar";
 import DashboardHeader from "@/components/AdminDashboard/reuseable/DashboardHeader";
 import { useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import CommonWrapper from "@/common/CommonWrapper";
+import Cookies from "js-cookie";
+import { useGetMeQuery } from "@/store/features/auth/auth.api";
 
 const AdminLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -15,7 +17,14 @@ const AdminLayout: React.FC = () => {
     pathname.startsWith("/admin/professional-profile/") ||
     pathname.startsWith("/admin/mentor-profile/");
 
-  console.log("hideSidebar", hideSidebar);
+  const { data: user } = useGetMeQuery();
+  const userRole = user?.data.account.role;
+  const accessToken = Cookies.get("accessToken");
+
+  if (!accessToken || userRole !== "ADMIN") {
+    return <Navigate to="/login" replace />;
+  }
+
   return (
     <div className="w-full min-h-screen bg-slate">
       <div className="w-full flex items-center justify-between bg-white">

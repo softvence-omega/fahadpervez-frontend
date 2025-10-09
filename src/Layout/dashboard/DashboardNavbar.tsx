@@ -27,9 +27,11 @@ const DashboardNavbar = () => {
   const dispatch = useAppDispatch();
 
   const handleLogout = () => {
+
     Cookies.remove("accessToken"); // Remove token
     dispatch(logout()); // Clear Redux state
     navigate("/login"); // Redirect to login
+
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
