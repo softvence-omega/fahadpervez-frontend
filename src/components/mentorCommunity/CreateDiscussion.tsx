@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
-import { useSocialPostForumMutation } from "@/store/features/forum/forum.api"
+import { useSocialPostForumMutation } from "@/store/features/mentor-dashboard/forum/forum.api"
 import { toast } from "sonner"
 
 // ✅ Zod Schema
