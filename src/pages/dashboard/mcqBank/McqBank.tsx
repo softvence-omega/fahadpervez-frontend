@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { Clock10, Cog, FileText, Plus, Target } from "lucide-react";
 import TestOverviewCard from "@/components/reusable/TestOverviewCard";
 import { useGllMCQBankQuery } from "@/store/features/MCQBank/MCQBank.api";
+import GlobalLoader from "@/common/GlobalLoader";
 
 // const resources = [
 //   {
@@ -39,7 +40,7 @@ const McqBank = () => {
     { name: "MCQ Bank", link: "/dashboard/mcq-bank" },
   ];
 
-  const { data } = useGllMCQBankQuery(undefined);
+  const { data, isLoading } = useGllMCQBankQuery(undefined);
   const MCQBank = data?.data;
   console.log(MCQBank);
 
@@ -132,46 +133,50 @@ const McqBank = () => {
         {/* </Link> */}
       </div>
 
-      <div className="space-y-6 my-6">
-        {MCQBank?.map((mcq: any) => (
-          <div
-            key={mcq.id}
-            className="border border-slate-300 rounded-lg py-4 px-5"
-          >
-            <Link to={`/dashboard/practice-mcq/${mcq?._id}`}>
-              <div className="sm:flex items-center gap-10">
-                {/* Icon */}
-                <div className="sm:border-r-2 border-r-slate-300 pr-4">
-                  <FileText className="w-12 h-12 mx-auto text-slate-600" />
-                </div>
-
-                {/* Content */}
-                <div className="space-y-2">
-                  <h4 className="text-lg text-slate-900 font-medium">
-                    {mcq.mcqBankTitle}
-                  </h4>
-                  <div className="flex flex-wrap items-center gap-4">
-                    <p className="text-slate-600">{mcq.totalMcq}</p>
-                    <div className="flex flex-wrap items-center gap-2">
-                      {/* {mcq.tags.map((tag, idx) => ( */}
-                      <p
-                        // key={idx}
-                        className="border border-slate-300 rounded-full px-2"
-                      >
-                        {mcq.subjectName}
-                      </p>
-                      {/* ))} */}
-                    </div>
+      {isLoading ? (
+        <GlobalLoader />
+      ) : (
+        <div className="space-y-6 my-6">
+          {MCQBank?.map((mcq: any) => (
+            <div
+              key={mcq.id}
+              className="border border-slate-300 rounded-lg py-4 px-5"
+            >
+              <Link to={`/dashboard/practice-mcq/${mcq?._id}`}>
+                <div className="sm:flex items-center gap-10">
+                  {/* Icon */}
+                  <div className="sm:border-r-2 border-r-slate-300 pr-4">
+                    <FileText className="w-12 h-12 mx-auto text-slate-600" />
                   </div>
-                  <p className="text-sm text-slate-700">
-                    Uploaded By: {mcq.uploadedBy}
-                  </p>
+
+                  {/* Content */}
+                  <div className="space-y-2">
+                    <h4 className="text-lg text-slate-900 font-medium">
+                      {mcq.mcqBankTitle}
+                    </h4>
+                    <div className="flex flex-wrap items-center gap-4">
+                      <p className="text-slate-600">{mcq.totalMcq}</p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {/* {mcq.tags.map((tag, idx) => ( */}
+                        <p
+                          // key={idx}
+                          className="border border-slate-300 rounded-full px-2"
+                        >
+                          {mcq.subjectName}
+                        </p>
+                        {/* ))} */}
+                      </div>
+                    </div>
+                    <p className="text-sm text-slate-700">
+                      Uploaded By: {mcq.uploadedBy}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          </div>
-        ))}
-      </div>
+              </Link>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
