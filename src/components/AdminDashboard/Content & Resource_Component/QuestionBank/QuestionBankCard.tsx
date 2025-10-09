@@ -1,21 +1,25 @@
-import { BookOpenTextIcon, CircleChevronRight } from "lucide-react";
+import { BookOpenTextIcon, CircleChevronRight, DotIcon } from "lucide-react";
 import React from "react";
 
-interface QuestionBankCardProps {
-  title: string;
+export interface QuestionBankCardProps {
+  _id: string;
+  mcqBankTitle: string;
+  subjectName: string;
   description: string;
-  tags: string[];
+  // tags: string[];
   status: "Published" | "Draft";
-  questionCount: number;
+  totalMcq: number;
+  uploadedBy: string
   onAdd: () => void;
 }
 
 const QuestionBankCard: React.FC<QuestionBankCardProps> = ({
-  title,
+  mcqBankTitle,
+  subjectName,
   description,
-  tags,
   status,
-  questionCount,
+  totalMcq,
+  uploadedBy,
   onAdd,
 }) => {
   return (
@@ -28,17 +32,20 @@ const QuestionBankCard: React.FC<QuestionBankCardProps> = ({
           <div className="flex items-start gap-2 min-w-0 flex-1 flex-wrap">
             <BookOpenTextIcon className="h-6 w-6 text-black shrink-0 hidden sm:block" />
             <div className="flex flex-col gap-1 min-w-0 flex-1">
-              <h4 className="text-lg font-semibold text-gray-800">{title}</h4>
+              <h4 className="text-lg font-semibold text-gray-800">{mcqBankTitle}</h4>
               <p className="text-sm text-gray-600">{description}</p>
-              <div className="flex flex-wrap gap-2 mt-1">
-                {tags.map((tag) => (
+              <div className="flex flex-wrap gap-2 mt-1 text-black font-inter text-xs font-normal leading-[1.125rem] not-italic">
+                {/* {tags.map((tag) => (
                   <span
                     key={tag}
                     className="px-2 py-1 bg-gray-100 text-xs rounded-md text-gray-600"
                   >
-                    {tag}
+                    {tag} . 
                   </span>
-                ))}
+                ))} */}
+                <span>{subjectName}</span>
+                <span><DotIcon className="w-4 h-4"/></span>
+                <span>  {uploadedBy}</span>
               </div>
             </div>
           </div>
@@ -55,7 +62,7 @@ const QuestionBankCard: React.FC<QuestionBankCardProps> = ({
           >
             {status}
           </span>
-          <span className="text-sm text-gray-500 truncate">{questionCount} Questions</span>
+          <span className="text-sm text-gray-500 truncate">{totalMcq} Questions</span>
         </div>
       </div>
 

@@ -11,6 +11,8 @@ import Create_New_Question from "./Create_New_Question_Bank";
 import Add_Question from "./Add_Question";
 import Content_Resource_ALL_QB from "./Content_Resource_All_QB";
 import CommonSpace from "@/common/space/CommonSpace";
+import { useGllMCQBankQuery } from "@/store/features/MCQBank/MCQBank.api";
+import type { QuestionBankCardProps } from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/QuestionBankCard";
 
 const Content_Resource_Question_Bank: React.FC = () => {
   type View = "homepage" | "create" | "addQuestion" | "viewAll";
@@ -18,42 +20,20 @@ const Content_Resource_Question_Bank: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>("homepage");
   const [searchTerm, setSearchTerm] = useState(""); // 🔍 For live search
 
-  // ✅ Question bank data (homepage preview)
-  const questionBanks = [
-    {
-      title: "Anatomy Essentials MCQs",
-      description: "Basic concepts in cardiovascular medicine",
-      tags: ["Anatomy", "Neurology"],
-      status: "Published",
-      questionCount: 20,
-    },
-    {
-      title: "Physiology Core Questions",
-      description: "Fundamental physiology principles",
-      tags: ["Physiology", "Biology"],
-      status: "Draft",
-      questionCount: 0,
-    },
-    {
-      title: "Pathology Practice Set",
-      description: "Disease mechanisms and diagnostics",
-      tags: ["Pathology", "Medicine"],
-      status: "Published",
-      questionCount: 15,
-    },
-  ];
+  const { data } = useGllMCQBankQuery(undefined);
+  const mcqBank = data?.data;
 
   // ✅ Filtered items based on search
-  const filteredBanks = questionBanks.filter((bank) => {
+  const filteredBanks = mcqBank?.filter((bank: QuestionBankCardProps) => {
     const term = searchTerm.toLowerCase();
     return (
-      bank.title.toLowerCase().includes(term) ||
-      bank.description.toLowerCase().includes(term) ||
-      bank.tags.some((tag) => tag.toLowerCase().includes(term))
+      bank.mcqBankTitle.toLowerCase().includes(term) ||
+      // bank.description.toLowerCase().includes(term) ||
+      bank.subjectName.toLowerCase().includes(term)
     );
   });
 
-  // ✅ Routing logic
+  // Routing logic
   if (currentView === "create")
     return <Create_New_Question onBack={() => setCurrentView("homepage")} />;
   if (currentView === "addQuestion")
@@ -138,6 +118,28 @@ const Content_Resource_Question_Bank: React.FC = () => {
 
       {/* ✅ Filtered Question Bank Cards */}
       <div className="grid grid-cols-1 gap-4 sm:gap-6">
+        {filteredBanks?.length > 0 ? (
+          filteredBanks?.map((bank: QuestionBankCardProps) => (
+            <QuestionBankCard
+              key={bank._id}
+              _id={bank._id}
+              mcqBankTitle={bank.mcqBankTitle}
+              subjectName={bank.subjectName} // ✅ Create small tags from existing data
+              description="Must have description"
+              uploadedBy={bank.uploadedBy}
+              status="Published"
+              totalMcq={bank.totalMcq ?? 0}
+              onAdd={() => setCurrentView("addQuestion")}
+            />
+          ))
+        ) : (
+          <p className="text-gray-500 text-center py-6">
+            No question banks found.
+          </p>
+        )}
+      </div>
+      {/* ✅ Filtered Question Bank Cards
+      <div className="grid grid-cols-1 gap-4 sm:gap-6">
         {filteredBanks.length > 0 ? (
           filteredBanks.map((bank, index) => (
             <QuestionBankCard
@@ -155,7 +157,7 @@ const Content_Resource_Question_Bank: React.FC = () => {
             No question banks found.
           </p>
         )}
-      </div>
+      </div> */}
 
       {/* ✅ Recent Activity */}
       <CommonSpace>
