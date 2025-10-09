@@ -4,7 +4,7 @@ import message from "@/assets/dashboard/message-circle.svg";
 import {
     useSingleForumGetQuery, 
     useForumComentUpdateMutation
-} from "@/store/features/forum/forum.api";
+} from "@/store/features/mentor-dashboard/forum/forum.api";
 import { useNavigate, useParams } from "react-router-dom";
 import GlobalLoader from "@/common/GlobalLoader";
 import Breadcrumb from "../reusable/CommonBreadcrumb";
