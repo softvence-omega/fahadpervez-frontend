@@ -12,13 +12,25 @@ const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   onPageChange,
 }) => {
-  // Always show 1, 2, 3, ..., last
   const pages: (number | string)[] = [];
 
   if (totalPages <= 4) {
+    // Show all pages if 4 or less
     for (let i = 1; i <= totalPages; i++) pages.push(i);
   } else {
-    pages.push(1, 2, 3, "...", totalPages);
+    // Always show first and last
+    const left = Math.max(currentPage - 1, 2);
+    const right = Math.min(currentPage + 1, totalPages - 1);
+
+    pages.push(1); // first page
+
+    if (left > 2) pages.push("..."); // left ellipsis
+
+    for (let i = left; i <= right; i++) pages.push(i); // middle pages
+
+    if (right < totalPages - 1) pages.push("..."); // right ellipsis
+
+    pages.push(totalPages); // last page
   }
 
   return (
@@ -43,7 +55,7 @@ const Pagination: React.FC<PaginationProps> = ({
             onClick={() => onPageChange(page as number)}
             className={`px-3 py-1 text-sm rounded-md cursor-pointer ${
               currentPage === page
-                ? "bg-white border border-[#E4E4E7] text-[#09090B] "
+                ? "bg-white border border-[#E4E4E7] text-[#09090B]"
                 : "hover:bg-gray-100"
             }`}
           >

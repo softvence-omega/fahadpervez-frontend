@@ -14,13 +14,23 @@ import { FaRegBell } from "react-icons/fa6";
 import NotificationIcon from "./NotificationIcon";
 import { languages } from "./data";
 import CommonWrapper from "@/common/CommonWrapper";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import { useAppDispatch } from "@/store/hook";
+import { logout } from "@/store/features/auth/auth.slice";
 
 interface DashboardHeaderProps {
   sidebarOpen: boolean;
 }
 
 const DashboardHeader = ({ sidebarOpen }: DashboardHeaderProps) => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    dispatch(logout());
+    Cookies.remove("accessToken");
+    navigate("/login");
+  };
   const headerContent = (
     <header className="sticky top-0 z-50 w-full h-[68px] bg-white px-4.5">
       <div className="flex justify-between items-center">
@@ -82,7 +92,10 @@ const DashboardHeader = ({ sidebarOpen }: DashboardHeaderProps) => {
               <DropdownMenuItem className="cursor-pointer hover:bg-gray-100">
                 Settings
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer hover:bg-gray-100">
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="cursor-pointer hover:bg-gray-100"
+              >
                 Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
