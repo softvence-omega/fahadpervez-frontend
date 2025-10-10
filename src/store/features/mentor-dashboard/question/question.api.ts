@@ -9,6 +9,7 @@ const userAPI = baseAPI.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Questions"],
     }),
     allQuestionGet: build.query<IQuestion[], void>({
       query: () => ({
@@ -16,6 +17,7 @@ const userAPI = baseAPI.injectEndpoints({
         method: "GET",
       }),
       transformResponse: (response: { success: boolean; data: IQuestion[] }) => response.data,
+      providesTags: ["Questions"],
     }),
     questionUpdate: build.mutation({
       query: ({ id, body }) => ({
@@ -23,6 +25,7 @@ const userAPI = baseAPI.injectEndpoints({
         method: "PATCH",
         body,
       }),
+      invalidatesTags: ["Questions"],
     }),
   }),
 });

@@ -78,7 +78,7 @@ const CreateQuestionBank: React.FC<AddQuestionProps> = ({ onBack }) => {
               className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 rounded-md text-sm sm:text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
               placeholder="Enter title"
             />
-          </div>
+          </div> 
 
           {/* Subject Field */}
           <div>

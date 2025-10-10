@@ -57,6 +57,6 @@ const baseQueryWithToasts: typeof baseQueryAPI = async (
 export const baseAPI = createApi({
   reducerPath: "baseAPI",
   baseQuery: baseQueryWithToasts,
-  tagTypes: ["Student"],
+  tagTypes: ["Student", "Professional", "Mentor", "Forum", "Questions", "SocialPost"],
   endpoints: () => ({}),
 });

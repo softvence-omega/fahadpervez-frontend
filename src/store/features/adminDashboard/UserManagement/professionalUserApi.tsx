@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseAPI } from "@/store/api/baseApi";
 import {
   GetStudentsParams,
@@ -6,7 +5,7 @@ import {
   StudentItem,
 } from "./type/student/Students";
 
-export const studentsManagementApi = baseAPI.injectEndpoints({
+export const professionalUserApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
     getDashboardData: build.query<any, void>({
       query: () => ({
@@ -55,4 +54,4 @@ export const {
   useGetStudentsDataQuery,
   useGetSingleStudentsQuery,
   useDeleteSingleStudentMutation,
-} = studentsManagementApi;
+} = professionalUserApi;

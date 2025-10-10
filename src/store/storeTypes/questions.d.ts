@@ -21,4 +21,3 @@ export type TForumQuestion = {
   __v: number;
 };
 
-export type TForumQuestionList = TForumQuestion[];

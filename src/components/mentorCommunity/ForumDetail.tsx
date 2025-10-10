@@ -10,7 +10,8 @@ import GlobalLoader from "@/common/GlobalLoader";
 import Breadcrumb from "../reusable/CommonBreadcrumb";
 import { BreadcrumbItem } from "../dashboard/gamified-learning/types";
 import { SingleForumPost } from "@/store/storeTypes/forum";
-import { toast } from "sonner";
+import { timeAgo } from "@/common/timeAgo";
+// import { toast } from "sonner";
 
 interface CommentFormData {
     comment: string;
@@ -72,7 +73,7 @@ const ForumDetail = () => {
             console.log("Comment response:", res);
             
             if (res.success) {
-                toast.success(res.message || "Comment posted successfully! ");
+                // toast.success(res.message || "Comment posted successfully! ");
                 reset();
                 
                 //  Immediately refetch the forum data to show the new comment
@@ -81,7 +82,7 @@ const ForumDetail = () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error("Error posting comment:", error);
-            toast.error(error?.data?.message || "Failed to post comment. Please try again.");
+            // toast.error(error?.data?.message || "Failed to post comment. Please try again.");
         }
     };
 
@@ -147,7 +148,7 @@ const ForumDetail = () => {
 
                         <p className="text-xs sm:text-sm text-gray-500 mt-3">
                             {post?.postedBy?.firstName} {post?.postedBy?.lastName} •{" "}
-                            {new Date(post.createdAt).toLocaleString()}
+                            {timeAgo(post?.createdAt)}
                         </p>
                     </div>
                 </div>
