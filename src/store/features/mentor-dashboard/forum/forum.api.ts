@@ -8,18 +8,21 @@ const userAPI = baseAPI.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Forum"],
     }),
     allForumGet: build.query({
       query: () => ({
         url: "/social-post/forum/get-all",
         method: "GET",
       }),
+      providesTags: ["Forum"],
     }),
     singleForumGet: build.query({
       query: (id) => ({
         url: `/social-post/forum/get-single/${id}`,
         method: "GET",
       }),
+      providesTags: ["Forum"],
     }),
     forumComentUpdate: build.mutation({
       query: ({ id, body }) => ({
@@ -27,6 +30,7 @@ const userAPI = baseAPI.injectEndpoints({
         method: "PATCH",
         body,
       }),
+      invalidatesTags: ["Forum"],
     }),
   }),
 });

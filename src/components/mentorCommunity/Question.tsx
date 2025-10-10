@@ -4,7 +4,7 @@ import Pagination from "../reusable/Pagination";
 import { useAllQuestionGetQuery, useQuestionUpdateMutation } from "@/store/features/mentor-dashboard/question/question.api";
 import { TForumQuestion } from "@/store/storeTypes/questions";
 import GlobalLoader from "@/common/GlobalLoader";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 
 // Local state type for UI management
 type QuestionUIState = TForumQuestion & {
@@ -81,7 +81,7 @@ const Question = () => {
       }).unwrap();
 
        if (res.success) {
-        toast.success(res.message || "Comment posted successfully! ");
+        // toast.success(res.message || "Comment posted successfully! ");
         // reset();
 
         //  Immediately refetch the forum data to show the new comment

@@ -8,12 +8,14 @@ const userAPI = baseAPI.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Questions"],
     }),
     allQuestionGet: build.query({
       query: () => ({
         url: "/social-post/question/get-all",
         method: "GET",
       }),
+      providesTags: ["Questions"],
     }),
     questionUpdate: build.mutation({
       query: ({ id, body }) => ({
@@ -21,6 +23,7 @@ const userAPI = baseAPI.injectEndpoints({
         method: "PATCH",
         body,
       }),
+      invalidatesTags: ["Questions"],
     }),
   }),
 });
