@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseAPI } from "@/store/api/baseApi";
 import {
   GetStudentsParams,
