@@ -9,11 +9,13 @@ type Comment = {
     profileImage: string;
   };
   createdAt: string;
+
   updatedAt: string;
 };
 
 export type TSocialPost = {
   content: string;
+  postImage: string;
   createdAt: string;
   isDeleted: boolean;
   postedBy: {
