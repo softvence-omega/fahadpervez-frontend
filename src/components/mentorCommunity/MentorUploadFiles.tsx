@@ -71,7 +71,7 @@ const MentorUploadFiles = ({ onClose, onUploadComplete }: UploadFilesProps) => {
               <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Upload Files</h2>
               <p className="text-xs sm:text-sm text-gray-500 mt-0.5">Upload materials for your Students</p>
             </div>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 cursor-pointer">
               <X className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
           </div>
@@ -136,8 +136,8 @@ const MentorUploadFiles = ({ onClose, onUploadComplete }: UploadFilesProps) => {
                           <p className="text-xs font-medium text-gray-900 truncate">{file.name}</p>
                           <p className="text-[10px] text-gray-500">{file.size} • {file.date}</p>
                         </div>
-                        <button onClick={() => handleRemoveFile(file.id)} className="text-red-500">
-                          <X className="w-3.5 h-3.5" />
+                        <button onClick={() => handleRemoveFile(file.id)} className="text-red-500 cursor-pointer">
+                          <X className="w-4 h-4" />
                         </button>
                       </motion.div>
                     ))
@@ -149,7 +149,7 @@ const MentorUploadFiles = ({ onClose, onUploadComplete }: UploadFilesProps) => {
                 <button
                   onClick={handleUploadFiles}
                   disabled={uploadedFiles.length === 0}
-                  className="w-full px-4 py-2.5 bg-purple-600 text-white rounded-lg disabled:bg-gray-300"
+                  className="w-full px-4 py-2.5 bg-purple-600 text-white rounded-lg disabled:bg-gray-300 cursor-pointer"
                 >
                   Upload Files {uploadedFiles.length > 0 && `(${uploadedFiles.length})`}
                 </button>
@@ -162,4 +162,4 @@ const MentorUploadFiles = ({ onClose, onUploadComplete }: UploadFilesProps) => {
   )
 }
 
-export default MentorUploadFiles
+export default MentorUploadFiles;

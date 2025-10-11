@@ -22,6 +22,7 @@ export type TSocialPost = {
     firstName: string;
     lastName: string;
     profile_photo: string;
+    _id: string;
   };
   _id: string;
   profileType: "admin_profile" | "user_profile"
