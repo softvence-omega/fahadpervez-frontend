@@ -93,7 +93,6 @@ const Question = () => {
 
     } catch (error) {
       console.error("Failed to submit answer:", error);
-      alert("Failed to submit answer. Please try again.");
     }
   };
 
