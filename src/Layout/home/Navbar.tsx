@@ -27,6 +27,7 @@ const Navbar: React.FC = () => {
     { to: "study-plan", label: "Study Plan" },
     { to: "ai-tools", label: "AI Tools" },
     { to: "mentors", label: "Mentors" },
+    { to: "dashboard", label: "Dashboard" },
   ];
 
   return (
