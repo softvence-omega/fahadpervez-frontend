@@ -33,10 +33,9 @@ const userAPI = baseAPI.injectEndpoints({
             invalidatesTags: ["SocialPost"],
         }),
         saveOrUpdateReactionSocialPost: build.mutation({
-            query: ({ id, body }) => ({
+            query: ({ id }) => ({
                 url: `/social-post/${id}`,
                 method: "PUT",
-                body,
             }),
             invalidatesTags: ["SocialPost"],
         }),
@@ -46,7 +45,7 @@ const userAPI = baseAPI.injectEndpoints({
                 method: "PUT",
                 body,
             }),
-            invalidatesTags: ["SocialPost"],
+            invalidatesTags: ["SocialPost"]
         }),
         deleteSocialPost: build.mutation({
             query: (id) => ({
