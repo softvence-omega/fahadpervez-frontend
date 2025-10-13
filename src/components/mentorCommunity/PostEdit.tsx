@@ -1,11 +1,11 @@
 // components/PostEdit.tsx
-import { useState, useEffect } from "react"
-import { X, FileImage, Send } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Textarea } from "@/components/ui/textarea"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { TSocialPost } from "@/store/storeTypes/social"
+import { useState, useEffect } from "react";
+import { X, FileImage, Send } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { TSocialPost } from "@/store/storeTypes/social";
 
 interface PostEditProps {
   post: TSocialPost
@@ -35,9 +35,9 @@ const PostEdit = ({ post, onClose, onUpdate, isLoading = false }: PostEditProps)
       if (file.type.startsWith("image/")) {
         const reader = new FileReader()
         reader.onload = (e) => {
-          setPreviewImage(e.target?.result as string)
+          setPreviewImage(e.target?.result as string);
         }
-        reader.readAsDataURL(file)
+        reader.readAsDataURL(file);
       }
     }
   }
@@ -49,7 +49,7 @@ const PostEdit = ({ post, onClose, onUpdate, isLoading = false }: PostEditProps)
 
   const handleSubmit = () => {
     if (!text.trim()) return
-    
+
     onUpdate({
       content: text,
       topic: topic.trim() || undefined,
@@ -88,8 +88,8 @@ const PostEdit = ({ post, onClose, onUpdate, isLoading = false }: PostEditProps)
               <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Edit Post</h2>
               <p className="text-xs sm:text-sm text-gray-500 mt-0.5">Update your post content</p>
             </div>
-            <button 
-              onClick={onClose} 
+            <button
+              onClick={onClose}
               className="text-gray-400 hover:text-gray-600 cursor-pointer"
               disabled={isLoading}
             >
