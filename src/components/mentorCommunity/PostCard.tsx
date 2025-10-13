@@ -2,7 +2,7 @@
 import { timeAgo } from "@/common/timeAgo"
 import { useDeleteSocialPostMutation, useSaveCommentSocialPostMutation, useSaveOrUpdateReactionSocialPostMutation, useUpdateSocialPostMutation } from "@/store/features/socialPost/social.api"
 import { TSocialPost } from "@/store/storeTypes/social"
-import { Ellipsis, Heart, MessageCircle, Send, Share2, X } from "lucide-react"
+import { Ellipsis, Heart, MessageCircle, Send, X } from "lucide-react"
 import { useState } from "react"
 import { useSelector } from "react-redux"
 import { Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer"
@@ -220,10 +220,10 @@ const PostCard = ({ post }: PostCardProps) => {
             <span className="text-sm">{post?.comments?.length || 0}</span>
           </button>
 
-          <button className="flex items-center gap-2 text-gray-600 hover:text-green-500 transition-colors">
+          {/* <button className="flex items-center gap-2 text-gray-600 hover:text-green-500 transition-colors">
             <Share2 className="w-5 h-5 cursor-pointer" />
             <span className="text-sm">{post?.share || 0}</span>
-          </button>
+          </button> */}
         </div>
 
         {/* Comment Drawer */}
