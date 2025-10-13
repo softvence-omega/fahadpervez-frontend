@@ -1,0 +1,547 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// src/pages/ConfirmBooking.jsx
+import { useState, useEffect, FormEvent, ChangeEvent } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { BsInfoLg } from "react-icons/bs";
+
+// ---------------- Types ----------------
+type BookingProps = {
+  price: number;
+  duration: number;
+  sessions: number;
+  mentorName: string;
+  specialty: string;
+  mentorId: string;
+};
+
+type AvailableSlot = {
+  date: string;
+  displayDate: string;
+  day: string;
+  spots: number;
+};
+
+type TimeSlot = {
+  time: string;
+  available: boolean;
+};
+
+type FormData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  message: string;
+};
+
+type BookResponse = {
+  success: boolean;
+  bookingId: string;
+  message: string;
+};
+
+// ---------------- Component ----------------
+const BookingPage = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [selectedDate, setSelectedDate] = useState<AvailableSlot | null>(null);
+  const [selectedTime, setSelectedTime] = useState<TimeSlot | null>(null);
+  const [availableSlots, setAvailableSlots] = useState<AvailableSlot[]>([]);
+  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [sessions, setSessions] = useState(1);
+
+  const [formData, setFormData] = useState<FormData>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    message: "",
+  });
+
+  // Get props from route state or query params
+  const bookingProps: BookingProps = location.state || {
+    price: parseInt(new URLSearchParams(location.search).get("price") || "25"),
+    duration: parseInt(
+      new URLSearchParams(location.search).get("duration") || "30"
+    ),
+    sessions: parseInt(
+      new URLSearchParams(location.search).get("sessions") || "1"
+    ),
+    mentorName:
+      new URLSearchParams(location.search).get("mentor") || "Mouhammad",
+    specialty:
+      new URLSearchParams(location.search).get("specialty") ||
+      "Medical Consultant - Preventive & Clinical Care",
+    mentorId: new URLSearchParams(location.search).get("mentorId") || "1",
+  };
+
+  // Sync sessions with bookingProps
+  useEffect(() => {
+    setSessions(bookingProps.sessions);
+  }, [bookingProps.sessions]);
+
+  // ---------------- Mock APIs ----------------
+  const fetchAvailableDates = async (mentorId: string) => {
+    console.log(mentorId);
+    return new Promise<AvailableSlot[]>((resolve) => {
+      setTimeout(() => {
+        resolve([
+          { date: "2024-08-22", displayDate: "Aug 22", day: "FR", spots: 2 },
+          { date: "2024-08-24", displayDate: "Aug 24", day: "SUN", spots: 3 },
+          { date: "2024-08-25", displayDate: "Aug 25", day: "MON", spots: 4 },
+          { date: "2024-08-27", displayDate: "Aug 27", day: "WED", spots: 2 },
+          { date: "2024-08-31", displayDate: "Aug 31", day: "SUN", spots: 3 },
+          { date: "2024-09-01", displayDate: "Sep 1", day: "MON", spots: 4 },
+          { date: "2024-09-03", displayDate: "Sep 3", day: "WED", spots: 2 },
+          { date: "2024-09-05", displayDate: "Sep 5", day: "FRI", spots: 2 },
+        ]);
+      }, 500);
+    });
+  };
+
+  const fetchTimeSlots = async (mentorId: string, date: string) => {
+    console.log(mentorId);
+    setLoading(true);
+    return new Promise<TimeSlot[]>((resolve) => {
+      setTimeout(() => {
+        const timeSlotsMap: Record<string, string[]> = {
+          "2024-08-22": ["09:00 AM", "02:30 PM", "04:00 PM"],
+          "2024-08-24": ["10:00 AM", "11:30 AM", "03:00 PM", "05:30 PM"],
+          "2024-08-25": [
+            "08:00 AM",
+            "09:30 AM",
+            "01:00 PM",
+            "02:30 PM",
+            "04:00 PM",
+          ],
+          "2024-08-27": ["10:30 AM", "03:30 PM"],
+          "2024-08-31": ["09:00 AM", "11:00 AM", "02:00 PM", "04:30 PM"],
+          "2024-09-01": [
+            "08:30 AM",
+            "10:00 AM",
+            "01:30 PM",
+            "03:00 PM",
+            "05:00 PM",
+          ],
+          "2024-09-03": ["09:30 AM", "02:00 PM"],
+          "2024-09-05": ["10:00 AM", "11:30 AM", "03:30 PM"],
+        };
+
+        const slots =
+          timeSlotsMap[date]?.map((time) => ({ time, available: true })) || [];
+        resolve(slots);
+      }, 300);
+    });
+  };
+
+  const bookSession = async (bookingData: any): Promise<BookResponse> => {
+    console.log(bookingData);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          bookingId: "BK" + Math.random().toString(36).substring(2, 9),
+          message: "Booking confirmed successfully",
+        });
+      }, 1000);
+    });
+  };
+
+  // ---------------- Handlers ----------------
+  useEffect(() => {
+    const loadDates = async () => {
+      const dates = await fetchAvailableDates(bookingProps.mentorId);
+      setAvailableSlots(dates);
+    };
+    loadDates();
+  }, [bookingProps.mentorId]);
+
+  const handleDateSelect = async (date: AvailableSlot) => {
+    setSelectedDate(date);
+    setSelectedTime(null);
+    const slots = await fetchTimeSlots(bookingProps.mentorId, date.date);
+    setTimeSlots(slots);
+    setLoading(false);
+  };
+
+  const handleTimeSelect = (time: TimeSlot) => setSelectedTime(time);
+
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!selectedDate || !selectedTime) {
+      alert("Please select both date and time");
+      return;
+    }
+
+    const bookingData = {
+      ...formData,
+      ...bookingProps,
+      sessions,
+      selectedDate: selectedDate.date,
+      selectedTime: selectedTime.time,
+      bookingTimestamp: new Date().toISOString(),
+    };
+
+    const response = await bookSession(bookingData);
+    if (response.success) {
+      navigate("/checkout", {
+        state: { ...bookingData, bookingId: response.bookingId },
+      });
+    } else {
+      alert("Booking failed. Please try again.");
+    }
+  };
+
+  const handleIncrease = () => setSessions((prev) => prev + 1);
+  const handleDecrease = () =>
+    setSessions((prev) => (prev > 1 ? prev - 1 : prev));
+
+  const total = bookingProps.price * sessions;
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="bg-white p-7 rounded">
+        <h1 className="text-xl font-semibold text-[#111827] mt-7 mb-8">
+          Confirm booking
+        </h1>
+
+        <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Column - Contact Information and Availability */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Contact Information */}
+              <div>
+                <CardHeader>
+                  <CardTitle className="text-xl text-[#111827] font-semibold mb-4">
+                    Contact information
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="firstName"
+                        className="text-sm text-[#111827] font-medium"
+                      >
+                        First name
+                      </Label>
+                      <Input
+                        id="firstName"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="lastName"
+                        className="text-sm text-[#111827] font-medium"
+                      >
+                        Last name
+                      </Label>
+                      <Input
+                        id="lastName"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="email"
+                      className="text-sm text-[#111827] font-medium"
+                    >
+                      Email address
+                    </Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="message"
+                      className="text-sm text-[#111827] font-medium"
+                    >
+                      {/* Message for {bookingProps.mentorName} (optional) */}
+                      Type Your Issue
+                    </Label>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      placeholder="Add any special requests or notes..."
+                      rows={3}
+                    />
+                  </div>
+                </CardContent>
+              </div>
+
+              {/* Availability Preview */}
+              <div>
+                <CardHeader>
+                  <CardTitle className="text-xl text-[#111827] font-semibold mb-3">
+                    Availability
+                  </CardTitle>
+                  <div className="flex items-center gap-3 bg-[#EBF5FF] py-4 pl-4 rounded-[6px] mb-7">
+                    <div className="bg-[#76A9FA] p-1 rounded-full">
+                      <BsInfoLg className="text-white" />
+                    </div>
+                    <p className="max-w-[500px] text-sm text-[#224F9C]">
+                      This is just a preview of the mentor's availability.
+                      You'll be able to reserve a spot after you confirm
+                      booking.
+                    </p>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {/* Date Preview */}
+                  <div className="mb-6">
+                    <h3 className="text-sm text-[#111827] font-bold mb-3">
+                      Date Preview
+                    </h3>
+                    <p className="text-sm text-[#4A4A4A] mb-4">
+                      {availableSlots.length} available days in the next 30
+                      days.
+                    </p>
+
+                    <div className="overflow-x-auto">
+                      <div className="grid grid-cols-8 gap-2 min-w-max">
+                        {availableSlots.map((slot, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            onClick={() => handleDateSelect(slot)}
+                            className={`text-center p-2 rounded-lg border transition-all space-y-1 cursor-pointer ${
+                              selectedDate?.date === slot.date
+                                ? "border-[#21A391] bg-blue-50 shadow-md"
+                                : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                            }`}
+                          >
+                            <div className="text-xs font-medium text-[#6B7280]">
+                              {slot.day}
+                            </div>
+                            <div className="text-sm font-semibold text-[#111827]">
+                              {slot.displayDate}
+                            </div>
+                            <div
+                              className={`text-xs text-[#118577] font-medium`}
+                            >
+                              {slot.spots} spots
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Available Times */}
+                  <div>
+                    <h3 className="text-sm text-[#111827] font-bold mb-3">
+                      Available Times
+                    </h3>
+                    {/* <p className="text-sm text-[#4A4A4A] mb-4">
+                      In your local time (Asia/Dhaka).
+                    </p> */}
+
+                    {/* Time slots */}
+                    {loading ? (
+                      <div className="flex justify-center py-8">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                      </div>
+                    ) : selectedDate ? (
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                        {timeSlots.map((slot, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            onClick={() => handleTimeSelect(slot)}
+                            disabled={!slot.available}
+                            className={`p-3 rounded-lg border text-sm font-medium transition-all cursor-pointer ${
+                              selectedTime?.time === slot.time
+                                ? "border-blue-500 bg-blue-500 text-white shadow-md"
+                                : slot.available
+                                ? "border-gray-300 bg-white text-gray-700 hover:border-blue-300 hover:bg-blue-50"
+                                : "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed"
+                            }`}
+                          >
+                            {slot.time}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="mt-4 p-4 bg-gray-100 rounded-lg">
+                        <p className="text-sm text-gray-600 text-center">
+                          Please select a date to view available time slots
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Selected Date & Time Summary */}
+                    {(selectedDate || selectedTime) && (
+                      <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <h4 className="font-semibold text-green-800 mb-2">
+                          Selected Slot:
+                        </h4>
+                        <div className="flex flex-wrap gap-4 text-sm">
+                          {selectedDate && (
+                            <span className="bg-white px-3 py-1 rounded border">
+                              📅 {selectedDate.displayDate} ({selectedDate.day})
+                            </span>
+                          )}
+                          {selectedTime && (
+                            <span className="bg-white px-3 py-1 rounded border">
+                              ⏰ {selectedTime.time}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </div>
+            </div>
+
+            {/* Right Column - Booking Summary */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-8 border border-slate-300 p-6 rounded-[8px]">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-6 border-b border-slate-300 pb-5">
+                    <img
+                      src="https://plus.unsplash.com/premium_photo-1658506671316-0b293df7c72b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZG9jdG9yfGVufDB8fDB8fHww"
+                      alt="mentor profile"
+                      className="w-20 h-20 rounded object-cover"
+                    />
+                    <div>
+                      <h4 className="text-[#0F172A] font-medium">
+                        {bookingProps.specialty}
+                      </h4>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 mt-6">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-[#111827]">
+                        Price per Session
+                      </span>
+                      <span className="text-sm text-[#111827]">
+                        ${bookingProps.price}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-sm text-[#111827]">Duration</span>
+                      <span className="text-sm text-[#111827]">
+                        {bookingProps.duration} minutes
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-center my-4">
+                      <span className="text-sm text-[#111827]">
+                        Number of Sessions
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={handleDecrease}
+                        >
+                          -
+                        </Button>
+                        <span className="text-sm text-[#111827]">
+                          {sessions}
+                        </span>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={handleIncrease}
+                        >
+                          +
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Selected Slot Info */}
+                    {(selectedDate || selectedTime) && (
+                      <>
+                        <hr />
+                        <div className="space-y-2">
+                          {selectedDate && (
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-600">Date</span>
+                              <span className="text-sm text-[#111827]">
+                                {selectedDate.displayDate}
+                              </span>
+                            </div>
+                          )}
+                          {selectedTime && (
+                            <div className="flex justify-between text-sm">
+                              <span className="text-sm text-[#111827]">
+                                Time
+                              </span>
+                              <span className="text-sm text-[#111827]">
+                                {selectedTime.time}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    )}
+
+                    <hr />
+
+                    <div className="flex justify-between text-lg font-bold">
+                      <span>Total</span>
+                      <span>${total}</span>
+                    </div>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full bg-blue-600 hover:bg-blue-700 cursor-pointer"
+                    disabled={!selectedDate || !selectedTime}
+                  >
+                    {!selectedDate || !selectedTime
+                      ? "Select Date & Time"
+                      : "Go To Checkout"}
+                  </Button>
+
+                  <p className="text-xs text-gray-500 text-center">
+                    By clicking "Go to checkout", you agree to our Terms of
+                    Service and Cancellation Policy.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default BookingPage;
