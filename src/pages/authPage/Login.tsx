@@ -2,7 +2,7 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import signupImage from "../../assets/signUp/signUpImage.png";
 import logo from "../../assets/signUp/logo.png";
@@ -87,7 +87,9 @@ const Login = () => {
           className="h-full w-full object-cover"
         />
         <div className="absolute top-6 left-6">
-          <img src={logo} alt="Logo" />
+          <Link to="/">
+            <img src={logo} alt="" />
+          </Link>
         </div>
         <div className="absolute bottom-6 left-6 bg-white/80 p-4 rounded-lg text-sm max-w-sm">
           <p className="italic text-gray-700">
