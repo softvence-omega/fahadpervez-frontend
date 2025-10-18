@@ -1,8 +1,6 @@
 import App from "@/App";
-// import About from "@/pages/About";
-// import Contact from "@/pages/Contact";
 import Home from "@/pages/Home";
-// import Services from "@/pages/Services";
+import Pricing from "@/pages/Pricing";
 
 const homeRoutes = {
   path: "/",
@@ -11,6 +9,10 @@ const homeRoutes = {
     {
       path: "/",
       element: <Home />,
+    },
+    {
+      path: "pricing",
+      element: <Pricing />,
     },
     // {
     //   path: "/about",

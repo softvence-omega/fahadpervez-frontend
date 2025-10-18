@@ -4,7 +4,6 @@ import EditStudentProfileModal from "./EditStudentProfileModal";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/features/auth/auth.slice";
-// import { useGetMeMutation } from "@/store/features/auth/auth.api";
 
 export default function EditStudentProfile() {
   const [open, setOpen] = useState(false);

@@ -1,11 +1,20 @@
 import React, { useState } from "react";
-import { Link as ScrollLink } from "react-scroll";
+import { scroller, Link as ScrollLink } from "react-scroll";
 import CommonWrapper from "@/common/CommonWrapper";
 import { Menu, X } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { logout, selectUser } from "@/store/features/auth/auth.slice";
 import Cookies from "js-cookie";
+
+const navLinks = [
+  { to: "hero", label: "Home", type: "scroll" },
+  { to: "tools", label: "Tools", type: "scroll" },
+  { to: "study-plan", label: "Study Plan", type: "scroll" },
+  { to: "ai-tools", label: "AI Tools", type: "scroll" },
+  { to: "mentors", label: "Mentors", type: "scroll" },
+  { to: "/pricing", label: "Pricing", type: "route" },
+];
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,6 +23,7 @@ const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const user = useAppSelector(selectUser); // get logged in user
+  const location = useLocation();
 
   const handleLogout = () => {
     dispatch(logout()); // clear Redux state
@@ -21,39 +31,60 @@ const Navbar: React.FC = () => {
     navigate("/login"); // redirect
   };
 
-  const navLinks = [
-    { to: "hero", label: "Home" },
-    { to: "tools", label: "Tools" },
-    { to: "study-plan", label: "Study Plan" },
-    { to: "ai-tools", label: "AI Tools" },
-    { to: "mentors", label: "Mentors" },
-    { to: "dashboard", label: "Dashboard" },
-  ];
+  // Scroll logic that works even after navigation
+  const handleScroll = (section: string) => {
+    if (location.pathname !== "/") {
+      // Go to home first
+      navigate("/");
+      // Wait a bit for the page to render, then scroll
+      setTimeout(() => {
+        scroller.scrollTo(section, {
+          smooth: true,
+          duration: 500,
+          offset: -70,
+        });
+      }, 500);
+    } else {
+      // Already on home, just scroll
+      scroller.scrollTo(section, {
+        smooth: true,
+        duration: 500,
+        offset: -70,
+      });
+    }
+  };
 
   return (
     <nav className="bg-slate-200 shadow sticky top-0 z-50 py-2">
       <CommonWrapper>
-        <div className="px-4 sm:px-6 lg:px-0">
+        <div className="px-4 sm:px- lg:px-0">
           <div className="flex items-center justify-between h-12 md:h-16">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <img src="/logo1.svg" alt="Logo" className="h-16" />
+              <img src="/logo1.svg" alt="Logo" className="h-10 md:h-7 lg:h-14" />
             </div>
 
             {/* Desktop Menu */}
-            <div className="hidden md:flex space-x-6 text-[#09090B] font-medium">
-              {navLinks.map((link) => (
-                <ScrollLink
-                  key={link.to}
-                  to={link.to}
-                  smooth
-                  duration={500}
-                  offset={-70}
-                  className="hover:text-[#0058B8] px-3 py-2 rounded-md cursor-pointer"
-                >
-                  {link.label}
-                </ScrollLink>
-              ))}
+            <div className="hidden md:flex md:justify-between text-[#09090B] font-medium">
+              {navLinks.map((link) =>
+                link.type === "scroll" ? (
+                  <button
+                    key={link.to}
+                    onClick={() => handleScroll(link.to)}
+                    className="hover:text-[#0058B8] px-3 py-2 rounded-md cursor-pointer bg-transparent border-none whitespace-nowrap"
+                  >
+                    {link.label}
+                  </button>
+                ) : (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    className="hover:text-[#0058B8] px-3 py-2 rounded-md cursor-pointer"
+                  >
+                    {link.label}
+                  </Link>
+                )
+              )}
             </div>
 
             {/* Right Side Buttons */}

@@ -15,9 +15,9 @@ export default function MentorQuestionBankCard() {
     <div>
       <div className="space-y-6 my-6">
         <div className="border border-slate-300 rounded-lg py-4 px-5">
-          <div className="flex items-start justify-between">
+          <div className="flex flex-wrap gap-3 items-start justify-between">
             <Link to={""}>
-              <div className="sm:flex resources-center ">
+              <div className="sm:flex flex-wrap resources-center ">
                 {/* Icon */}
                 <div className="flex items-start gap-4">
                   <ChevronRight />
@@ -45,14 +45,14 @@ export default function MentorQuestionBankCard() {
                 </div>
               </div>
             </Link>
-            <div className="flex items-center gap-5">
+            <div className="flex flex-wrap items-center gap-5">
               <p className="bg-green-700 text-white py-1 px-2 text-xs rounded-full">
                 Published
               </p>
               <p className="text-slate-600">20 Question</p>
             </div>
           </div>
-          <div className="flex justify-end">
+          <div className="flex sm:justify-end">
             <Link to={"/mentor/create-question"}>
               <PrimaryButton
                 bgType="solid"

@@ -26,7 +26,7 @@ const MentorDashboard = () => {
   return (
     <div>
       <h2 className="text-2xl text-[#111827] font-semibold mb-6">Overview</h2>
-      <div className="flex items-center gap-7">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 items-center gap-7">
         <MentorOverviewCard
           icon={BookOpenText}
           iconColor="text-blue-700"
@@ -83,7 +83,7 @@ const MentorDashboard = () => {
 
       {/* Question Bank */}
       <div className="mt-16">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex flex-wrap gap-2 items-center justify-between mb-3">
           <div>
             <p className="text-2xl text-[#111827] font-semibold">
               Question bank
@@ -109,7 +109,7 @@ const MentorDashboard = () => {
 
       {/* Schedule Classes */}
       <div className="mt-16">
-        <div className="flex items-center justify-between mb-7">
+        <div className="flex flex-wrap gap-2 items-center justify-between mb-7">
           <div>
             <p className="text-2xl text-[#111827] font-semibold">
               Schedule Classes
@@ -135,7 +135,7 @@ const MentorDashboard = () => {
 
       {/* Answers & Solutions */}
       <div className="mt-16">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-wrap gap-2 items-center justify-between mb-8">
           <div className="flex items-start gap-3">
             <MessageCircle />
             <div>
