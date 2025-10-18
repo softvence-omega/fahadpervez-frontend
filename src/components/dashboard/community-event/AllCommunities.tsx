@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import { BreadcrumbItem } from "../gamified-learning/types";
 import EventPage from "./EventPage";
-import StudyGroupPage from "./study-group-page/StudyGroupPage";
 import SocialFeedPage from "./SocialFeedPage";
 import ForumsPage from "./ForumsPage";
 import MessagesPage from "./messages/MessagesPage";
@@ -23,14 +22,14 @@ interface Event {
   color: string;
 }
 
-interface StudyGroup {
-  id: string;
-  name: string;
-  description: string;
-  members: number;
-  subject: string;
-  leader: string;
-}
+// interface StudyGroup {
+//   id: string;
+//   name: string;
+//   description: string;
+//   members: number;
+//   subject: string;
+//   leader: string;
+// }
 
 const breadcrumbs: BreadcrumbItem[] = [
   { name: "Dashboard", link: "/dashboard" },
@@ -39,11 +38,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const MedicalEventsDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("Events");
+  const [activeTab, setActiveTab] = useState("Social Feed5");
   const [activeEventFilter, setActiveEventFilter] = useState("All Event");
   const [isLoading, setIsLoading] = useState(true);
   const [events, setEvents] = useState<Event[]>([]);
-  const [studyGroups, setStudyGroups] = useState<StudyGroup[]>([]);
+  // const [studyGroups, setStudyGroups] = useState<StudyGroup[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -79,24 +78,24 @@ const MedicalEventsDashboard: React.FC = () => {
         },
       ]);
 
-      setStudyGroups([
-        {
-          id: "1",
-          name: "USMLE Step 1 Warriors",
-          description: "Focused group for high-yield review",
-          members: 45,
-          subject: "USMLE Step 1",
-          leader: "Dr. Alex Johnson",
-        },
-        {
-          id: "2",
-          name: "PLAB Prep Squad",
-          description: "Daily practice questions and discussions",
-          members: 32,
-          subject: "PLAB 1",
-          leader: "Sarah Lee",
-        },
-      ]);
+      // setStudyGroups([
+      //   {
+      //     id: "1",
+      //     name: "USMLE Step 1 Warriors",
+      //     description: "Focused group for high-yield review",
+      //     members: 45,
+      //     subject: "USMLE Step 1",
+      //     leader: "Dr. Alex Johnson",
+      //   },
+      //   {
+      //     id: "2",
+      //     name: "PLAB Prep Squad",
+      //     description: "Daily practice questions and discussions",
+      //     members: 32,
+      //     subject: "PLAB 1",
+      //     leader: "Sarah Lee",
+      //   },
+      // ]);
 
       setIsLoading(false);
     };
@@ -125,7 +124,7 @@ const MedicalEventsDashboard: React.FC = () => {
   const tabs = [
     "Social Feed",
     "Events",
-    "Study Groups",
+    // "Study Groups",
     "Forums",
     "Messages",
   ];
@@ -158,9 +157,9 @@ const MedicalEventsDashboard: React.FC = () => {
           />
         )}
 
-        {activeTab === "Study Groups" && (
+        {/* {activeTab === "Study Groups" && (
           <StudyGroupPage studyGroups={studyGroups} isLoading={isLoading} />
-        )}
+        )} */}
 
         {activeTab === "Forums" && <ForumsPage />}
 

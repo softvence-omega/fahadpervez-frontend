@@ -10,6 +10,7 @@ import {
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { useNavigate } from "react-router-dom";
 import { useGetAllClinicalCaseQuery } from "@/store/features/clinicalCase/clinicalCase.api";
+import GlobalLoader from "@/common/GlobalLoader";
 
 interface ClinicalCase {
   _id: string;
@@ -172,8 +173,7 @@ const AllClinicalCases: React.FC = () => {
     );
   };
 
-  if (isLoading)
-    return <p className="text-center text-gray-500 py-8">Loading cases...</p>;
+  if (isLoading) return <GlobalLoader />;
 
   return (
     <div>

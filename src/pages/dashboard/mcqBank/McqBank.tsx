@@ -139,7 +139,7 @@ const McqBank = () => {
         <div className="space-y-6 my-6">
           {MCQBank?.map((mcq: any) => (
             <div
-              key={mcq.id}
+              key={mcq._id}
               className="border border-slate-300 rounded-lg py-4 px-5"
             >
               <Link to={`/dashboard/practice-mcq/${mcq?._id}`}>

@@ -5,6 +5,7 @@ import {
   Languages,
   Link as LinkIcon,
   MapPin,
+  MessageCircleQuestion,
   Star,
   Video,
 } from "lucide-react";
@@ -95,13 +96,32 @@ export default function MentorProfile() {
                   Medical Consultant- Preventive & Clinical Care
                 </p>
 
-                <Button
-                  onClick={() => setActiveModal("session")}
-                  className="bg-white border rounded text-blue-main font-medium hover:bg-blue-50 my-1 cursor-pointer"
-                >
-                  <LinkIcon />
-                  Book For Session
-                </Button>
+                <div className="w-2/3">
+                  <Button
+                    onClick={() => setActiveModal("session")}
+                    className="w-full bg-white border rounded text-blue-main font-medium hover:bg-blue-50 my-1 cursor-pointer"
+                  >
+                    <LinkIcon />
+                    Book For Session
+                  </Button>
+
+                  <div className="flex items-center gap-1">
+                    <Link to={"/dashboard/ask-question"} className="">
+                      <Button className=" bg-white border border-indigo-500 rounded text-violet-700 font-medium hover:bg-blue-50 my-1 cursor-pointer">
+                        <MessageCircleQuestion />
+                        Ask a Question
+                      </Button>
+                    </Link>
+                    <Link to={""} className="">
+                      <Button
+                        onClick={() => setActiveModal("session")}
+                        className=" bg-orange-400 border rounded text-white font-medium hover:bg-orange-600 my-1 cursor-pointer"
+                      >
+                        Massage
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
 
                 <p className="text-[#118577] hover:underline mb-5">
                   I'll help you step confidently into the field of Medical
@@ -146,47 +166,6 @@ export default function MentorProfile() {
             </div>
           </div>
 
-          {/* About Section */}
-          {/* <div className="mt-10">
-            <h2 className="text-xl text-[#0F172A] font-semibold mb-5">About</h2>
-            <p className="leading-relaxed ">
-              In a field as dynamic and critical as information security, your
-              journey from learning the ropes to mastering the domain requires
-              more than just technical knowledge—it demands a roadmap tailored
-              to your unique career aspirations and challenges. That's where I
-              come in. With a wealth of experience in the trenches of
-              information security, I'm here to guide, inspire, and elevate your
-              career to new heights.
-            </p>
-          </div> */}
-
-          {/* Testimonials */}
-          {/* <div className="mt-12">
-            <h2 className="text-xl text-[#0F172A] font-semibold mb-6">
-              What mentees say
-            </h2>
-            <div className="flex items-center gap-4 mt-4 p-4 rounded-xl">
-              <img
-                src="https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHByb2ZpbGV8ZW58MHx8MHx8fDA%3D"
-                alt="menthe"
-                className="w-10 h-10 rounded-full object-cover"
-              />
-              <div>
-                <p className="text-sm text-[#111827] font-medium mb-2">Fabio</p>
-                <div className="flex items-center text-[#21A391]">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={16} fill="#21A391" />
-                  ))}
-                </div>
-                <p className="text-sm text-gray-500">August 14, 2025</p>
-              </div>
-            </div>
-            <p className="text-gray-700 mt-2">
-              Muhammad is a great mentor, he walked me through the real skills
-              you need to know to be job ready. Very much recommended.
-            </p>
-          </div> */}
-
           {/* Asked Question Section */}
           <div className="my-10">
             <div className="flex items-center justify-between mb-3">
@@ -218,25 +197,6 @@ export default function MentorProfile() {
                   <BadgeHelp className="w-4 h-4" />6 Question
                 </p>
               </div>
-
-              {/* <div className="flex items-center gap-6">
-              {/* Search Input with Icon
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search by title, instructor, or tags..."
-                  className="w-full md:w-[450px] h-10 pl-10 pr-4 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
-              </div>
-
-              {/* Dropdown 
-              <select className="h-10 px-4 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
-                <option value="all">All</option>
-                <option value="new">New</option>
-                <option value="watched">Watched</option>
-              </select>
-            </div> */}
             </div>
           </div>
 
@@ -275,25 +235,6 @@ export default function MentorProfile() {
                   6 Recordings
                 </PrimaryButton>
               </div>
-
-              {/* <div className="flex items-center gap-6">
-              {/* Search Input with Icon
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search by title, instructor, or tags..."
-                  className="w-full md:w-[450px] h-10 pl-10 pr-4 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
-              </div>
-
-              {/* Dropdown 
-              <select className="h-10 px-4 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
-                <option value="all">All</option>
-                <option value="new">New</option>
-                <option value="watched">Watched</option>
-              </select>
-            </div> */}
             </div>
           </div>
 

@@ -15,6 +15,7 @@ import {
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useGetSingleClinicalCaseQuery } from "@/store/features/clinicalCase/clinicalCase.api";
+import GlobalLoader from "@/common/GlobalLoader";
 
 // Updated type definitions based on backend response
 interface PatientDetails {
@@ -266,11 +267,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
   );
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading...
-      </div>
-    );
+    return <GlobalLoader />;
   }
 
   if (error || !clinicalCase) {
@@ -292,7 +289,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
                 onClick={onBack}
                 className="flex items-center text-gray-600 hover:text-gray-800"
               >
-                <Link to={'/dashboard/clinical-case-generator'}>
+                <Link to={"/dashboard/clinical-case-generator"}>
                   {" "}
                   <ArrowLeft size={20} />
                 </Link>
