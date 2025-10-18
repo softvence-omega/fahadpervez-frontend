@@ -15,7 +15,7 @@ type QuestionUIState = TForumQuestion & {
 const Question = () => {
   const { data, isLoading, isError, refetch } = useAllQuestionGetQuery(undefined);
   const [questionAnswere, { isLoading: isPosting }] = useQuestionUpdateMutation();
-  const questions: TForumQuestion[] = useMemo(() => data?.data ?? [], [data]);
+  const questions: TForumQuestion[] = useMemo(() => data ?? [], [data]);
 
   // UI state
   const [questionsUI, setQuestionsUI] = useState<QuestionUIState[]>([]);

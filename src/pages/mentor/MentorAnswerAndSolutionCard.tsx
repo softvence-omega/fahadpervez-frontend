@@ -44,7 +44,7 @@ export default function MentorAnswerAndSolutionCard() {
     <div>
       <div className="bg-white border border-[#0000001A] rounded-[6px] p-5">
         <div>
-          <div className="flex justify-start gap-4">
+          <div className="flex flex-wrap justify-start gap-4">
             <img
               src="https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D"
               alt="profile image"
@@ -54,7 +54,7 @@ export default function MentorAnswerAndSolutionCard() {
               <p className="text-sm text-[#0A0A0A]">Alex Thompson</p>
               <p className="text-sm text-[#717182] mt-2">. 4 hours ago</p>
             </div>
-            <p className="flex items-center px-2 bg-[#030213] rounded-full text-white">
+            <p className="flex items-center px-2 py-1 bg-[#030213] rounded-full text-white">
               MS3 Student
             </p>
           </div>

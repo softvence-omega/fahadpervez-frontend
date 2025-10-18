@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/home/Logo.png";
+// import logo from "@/assets/dashboard";
 import DashboardSearch from "./DashboardSearch";
 import profile from "@/assets/home/mentor1.png";
 import { FaRegBell } from "react-icons/fa6";
@@ -36,7 +36,7 @@ const DashboardHeader = ({ sidebarOpen }: DashboardHeaderProps) => {
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-7.5">
           <Link to={"/admin"}>
-            <img className="w-[95px] h-full" src={logo} alt="logo" />
+            <img className="w-[95px h-14" src="/logo1.svg" alt="logo" />
           </Link>
           <div className="hidden md:block">
             <DashboardSearch />

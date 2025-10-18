@@ -2,7 +2,6 @@
 import DashboardLayout from "@/Layout/dashboard/DashboardLayout";
 import AITutor from "@/pages/dashboard/AI Tutor/AITutor";
 import ClinicalCaseGenerator from "@/pages/dashboard/ClinicalCaseGenerator";
-import CommunityEvent from "@/pages/dashboard/CommunityEvent";
 import Courses from "@/pages/dashboard/Courses";
 import CreateNotes from "@/pages/dashboard/downloadNotes/CreateNotes";
 import DashboardHome from "@/pages/dashboard/DashboardHome";
@@ -29,7 +28,6 @@ import StudyPlan from "@/pages/dashboard/study plan/StudyPlan";
 import CreateStudyPlan from "@/pages/dashboard/study plan/CreateStudyPlan";
 import MyPlan from "@/pages/dashboard/study plan/MyPlan";
 import WeeklyPlan from "@/pages/dashboard/study plan/WeeklyPlan";
-import StudentProfile from "@/pages/dashboard/student profile/StudentProfile";
 import EditStudentProfile from "@/pages/dashboard/student profile/EditStudentProfile";
 import DailyChallenge from "@/pages/dashboard/gamifiedLearning/DailyChallenge";
 import PracticeMCQ from "@/pages/dashboard/mcqBank/PracticeMCQ";
@@ -65,9 +63,13 @@ const dashboardRoutes = {
       index: true,
       element: <DashboardHome />,
     },
+    // {
+    //   path: "community-event",
+    //   element: <CommunityEvent />,
+    // },
     {
       path: "community-event",
-      element: <CommunityEvent />,
+      element: <AllCommunities />,
     },
     {
       path: "all-communities",
@@ -269,8 +271,12 @@ const dashboardRoutes = {
     },
     {
       path: "student-profile",
-      element: <StudentProfile />,
+      element: <EditStudentProfile />,
     },
+    // {
+    //   path: "student-profile",
+    //   element: <StudentProfile />,
+    // },
     {
       path: "edit-student-profile",
       element: <EditStudentProfile />,
