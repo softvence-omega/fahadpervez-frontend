@@ -1,7 +1,6 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { type FC } from "react";
 
-
 interface PaginationProps {
   title: string;
   showText: string;
@@ -25,9 +24,7 @@ const Pagination: FC<PaginationProps> = ({
 
   return (
     <div className="flex justify-between items-center text-jet-black text-base border-t border-t-black/10 pt-5 px-8">
-      <div className="hidden md:block">
-        {/* <p>{'showText'}</p> */}
-      </div>
+      <div className="hidden md:block">{/* <p>{'showText'}</p> */}</div>
 
       {onToggleShowAll && (
         <button
@@ -56,8 +53,9 @@ const Pagination: FC<PaginationProps> = ({
             key={page}
             disabled={showAll}
             onClick={() => onPageChange(page)}
-            className={`p-1 sm:p-4 border-r border-border cursor-pointer ${currentPage === page ? "bg-white text-blue-main font-bold" : ""
-              }`}
+            className={`p-1 sm:p-4 border-r border-border cursor-pointer ${
+              currentPage === page ? "bg-white text-blue-main font-bold" : ""
+            }`}
           >
             {page}
           </button>
@@ -71,8 +69,8 @@ const Pagination: FC<PaginationProps> = ({
           Next
           <ArrowRight />
         </button>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 };
 
