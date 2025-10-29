@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { X, Plus, ArrowLeft } from "lucide-react";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
+import CommonButton from "@/common/button/CommonButton";
 
 interface Tag {
   id: string;
@@ -21,7 +22,8 @@ const CreateQuestionBank: React.FC<AddQuestionProps> = ({ onBack }) => {
   ]);
   const [tagInput, setTagInput] = useState("Cardiology");
 
-  const removeTag = (id: string) => setTags(tags.filter((tag) => tag.id !== id));
+  const removeTag = (id: string) =>
+    setTags(tags.filter((tag) => tag.id !== id));
 
   const addTag = () => {
     if (tagInput.trim()) {
@@ -43,21 +45,13 @@ const CreateQuestionBank: React.FC<AddQuestionProps> = ({ onBack }) => {
   return (
     <div className="min-h-screen w-full bg-gray-50">
       <div className="max-w-full mx-auto">
-        {/* 🔙 Back Button */}
-        <button
-          onClick={handleBack}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 sm:mb-6 transition-colors duration-200"
-        >
-          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span className="text-sm sm:text-base font-medium">Back</span>
-        </button>
-
         {/* 🏷️ Page Header */}
         <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-1 sm:mb-2">
           Create New Question Bank
         </h1>
         <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 leading-relaxed">
-          Create a new question bank to organize your questions by subject or topic.
+          Create a new question bank to organize your questions by subject or
+          topic.
         </p>
 
         {/* 🧩 Form Card */}
@@ -78,7 +72,7 @@ const CreateQuestionBank: React.FC<AddQuestionProps> = ({ onBack }) => {
               className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 rounded-md text-sm sm:text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
               placeholder="Enter title"
             />
-          </div> 
+          </div>
 
           {/* Subject Field */}
           <div>
@@ -168,20 +162,11 @@ const CreateQuestionBank: React.FC<AddQuestionProps> = ({ onBack }) => {
 
         {/* ⚙️ Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 sm:mt-8">
-          <ButtonWithIcon
-            icon={Plus}
-            onClick={handleSubmit}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
+          <ButtonWithIcon icon={Plus} onClick={handleSubmit} className="">
             Create Question Bank
           </ButtonWithIcon>
 
-          <button
-            onClick={handleBack}
-            className="w-full sm:w-auto px-5 sm:px-6 py-2.5 text-gray-700 font-medium rounded-md border border-gray-300 bg-white hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2"
-          >
-            Back
-          </button>
+          <CommonButton onClick={handleBack}>Back</CommonButton>
         </div>
       </div>
     </div>

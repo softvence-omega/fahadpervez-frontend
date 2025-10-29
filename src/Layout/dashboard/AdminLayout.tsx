@@ -17,13 +17,13 @@ const AdminLayout: React.FC = () => {
     pathname.startsWith("/admin/professional-profile/") ||
     pathname.startsWith("/admin/mentor-profile/");
 
-  const { data: user } = useGetMeQuery();
-  const userRole = user?.data.account.role;
-  const accessToken = Cookies.get("accessToken");
+  // const { data: user } = useGetMeQuery();
+  // const userRole = user?.data.account.role;
+  // const accessToken = Cookies.get("accessToken");
 
-  if (!accessToken || userRole !== "ADMIN") {
-    return <Navigate to="/login" replace />;
-  }
+  // if (!accessToken || userRole !== "ADMIN") {
+  //   return <Navigate to="/login" replace />;
+  // }
 
   return (
     <div className="w-full min-h-screen bg-slate">

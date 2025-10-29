@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { Upload } from 'lucide-react';
+import React, { useState } from "react";
+import { Upload } from "lucide-react";
+import * as XLSX from "xlsx";
 
 interface UploadDropzoneProps {
   label: string;
   acceptedFormats: string;
   maxSize: string;
-  onFileSelect: (file: File) => void;
+  onFileSelect: (file: File, detectedCount: number) => void;
 }
 
 const UploadDropzone: React.FC<UploadDropzoneProps> = ({
@@ -23,15 +24,30 @@ const UploadDropzone: React.FC<UploadDropzoneProps> = ({
 
   const handleDragLeave = () => setIsDragging(false);
 
+  const processFile = async (file: File) => {
+    try {
+      const data = await file.arrayBuffer();
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet);
+      const detectedCount = rows.length;
+      onFileSelect(file, detectedCount);
+    } catch (error) {
+      console.error("Error reading file:", error);
+      onFileSelect(file, 0);
+    }
+  };
+
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
     const files = e.dataTransfer.files;
-    if (files.length) onFileSelect(files[0]);
+    if (files.length) processFile(files[0]);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) onFileSelect(e.target.files[0]);
+    if (e.target.files && e.target.files.length > 0)
+      processFile(e.target.files[0]);
   };
 
   return (
@@ -40,7 +56,7 @@ const UploadDropzone: React.FC<UploadDropzoneProps> = ({
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       className={`border-2 border-dashed rounded-lg p-16 text-center relative transition ${
-        isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'
+        isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300 bg-gray-50"
       }`}
     >
       <div className="flex flex-col items-center relative z-10">
@@ -61,7 +77,10 @@ const UploadDropzone: React.FC<UploadDropzoneProps> = ({
           className="hidden"
           id="file-upload"
         />
-        <label htmlFor="file-upload" className="absolute inset-0 cursor-pointer" />
+        <label
+          htmlFor="file-upload"
+          className="absolute inset-0 cursor-pointer"
+        />
       </div>
     </div>
   );

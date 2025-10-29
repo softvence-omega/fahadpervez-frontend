@@ -3,6 +3,7 @@ import { Upload, ChevronDown, Plus, ArrowLeft } from "lucide-react";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import BulkUploadQuestions from "./Bulk_Upload_Question_Bank";
 import CustomDropdown from "@/components/AdminDashboard/Content & Resource_Component/CustomDropdown";
+import CommonButton from "@/common/button/CommonButton";
 
 interface AddQuestionProps {
   onBack?: () => void;
@@ -72,15 +73,6 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
   return (
     <div className="min-h-screen w-full bg-gray-50">
       <div className="max-w-full mx-auto flex flex-col gap-6 sm:gap-8">
-        {/* 🔙 Back Button */}
-        <button
-          onClick={handleBack}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
-        >
-          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span className="text-sm sm:text-base font-medium">Back</span>
-        </button>
-
         {/* 🏷️ Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4">
           <div>
@@ -95,7 +87,7 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
           <div className="w-full sm:w-auto mt-2 sm:mt-0">
             <ButtonWithIcon
               icon={Upload}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition"
+              className=""
               onClick={() => setCurrentView("bulkQuestion")}
             >
               Bulk Upload
@@ -103,7 +95,6 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
           </div>
         </div>
 
-        {/* 🧩 Form Section */}
         <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 lg:p-8 space-y-6">
           {/* Subject */}
           <div>
@@ -196,20 +187,6 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
                     <span className="text-sm font-medium text-black w-6 h-6 bg-slate-200 flex items-center justify-center rounded-full">
                       {option.label}
                     </span>
-                    {/* <input
-                      type="radio"
-                      name="correctAnswer"
-                      checked={option.correct}
-                      onChange={() => {
-                        const updated = answerOptions.map((opt, i) => ({
-                          ...opt,
-                          correct: i === index
-                        }));
-                        setAnswerOptions(updated);
-                        setCorrectAnswer(`Option ${option.label}`);
-                      }}
-                      className="w-4 h-4 text-blue-600"
-                    /> */}
                   </div>
                   <div className="flex-1">
                     <input
@@ -284,27 +261,15 @@ const AddQuestion: React.FC<AddQuestionProps> = ({ onBack }) => {
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6">
-            <button
-              onClick={handleBack}
-              className="w-full sm:w-auto px-6 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-50 transition"
-            >
-              Back
-            </button>
+            <CommonButton onClick={handleBack}>Back</CommonButton>
 
-            <ButtonWithIcon
-              icon={Plus}
-              onClick={handleSave}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition"
-            >
+            <ButtonWithIcon icon={Plus} onClick={handleSave} className="">
               Save Question
             </ButtonWithIcon>
 
-            <button
-              onClick={handleSaveAndAddAnother}
-              className="w-full sm:w-auto px-6 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-100 transition"
-            >
+            <CommonButton onClick={handleSaveAndAddAnother}>
               Save & Add Another
-            </button>
+            </CommonButton>
           </div>
         </div>
       </div>

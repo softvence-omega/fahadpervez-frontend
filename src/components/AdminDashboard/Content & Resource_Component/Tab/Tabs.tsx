@@ -25,7 +25,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs }) => {
             className={`
               flex-1 min-w-fit text-center
               py-2
-              text-sm lg:text-base font-medium
+              text-sm lg:text-base font-medium cursor-pointer
               transition-all duration-200 rounded-full
               ${
                 activeIndex === index
