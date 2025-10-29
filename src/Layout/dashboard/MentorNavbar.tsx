@@ -57,7 +57,7 @@ const MentorNavbar = () => {
           {/* Logo */}
           <div className="flex items-center gap-4 md:gap-6">
             <Link to="/dashboard">
-              <img src="/logo1.svg " className="h-8 md:h-12" alt="" />
+              <img src="/logo.svg" alt="Logo" className="w-40 h-16 lg:h-20 " />
             </Link>
 
             {/* Search Bar */}
