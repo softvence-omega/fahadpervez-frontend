@@ -61,11 +61,11 @@ const Navbar: React.FC = () => {
           <div className="flex items-center justify-between h-12 md:h-16">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <img src="/logo1.svg" alt="Logo" className="h-10 md:h-7 lg:h-14" />
+              <img src="/logo.svg" alt="Logo" className="w-40 h-16 lg:h-20 " />
             </div>
 
             {/* Desktop Menu */}
-            <div className="hidden md:flex md:justify-between text-[#09090B] font-medium">
+            <div className="hidden lg:flex md:justify-between text-[#09090B] font-medium">
               {navLinks.map((link) =>
                 link.type === "scroll" ? (
                   <button
@@ -88,7 +88,7 @@ const Navbar: React.FC = () => {
             </div>
 
             {/* Right Side Buttons */}
-            <div className="hidden md:flex space-x-4">
+            <div className="hidden lg:flex space-x-4">
               {user ? (
                 <button
                   onClick={handleLogout}
@@ -115,7 +115,7 @@ const Navbar: React.FC = () => {
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="md:hidden flex items-center">
+            <div className="lg:hidden flex items-center">
               <button
                 onClick={toggleMenu}
                 type="button"
@@ -130,7 +130,7 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-slate-100 border-t border-blue-400/20">
+        <div className="lg:hidden bg-slate-100 border-t border-blue-400/20">
           <div className="px-4 pt-3 pb-4 space-y-2">
             {navLinks.map((link) => (
               <ScrollLink
