@@ -1,4 +1,5 @@
 import { baseAPI } from "@/store/api/baseApi";
+import { IQuestion } from "./question.type";
 
 const userAPI = baseAPI.injectEndpoints({
   endpoints: (build) => ({
@@ -8,12 +9,15 @@ const userAPI = baseAPI.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Questions"],
     }),
-    allQuestionGet: build.query({
+    allQuestionGet: build.query<IQuestion[], void>({
       query: () => ({
         url: "/social-post/question/get-all",
         method: "GET",
       }),
+      transformResponse: (response: { success: boolean; data: IQuestion[] }) => response.data,
+      providesTags: ["Questions"],
     }),
     questionUpdate: build.mutation({
       query: ({ id, body }) => ({
@@ -21,8 +25,13 @@ const userAPI = baseAPI.injectEndpoints({
         method: "PATCH",
         body,
       }),
+      invalidatesTags: ["Questions"],
     }),
   }),
 });
 
-export const { useSocialQuestionPostMutation, useAllQuestionGetQuery, useQuestionUpdateMutation } = userAPI;
+export const {
+  useSocialQuestionPostMutation,
+  useAllQuestionGetQuery,
+  useQuestionUpdateMutation,
+} = userAPI;

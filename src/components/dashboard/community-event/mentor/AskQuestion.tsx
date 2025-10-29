@@ -1,7 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import { BreadcrumbItem } from "../../gamified-learning/types";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import { BadgeHelp, Search, SendHorizonal } from "lucide-react";
+import {
+  useAllQuestionGetQuery,
+  useSocialQuestionPostMutation,
+} from "@/store/features/mentor-dashboard/question/question.api";
+import {
+  IAnswer,
+  IQuestion,
+} from "@/store/features/mentor-dashboard/question/question.type";
+import { useState } from "react";
+import GlobalLoader from "@/common/GlobalLoader";
+import { toast } from "sonner";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { name: "Dashboard", link: "/dashboard" },
@@ -10,6 +22,33 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function AskQuestion() {
+  const [question, setQuestion] = useState<string>("");
+
+  const { data, isLoading, refetch } = useAllQuestionGetQuery(undefined);
+  const [socialQuestionPost, { isLoading: isPosting }] =
+    useSocialQuestionPostMutation();
+  const questions = data || [];
+
+  const handleCreateQuestion = async () => {
+    if (!question.trim()) {
+      toast.error("Please enter a question!");
+      return;
+    }
+
+    try {
+      await socialQuestionPost({ question }).unwrap();
+      setQuestion("");
+      refetch();
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to post question");
+      console.error("Error posting question:", error);
+    }
+  };
+
+  if (isLoading) {
+    return <GlobalLoader />;
+  }
+
   return (
     <div className="mt-6 mb-8">
       {/* Breadcrumb */}
@@ -26,71 +65,106 @@ export default function AskQuestion() {
         className="mt-8 mb-5"
       />
 
+      {/* Header Row */}
       <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-6 mt-5 mb-3">
         <div>
           <DashboardHeading
-            title="Your Asked Question"
+            title="Your Asked Questions"
             titleSize="text-base"
-            titleFont="font-normal"
+            titleFont="font-semibold"
             titleColor="text-[#0A0A0A]"
             description=""
-            descColor="text-[#717182]"
-            descFont="text-sm"
-            className="space-y-2"
           />
         </div>
         <p className="flex items-center gap-1 text-slate-800 cursor-pointer">
-          <BadgeHelp className="w-4 h-4" />6 Question
+          <BadgeHelp className="w-4 h-4" />
+          {questions.length} Question{questions.length !== 1 && "s"}
         </p>
       </div>
 
-      {/* Search Input with Icon */}
+      {/* Search Input */}
       <div className="relative mt-6">
         <input
           type="text"
           placeholder="Search by condition or keyword"
-          className="w-full md:w-[450px] h-12 pl-10 pr-4 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full md:w-[450px] h-12 pl-10 pr-4 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
       </div>
 
-      {/* question section */}
-      <div>
-        {Array(3)
-          .fill(null)
-          .map(() => (
-            <div className="border border-slate-300 rounded-[8px] p-3 my-5 bg-white">
-              <p className="text-slate-500 text-sm mb-4">
-                Q.Best mnemonics for remembering cranial nerves?
-              </p>
-              <p className="text-xs text-slate-800">
-                <span className="text-sm font-medium">Answer:</span> But I still
-                feel like I'm missing something fundamental. Can anyone
-                recommend resources that really helped them master ECG
-                interpretation? I'm particularly struggling with:
-                <br />
-                - Identifying different types of blocks
-                <br />
-                - ST segment interpretation
-                <br />- Complex arrhythmias
-              </p>
+      {/* Question List */}
+      <div className="mt-8 space-y-6">
+        {questions.map((question: IQuestion, idx: number) => (
+          <div
+            key={idx}
+            className="border border-slate-200 rounded-lg p-5 bg-white shadow-sm hover:shadow-md transition-shadow duration-200"
+          >
+            {/* Question */}
+            <p className="text-slate-800 font-medium mb-4">
+              Q: {question?.question}
+            </p>
+
+            {/* Answers */}
+            <div className="space-y-4">
+              {question.answers.length > 0 ? (
+                question.answers.map((ans: IAnswer) => (
+                  <div
+                    key={ans._id}
+                    className="flex items-start gap-3 bg-slate-50 rounded-lg p-3"
+                  >
+                    <img
+                      src={
+                        ans.photo ||
+                        "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                      }
+                      alt="user"
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                    <div>
+                      <p className="font-medium text-gray-800">
+                        {ans.name || "Anonymous"}
+                      </p>
+                      <p className="text-gray-600 text-sm">{ans.answer}</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-gray-400 italic">No answers yet</p>
+              )}
             </div>
-          ))}
+          </div>
+        ))}
 
-        <div>
-          <div className="border border-slate-300 rounded-[8px] p-3 my-5 bg-white">
-            <p className="text-slate-500 text-sm mb-8">Your Question</p>
+        {/* Ask New Question */}
+        <div className="border border-slate-200 rounded-lg p-5 bg-white shadow-sm mt-8">
+          <p className="text-slate-800 font-semibold mb-4">
+            Ask a New Question
+          </p>
 
-            <div className="relative mt-6">
-              <input
-                type="text"
-                placeholder="Ask Question"
-                className="w-full h-16 pl-3 pr-4 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+          <div className="relative">
+            <input
+              type="text"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="Type your question..."
+              className="w-full h-16 px-4 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={isPosting}
+            />
+
+            {isPosting ? (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-500 animate-spin">
+                <SendHorizonal className="w-5 h-5 opacity-70" />
+              </div>
+            ) : (
               <SendHorizonal
-              
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5 cursor-pointer" />
-            </div>
+                onClick={handleCreateQuestion}
+                className={`absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 cursor-pointer transition ${
+                  question.trim()
+                    ? "text-blue-600 hover:text-blue-800"
+                    : "text-gray-400 cursor-not-allowed"
+                }`}
+              />
+            )}
           </div>
         </div>
       </div>

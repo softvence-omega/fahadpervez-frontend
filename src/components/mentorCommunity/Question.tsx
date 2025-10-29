@@ -4,7 +4,7 @@ import Pagination from "../reusable/Pagination";
 import { useAllQuestionGetQuery, useQuestionUpdateMutation } from "@/store/features/mentor-dashboard/question/question.api";
 import { TForumQuestion } from "@/store/storeTypes/questions";
 import GlobalLoader from "@/common/GlobalLoader";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 
 // Local state type for UI management
 type QuestionUIState = TForumQuestion & {
@@ -15,7 +15,7 @@ type QuestionUIState = TForumQuestion & {
 const Question = () => {
   const { data, isLoading, isError, refetch } = useAllQuestionGetQuery(undefined);
   const [questionAnswere, { isLoading: isPosting }] = useQuestionUpdateMutation();
-  const questions: TForumQuestion[] = useMemo(() => data?.data ?? [], [data]);
+  const questions: TForumQuestion[] = useMemo(() => data ?? [], [data]);
 
   // UI state
   const [questionsUI, setQuestionsUI] = useState<QuestionUIState[]>([]);
@@ -81,7 +81,7 @@ const Question = () => {
       }).unwrap();
 
        if (res.success) {
-        toast.success(res.message || "Comment posted successfully! ");
+        // toast.success(res.message || "Comment posted successfully! ");
         // reset();
 
         //  Immediately refetch the forum data to show the new comment
@@ -93,7 +93,6 @@ const Question = () => {
 
     } catch (error) {
       console.error("Failed to submit answer:", error);
-      alert("Failed to submit answer. Please try again.");
     }
   };
 

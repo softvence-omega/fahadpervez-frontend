@@ -96,9 +96,6 @@ export default function DownloadNotes() {
                     </div>
                 </div>
             </div>
-
-
-
         </div>
     )
 }

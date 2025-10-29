@@ -83,7 +83,7 @@ const DashboardNavbar = () => {
           {/* Logo + Search */}
           <div className="flex items-center gap-4 md:gap-6">
             <Link to="/dashboard">
-              <img src="/logo1.svg " className="h-16" alt="" />
+              <img src="/logo1.svg " className="h-16 pb-2" alt="" />
             </Link>
             <div className="flex-1 max-w-md">
               <div className="relative">

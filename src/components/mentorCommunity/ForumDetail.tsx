@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useForm } from "react-hook-form";
 import { ArrowLeft } from "lucide-react";
 import message from "@/assets/dashboard/message-circle.svg";
@@ -10,7 +11,8 @@ import GlobalLoader from "@/common/GlobalLoader";
 import Breadcrumb from "../reusable/CommonBreadcrumb";
 import { BreadcrumbItem } from "../dashboard/gamified-learning/types";
 import { SingleForumPost } from "@/store/storeTypes/forum";
-import { toast } from "sonner";
+import { timeAgo } from "@/common/timeAgo";
+// import { toast } from "sonner";
 
 interface CommentFormData {
     comment: string;
@@ -57,7 +59,7 @@ const ForumDetail = () => {
 
     const post: SingleForumPost = forumData.data;
 
-    // ✅ Handle Comment Submit with React Hook Form - FIXED BODY STRUCTURE
+    // Handle Comment Submit with React Hook Form - FIXED BODY STRUCTURE
     const onSubmit = async (data: CommentFormData) => {
         try {
             // Send comment directly in the body
@@ -72,16 +74,11 @@ const ForumDetail = () => {
             console.log("Comment response:", res);
             
             if (res.success) {
-                toast.success(res.message || "Comment posted successfully! ");
                 reset();
-                
-                //  Immediately refetch the forum data to show the new comment
-                refetch(); // This will update the comments list without page reload
+                refetch();
             }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error("Error posting comment:", error);
-            toast.error(error?.data?.message || "Failed to post comment. Please try again.");
         }
     };
 
@@ -147,7 +144,7 @@ const ForumDetail = () => {
 
                         <p className="text-xs sm:text-sm text-gray-500 mt-3">
                             {post?.postedBy?.firstName} {post?.postedBy?.lastName} •{" "}
-                            {new Date(post.createdAt).toLocaleString()}
+                            {timeAgo(post?.createdAt)}
                         </p>
                     </div>
                 </div>

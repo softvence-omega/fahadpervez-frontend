@@ -5,6 +5,7 @@ import { useAllForumGetQuery } from "@/store/features/mentor-dashboard/forum/for
 import { TForumGet } from "@/store/storeTypes/forum";
 import { Link } from "react-router-dom";
 import Pagination from "../reusable/Pagination";
+import { timeAgo } from "@/common/timeAgo";
 
 const ForumList = () => {
   const { data, isLoading, isError } = useAllForumGetQuery(undefined);
@@ -69,7 +70,7 @@ const ForumList = () => {
               </div>
               <p className="text-sm text-gray-500">
                 {post.postedBy.firstName} {post.postedBy.lastName} •{" "}
-                {new Date(post.createdAt).toLocaleString()}
+                {timeAgo(post?.createdAt)}
               </p>
             </div>
           </div>

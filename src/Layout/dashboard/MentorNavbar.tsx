@@ -51,13 +51,13 @@ const MentorNavbar = () => {
   // Function to check if any route in "more" items is active
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 py-2 md:py-0">
       <CommonWrapper>
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="flex items-center gap-4 md:gap-6">
             <Link to="/dashboard">
-              <img src="/logo1.svg " className="h-16" alt="" />
+              <img src="/logo1.svg " className="h-8 md:h-12" alt="" />
             </Link>
 
             {/* Search Bar */}

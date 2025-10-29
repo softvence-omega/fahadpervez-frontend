@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react"
 import { ArrowLeft } from "lucide-react"
 import arrow from "@/assets/dashboard/right-arrow.svg"
@@ -16,7 +17,7 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { useSocialPostForumMutation } from "@/store/features/mentor-dashboard/forum/forum.api"
-import { toast } from "sonner"
+// import { toast } from "sonner"
 
 // ✅ Zod Schema
 const formSchema = z.object({
@@ -81,16 +82,11 @@ const CreateDiscussion = ({ onBack }: CreateDiscussionProps) => {
 
     try {
       console.log("Posting payload:", payload);
-
       const res = await createForumPost(payload).unwrap();
       console.log("Forum post created successfully:", res);
 
-      toast.success(res.message || "Discussion created successfully!");
-      onBack(); // Go back after success
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onBack();
     } catch (error: any) {
-      const errorMessage = error?.data?.message || "Something went wrong";
-      toast.error(errorMessage);
       console.error("Error creating forum post:", error);
     }
   };
