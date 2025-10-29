@@ -1,25 +1,30 @@
-import React from 'react';
+import CommonButton from "@/common/button/CommonButton";
+import React from "react";
 
 interface ActionButtonsProps {
   onImport: () => void;
   onCancel: () => void;
   importLabel: string;
+  isLoading?: boolean;
 }
 
-const ActionButtons: React.FC<ActionButtonsProps> = ({ onImport, onCancel, importLabel }) => (
+const ActionButtons: React.FC<ActionButtonsProps> = ({
+  onImport,
+  onCancel,
+  importLabel,
+  isLoading,
+}) => (
   <div className="flex gap-4">
-    <button
+    <CommonButton
       onClick={onImport}
-      className="px-6 bg-gradient-to-tr from-[#0076F5] to-[#0058B8] py-2.5 text-white font-medium rounded-md hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      className=" !bg-[linear-gradient(103deg,#0076F5_6.94%,#0058B8_99.01%)]
+      !text-white"
     >
       {importLabel}
-    </button>
-    <button
-      onClick={onCancel}
-      className="px-6 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
-    >
+    </CommonButton>
+    <CommonButton disabled={isLoading} onClick={onCancel} className="">
       Cancel
-    </button>
+    </CommonButton>
   </div>
 );
 

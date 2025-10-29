@@ -41,7 +41,6 @@ export const mentorManagementApi = baseAPI.injectEndpoints({
   overrideExisting: false,
 });
 
-// Export hooks
 export const {
   useGetProfessionalsDataQuery,
   useGetSingleProfessionalsQuery,

@@ -6,52 +6,46 @@ import RecentActivity from "@/components/AdminDashboard/Content & Resource_Compo
 import { Button } from "@/components/ui/button";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import { BookOpenTextIcon, Plus } from "lucide-react";
-import { Link } from "react-router-dom";
 import Create_New_Question from "./Create_New_Question_Bank";
 import Add_Question from "./Add_Question";
-import Content_Resource_ALL_QB from "./Content_Resource_All_QB";
 import CommonSpace from "@/common/space/CommonSpace";
-import { useGllMCQBankQuery } from "@/store/features/MCQBank/MCQBank.api";
-import type { QuestionBankCardProps } from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/QuestionBankCard";
+import { useGetMcqApiQuery } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import Pagination from "@/common/custom/Pagination";
+import { useDebounce } from "@/common/custom/useDebounce";
+import BigCardSkeleton from "@/common/custom/BigCardSkeleton";
+import ViewAllButton from "@/components/AdminDashboard/Content & Resource_Component/ViewAllButton";
 
 const Content_Resource_Question_Bank: React.FC = () => {
-  type View = "homepage" | "create" | "addQuestion" | "viewAll";
+  type View = "homepage" | "create" | "addQuestion";
 
   const [currentView, setCurrentView] = useState<View>("homepage");
-  const [searchTerm, setSearchTerm] = useState(""); // 🔍 For live search
+  const [viewAll, setViewAll] = useState(false);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
 
-  const { data } = useGllMCQBankQuery(undefined);
-  const mcqBank = data?.data;
+  const searchTerm = useDebounce(search, 500);
 
-  // ✅ Filtered items based on search
-  const filteredBanks = mcqBank?.filter((bank: QuestionBankCardProps) => {
-    const term = searchTerm.toLowerCase();
-    return (
-      bank.mcqBankTitle.toLowerCase().includes(term) ||
-      // bank.description.toLowerCase().includes(term) ||
-      bank.subjectName.toLowerCase().includes(term)
-    );
+  const { data: mcqData, isLoading } = useGetMcqApiQuery({
+    page,
+    limit: viewAll ? Infinity : 1,
+    searchTerm: searchTerm || undefined,
   });
+
+  const mcqBanks = mcqData?.data ?? [];
 
   // Routing logic
   if (currentView === "create")
     return <Create_New_Question onBack={() => setCurrentView("homepage")} />;
   if (currentView === "addQuestion")
     return <Add_Question onBack={() => setCurrentView("homepage")} />;
-  if (currentView === "viewAll")
-    return (
-      <Content_Resource_ALL_QB onBack={() => setCurrentView("homepage")} />
-    );
 
-  // ✅ Homepage view
   return (
     <div className="space-y-6 w-full">
-      {/* ✅ Stats Section */}
       <CommonSpace>
         <div className="grid grid-cols-1 justify-items-center sm:justify-items-start sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
           <StatsCard
             title="Total Question Bank"
-            value={10}
+            value={mcqData?.meta?.total ?? 0}
             subtitle="Across all subjects"
             icon={<BookOpenTextIcon className="w-6 h-6 text-green-600" />}
           />
@@ -64,35 +58,26 @@ const Content_Resource_Question_Bank: React.FC = () => {
           <StatsCard title="Last Upload" value={180} subtitle="2025-09-12" />
           <StatsCard
             title="Published"
-            value={180}
+            value={mcqData?.meta?.total ?? 0}
             subtitle="MCQ Bank Published"
             icon={<BookOpenTextIcon className="w-6 h-6 text-green-600" />}
           />
         </div>
       </CommonSpace>
 
-      {/* ✅ Search + Add Button */}
       <div className="flex flex-col sm:flex-row w-full justify-between items-stretch sm:items-center gap-3 sm:gap-4">
-        <div className="flex-1 w-full min-w-0">
+        <div className="w-full lg:w-[740px] ">
           <SearchBar
             placeholder="Search Question Bank"
-            onChange={(val) => setSearchTerm(val)} // ✅ make search dynamic
+            onChange={(val) => setSearch(val)}
           />
         </div>
 
         <div className="w-full sm:w-auto mt-2 sm:mt-0">
           <ButtonWithIcon
-            icon={Plus}
-            className="
-              w-full sm:w-auto
-              bg-gradient-to-tr from-[#0076F5] to-[#0058B8]
-              hover:from-[#0069DB] hover:to-[#004C9E]
-              text-white font-medium
-              px-4 py-2 sm:px-5 sm:py-2.5
-              rounded-md text-sm sm:text-base
-              flex items-center justify-center gap-2
-              transition-all duration-200
+            className="!bg-[linear-gradient(103deg,#0076F5_6.94%,#0058B8_99.01%)]
             "
+            icon={Plus}
             onClick={() => setCurrentView("create")}
           >
             Add Question Bank
@@ -100,34 +85,29 @@ const Content_Resource_Question_Bank: React.FC = () => {
         </div>
       </div>
 
-      {/* ✅ Header with View All */}
       <div className="flex justify-between items-center w-full gap-2">
         <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
-          Question Banks
+          {viewAll ? "All Question Banks" : "Question Banks"}
         </h2>
-        <Link to="">
-          <Button
-            variant="link"
-            className="p-0 text-sm sm:text-base text-blue-600 hover:underline"
-            onClick={() => setCurrentView("viewAll")}
-          >
-            View All
-          </Button>
-        </Link>
+
+        <ViewAllButton
+          isActive={viewAll}
+          onClick={() => setViewAll(!viewAll)}
+        />
       </div>
 
-      {/* ✅ Filtered Question Bank Cards */}
       <div className="grid grid-cols-1 gap-4 sm:gap-6">
-        {filteredBanks?.length > 0 ? (
-          filteredBanks?.map((bank: QuestionBankCardProps) => (
+        {isLoading ? (
+          <BigCardSkeleton />
+        ) : mcqBanks.length > 0 ? (
+          mcqBanks.map((bank) => (
             <QuestionBankCard
               key={bank._id}
               _id={bank._id}
               mcqBankTitle={bank.mcqBankTitle}
-              subjectName={bank.subjectName} // ✅ Create small tags from existing data
+              subjectName={bank.subjectName}
               description="Must have description"
               uploadedBy={bank.uploadedBy}
-              status="Published"
               totalMcq={bank.totalMcq ?? 0}
               onAdd={() => setCurrentView("addQuestion")}
             />
@@ -138,28 +118,15 @@ const Content_Resource_Question_Bank: React.FC = () => {
           </p>
         )}
       </div>
-      {/* ✅ Filtered Question Bank Cards
-      <div className="grid grid-cols-1 gap-4 sm:gap-6">
-        {filteredBanks.length > 0 ? (
-          filteredBanks.map((bank, index) => (
-            <QuestionBankCard
-              key={index}
-              title={bank.title}
-              description={bank.description}
-              tags={bank.tags}
-              status={bank.status as "Published" | "Draft"}
-              questionCount={bank.questionCount}
-              onAdd={() => setCurrentView("addQuestion")}
-            />
-          ))
-        ) : (
-          <p className="text-gray-500 text-center py-6">
-            No question banks found.
-          </p>
-        )}
-      </div> */}
 
-      {/* ✅ Recent Activity */}
+      {!viewAll && (
+        <Pagination
+          currentPage={page}
+          totalPages={mcqData?.meta?.totalPages ?? 1}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
+      )}
+
       <CommonSpace>
         <div className="overflow-x-auto">
           <RecentActivity
