@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, Plus, ArrowLeft } from "lucide-react";
+import { X, Plus } from "lucide-react";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import CommonButton from "@/common/button/CommonButton";
 
