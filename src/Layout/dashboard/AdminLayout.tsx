@@ -1,12 +1,10 @@
 import AdminSidebar from "@/components/AdminDashboard/reuseable/AdminSidebar";
 import DashboardHeader from "@/components/AdminDashboard/reuseable/DashboardHeader";
 import { useState } from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import CommonWrapper from "@/common/CommonWrapper";
-import Cookies from "js-cookie";
-import { useGetMeQuery } from "@/store/features/auth/auth.api";
 
 const AdminLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);

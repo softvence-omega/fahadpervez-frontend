@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Upload, ChevronDown, Plus, ArrowLeft } from "lucide-react";
+import { Upload, ChevronDown, Plus } from "lucide-react";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import BulkUploadQuestions from "./Bulk_Upload_Question_Bank";
 import CustomDropdown from "@/components/AdminDashboard/Content & Resource_Component/CustomDropdown";
