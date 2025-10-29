@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import signupImage from "../../assets/signUp/signUpImage.png";
-import logo from "../../assets/signUp/logo.png";
+// import logo from "../../assets/signUp/logo.png";
 import {
   useLazyGetMeQuery,
   useLoginMutation,
@@ -88,7 +88,8 @@ const Login = () => {
         />
         <div className="absolute top-6 left-6">
           <Link to="/">
-            <img src={logo} alt="" />
+          <img src="/logo.svg" alt="Logo" className="w-40 h-16 lg:h-20 " />
+            {/* <img src={logo} alt="" /> */}
           </Link>
         </div>
         <div className="absolute bottom-6 left-6 bg-white/80 p-4 rounded-lg text-sm max-w-sm">
