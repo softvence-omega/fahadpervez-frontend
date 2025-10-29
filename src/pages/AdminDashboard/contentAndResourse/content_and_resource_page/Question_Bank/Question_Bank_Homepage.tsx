@@ -3,7 +3,6 @@ import StatsCard from "@/components/AdminDashboard/Content & Resource_Component/
 import SearchBar from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/SearchBar";
 import QuestionBankCard from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/QuestionBankCard";
 import RecentActivity from "@/components/AdminDashboard/Content & Resource_Component/QuestionBank/RecentActivity";
-import { Button } from "@/components/ui/button";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import { BookOpenTextIcon, Plus } from "lucide-react";
 import Create_New_Question from "./Create_New_Question_Bank";
