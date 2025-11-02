@@ -4,6 +4,8 @@ import StudentProfile from "@/components/AdminDashboard/userManagement/profile/S
 import AdminLayout from "@/Layout/dashboard/AdminLayout";
 import PlatformPerformance from "@/pages/AdminDashboard/analyticAndReport/PlatformPerformance";
 import CreateEvents from "@/pages/AdminDashboard/communityAndEvents/CreateEvents";
+import ResourceManagement from "@/pages/AdminDashboard/contentAndResourse/content_and_resource_page/ResourceManagement";
+import ContentManagement from "@/pages/AdminDashboard/contentAndResourse/ContentManagement";
 import UploadContent from "@/pages/AdminDashboard/contentAndResourse/UploadContent";
 import AdminDashboard from "@/pages/AdminDashboard/dashboard/AdminDashboard";
 import MentorsOverview from "@/pages/AdminDashboard/mentorshipManagement/MentorsOverview";
@@ -51,6 +53,15 @@ const adminRoutes = {
       path: "upload-content",
       element: <UploadContent />,
     },
+    {
+      path: "content-management",
+      element: <ContentManagement />,
+    },
+    {
+      path: "resource-management",
+      element: <ResourceManagement />,
+    },
+
     {
       path: "mentors-overview",
       element: <MentorsOverview />,

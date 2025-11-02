@@ -1,17 +1,15 @@
-import { FC } from "react";
-
-interface Tab {
+interface Tab<T extends string> {
   label: string;
-  value: string;
+  value: T;
 }
 
-interface TabsProps {
-  tabs: Tab[];
-  active: string;
-  onChange: (value: string) => void;
+interface TabsProps<T extends string> {
+  tabs: Tab<T>[];
+  active: T;
+  onChange: (value: T) => void;
 }
 
-const Tabs: FC<TabsProps> = ({ tabs, active, onChange }) => {
+const Tabs = <T extends string>({ tabs, active, onChange }: TabsProps<T>) => {
   return (
     <div className="flex items-center flex-wrap xl:bg-white xl:border border-border xl:rounded-full p-1 w-fit">
       {tabs.map((tab) => (

@@ -23,7 +23,7 @@ const CommonDropdown: React.FC<CommonDropdownProps> = ({ items, trigger }) => {
 
       <DropdownMenuContent
         align="end"
-        className="bg-white border border-border min-w-[160px]"
+        className="bg-white border border-border w-fit"
       >
         {items.map((item, idx) => (
           <DropdownMenuItem

@@ -1,23 +1,23 @@
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import CommonDropdown from "@/common/custom/CommonDropdown";
 import CommonHeader from "@/common/header/CommonHeader";
-import { IoChevronDownSharp } from "react-icons/io5";
+import { professionalData } from "@/components/AdminDashboard/userManagement/professional/data";
 import { BiSolidEdit } from "react-icons/bi";
+import { IoChevronDownSharp } from "react-icons/io5";
 
+import Pagination from "@/common/custom/Pagination";
 import {
   Table,
-  TableHeader,
-  TableRow,
-  TableHead,
   TableBody,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
-import { FC } from "react";
-import { LuEye } from "react-icons/lu";
-import { Professional } from "./data";
-import Pagination from "@/common/custom/Pagination";
-import { Link } from "react-router-dom";
 import { slugify } from "@/help/help";
+import { LuEye } from "react-icons/lu";
+import { Link } from "react-router-dom";
+import DashboardSearch from "../../reuseable/DashboardSearch";
 const dropdownItems = [
   { label: "Edit" },
   { label: "Delete" },
@@ -33,9 +33,6 @@ const tableHeaders = [
   { label: "Post-Graduate", align: "text-center lg:table-cell hidden" },
   { label: "Action", align: "text-center" },
 ];
-interface AllStudentProfileTable {
-  professional: Professional[];
-}
 
 const tableDesign = {
   header:
@@ -44,9 +41,10 @@ const tableDesign = {
   bodyRow: "text-[#2C2C2C] font-inter text-sm font-normal md:h-12",
   cell: "border border-border px-4 text-center",
 };
-const ProfessionalTable: FC<AllStudentProfileTable> = ({ professional }) => {
+const ProfessionalTable = () => {
   return (
     <div>
+      <DashboardSearch className=" !rounded-none mb-5 " />
       <div className="flex items-center justify-between pb-5">
         <CommonHeader>Professional Profile</CommonHeader>
         <CommonDropdown
@@ -77,7 +75,7 @@ const ProfessionalTable: FC<AllStudentProfileTable> = ({ professional }) => {
         </TableHeader>
 
         <TableBody>
-          {professional.map((p) => (
+          {professionalData.map((p) => (
             <TableRow key={p.id} className={tableDesign.bodyRow}>
               <TableCell className={`sm:table-cell hidden ${tableDesign.cell}`}>
                 <div>{p.id}</div>

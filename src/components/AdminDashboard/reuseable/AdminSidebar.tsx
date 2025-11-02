@@ -1,19 +1,22 @@
-import { NavLink } from "react-router-dom";
-import {
-  LayoutDashboard,
-  Calendar,
-  Users,
-  UserCheck,
-  CreditCard,
-  Receipt,
-  FilePlus,
-  BarChart2,
-  Settings,
-} from "lucide-react";
-import { type FC } from "react";
 import profile from "@/assets/home/mentor1.png";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import CommonHeader from "@/common/header/CommonHeader";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  BarChart2,
+  Calendar,
+  CreditCard,
+  FilePlus,
+  LayoutDashboard,
+  Receipt,
+  Settings,
+  UserCheck,
+  Users,
+} from "lucide-react";
+import { BiBookAlt } from "react-icons/bi";
+import { LuBookOpenText } from "react-icons/lu";
+
+import { type FC } from "react";
+import { NavLink } from "react-router-dom";
 
 interface SidebarItem {
   icon: React.ElementType;
@@ -59,6 +62,18 @@ const sidebarItems: SidebarItem[] = [
     icon: FilePlus,
     label: "Upload Content",
     path: "/admin/upload-content",
+    section: "Content & Resources",
+  },
+  {
+    icon: LuBookOpenText,
+    label: "Content Management",
+    path: "/admin/content-management",
+    section: "Content & Resources",
+  },
+  {
+    icon: BiBookAlt,
+    label: "Resource Management ",
+    path: "/admin/resource-management",
     section: "Content & Resources",
   },
   // Mentorship

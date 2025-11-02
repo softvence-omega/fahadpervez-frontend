@@ -30,15 +30,16 @@ const DashboardTopSection = ({
           </div>
         )}
       </div>
-
-      {buttonText && (
-        <ButtonWithIcon
-          icon={FaPlus}
-          className="w-full md:w-auto flex justify-center  flex-shrink-0 "
-        >
-          <p onClick={action}>{buttonText}</p>
-        </ButtonWithIcon>
-      )}
+      <div className="flex gap-4.5 items-center">
+        {buttonText && (
+          <ButtonWithIcon
+            icon={FaPlus}
+            className="w-full md:w-auto flex justify-center  flex-shrink-0 "
+          >
+            <p onClick={action}>{buttonText}</p>
+          </ButtonWithIcon>
+        )}
+      </div>
     </div>
   );
 };
