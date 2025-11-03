@@ -9,6 +9,7 @@ import { useGetSingleMCQQuery } from "@/store/features/MCQBank/MCQBank.api";
 import { ArrowLeft, Plus } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+// import { question } from '@/assets/dashboard/question.svg';
 
 export default function PracticeMCQ() {
   const breadcrumbs: BreadcrumbItem[] = [
@@ -33,8 +34,9 @@ export default function PracticeMCQ() {
   };
 
   const mcqData = data?.data;
-  const questions = mcqData?.mcqSets || [];
+  const questions = mcqData?.mcqs || [];
 
+  console.log({  questions });
   return (
     <>
       {isLoading ? (
@@ -47,12 +49,12 @@ export default function PracticeMCQ() {
             {/* Left Section */}
             <div className="flex items-center gap-3">
               <Link to={"/dashboard/mcq-bank"} className=" sm:mb-0">
-                <ArrowLeft className="mb-8" />
+                <ArrowLeft className="mb-7" />
               </Link>
               <DashboardHeading
-                title={mcqData?.mcqBankTitle}
+                title={mcqData?.title}
                 titleSize="text-xl"
-                description={`${mcqData?.totalMcq} Questions | Uploaded By: ${mcqData?.uploadedBy}`}
+                description={`${mcqData?.mcqs?.length} Questions | Uploaded By: ${mcqData?.uploadedBy}`}
                 className="space-y-1"
               />
             </div>
@@ -82,7 +84,7 @@ export default function PracticeMCQ() {
               >
                 <div>
                   <p className="text-slate-900 font-medium">
-                    Question {idx + 1} of {mcqData?.totalMcq}
+                    Question {idx + 1} of {mcqData?.mcqs?.length}
                   </p>
                 </div>
 
