@@ -9,6 +9,7 @@ import { Clock10, Cog, FileText, Plus, Target } from "lucide-react";
 import TestOverviewCard from "@/components/reusable/TestOverviewCard";
 import { useGllMCQBankQuery } from "@/store/features/MCQBank/MCQBank.api";
 import GlobalLoader from "@/common/GlobalLoader";
+import { TMCQBank } from "@/types";
 
 // const resources = [
 //   {
@@ -137,9 +138,9 @@ const McqBank = () => {
         <GlobalLoader />
       ) : (
         <div className="space-y-6 my-6">
-          {MCQBank?.map((mcq: any) => (
+          {MCQBank?.map((mcq: TMCQBank) => (
             <div
-              key={mcq._id}
+              key={mcq?._id}
               className="border border-slate-300 rounded-lg py-4 px-5"
             >
               <Link to={`/dashboard/practice-mcq/${mcq?._id}`}>
@@ -152,22 +153,22 @@ const McqBank = () => {
                   {/* Content */}
                   <div className="space-y-2">
                     <h4 className="text-lg text-slate-900 font-medium">
-                      {mcq.mcqBankTitle}
+                      {mcq?.title}
                     </h4>
                     <div className="flex flex-wrap items-center gap-4">
-                      <p className="text-slate-600">{mcq.totalMcq}</p>
+                      <p className="text-slate-600">{mcq?.totalMcq}</p>
                       <div className="flex flex-wrap items-center gap-2">
                         {/* {mcq.tags.map((tag, idx) => ( */}
                         <p
                           // key={idx}
                           className="border border-slate-300 rounded-full px-2"
                         >
-                          {mcq.subjectName}
+                          {mcq?.topic}
                         </p>
                         {/* ))} */}
                       </div>
                     </div>
-                    <p className="text-sm text-slate-700">
+                    <p className="text-sm text-slate-700 mt-2">
                       Uploaded By: {mcq.uploadedBy}
                     </p>
                   </div>
