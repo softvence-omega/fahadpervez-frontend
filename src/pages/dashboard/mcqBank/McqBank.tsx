@@ -143,7 +143,7 @@ const McqBank = () => {
               key={mcq?._id}
               className="border border-slate-300 rounded-lg py-4 px-5"
             >
-              <Link to={`/dashboard/practice-mcq/${mcq?._id}`}>
+              <div className="flex items-end justify-between">
                 <div className="sm:flex items-center gap-10">
                   {/* Icon */}
                   <div className="sm:border-r-2 border-r-slate-300 pr-4">
@@ -173,7 +173,12 @@ const McqBank = () => {
                     </p>
                   </div>
                 </div>
-              </Link>
+                <Link to={`/dashboard/practice-mcq/${mcq?._id}`}>
+                  <button className="text-blue-main font-medium hover:underline cursor-pointer">
+                    Start Now
+                  </button>
+                </Link>
+              </div>
             </div>
           ))}
         </div>
