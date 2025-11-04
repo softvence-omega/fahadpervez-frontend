@@ -31,3 +31,16 @@ export type TMCQBank = {
 
   createdAt: string;
 };
+
+type McqOption = {
+  option: string; // e.g., "A", "B", "C", "D"
+  optionText: string; // text shown to the user
+  explanation: string; // explanation for this option
+};
+
+export type McqQuestion = {
+  question: string; // the question text
+  options: McqOption[]; // list of options
+  correctOption: string; // e.g., "C"
+  difficulty: "Easy" | "Medium" | "Advance"; // restrict to known levels
+};
