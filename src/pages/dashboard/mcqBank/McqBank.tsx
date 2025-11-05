@@ -10,6 +10,8 @@ import TestOverviewCard from "@/components/reusable/TestOverviewCard";
 import { useGllMCQBankQuery } from "@/store/features/MCQBank/MCQBank.api";
 import GlobalLoader from "@/common/GlobalLoader";
 import { TMCQBank } from "@/types";
+import { QuizGeneratorDialog } from "../quizGenerator/QuizGenerateModal";
+import { useState } from "react";
 
 // const resources = [
 //   {
@@ -41,9 +43,25 @@ const McqBank = () => {
     { name: "MCQ Bank", link: "/dashboard/mcq-bank" },
   ];
 
+  // const [files, setFiles] = useState<File[]>([]);
+  // const [note, setNote] = useState("");
+  const [openModal, setOpenModal] = useState(false);
   const { data, isLoading } = useGllMCQBankQuery(undefined);
   const MCQBank = data?.data;
   console.log(MCQBank);
+
+  const handleFinalSubmit = (modalData: any) => {
+    const combinedData = {
+      // files,
+      // note,
+      ...modalData, // modal fields (quizName, subject, difficulty, etc.)
+    };
+
+    console.log("Final Payload:", combinedData);
+
+    // ✅ Call API here
+    // await fetch("/api/generate-quiz", { method: "POST", body: JSON.stringify(combinedData) })
+  };
 
   return (
     <div className="my-6 md:my-10">
@@ -73,17 +91,18 @@ const McqBank = () => {
           descFont="text-sm"
           className="mt-12 mb-8"
         />
-        <Link to={"/dashboard/quiz-generator"}>
-          <PrimaryButton
-            icon={<Plus />}
-            bgType="solid"
-            iconPosition="left"
-            bgColor="bg-blue-btn-1"
-            className="h-10 mb-4 hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer"
-          >
-            Create Quiz
-          </PrimaryButton>
-        </Link>
+        {/* <Link to={"/dashboard/quiz-generator"}> */}
+        <PrimaryButton
+          icon={<Plus />}
+          bgType="solid"
+          iconPosition="left"
+          bgColor="bg-blue-btn-1"
+          className="h-10 mb-4 hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer"
+          onClick={() => setOpenModal(true)}
+        >
+          Create Quiz
+        </PrimaryButton>
+        {/* </Link> */}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -183,6 +202,11 @@ const McqBank = () => {
           ))}
         </div>
       )}
+      <QuizGeneratorDialog
+        open={openModal}
+        setOpen={setOpenModal}
+        onFinalSubmit={handleFinalSubmit}
+      />
     </div>
   );
 };

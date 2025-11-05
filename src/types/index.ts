@@ -39,6 +39,7 @@ type McqOption = {
 };
 
 export type McqQuestion = {
+  mcqId: string;
   question: string; // the question text
   options: McqOption[]; // list of options
   correctOption: string; // e.g., "C"

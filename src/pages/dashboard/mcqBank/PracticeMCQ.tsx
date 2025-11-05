@@ -10,7 +10,9 @@ import { McqQuestion } from "@/types";
 import { ArrowLeft, CircleAlert, Plus } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-// import { question } from '@/assets/dashboard/question.svg';
+import QuizReportModal from "../quizGenerator/QuizReportModal";
+import Pagination from "@/components/AdminDashboard/Content & Resource_Component/Pagination";
+// import Pagination from "@/components/reusable/Pagination";
 
 export default function PracticeMCQ() {
   const breadcrumbs: BreadcrumbItem[] = [
@@ -19,13 +21,22 @@ export default function PracticeMCQ() {
   ];
 
   const { id } = useParams();
-  const { data, isLoading } = useGetSingleMCQQuery(id as string);
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 10;
+  const { data, isLoading } = useGetSingleMCQQuery({
+    id: id as string,
+    page: currentPage,
+    limit,
+  });
 
+  const meta = data?.meta;
+  console.log(data?.meta);
   const [selected, setSelected] = useState<{ [key: string]: number | null }>(
     {}
   );
   const [showAnswer, setShowAnswer] = useState<{ [key: string]: boolean }>({});
-
+  const [openReportModal, setOpenReportModal] = useState(false);
+  const [mcqId, setMcqId] = useState("");
   const handleSelect = (qId: string, index: number) => {
     setSelected((prev) => ({ ...prev, [qId]: index }));
   };
@@ -34,10 +45,25 @@ export default function PracticeMCQ() {
     setShowAnswer((prev) => ({ ...prev, [qId]: !prev[qId] }));
   };
 
+  // const mcqData = data?.data;
+  // const questions = mcqData?.mcqs || [];
+
+  // console.log({ mcqData });
+
+  // Pagination states
+
+  // const meta = data?.meta;
   const mcqData = data?.data;
   const questions = mcqData?.mcqs || [];
 
-  console.log({ questions });
+  const totalPages = meta?.total ? Math.ceil(meta.total / meta.limit) : 1;
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
   return (
     <>
       {isLoading ? (
@@ -76,6 +102,7 @@ export default function PracticeMCQ() {
 
           {/* Render questions */}
           {questions.map((q: McqQuestion, idx: number) => {
+            // console.log(q);
             const qId = `question-${idx}`; // ensure unique id per question
             // const qId = q?._id || `question-${idx}`; // ensure unique id per question
             const selectedIndex = selected[qId];
@@ -96,7 +123,13 @@ export default function PracticeMCQ() {
                       {q.difficulty}
                     </p>
                   </div>
-                  <div className="flex items-center gap-1.5 text-[#F61F1F]">
+                  <div
+                    className="flex items-center gap-1.5 text-[#F61F1F]"
+                    onClick={() => {
+                      setMcqId(q?.mcqId); // ✅ Pass the MCQ’s unique ID
+                      setOpenReportModal(true);
+                    }}
+                  >
                     <p className="text-sm font-semibold">Report</p>
                     <CircleAlert />
                   </div>
@@ -193,8 +226,22 @@ export default function PracticeMCQ() {
               </div>
             );
           })}
+          <QuizReportModal
+            open={openReportModal}
+            setOpen={setOpenReportModal}
+            mcqId={mcqId}
+            questionBankId={mcqData._id}
+          />
         </div>
       )}
+      {/* Pagination */}
+      <div className="mt-16 mb-32 flex justify-center space-x-5 ">
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
+      </div>
     </>
   );
 }

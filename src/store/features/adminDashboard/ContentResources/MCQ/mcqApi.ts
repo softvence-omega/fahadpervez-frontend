@@ -34,11 +34,21 @@ export const mcqApi = baseAPI.injectEndpoints({
 
       providesTags: ["Mcq"],
     }),
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     UploadBulkMcqApi: build.mutation<any, FormData>({
       query: (formdata) => ({
         url: `/mcq-bank/upload-bulk`,
         method: "POST",
         body: formdata,
+      }),
+    }),
+
+    ReportMcq: build.mutation({
+      query: (data) => ({
+        url: `/mcq-bank/save-report`,
+        method: "POST",
+        body: data,
       }),
     }),
   }),
@@ -50,4 +60,5 @@ export const {
   useGetSingleMcqApiQuery,
   useUploadBulkMcqApiMutation,
   useDeleteMcqApiMutation,
+  useReportMcqMutation,
 } = mcqApi;
