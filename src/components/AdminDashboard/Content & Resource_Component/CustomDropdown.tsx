@@ -1,13 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface CustomDropdownProps {
-  label?: string;                     // optional label text
-  value: string;                      // selected value
-  onChange: (value: string) => void;  // callback for selection
-  options: string[];                  // dropdown options
-  placeholder?: string;               // default text
-  className?: string;                 // optional extra class for styling
+  label?: string; // optional label text
+  value: string; // selected value
+  onChange: (value: string) => void; // callback for selection
+  options: string[]; // dropdown options
+  placeholder?: string; // default text
+  className?: string; // optional extra class for styling
 }
 
 const CustomDropdown: React.FC<CustomDropdownProps> = ({
@@ -24,7 +24,10 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -66,7 +69,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                   onChange(opt);
                   setIsOpen(false);
                 }}
-                className={`w-full px-4 py-2 text-left text-sm transition ${
+                className={`w-full px-4 py-2 ext-left text-sm transition ${
                   value === opt
                     ? "bg-blue-50 text-blue-600"
                     : "hover:bg-gray-100 text-gray-700"

@@ -1,30 +1,33 @@
-// Option Type
-interface Option {
+export interface McqOption {
   option: string;
   optionText: string;
   explanation: string;
 }
 
-// MCQ Set Type
-interface MCQSet {
-  category: string;
-  difficulty: "Easy" | "Medium" | "Hard";
+export interface McqQuestion {
+  difficulty: "Basics" | "Intermediate" | "Advance";
   question: string;
-  imageDescription: string | null;
-  options: Option[];
+  options: McqOption[];
   correctOption: string;
 }
 
-// MCQ Bank Data Type
-export interface SingleMcqData {
+export interface McqBankDetails {
   _id: string;
-  mcqBankTitle: string;
-  subjectName: string;
+  title: string;
+  subject: string;
+  system: string;
+  topic: string;
+  subtopic: string;
+  slug: string;
+  type: string;
   uploadedBy: string;
-  totalMcq: number;
-  mcqSets: MCQSet[];
+  mcqs: McqQuestion[];
   createdAt: string;
   updatedAt: string;
 }
 
-// API Response Type
+export interface SingleMcqData {
+  success: boolean;
+  message: string;
+  data: McqBankDetails;
+}

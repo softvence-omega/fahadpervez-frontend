@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore } from "@reduxjs/toolkit";
 import {
   FLUSH,
   PAUSE,
@@ -7,34 +7,34 @@ import {
   persistStore,
   PURGE,
   REGISTER,
-  REHYDRATE
-} from 'redux-persist'
-import storage from 'redux-persist/lib/storage'
-import { baseAPI } from './api/baseApi'
-import authReducer from './features/auth/auth.slice'
-
+  REHYDRATE,
+} from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import { baseAPI } from "./api/baseApi";
+import staticContentSlice from "./features/adminDashboard/staticContent/staticContentSlice";
+import authReducer from "./features/auth/auth.slice";
 
 const persistConfig = {
-  key: 'auth',
-  storage
-}
+  key: "auth",
+  storage,
+};
 
-const persistedReducer = persistReducer(persistConfig, authReducer)
-
+const persistedReducer = persistReducer(persistConfig, authReducer);
 
 export const store = configureStore({
   reducer: {
     [baseAPI.reducerPath]: baseAPI.reducer,
     auth: persistedReducer,
+    staticContent: staticContentSlice,
   },
-  middleware: getDefaultMiddleware =>
+  middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
-      }
-    }).concat(baseAPI.middleware)
-})
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(baseAPI.middleware),
+});
 
-export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
-export const persistor = persistStore(store)
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+export const persistor = persistStore(store);

@@ -9,6 +9,7 @@ interface ManagementHeaderProps {
   className?: string;
   buttonText?: string;
   action?: () => void;
+  descriptionClassName?: string;
 }
 
 const DashboardTopSection = ({
@@ -16,6 +17,7 @@ const DashboardTopSection = ({
   description,
   className,
   buttonText,
+  descriptionClassName,
   action,
 }: ManagementHeaderProps) => {
   return (
@@ -26,19 +28,22 @@ const DashboardTopSection = ({
         {title && <MediumHeader>{title}</MediumHeader>}
         {description && (
           <div className="w-full ">
-            <CommonHeader className="">{description}</CommonHeader>
+            <CommonHeader className={`${descriptionClassName}`}>
+              {description}
+            </CommonHeader>
           </div>
         )}
       </div>
-
-      {buttonText && (
-        <ButtonWithIcon
-          icon={FaPlus}
-          className="w-full md:w-auto flex justify-center  flex-shrink-0 "
-        >
-          <p onClick={action}>{buttonText}</p>
-        </ButtonWithIcon>
-      )}
+      <div className="flex gap-4.5 items-center">
+        {buttonText && (
+          <ButtonWithIcon
+            icon={FaPlus}
+            className="w-full md:w-auto flex justify-center  flex-shrink-0 "
+          >
+            <p onClick={action}>{buttonText}</p>
+          </ButtonWithIcon>
+        )}
+      </div>
     </div>
   );
 };

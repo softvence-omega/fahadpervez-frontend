@@ -5,29 +5,61 @@ export type McqBankParams = {
   searchTerm?: string;
 };
 
-// Single MCQ bank item
-export interface McqBankItem {
+// get all MCQ bank
+export interface McqBank {
   _id: string;
-  mcqBankTitle: string;
-  subjectName: string;
+  title: string;
+  subject: string;
+  system: string;
+  topic: string;
+  subtopic: string;
+  slug: string;
+  type: string;
   uploadedBy: string;
   totalMcq: number;
   createdAt: string;
-  updatedAt: string;
 }
 
-// Pagination metadata
-export interface MetaData {
+export interface McqMeta {
   page: number;
   limit: number;
   total: number;
   totalPages: number;
 }
 
-// Main API response
-export interface GetMcqResponse {
+export interface GetAllMcqResponse {
   success: boolean;
   message: string;
-  data: McqBankItem[];
-  meta: MetaData;
+  data: McqBank[];
+  meta: McqMeta;
 }
+
+// get all tree for study mode
+export type GetStudyModeTree = {
+  success: boolean;
+  message: string;
+  data: SubjectData[];
+  meta: null;
+};
+
+export type SubjectData = {
+  _id: string;
+  subjectName: string;
+  systems: System[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type System = {
+  name: string;
+  topics: Topic[];
+};
+
+export type Topic = {
+  topicName: string;
+  subTopics: (SubTopic | string)[];
+};
+
+export type SubTopic = {
+  subtopicName: string;
+};
