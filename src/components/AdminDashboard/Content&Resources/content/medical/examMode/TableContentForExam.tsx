@@ -1,11 +1,38 @@
 import preview from "@/assets/dashboard/tablePreview.svg";
 import CommonHeader from "@/common/header/CommonHeader";
-import { MoreVertical, Plus } from "lucide-react";
+import TableAction from "@/components/reusable/TableAction";
+import {
+  useDeleteExamMutation,
+  useGetExamQuery,
+} from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import { Exam } from "@/store/features/adminDashboard/ContentResources/MCQ/type/tree";
+import { Plus } from "lucide-react";
 
 interface TableContentProps {
   iconAction: () => void;
+  setInitialData: React.Dispatch<React.SetStateAction<null | Exam>>;
 }
-const TableContentForExam: React.FC<TableContentProps> = ({ iconAction }) => {
+const TableContentForExam: React.FC<TableContentProps> = ({
+  iconAction,
+  setInitialData,
+}) => {
+  const { data: allExamData } = useGetExamQuery();
+  const [deleteExam] = useDeleteExamMutation();
+  const allExam = allExamData?.data ?? [];
+
+  const handleDelete = async (id: string) => {
+    if (id) {
+      await deleteExam(id);
+    }
+  };
+  const handleEdit = async (data: Exam) => {
+    iconAction();
+    setInitialData(data);
+  };
+  const handleClick = () => {
+    iconAction();
+    setInitialData(null);
+  };
   return (
     <div className="w-79 bg-white rounded-2xl shadow p-4">
       <div className="flex items-center justify-between mb-4">
@@ -16,24 +43,29 @@ const TableContentForExam: React.FC<TableContentProps> = ({ iconAction }) => {
           </CommonHeader>
         </div>
         <button
-          onClick={iconAction}
+          onClick={handleClick}
           className="bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded-lg cursor-pointer"
         >
           <Plus className="w-4 h-4" />
         </button>
       </div>
-      <div className="flex items-center justify-between px-2">
-        <CommonHeader className="text-[#0A0A0A] !font-arial !text-sm">
-          ESMLE Part 1
-        </CommonHeader>
-        <div className="flex items-center">
-          <div className="bg-[#ECEEF2] border border-white text-xs text-[#030213] h-6 w-6 flex items-center justify-center rounded-md">
-            7
+      <div className="space-y-3">
+        {allExam.map((item, idx) => (
+          <div key={idx} className="flex items-center justify-between">
+            <CommonHeader className="text-[#0A0A0A] !font-arial !text-sm">
+              {item.examName}
+            </CommonHeader>
+
+            <TableAction
+              handleDelete={() => {
+                handleDelete(item._id);
+              }}
+              handleEdit={() => {
+                handleEdit(item);
+              }}
+            />
           </div>
-          <span>
-            <MoreVertical className="w-5 h-5" />
-          </span>
-        </div>
+        ))}
       </div>
     </div>
   );

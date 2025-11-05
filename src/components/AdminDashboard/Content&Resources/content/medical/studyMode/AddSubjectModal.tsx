@@ -1,27 +1,50 @@
+"use client";
+
+import ButtonWithLoading from "@/common/button/ButtonWithLoading";
 import CommonButton from "@/common/button/CommonButton";
 import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
 import FormHeader from "@/components/AdminDashboard/reuseable/FormHeader";
 import ModalCloseButton from "@/components/AdminDashboard/reuseable/ModalCloseButton";
+import { usePostStudyModeTreeMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import { Trash2 } from "lucide-react";
 import React, { useState } from "react";
 import { GoPlus } from "react-icons/go";
+import { z } from "zod";
 
-interface Subtopic {
-  id: string;
-  name: string;
-}
-
-interface Topic {
-  id: string;
-  name: string;
-  subtopics: Subtopic[];
-}
-
-interface System {
-  id: string;
+// Backend expected types
+type SubTopic = string;
+type Topic = {
+  topicName: string;
+  subTopics: SubTopic[];
+};
+type System = {
   name: string;
   topics: Topic[];
-}
+};
+export type PostStudyModeTree = {
+  subjectName: string;
+  systems: System[];
+};
+
+// Zod validation schema
+const subTopicSchema = z.string().min(1, "Subtopic name is required");
+
+const topicSchema = z.object({
+  topicName: z.string().min(1, "Topic name is required"),
+  subTopics: z
+    .array(subTopicSchema)
+    .min(1, "At least one subtopic is required"),
+});
+
+const systemSchema = z.object({
+  name: z.string().min(1, "System name is required"),
+  topics: z.array(topicSchema).min(1, "At least one topic is required"),
+});
+
+const postStudyModeTreeSchema = z.object({
+  subjectName: z.string().min(1, "Subject name is required"),
+  systems: z.array(systemSchema).min(1, "At least one system is required"),
+});
 
 interface AddSubjectModalProps {
   onClose: () => void;
@@ -30,92 +53,70 @@ interface AddSubjectModalProps {
 const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
   const [subjectName, setSubjectName] = useState("");
   const [systems, setSystems] = useState<System[]>([]);
+  const [errors, setErrors] = useState<any>({}); // For Zod errors
 
-  const addSystem = () => {
-    setSystems([...systems, { id: crypto.randomUUID(), name: "", topics: [] }]);
-  };
-
-  const addTopic = (systemId: string) => {
+  const addSystem = () => setSystems([...systems, { name: "", topics: [] }]);
+  const addTopic = (sIdx: number) =>
     setSystems((prev) =>
-      prev.map((sys) =>
-        sys.id === systemId
+      prev.map((sys, idx) =>
+        idx === sIdx
           ? {
               ...sys,
-              topics: [
-                ...sys.topics,
-                { id: crypto.randomUUID(), name: "", subtopics: [] },
-              ],
+              topics: [...sys.topics, { topicName: "", subTopics: [""] }],
             }
           : sys
       )
     );
-  };
-
-  const addSubtopic = (systemId: string, topicId: string) => {
+  const addSubtopic = (sIdx: number, tIdx: number) =>
     setSystems((prev) =>
-      prev.map((sys) =>
-        sys.id === systemId
+      prev.map((sys, sysIdx) =>
+        sysIdx === sIdx
           ? {
               ...sys,
-              topics: sys.topics.map((t) =>
-                t.id === topicId
-                  ? {
-                      ...t,
-                      subtopics: [
-                        ...t.subtopics,
-                        { id: crypto.randomUUID(), name: "" },
-                      ],
-                    }
+              topics: sys.topics.map((t, topicIdx) =>
+                topicIdx === tIdx
+                  ? { ...t, subTopics: [...t.subTopics, ""] }
                   : t
               ),
             }
           : sys
       )
     );
-  };
 
-  const updateSystemName = (systemId: string, value: string) => {
+  const updateSystemName = (sIdx: number, value: string) =>
     setSystems((prev) =>
-      prev.map((sys) => (sys.id === systemId ? { ...sys, name: value } : sys))
+      prev.map((sys, idx) => (idx === sIdx ? { ...sys, name: value } : sys))
     );
-  };
-
-  const updateTopicName = (
-    systemId: string,
-    topicId: string,
-    value: string
-  ) => {
+  const updateTopicName = (sIdx: number, tIdx: number, value: string) =>
     setSystems((prev) =>
-      prev.map((sys) =>
-        sys.id === systemId
+      prev.map((sys, sysIdx) =>
+        sysIdx === sIdx
           ? {
               ...sys,
-              topics: sys.topics.map((t) =>
-                t.id === topicId ? { ...t, name: value } : t
+              topics: sys.topics.map((t, topicIdx) =>
+                topicIdx === tIdx ? { ...t, topicName: value } : t
               ),
             }
           : sys
       )
     );
-  };
-
   const updateSubtopicName = (
-    systemId: string,
-    topicId: string,
-    subtopicId: string,
+    sIdx: number,
+    tIdx: number,
+    subIdx: number,
     value: string
-  ) => {
+  ) =>
     setSystems((prev) =>
-      prev.map((sys) =>
-        sys.id === systemId
+      prev.map((sys, sysIdx) =>
+        sysIdx === sIdx
           ? {
               ...sys,
-              topics: sys.topics.map((t) =>
-                t.id === topicId
+              topics: sys.topics.map((t, topicIdx) =>
+                topicIdx === tIdx
                   ? {
                       ...t,
-                      subtopics: t.subtopics.map((s) =>
-                        s.id === subtopicId ? { ...s, name: value } : s
+                      subTopics: t.subTopics.map((s, subI) =>
+                        subI === subIdx ? value : s
                       ),
                     }
                   : t
@@ -124,38 +125,28 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
           : sys
       )
     );
-  };
 
-  const removeSystem = (id: string) =>
-    setSystems((prev) => prev.filter((sys) => sys.id !== id));
-
-  const removeTopic = (systemId: string, topicId: string) =>
+  const removeSystem = (sIdx: number) =>
+    setSystems((prev) => prev.filter((_, idx) => idx !== sIdx));
+  const removeTopic = (sIdx: number, tIdx: number) =>
     setSystems((prev) =>
-      prev.map((sys) =>
-        sys.id === systemId
-          ? {
-              ...sys,
-              topics: sys.topics.filter((t) => t.id !== topicId),
-            }
+      prev.map((sys, idx) =>
+        idx === sIdx
+          ? { ...sys, topics: sys.topics.filter((_, i) => i !== tIdx) }
           : sys
       )
     );
-
-  const removeSubtopic = (
-    systemId: string,
-    topicId: string,
-    subtopicId: string
-  ) =>
+  const removeSubtopic = (sIdx: number, tIdx: number, subIdx: number) =>
     setSystems((prev) =>
-      prev.map((sys) =>
-        sys.id === systemId
+      prev.map((sys, sysIdx) =>
+        sysIdx === sIdx
           ? {
               ...sys,
-              topics: sys.topics.map((t) =>
-                t.id === topicId
+              topics: sys.topics.map((t, topicIdx) =>
+                topicIdx === tIdx
                   ? {
                       ...t,
-                      subtopics: t.subtopics.filter((s) => s.id !== subtopicId),
+                      subTopics: t.subTopics.filter((_, i) => i !== subIdx),
                     }
                   : t
               ),
@@ -164,28 +155,45 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
       )
     );
 
-  const handleSave = () => {
-    console.log({ subjectName, systems });
-    onClose();
+  const [postStudyModeTree, { isLoading: isPostStudyModeTreeLoading }] =
+    usePostStudyModeTreeMutation();
+  const handleSave = async () => {
+    const payload: PostStudyModeTree = { subjectName, systems };
+    const validation = postStudyModeTreeSchema.safeParse(payload);
+
+    if (!validation.success) {
+      setErrors(validation.error.format());
+      return;
+    }
+
+    setErrors({});
+
+    try {
+      await postStudyModeTree(payload);
+      onClose();
+    } catch (error) {
+      console.error("Network error:", error);
+    }
   };
 
   const inputClass = {
     label: "block text-sm font-normal text-[#020617] font-inter mb-2",
     input:
       "w-full border border-[#CBD5E1] rounded-md p-3 outline-none text-[#94A3B8] text-xs ",
-    error: "text-red-500 text-sm mt-1",
+    error: "text-red-500 text-xs mt-1",
   };
+
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 ">
       <CommonBorderWrapper className="w-full max-w-lg relative max-h-[95vh] overflow-y-auto ">
-        <div className=" space-y-5  ">
+        <div className="space-y-5">
           <ModalCloseButton onClick={onClose} />
           <FormHeader
             title="Add New Subject"
             subtitle=" Create a hierarchical table of contents for your subject."
           />
 
-          <div className="">
+          <div>
             <label className={inputClass.label}>Subject Name</label>
             <input
               type="text"
@@ -194,103 +202,112 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
               placeholder="e.g., Anatomy"
               className={inputClass.input}
             />
+            {errors?.subjectName?._errors && (
+              <p className={inputClass.error}>
+                {errors.subjectName._errors[0]}
+              </p>
+            )}
           </div>
 
           <div className="space-y-5">
-            <div className="flex items-center justify-between ">
+            <div className="flex items-center justify-between">
               <label className={inputClass.label}>Systems</label>
-              <CommonButton onClick={addSystem} className="">
-                + Add System
-              </CommonButton>
+              <CommonButton onClick={addSystem}>+ Add System</CommonButton>
             </div>
 
-            {systems.map((system) => (
+            {systems.map((system, sIdx) => (
               <div
-                key={system.id}
+                key={sIdx}
                 className="border border-black/10 rounded-lg p-3 mb-3 bg-gray-50"
               >
                 <div className="flex items-center gap-2 mb-2">
                   <input
                     type="text"
                     value={system.name}
-                    onChange={(e) =>
-                      updateSystemName(system.id, e.target.value)
-                    }
+                    onChange={(e) => updateSystemName(sIdx, e.target.value)}
                     placeholder="System name (e.g., Cardiovascular System)"
                     className={`!bg-[#EFF6FF] ${inputClass.input}`}
                   />
                   <button
-                    onClick={() => removeSystem(system.id)}
+                    onClick={() => removeSystem(sIdx)}
                     className="text-gray-500 border cursor-pointer border-[#CBD5E1] rounded-md p-2 hover:text-red-500"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
+                {errors?.systems?.[sIdx]?.name?._errors && (
+                  <p className={inputClass.error}>
+                    {errors.systems[sIdx].name._errors[0]}
+                  </p>
+                )}
 
-                <div className="">
+                <div className="space-y-4">
                   <div className="flex items-center justify-between mb-2">
                     <label className={inputClass.label}>Topics</label>
                     <CommonButton
-                      onClick={() => addTopic(system.id)}
+                      onClick={() => addTopic(sIdx)}
                       className="flex items-center gap-2"
                     >
-                      <span>
-                        <GoPlus className="w-4 h-4" />
-                      </span>
-                      Add Topic
+                      <GoPlus className="w-4 h-4" /> Add Topic
                     </CommonButton>
                   </div>
 
-                  {system.topics.map((topic) => (
+                  {system.topics.map((topic, tIdx) => (
                     <div
-                      key={topic.id}
-                      className="border border-[#CBD5E1] rounded-md p-4   "
+                      key={tIdx}
+                      className="border border-[#CBD5E1] rounded-md p-4"
                     >
-                      <div className="flex items-center gap-2 ">
+                      <div className="flex items-center gap-2">
                         <input
                           type="text"
-                          value={topic.name}
+                          value={topic.topicName}
                           onChange={(e) =>
-                            updateTopicName(system.id, topic.id, e.target.value)
+                            updateTopicName(sIdx, tIdx, e.target.value)
                           }
                           placeholder="Topic name (e.g., Heart)"
                           className={inputClass.input}
                         />
                         <button
-                          onClick={() => removeTopic(system.id, topic.id)}
+                          onClick={() => removeTopic(sIdx, tIdx)}
                           className="text-gray-500 border cursor-pointer border-[#CBD5E1] rounded-md p-2 hover:text-red-500"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
+                      {errors?.systems?.[sIdx]?.topics?.[tIdx]?.topicName
+                        ?._errors && (
+                        <p className={inputClass.error}>
+                          {
+                            errors.systems[sIdx].topics[tIdx].topicName
+                              ._errors[0]
+                          }
+                        </p>
+                      )}
 
                       <div className="">
                         <div className="flex items-center justify-between my-2">
                           <label className={inputClass.label}>Subtopics</label>
                           <CommonButton
-                            onClick={() => addSubtopic(system.id, topic.id)}
-                            className=" flex items-center gap-2"
+                            onClick={() => addSubtopic(sIdx, tIdx)}
+                            className="flex items-center gap-2"
                           >
-                            <span>
-                              <GoPlus className="w-4 h-4" />
-                            </span>
-                            Add Subtopic
+                            <GoPlus className="w-4 h-4" /> Add Subtopic
                           </CommonButton>
                         </div>
 
-                        {topic.subtopics.map((sub) => (
+                        {topic.subTopics.map((sub, subIdx) => (
                           <div
-                            key={sub.id}
+                            key={subIdx}
                             className="flex items-center gap-2 mb-1"
                           >
                             <input
                               type="text"
-                              value={sub.name}
+                              value={sub}
                               onChange={(e) =>
                                 updateSubtopicName(
-                                  system.id,
-                                  topic.id,
-                                  sub.id,
+                                  sIdx,
+                                  tIdx,
+                                  subIdx,
                                   e.target.value
                                 )
                               }
@@ -298,13 +315,21 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
                               className={inputClass.input}
                             />
                             <button
-                              onClick={() =>
-                                removeSubtopic(system.id, topic.id, sub.id)
-                              }
+                              onClick={() => removeSubtopic(sIdx, tIdx, subIdx)}
                               className="text-gray-500 border cursor-pointer border-[#CBD5E1] rounded-md p-2 hover:text-red-500"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
+                            {errors?.systems?.[sIdx]?.topics?.[tIdx]
+                              ?.subTopics?.[subIdx]?._errors && (
+                              <p className={inputClass.error}>
+                                {
+                                  errors.systems[sIdx].topics[tIdx].subTopics[
+                                    subIdx
+                                  ]._errors[0]
+                                }
+                              </p>
+                            )}
                           </div>
                         ))}
                       </div>
@@ -319,9 +344,15 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
             <CommonButton onClick={onClose}>Cancel</CommonButton>
             <CommonButton
               onClick={handleSave}
+              type="submit"
+              disabled={isPostStudyModeTreeLoading}
               className="!bg-blue-500 !text-white"
             >
-              Save Subject
+              {isPostStudyModeTreeLoading ? (
+                <ButtonWithLoading title="Saving..." />
+              ) : (
+                "Save Subject"
+              )}
             </CommonButton>
           </div>
         </div>

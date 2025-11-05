@@ -11,7 +11,7 @@ const statusOptions = [
   { label: "Published", value: "published" },
   { label: "Draft", value: "draft" },
 ] as const;
-const tabs = [
+export const tabs = [
   { label: "MCQ", value: "MCQ" },
   { label: "Flashcard", value: "Flashcard" },
   { label: "Clinical Case", value: "ClinicalCase" },

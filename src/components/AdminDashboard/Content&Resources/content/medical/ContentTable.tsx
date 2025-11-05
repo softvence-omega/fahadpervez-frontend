@@ -76,7 +76,6 @@ const ContentTable: React.FC<ContentTableProps> = ({ type }) => {
         <TableBody>
           {data.map((item) => (
             <TableRow key={item.id} className={tableDesign.bodyRow}>
-              {/* Row Checkbox */}
               <TableCell className={tableDesign.cell}>
                 <input
                   type="checkbox"
@@ -103,7 +102,10 @@ const ContentTable: React.FC<ContentTableProps> = ({ type }) => {
               </TableCell>
               <TableCell className={tableDesign.cell}>
                 <div className="flex justify-center">
-                  <TableAction />
+                  <TableAction
+                    handleDelete={() => console.log("first")}
+                    handleEdit={() => console.log("second")}
+                  />
                 </div>
               </TableCell>
             </TableRow>

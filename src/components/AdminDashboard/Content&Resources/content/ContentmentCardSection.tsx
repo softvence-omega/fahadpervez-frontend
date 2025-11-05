@@ -2,13 +2,22 @@ import CommonSpace from "@/common/space/CommonSpace";
 import ContentCard from "./ContentCard";
 
 import { StudentTypes } from "@/pages/AdminDashboard/contentAndResourse/ContentManagement";
+import { showStudentDashboard } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
+import { AppDispatch } from "@/store/store";
 import { BookOpen, GraduationCap } from "lucide-react";
 import { FaUserDoctor } from "react-icons/fa6";
+import { useDispatch } from "react-redux";
 
 interface CardProps {
   setStudentType: React.Dispatch<React.SetStateAction<StudentTypes>>;
 }
 const ContentmentCardSection: React.FC<CardProps> = ({ setStudentType }) => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleDashboard = (type: StudentTypes) => {
+    setStudentType(type);
+    dispatch(showStudentDashboard());
+  };
   const cardData = [
     {
       icon: GraduationCap,
@@ -19,7 +28,7 @@ const ContentmentCardSection: React.FC<CardProps> = ({ setStudentType }) => {
       ],
       actionLabel: "Manage Content",
       actionIcon: BookOpen,
-      onActionClick: () => setStudentType("Medical"),
+      onActionClick: () => handleDashboard("Medical"),
     },
     {
       icon: GraduationCap,
@@ -30,7 +39,7 @@ const ContentmentCardSection: React.FC<CardProps> = ({ setStudentType }) => {
       ],
       actionLabel: "Manage Content",
       actionIcon: BookOpen,
-      onActionClick: () => setStudentType("Nursing"),
+      onActionClick: () => handleDashboard("Nursing"),
     },
     {
       icon: GraduationCap,
@@ -41,7 +50,7 @@ const ContentmentCardSection: React.FC<CardProps> = ({ setStudentType }) => {
       ],
       actionLabel: "Manage Content",
       actionIcon: BookOpen,
-      onActionClick: () => setStudentType("Dental"),
+      onActionClick: () => handleDashboard("Dental"),
     },
     {
       icon: FaUserDoctor,
@@ -52,7 +61,7 @@ const ContentmentCardSection: React.FC<CardProps> = ({ setStudentType }) => {
       ],
       actionLabel: "Manage Content",
       actionIcon: BookOpen,
-      onActionClick: () => setStudentType("Physicians"),
+      onActionClick: () => handleDashboard("Physicians"),
     },
     {
       icon: FaUserDoctor,
@@ -63,7 +72,7 @@ const ContentmentCardSection: React.FC<CardProps> = ({ setStudentType }) => {
       ],
       actionLabel: "Manage Content",
       actionIcon: BookOpen,
-      onActionClick: () => setStudentType("Dentists"),
+      onActionClick: () => handleDashboard("Dentists"),
     },
     {
       icon: FaUserDoctor,
@@ -74,7 +83,7 @@ const ContentmentCardSection: React.FC<CardProps> = ({ setStudentType }) => {
       ],
       actionLabel: "Manage Content",
       actionIcon: BookOpen,
-      onActionClick: () => setStudentType("Pharmacists"),
+      onActionClick: () => handleDashboard("Pharmacists"),
     },
   ];
   return (

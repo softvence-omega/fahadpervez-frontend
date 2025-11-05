@@ -1,13 +1,13 @@
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select"; // update path if needed
 
 // generic SelectOption interface
-interface SelectOption<T extends string> {
+export interface SelectOption<T extends string> {
   label: string;
   value: T;
 }
@@ -19,6 +19,8 @@ interface SelectProps<T extends string> {
   onValueChange: (val: T) => void;
   className?: string;
   arrow?: string;
+  placeholder?: string;
+  disabled?: boolean;
 }
 
 const CommonSelect = <T extends string>({
@@ -26,21 +28,25 @@ const CommonSelect = <T extends string>({
   item,
   w = 200,
   onValueChange,
+  disabled = false,
   className,
+  placeholder,
 }: SelectProps<T>) => {
   return (
     <Select value={value} onValueChange={onValueChange}>
       <SelectTrigger
         style={{ minWidth: w }}
-        className={` ${className} bg-[#FCFCFC] border border-border px-3 py-3 cursor-pointer rounded-md outline-none text-sm focus:ring-0 focus:border-none hover:border-gray-400 transition-all duration-200`}
+        className={` ${className} bg-[#FCFCFC] border !border-[#CBD5E1] px-3 py-3 cursor-pointer rounded-md  text-sm  transition-all duration-200 ${
+          disabled && "opacity-50 cursor-not-allowed"
+        } `}
       >
-        <SelectValue placeholder="Select an option" />
+        <SelectValue placeholder={placeholder || "Select an option"} />
       </SelectTrigger>
 
       <SelectContent className="bg-white border border-[#B3B3B3] rounded-md shadow-md">
-        {item.map((option) => (
+        {item.map((option, index) => (
           <SelectItem
-            key={option.value}
+            key={option.value + index}
             value={option.value}
             className="cursor-pointer px-4 py-2 hover:bg-gray-100 transition-colors rounded"
           >

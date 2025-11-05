@@ -3,7 +3,7 @@ import ContentTable from "./ContentTable";
 import { ContentCategory } from "./data/data";
 import SearchWithTabs from "./examMode/SearchWithTabs";
 
-const contentTabs: ContentCategory[] = [
+export const contentTabs: ContentCategory[] = [
   "MCQ",
   "Flashcard",
   "ClinicalCase",

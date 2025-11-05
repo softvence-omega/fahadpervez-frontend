@@ -9,6 +9,7 @@ interface ManagementHeaderProps {
   className?: string;
   buttonText?: string;
   action?: () => void;
+  descriptionClassName?: string;
 }
 
 const DashboardTopSection = ({
@@ -16,6 +17,7 @@ const DashboardTopSection = ({
   description,
   className,
   buttonText,
+  descriptionClassName,
   action,
 }: ManagementHeaderProps) => {
   return (
@@ -26,7 +28,9 @@ const DashboardTopSection = ({
         {title && <MediumHeader>{title}</MediumHeader>}
         {description && (
           <div className="w-full ">
-            <CommonHeader className="">{description}</CommonHeader>
+            <CommonHeader className={`${descriptionClassName}`}>
+              {description}
+            </CommonHeader>
           </div>
         )}
       </div>

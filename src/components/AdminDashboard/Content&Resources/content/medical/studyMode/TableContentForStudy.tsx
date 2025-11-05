@@ -1,40 +1,99 @@
+"use client";
+
 import preview from "@/assets/dashboard/tablePreview.svg";
 import CommonHeader from "@/common/header/CommonHeader";
-import { ChevronRight, FileText, MoreVertical, Plus } from "lucide-react";
+import TableAction from "@/components/reusable/TableAction";
+import {
+  useDeleteStudyModeTreeMutation,
+  useGetStudyModeTreeQuery,
+} from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import { ChevronRight, FileText, Plus } from "lucide-react";
 import { useState } from "react";
+
+// TOC type
 type TOCItem = {
+  _id?: string;
   title: string;
   count?: number;
   children?: TOCItem[];
 };
 
-const tocData: TOCItem[] = [
-  {
-    title: "Anatomy",
-    count: 7,
-    children: [
-      {
-        title: "Nervous",
-        count: 7,
-        children: [
-          {
-            title: "Brain",
-            count: 6,
-            children: [{ title: "Cerebrum", count: 6 }],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Physiology",
-    count: 1,
-  },
-];
+// Backend types
+interface SubTopic {
+  _id?: string;
+  subtopicName?: string; // some data is string, some is object
+}
 
+interface Topic {
+  _id?: string;
+  topicName: string;
+  subTopics: (string | SubTopic)[];
+}
+
+interface System {
+  _id?: string;
+  name: string;
+  topics: Topic[];
+}
+
+interface Subject {
+  _id: string;
+  subjectName: string;
+  systems: System[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Transform backend response into TOCItem[]
+const mapBackendToTOC = (data: Subject[]): TOCItem[] => {
+  return data.map((subject) => ({
+    _id: subject._id,
+    title: subject.subjectName,
+    count: subject.systems.reduce(
+      (acc, sys) =>
+        acc +
+        sys.topics.reduce(
+          (tAcc, topic) =>
+            tAcc + (topic.subTopics ? topic.subTopics.length : 0),
+          0
+        ),
+      0
+    ),
+    children: subject.systems.map((sys) => ({
+      _id: sys._id,
+      title: sys.name,
+      count: sys.topics.reduce(
+        (tAcc, topic) => tAcc + (topic.subTopics ? topic.subTopics.length : 0),
+        0
+      ),
+      children: sys.topics.map((topic) => ({
+        _id: topic._id,
+        title: topic.topicName,
+        count: topic.subTopics ? topic.subTopics.length : 0,
+        children: topic.subTopics
+          ? topic.subTopics.map((sub) => ({
+              _id: typeof sub === "object" ? sub._id : undefined,
+              title: typeof sub === "string" ? sub : sub.subtopicName || "",
+            }))
+          : undefined,
+      })),
+    })),
+  }));
+};
+
+// Tree Node Component
 function TreeNode({ item, depth }: { item: TOCItem; depth: number }) {
   const [open, setOpen] = useState(false);
   const hasChildren = item.children && item.children.length > 0;
+
+  const [deleteStudyModeTree, { isLoading: isDeleting }] =
+    useDeleteStudyModeTreeMutation();
+
+  const handleDelete = async (id: string) => {
+    if (id) {
+      await deleteStudyModeTree(id);
+    }
+  };
 
   return (
     <div className="ml-[2px] font-arial">
@@ -43,12 +102,12 @@ function TreeNode({ item, depth }: { item: TOCItem; depth: number }) {
           depth > 0 ? "ml-4" : ""
         }`}
       >
-        <div className="flex items-center gap-1.5">
+        <div
+          onClick={() => setOpen(!open)}
+          className="flex items-center gap-1.5 cursor-pointer"
+        >
           {hasChildren ? (
-            <button
-              onClick={() => setOpen(!open)}
-              className="text-gray-500 hover:text-gray-700"
-            >
+            <button className="text-gray-500 hover:text-gray-700">
               <ChevronRight
                 className={`w-4 h-4 transition-transform ${
                   open ? "rotate-90" : ""
@@ -74,9 +133,10 @@ function TreeNode({ item, depth }: { item: TOCItem; depth: number }) {
               {item.count}
             </span>
           )}
-          <button className="text-gray-400 hover:text-gray-600">
-            <MoreVertical className="w-4 h-4" />
-          </button>
+          <TableAction
+            handleDelete={() => item._id && handleDelete(item._id)}
+            handleEdit={() => console.log("Edit id", item._id)}
+          />
         </div>
       </div>
 
@@ -91,12 +151,21 @@ function TreeNode({ item, depth }: { item: TOCItem; depth: number }) {
   );
 }
 
+// Table Content Component
 interface TableContentProps {
   iconAction: () => void;
 }
+
 const TableContentForStudy: React.FC<TableContentProps> = ({ iconAction }) => {
+  const { data: allStudyModeData } = useGetStudyModeTreeQuery();
+
+  console.log("allStudyModeData", allStudyModeData);
+  const tocDataFromBackend: TOCItem[] = allStudyModeData
+    ? mapBackendToTOC(allStudyModeData.data as Subject[])
+    : [];
+
   return (
-    <div className="w-79 bg-white rounded-2xl shadow p-4">
+    <div className="w-[400px] bg-white rounded-2xl shadow p-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
@@ -113,9 +182,8 @@ const TableContentForStudy: React.FC<TableContentProps> = ({ iconAction }) => {
         </button>
       </div>
 
-      {/* Tree View */}
       <div className="space-y-1">
-        {tocData.map((item, idx) => (
+        {tocDataFromBackend.map((item, idx) => (
           <TreeNode key={idx} item={item} depth={0} />
         ))}
       </div>
