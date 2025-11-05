@@ -109,6 +109,14 @@ export const mcqApi = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ["Exams"],
     }),
+
+    ReportMcq: build.mutation({
+      query: (data) => ({
+        url: `/mcq-bank/save-report`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -126,4 +134,5 @@ export const {
   useGetExamQuery,
   useUpdateExamMutation,
   useDeleteExamMutation,
+  useReportMcqMutation,
 } = mcqApi;
