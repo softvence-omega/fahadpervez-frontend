@@ -1,21 +1,21 @@
-import { useState } from "react"
-import DashboardHeading from "@/components/reusable/DashboardHeading"
-import FilePreviewList from "@/components/reusable/FilePreview"
-import FileUploader from "@/components/reusable/FileUploader"
-import PrimaryButton from "@/components/reusable/PrimaryButton"
-import { Progress } from "@/components/ui/progress"
-import { Atom, Crown, Upload } from "lucide-react"
-import { Link } from "react-router-dom"
-import { QuizGeneratorDialog } from "./QuizGenerateModal"
+import { useState } from "react";
+import DashboardHeading from "@/components/reusable/DashboardHeading";
+import FilePreviewList from "@/components/reusable/FilePreview";
+import FileUploader from "@/components/reusable/FileUploader";
+import PrimaryButton from "@/components/reusable/PrimaryButton";
+import { Progress } from "@/components/ui/progress";
+import { Atom, Crown, Upload } from "lucide-react";
+import { Link } from "react-router-dom";
+import { QuizGeneratorDialog } from "./QuizGenerateModal";
 
 const QuizGenerator = () => {
-  const [files, setFiles] = useState<File[]>([])
-  const [note, setNote] = useState("")
-  const [openModal, setOpenModal] = useState(false)
+  const [files, setFiles] = useState<File[]>([]);
+  const [note, setNote] = useState("");
+  const [openModal, setOpenModal] = useState(false);
 
   const handleRemoveFile = (index: number) => {
-    setFiles(files.filter((_, i) => i !== index))
-  }
+    setFiles(files.filter((_, i) => i !== index));
+  };
 
   // called after modal submit
   const handleFinalSubmit = (modalData: any) => {
@@ -23,13 +23,13 @@ const QuizGenerator = () => {
       files,
       note,
       ...modalData, // modal fields (quizName, subject, difficulty, etc.)
-    }
+    };
 
-    console.log("Final Payload:", combinedData)
+    console.log("Final Payload:", combinedData);
 
     // ✅ Call API here
     // await fetch("/api/generate-quiz", { method: "POST", body: JSON.stringify(combinedData) })
-  }
+  };
 
   return (
     <div>
@@ -48,7 +48,8 @@ const QuizGenerator = () => {
             bgType="solid"
             iconPosition="left"
             bgColor="bg-blue-btn-1"
-            className="h-12 mb-4 hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer">
+            className="h-12 mb-4 hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer"
+          >
             Quiz Overview
           </PrimaryButton>
         </Link>
@@ -73,8 +74,8 @@ const QuizGenerator = () => {
       <div className="w-full">
         <form
           onSubmit={(e) => {
-            e.preventDefault()
-            setOpenModal(true) // open modal on "Generate Quiz"
+            e.preventDefault();
+            setOpenModal(true); // open modal on "Generate Quiz"
           }}
           className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5x mx-auto p-6"
         >
@@ -123,12 +124,13 @@ const QuizGenerator = () => {
 
       {/* Modal for quiz details */}
       <QuizGeneratorDialog
+        onclick={() => {setOpenModal(!openModal)}}
         open={openModal}
         setOpen={setOpenModal}
         onFinalSubmit={handleFinalSubmit}
       />
     </div>
-  )
-}
+  );
+};
 
-export default QuizGenerator
+export default QuizGenerator;
