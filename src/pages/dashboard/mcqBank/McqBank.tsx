@@ -9,6 +9,9 @@ import { Clock10, Cog, FileText, Plus, Target } from "lucide-react";
 import TestOverviewCard from "@/components/reusable/TestOverviewCard";
 import { useGllMCQBankQuery } from "@/store/features/MCQBank/MCQBank.api";
 import GlobalLoader from "@/common/GlobalLoader";
+import { TMCQBank } from "@/types";
+import { QuizGeneratorDialog } from "../quizGenerator/QuizGenerateModal";
+import { useState } from "react";
 
 // const resources = [
 //   {
@@ -40,9 +43,25 @@ const McqBank = () => {
     { name: "MCQ Bank", link: "/dashboard/mcq-bank" },
   ];
 
+  // const [files, setFiles] = useState<File[]>([]);
+  // const [note, setNote] = useState("");
+  const [openModal, setOpenModal] = useState(false);
   const { data, isLoading } = useGllMCQBankQuery(undefined);
   const MCQBank = data?.data;
   console.log(MCQBank);
+
+  const handleFinalSubmit = (modalData: any) => {
+    const combinedData = {
+      // files,
+      // note,
+      ...modalData, // modal fields (quizName, subject, difficulty, etc.)
+    };
+
+    console.log("Final Payload:", combinedData);
+
+    // ✅ Call API here
+    // await fetch("/api/generate-quiz", { method: "POST", body: JSON.stringify(combinedData) })
+  };
 
   return (
     <div className="my-6 md:my-10">
@@ -72,17 +91,18 @@ const McqBank = () => {
           descFont="text-sm"
           className="mt-12 mb-8"
         />
-        <Link to={"/dashboard/quiz-generator"}>
-          <PrimaryButton
-            icon={<Plus />}
-            bgType="solid"
-            iconPosition="left"
-            bgColor="bg-blue-btn-1"
-            className="h-10 mb-4 hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer"
-          >
-            Create Quiz
-          </PrimaryButton>
-        </Link>
+        {/* <Link to={"/dashboard/quiz-generator"}> */}
+        <PrimaryButton
+          icon={<Plus />}
+          bgType="solid"
+          iconPosition="left"
+          bgColor="bg-blue-btn-1"
+          className="h-10 mb-4 hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer"
+          onClick={() => setOpenModal(true)}
+        >
+          Create Quiz
+        </PrimaryButton>
+        {/* </Link> */}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -137,12 +157,12 @@ const McqBank = () => {
         <GlobalLoader />
       ) : (
         <div className="space-y-6 my-6">
-          {MCQBank?.map((mcq: any) => (
+          {MCQBank?.map((mcq: TMCQBank) => (
             <div
-              key={mcq._id}
+              key={mcq?._id}
               className="border border-slate-300 rounded-lg py-4 px-5"
             >
-              <Link to={`/dashboard/practice-mcq/${mcq?._id}`}>
+              <div className="flex items-end justify-between">
                 <div className="sm:flex items-center gap-10">
                   {/* Icon */}
                   <div className="sm:border-r-2 border-r-slate-300 pr-4">
@@ -152,31 +172,41 @@ const McqBank = () => {
                   {/* Content */}
                   <div className="space-y-2">
                     <h4 className="text-lg text-slate-900 font-medium">
-                      {mcq.mcqBankTitle}
+                      {mcq?.title}
                     </h4>
                     <div className="flex flex-wrap items-center gap-4">
-                      <p className="text-slate-600">{mcq.totalMcq}</p>
+                      <p className="text-slate-600">{mcq?.totalMcq}</p>
                       <div className="flex flex-wrap items-center gap-2">
                         {/* {mcq.tags.map((tag, idx) => ( */}
                         <p
                           // key={idx}
                           className="border border-slate-300 rounded-full px-2"
                         >
-                          {mcq.subjectName}
+                          {mcq?.topic}
                         </p>
                         {/* ))} */}
                       </div>
                     </div>
-                    <p className="text-sm text-slate-700">
+                    <p className="text-sm text-slate-700 mt-2">
                       Uploaded By: {mcq.uploadedBy}
                     </p>
                   </div>
                 </div>
-              </Link>
+                <Link to={`/dashboard/practice-mcq/${mcq?._id}`}>
+                  <button className="text-blue-main font-medium hover:underline cursor-pointer">
+                    Start Now
+                  </button>
+                </Link>
+              </div>
             </div>
           ))}
         </div>
       )}
+      <QuizGeneratorDialog
+        open={openModal}
+        setOpen={setOpenModal}
+        onFinalSubmit={handleFinalSubmit}
+      />
     </div>
   );
 };
