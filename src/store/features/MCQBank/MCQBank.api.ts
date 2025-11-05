@@ -10,12 +10,19 @@ export const mcqBankAPI = baseAPI.injectEndpoints({
     }),
 
     getSingleMCQ: build.query({
-      query: (id: string) => ({
-        url: `/mcq-bank/${id}`,
+      query: ({
+        id,
+        page = 1,
+        limit = 10,
+      }: {
+        id: string;
+        page?: number;
+        limit?: number;
+      }) => ({
+        url: `/mcq-bank/${id}?page=${page}&limit=${limit}`,
         method: "GET",
       }),
     }),
-
     // end
   }),
 });
