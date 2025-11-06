@@ -14,19 +14,26 @@ interface AddQuestionProps {
 }
 
 const columns = [
-  { label: "Subject", description: "Subject category" },
-  { label: "Difficulty", description: "Basic, Intermediate, or Advanced" },
-  { label: "Question Type", description: "The question Type text" },
   { label: "Question", description: "The question text" },
-  { label: "Option A", description: "First answer option" },
-  { label: "Option B", description: "Second answer option" },
-  { label: "Option C", description: "Third answer option" },
-  { label: "Option D", description: "Fourth answer option" },
-  { label: "Correct Answer", description: "A, B, C, or D" },
   {
-    label: "Explanation",
-    description: "Detailed explanation for correct answer",
+    label: "Image Description",
+    description: "Description of the question image (if any)",
   },
+
+  { label: "Option A", description: "First answer option" },
+  { label: "Explanation A", description: "Explanation for option A" },
+
+  { label: "Option B", description: "Second answer option" },
+  { label: "Explanation B", description: "Explanation for option B" },
+
+  { label: "Option C", description: "Third answer option" },
+  { label: "Explanation C", description: "Explanation for option C" },
+
+  { label: "Option D", description: "Fourth answer option" },
+  { label: "Explanation D", description: "Explanation for option D" },
+
+  { label: "Correct Option", description: "Correct answer: A, B, C, or D" },
+  { label: "Difficulty", description: "Basic, Intermediate, or Advanced" },
 ];
 
 const AddBulkMCQ: React.FC<AddQuestionProps> = () => {

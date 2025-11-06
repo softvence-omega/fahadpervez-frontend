@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,18 +7,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Globe } from "lucide-react";
-import { Button } from "@/components/ui/button";
 // import logo from "@/assets/dashboard";
-import DashboardSearch from "./DashboardSearch";
 import profile from "@/assets/home/mentor1.png";
+import CommonWrapper from "@/common/CommonWrapper";
+import { logout } from "@/store/features/auth/auth.slice";
+import { useAppDispatch } from "@/store/hook";
+import Cookies from "js-cookie";
 import { FaRegBell } from "react-icons/fa6";
+import { Link, useNavigate } from "react-router-dom";
+import DashboardSearch from "./DashboardSearch";
 import NotificationIcon from "./NotificationIcon";
 import { languages } from "./data";
-import CommonWrapper from "@/common/CommonWrapper";
-import { Link, useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
-import { useAppDispatch } from "@/store/hook";
-import { logout } from "@/store/features/auth/auth.slice";
 
 interface DashboardHeaderProps {
   sidebarOpen: boolean;
@@ -36,7 +36,7 @@ const DashboardHeader = ({ sidebarOpen }: DashboardHeaderProps) => {
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-7.5">
           <Link to={"/admin"}>
-            <img className="w-[95px h-14" src="/logo1.svg" alt="logo" />
+            <img className="w-[95px h-14" src="/logo.svg" alt="logo" />
           </Link>
           <div className="hidden md:block">
             <DashboardSearch />
