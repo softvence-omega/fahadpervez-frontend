@@ -5,7 +5,6 @@ import {
   BarChart2,
   Calendar,
   CreditCard,
-  FilePlus,
   LayoutDashboard,
   Receipt,
   Settings,
@@ -57,13 +56,7 @@ const sidebarItems: SidebarItem[] = [
     path: "/admin/mentor",
     section: "User Management",
   },
-  // Content
-  {
-    icon: FilePlus,
-    label: "Upload Content",
-    path: "/admin/upload-content",
-    section: "Content & Resources",
-  },
+
   {
     icon: LuBookOpenText,
     label: "Content Management",

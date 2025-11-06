@@ -86,7 +86,7 @@ function TreeNode({ item, depth }: { item: TOCItem; depth: number }) {
   const [open, setOpen] = useState(false);
   const hasChildren = item.children && item.children.length > 0;
 
-  const [deleteStudyModeTree, { isLoading: isDeleting }] =
+  const [deleteStudyModeTree, ] =
     useDeleteStudyModeTreeMutation();
 
   const handleDelete = async (id: string) => {

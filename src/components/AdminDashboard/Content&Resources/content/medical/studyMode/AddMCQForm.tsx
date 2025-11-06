@@ -24,7 +24,6 @@ const AddMCQForm = () => {
     { label: "D", text: "", reasoning: "", correct: false },
   ]);
   const [correctAnswer, setCorrectAnswer] = useState("A");
-  const [explanation, setExplanation] = useState("");
 
   const correctAnswerOptions = [
     { label: "Option A", value: "A" },
@@ -34,20 +33,10 @@ const AddMCQForm = () => {
   ] as const;
 
   const difficultyOptions = [
-    { label: "Beginner", value: "beginner" },
+    { label: "Basics", value: "basics" },
     { label: "Intermediate", value: "intermediate" },
-    { label: "Advanced", value: "advanced" },
+    { label: "Advance", value: "Advance" },
   ] as const;
-
-  const handleSave = () => {
-    console.log({
-      difficultyLabel,
-      question,
-      answerOptions,
-      correctAnswer,
-      explanation,
-    });
-  };
 
   // const handleSaveAndAddAnother = () => {
   //   handleSave();

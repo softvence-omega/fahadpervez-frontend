@@ -6,7 +6,6 @@ import PlatformPerformance from "@/pages/AdminDashboard/analyticAndReport/Platfo
 import CreateEvents from "@/pages/AdminDashboard/communityAndEvents/CreateEvents";
 import ResourceManagement from "@/pages/AdminDashboard/contentAndResourse/content_and_resource_page/ResourceManagement";
 import ContentManagement from "@/pages/AdminDashboard/contentAndResourse/ContentManagement";
-import UploadContent from "@/pages/AdminDashboard/contentAndResourse/UploadContent";
 import AdminDashboard from "@/pages/AdminDashboard/dashboard/AdminDashboard";
 import MentorsOverview from "@/pages/AdminDashboard/mentorshipManagement/MentorsOverview";
 import Transaction from "@/pages/AdminDashboard/mentorshipManagement/Transaction";
@@ -49,10 +48,6 @@ const adminRoutes = {
       element: <MentorProfile />,
     },
 
-    {
-      path: "upload-content",
-      element: <UploadContent />,
-    },
     {
       path: "content-management",
       element: <ContentManagement />,
