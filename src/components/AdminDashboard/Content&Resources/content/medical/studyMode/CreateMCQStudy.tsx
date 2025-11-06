@@ -3,9 +3,7 @@ import CommonSpace from "@/common/space/CommonSpace";
 import DashboardTopSection from "@/components/AdminDashboard/reuseable/DashboardTopSection";
 import Tabs from "@/components/AdminDashboard/reuseable/Tabs";
 import ToggleButtonGroup from "@/components/AdminDashboard/reuseable/ToggleButtonGroup";
-import { AppDispatch } from "@/store/store";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 import StepIndicator from "../StepIndicator";
 import { steps } from "../createContent/CreateContent";
 import { tabs } from "../examMode/SearchWithTabs";
@@ -25,7 +23,6 @@ const CreateMCQStudy: React.FC<CreateMCQStudyProps> = ({
   setActiveTab,
 }) => {
   const [mode, setMode] = useState<"manual" | "bulk">("manual");
-  const dispatch = useDispatch<AppDispatch>();
   return (
     <div>
       <DashboardTopSection
