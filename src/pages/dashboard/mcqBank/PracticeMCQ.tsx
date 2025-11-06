@@ -12,7 +12,6 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import QuizReportModal from "../quizGenerator/QuizReportModal";
 import Pagination from "@/components/AdminDashboard/Content & Resource_Component/Pagination";
-// import Pagination from "@/components/reusable/Pagination";
 
 export default function PracticeMCQ() {
   const breadcrumbs: BreadcrumbItem[] = [
@@ -37,6 +36,7 @@ export default function PracticeMCQ() {
   const [showAnswer, setShowAnswer] = useState<{ [key: string]: boolean }>({});
   const [openReportModal, setOpenReportModal] = useState(false);
   const [mcqId, setMcqId] = useState("");
+
   const handleSelect = (qId: string, index: number) => {
     setSelected((prev) => ({ ...prev, [qId]: index }));
   };
@@ -45,14 +45,6 @@ export default function PracticeMCQ() {
     setShowAnswer((prev) => ({ ...prev, [qId]: !prev[qId] }));
   };
 
-  // const mcqData = data?.data;
-  // const questions = mcqData?.mcqs || [];
-
-  // console.log({ mcqData });
-
-  // Pagination states
-
-  // const meta = data?.meta;
   const mcqData = data?.data;
   const questions = mcqData?.mcqs || [];
 
@@ -81,7 +73,9 @@ export default function PracticeMCQ() {
               <DashboardHeading
                 title={mcqData?.title}
                 titleSize="text-xl"
-                description={`${mcqData?.mcqs?.length} Questions | Uploaded By: ${mcqData?.uploadedBy}`}
+                description={`${meta?.total || 0} Questions | Uploaded By: ${
+                  mcqData?.uploadedBy
+                }`}
                 className="space-y-1"
               />
             </div>
@@ -102,10 +96,14 @@ export default function PracticeMCQ() {
 
           {/* Render questions */}
           {questions.map((q: McqQuestion, idx: number) => {
-            // console.log(q);
-            const qId = `question-${idx}`; // ensure unique id per question
-            // const qId = q?._id || `question-${idx}`; // ensure unique id per question
+            // Use unique mcqId from backend as the key
+            const qId = q?.mcqId || `question-${idx}`;
+
+            // Calculate global question number across all pages
+            const globalQuestionNumber = (currentPage - 1) * limit + idx + 1;
+
             const selectedIndex = selected[qId];
+
             return (
               <div
                 key={qId}
@@ -114,7 +112,7 @@ export default function PracticeMCQ() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-5">
                     <p className="text-slate-700 text-sm font-normal">
-                      Question {idx + 1} of {mcqData?.mcqs?.length}
+                      Question {globalQuestionNumber} of {meta?.total || 0}
                     </p>
                     <p className="bg-[#D97706] text-xs font-normal px-3 py-1 text-white rounded-full">
                       {mcqData?.subtopic}
@@ -124,9 +122,9 @@ export default function PracticeMCQ() {
                     </p>
                   </div>
                   <div
-                    className="flex items-center gap-1.5 text-[#F61F1F]"
+                    className="flex items-center gap-1.5 text-[#F61F1F] cursor-pointer"
                     onClick={() => {
-                      setMcqId(q?.mcqId); // ✅ Pass the MCQ’s unique ID
+                      setMcqId(q?.mcqId);
                       setOpenReportModal(true);
                     }}
                   >
@@ -174,9 +172,9 @@ export default function PracticeMCQ() {
                       >
                         <input
                           type="radio"
-                          name={`question-${qId}`} // each question group unique
+                          name={`question-${qId}`}
                           className="mr-2"
-                          onChange={() => handleSelect(qId, optionIdx)} // use qId consistently
+                          onChange={() => handleSelect(qId, optionIdx)}
                           checked={isSelected}
                           disabled={show}
                         />
@@ -190,7 +188,7 @@ export default function PracticeMCQ() {
 
                 {selectedIndex !== undefined && selectedIndex !== null && (
                   <button
-                    onClick={() => toggleAnswer(qId)} // use qId
+                    onClick={() => toggleAnswer(qId)}
                     className="px-4 py-2 border rounded text-sm font-medium bg-blue-main text-white hover:bg-blue-main/85 cursor-pointer"
                   >
                     {showAnswer[qId] ? "Hide Answer" : "Show Answer"}
@@ -216,11 +214,6 @@ export default function PracticeMCQ() {
                         </div>
                       );
                     })}
-                    {/* {q.imageDescription && (
-                      <p className="text-sm text-gray-700 mt-2 italic">
-                        {q.imageDescription}
-                      </p>
-                    )} */}
                   </div>
                 )}
               </div>

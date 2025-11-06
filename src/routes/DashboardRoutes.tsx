@@ -44,7 +44,6 @@ import BookingPage from "@/components/dashboard/community-event/mentor/BookingPa
 import GroupDetails from "@/components/dashboard/community-event/study-group-page/GroupDetails";
 import Profile from "@/pages/profile/Profile";
 import Settings from "@/pages/profile/Settings";
-import Help from "@/pages/profile/Help";
 import MentorshipPage from "@/components/dashboard/community-event/MentorshipPage";
 import AskQuestion from "@/components/dashboard/community-event/mentor/AskQuestion";
 import MySession from "@/components/dashboard/community-event/mentor/MySession";
@@ -54,6 +53,7 @@ import OSCEStation from "@/components/dashboard/osce/OSCEStation";
 import PracticeWithChecklist from "@/components/dashboard/osce/PracticeWithChecklist";
 import OSCETutorial from "@/components/dashboard/osce/OSCETutorial";
 import CheckListResult from "@/components/dashboard/osce/CheckListResult";
+import HelpSupport from "@/pages/dashboard/help&support/HelpSupport";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -291,7 +291,7 @@ const dashboardRoutes = {
     },
     {
       path: "help",
-      element: <Help />,
+      element: <HelpSupport />,
     },
     {},
   ],
