@@ -14,11 +14,15 @@ import CreateQuestionBank from "@/pages/mentor/questionBank/CreateQuestionBank";
 import CreateQuestion from "@/pages/mentor/questionBank/CreateQuestion";
 import MentorClasses from "@/pages/mentor/mentorClasses/MentorClasses";
 import ForumDetail from "@/components/mentorCommunity/ForumDetail";
-
+import PrivateRoute from "./PrivateRoute";
 
 const mentorRoutes = {
   path: "/mentor",
-  element: <MentorLayout />,
+  element: (
+    <PrivateRoute allowedRoles={["MENTOR"]}>
+      <MentorLayout />
+    </PrivateRoute>
+  ),
   children: [
     {
       index: true,
@@ -61,12 +65,12 @@ const mentorRoutes = {
       element: <MentorCommunity />,
     },
     {
-      path:"forum-details/:id",
-      element: <ForumDetail/>
+      path: "forum-details/:id",
+      element: <ForumDetail />,
     },
     {
       path: "recent-transaction",
-      element: <RecentTransaction />
+      element: <RecentTransaction />,
     },
     {
       path: "mentor-profile",

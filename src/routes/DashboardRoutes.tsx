@@ -1,4 +1,4 @@
-// DashboardRoutes.tsx
+
 import DashboardLayout from "@/Layout/dashboard/DashboardLayout";
 import AITutor from "@/pages/dashboard/AI Tutor/AITutor";
 import ClinicalCaseGenerator from "@/pages/dashboard/ClinicalCaseGenerator";
@@ -55,10 +55,15 @@ import OSCETutorial from "@/components/dashboard/osce/OSCETutorial";
 import CheckListResult from "@/components/dashboard/osce/CheckListResult";
 import HelpSupport from "@/pages/dashboard/help&support/HelpSupport";
 import StudentProfile from "@/pages/dashboard/student profile/StudentProfile";
+import PrivateRoute from "./PrivateRoute";
 
 const dashboardRoutes = {
   path: "/dashboard",
-  element: <DashboardLayout />,
+  element: (
+    <PrivateRoute allowedRoles={["STUDENT"]}>
+      <DashboardLayout />
+    </PrivateRoute>
+  ),
   children: [
     {
       index: true,

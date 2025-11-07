@@ -2,21 +2,26 @@ import { useState } from "react";
 import { Search, Bell, Globe, ChevronDown, Menu } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/store/hook";
-import { logout } from "@/store/features/auth/auth.slice";
+import { logout, selectUser } from "@/store/features/auth/auth.slice";
 import Cookies from "js-cookie";
+import { useSelector } from "react-redux";
 
-interface  StudentDashboardHeaderProps {
+interface StudentDashboardHeaderProps {
   onMenuClick: () => void;
 }
 
-const StudentDashboardHeader: React.FC< StudentDashboardHeaderProps> = ({ onMenuClick }) => {
+const StudentDashboardHeader: React.FC<StudentDashboardHeaderProps> = ({
+  onMenuClick,
+}) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const user = useSelector(selectUser);
+  console.log(user);
 
   const handleLogout = () => {
     Cookies.remove("accessToken");
-    dispatch(logout());
+    dispatch(logout()); 
     navigate("/login");
   };
 
@@ -77,13 +82,17 @@ const StudentDashboardHeader: React.FC< StudentDashboardHeaderProps> = ({ onMenu
               className="flex items-center gap-2 p-1 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <div className="w-9 h-9 bg-gradient-to-r from-pink-400 to-orange-400 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-semibold">EH</span>
+                <span className="text-white text-sm font-semibold">
+                  {user?.profile?.firstName.slice(0, 2)}
+                </span>
               </div>
               <div className="hidden lg:block text-left">
                 <p className="text-sm font-medium text-gray-900">
-                  Emma Harrison
+                  {user?.profile?.firstName} {user?.profile?.lastName}
                 </p>
-                <p className="text-xs text-gray-500">Student</p>
+                <p className="text-xs text-gray-500">
+                  {user?.profile?.studentType}
+                </p>
               </div>
               <ChevronDown className="hidden lg:block h-4 w-4 text-gray-500" />
             </button>
@@ -98,10 +107,10 @@ const StudentDashboardHeader: React.FC< StudentDashboardHeaderProps> = ({ onMenu
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-20">
                   <div className="px-4 py-3 border-b border-gray-100">
                     <p className="text-sm font-medium text-gray-900">
-                      Emma Harrison
+                      {user?.profile?.firstName} {user?.profile?.lastName}
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
-                      emma@example.com
+                      {user?.account?.email}
                     </p>
                   </div>
                   {profileMenuItems.map((item, index) => (
