@@ -54,6 +54,7 @@ import PracticeWithChecklist from "@/components/dashboard/osce/PracticeWithCheck
 import OSCETutorial from "@/components/dashboard/osce/OSCETutorial";
 import CheckListResult from "@/components/dashboard/osce/CheckListResult";
 import HelpSupport from "@/pages/dashboard/help&support/HelpSupport";
+import StudentProfile from "@/pages/dashboard/student profile/StudentProfile";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -67,6 +68,10 @@ const dashboardRoutes = {
     //   path: "community-event",
     //   element: <CommunityEvent />,
     // },
+    {
+      path: "progress",
+      element: <StudentProfile />,
+    },
     {
       path: "community-event",
       element: <AllCommunities />,

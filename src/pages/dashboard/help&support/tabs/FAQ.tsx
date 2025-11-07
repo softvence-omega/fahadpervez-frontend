@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { Search } from "lucide-react";
 import FAQAccordion from "../FAQAccordion";
@@ -9,12 +10,12 @@ export default function FAQ() {
   >("all");
 
   const categories = [
-      { id: "all" as const, label: "All" },
-      { id: "getting-started" as const, label: "Getting Started" },
-      { id: "mcq-bank" as const, label: "MCQ Bank" },
-      { id: "flashcard" as const, label: "Flashcard" },
-      { id: "community" as const, label: "Community" },
-    ];
+    { id: "all" as const, label: "All" },
+    { id: "getting-started" as const, label: "Getting Started" },
+    { id: "mcq-bank" as const, label: "MCQ Bank" },
+    { id: "flashcard" as const, label: "Flashcard" },
+    { id: "community" as const, label: "Community" },
+  ];
 
   const faqs = {
     "getting-started": [
@@ -80,42 +81,44 @@ export default function FAQ() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h2 className="text-2xl font-bold text-foreground mb-2">
-          Frequently Asked Questions
-        </h2>
-        <p className="text-muted-foreground">
-          Find answers to common questions about using our platform
-        </p>
-      </div>
+      <div className="p-7 bg-white rounded-[10px] space-y-6">
+        <div>
+          <h2 className="text-xl font-normal text-black mb-1">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-sm font-normal text-slate-700">
+            Find answers to common questions about using our platform
+          </p>
+        </div>
 
-      {/* Search Box */}
-      <div className="relative">
-        <Search className="absolute left-3 top-3 w-5 h-5 text-muted-foreground" />
-        <input
-          type="text"
-          placeholder="Search FAQs..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-foreground bg-white"
-        />
-      </div>
+        {/* Search Box */}
+        <div className="relative">
+          <Search className="absolute left-3 top-3 w-5 h-5 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Search FAQs..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-foreground bg-blue-50"
+          />
+        </div>
 
-      {/* Category Tabs */}
-      <div className="flex flex-wrap gap-2 pb-4 border-b border-border overflow-x-auto">
-        {categories.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => setActiveCategory(cat.id)}
-            className={`px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition ${
-              activeCategory === cat.id
-                ? "bg-primary text-white"
-                : "bg-gray-100 text-foreground hover:bg-gray-200"
-            }`}
-          >
-            {cat.label}
-          </button>
-        ))}
+        {/* Category Tabs */}
+        <div className="flex flex-wrap gap-2 overflow-x-auto">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={`px-4 py-2 rounded font-medium text-sm whitespace-nowrap transition border border-slate-300 ${
+                activeCategory === cat.id
+                  ? "bg-blue-main text-white"
+                  : "bg-white text-foreground hover:bg-gray-200"
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* FAQs by Category */}

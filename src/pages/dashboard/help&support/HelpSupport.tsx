@@ -34,11 +34,11 @@ export default function HelpSupport() {
       <Breadcrumb breadcrumbs={breadcrumbs} />
 
       <main className="">
-        <div className="mb-12">
-          <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
+        <div className="mb-7">
+          <h1 className="text-2xl font-semibold text-[#000000] mb-2">
             Help & Support
           </h1>
-          <p className="text-base text-muted-foreground">
+          <p className="text-sm font-normal text-slate-700">
             Get help with your account, find answers to common questions, or
             contact our support team
           </p>
@@ -66,12 +66,12 @@ function TabNavigation({
   ];
 
   return (
-    <div className="w-[280px] flex justify-between gap-2 border border-border rounded-full py-2 px-1">
+    <div className="w-[290px] flex justify-between gap-2 border border-border rounded-full py-2 px-2">
       {tabs.map((tab) => (
         <button
           key={tab.id}
           onClick={() => onTabChange(tab.id)}
-          className={`min-w-[80px] px-4 py-2 font-medium text-sm text-slate-900 transition-colors cursor-pointer rounded-full ${
+          className={`min-w-[80px] px-4 py-2 font-medium text-sm text-slate-900 cursor-pointer rounded-full ${
             activeTab === tab.id
               ? " text-white bg-[#0076F5] rounded-full"
               : "border-transparent text-muted-foreground hover:text-foreground"

@@ -16,7 +16,7 @@ export default function FAQAccordion({
     <div className="border border-border rounded-lg overflow-hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition"
+        className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition cursor-pointer"
       >
         <span className="font-medium text-foreground text-left">
           {question}

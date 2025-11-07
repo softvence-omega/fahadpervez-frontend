@@ -65,10 +65,7 @@ export default function Tickets() {
       {/* Header with Create Button */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-foreground mb-1">Tickets</h2>
-          <p className="text-muted-foreground text-sm">
-            All your support tickets in one place
-          </p>
+          <h2 className="text-2xl font-bold text-foreground mb-1">All Ticket</h2>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
@@ -80,7 +77,7 @@ export default function Tickets() {
       </div>
 
       {/* Main Content - List and Chat */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-h-96">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-96">
         {/* Tickets List - Left */}
         <div className="lg:col-span-1">
           <TicketsList
@@ -91,7 +88,7 @@ export default function Tickets() {
         </div>
 
         {/* Chat Window - Right */}
-        <div className="lg:col-span-2">
+        <div className="">
           {selectedTicket ? (
             <ChatWindow ticket={selectedTicket} />
           ) : (

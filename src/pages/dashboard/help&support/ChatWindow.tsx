@@ -1,4 +1,4 @@
-"use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useState } from "react";
 import { Send, Paperclip } from "lucide-react";
@@ -37,17 +37,25 @@ export default function ChatWindow({ ticket }: any) {
   };
 
   return (
-    <div className="bg-white rounded-lg border border-border h-96 flex flex-col">
+    <div className="bg-white rounded-lg border border-border h-full flex flex-col">
       {/* Header */}
-      <div className="border-b border-border p-4">
-        <h3 className="font-semibold text-foreground">{ticket.title}</h3>
-        <div className="flex gap-3 mt-2 text-xs">
-          <span className={`px-2 py-1 rounded-full ${ticket.statusColor}`}>
-            {ticket.status}
-          </span>
-          <span className={`px-2 py-1 rounded-full ${ticket.priorityColor}`}>
+      <div className="flex items-center justify-between border-b border-border p-4">
+        <div>
+          <h3 className="text-lg text-[#171717] font-semibold">
+            {ticket.title}
+          </h3>
+          <p className="text-sm text-[#737373] font-normal">ID: {ticket.id}</p>
+        </div>
+        <div className="">
+          <div>
+            <p className="text-sm font-normal text-[#737373]">Status</p>
+            <span className={`py-1 text-sm text-[#171717] font-medium`}>
+              {ticket.status}
+            </span>
+          </div>
+          {/* <span className={`px-2 py-1 rounded-full ${ticket.priorityColor}`}>
             {ticket.priority}
-          </span>
+          </span> */}
         </div>
       </div>
 
