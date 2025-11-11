@@ -3,7 +3,7 @@ import React from "react";
 
 interface ActionButtonsProps {
   onImport: () => void;
-  onCancel: () => void;
+  onCancel?: () => void;
   importLabel: string;
   isLoading?: boolean;
 }

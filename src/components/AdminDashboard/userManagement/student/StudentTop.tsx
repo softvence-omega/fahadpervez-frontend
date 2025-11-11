@@ -4,7 +4,7 @@ const StudentTop = () => {
   return (
     <div>
       <DashboardTopSection
-        title="User Management"
+        title="Students Management"
         description="Manage student and mentor profiles, track activity, and handle mentor-mentee matching."
       />
     </div>

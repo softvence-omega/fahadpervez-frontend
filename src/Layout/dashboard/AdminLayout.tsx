@@ -1,10 +1,10 @@
+import CommonWrapper from "@/common/CommonWrapper";
 import AdminSidebar from "@/components/AdminDashboard/reuseable/AdminSidebar";
 import DashboardHeader from "@/components/AdminDashboard/reuseable/DashboardHeader";
-import { useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
-import CommonWrapper from "@/common/CommonWrapper";
+import { useState } from "react";
+import { Outlet, useLocation } from "react-router-dom";
 
 const AdminLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -14,14 +14,6 @@ const AdminLayout: React.FC = () => {
     pathname.startsWith("/admin/student-profile/") ||
     pathname.startsWith("/admin/professional-profile/") ||
     pathname.startsWith("/admin/mentor-profile/");
-
-  // const { data: user } = useGetMeQuery();
-  // const userRole = user?.data.account.role;
-  // const accessToken = Cookies.get("accessToken");
-
-  // if (!accessToken || userRole !== "ADMIN") {
-  //   return <Navigate to="/login" replace />;
-  // }
 
   return (
     <div className="w-full min-h-screen bg-slate">

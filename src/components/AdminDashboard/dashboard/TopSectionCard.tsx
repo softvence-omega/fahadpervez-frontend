@@ -1,4 +1,5 @@
 import CommonSpace from "@/common/space/CommonSpace";
+import { HiOutlineBookOpen } from "react-icons/hi2";
 import DashBoardCard from "../reuseable/DashBoardCard";
 import DashboardTopSection from "../reuseable/DashboardTopSection";
 
@@ -15,9 +16,25 @@ const dashboardStats = [
     iconColor: "text-[#09090B]",
   },
   {
-    title: "Active Mentors",
-    value: "$34,200",
+    title: "Total Professionals",
+    value: `24,200`,
     icon: LuUsers,
+    iconColor: "text-[#09090B]",
+    subtitleColor: "text-green-500",
+    subtitle: "Up 25% this month",
+  },
+  {
+    title: "Active Mentors",
+    value: `200`,
+    icon: LuUsers,
+    iconColor: "text-[#09090B]",
+    subtitleColor: "text-green-500",
+    subtitle: "Up 25% this month",
+  },
+  {
+    title: "Content Items",
+    value: `500`,
+    icon: HiOutlineBookOpen,
     iconColor: "text-[#09090B]",
     subtitleColor: "text-green-500",
     subtitle: "Up 25% this month",
@@ -27,6 +44,15 @@ const dashboardStats = [
     value: 320,
     subtitle: "Up 85% this month",
 
+    icon: LuUsers,
+    iconColor: "text-[#09090B]",
+    subtitleColor: "text-green-500",
+  },
+
+  {
+    title: "Engagement Rate",
+    value: 87,
+    subtitle: "Up 19.8% this month",
     icon: LuUsers,
     iconColor: "text-[#09090B]",
     subtitleColor: "text-green-500",
