@@ -1,4 +1,3 @@
-
 import DashboardLayout from "@/Layout/dashboard/DashboardLayout";
 import AITutor from "@/pages/dashboard/AI Tutor/AITutor";
 import ClinicalCaseGenerator from "@/pages/dashboard/ClinicalCaseGenerator";
@@ -56,6 +55,8 @@ import CheckListResult from "@/components/dashboard/osce/CheckListResult";
 import HelpSupport from "@/pages/dashboard/help&support/HelpSupport";
 import StudentProfile from "@/pages/dashboard/student profile/StudentProfile";
 import PrivateRoute from "./PrivateRoute";
+import MCQPracticeWithSidebar from "@/pages/dashboard/mcqBank/newMCQBank/MCQPracticeWithSidebar";
+// import MCQPracticeWithSidebar from "@/components/Test";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -303,7 +304,10 @@ const dashboardRoutes = {
       path: "help",
       element: <HelpSupport />,
     },
-    {},
+    {
+      path: "test",
+      element: <MCQPracticeWithSidebar />,
+    },
   ],
 };
 

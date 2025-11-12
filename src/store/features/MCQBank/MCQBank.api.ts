@@ -23,8 +23,29 @@ export const mcqBankAPI = baseAPI.injectEndpoints({
         method: "GET",
       }),
     }),
+
+    getMCQBankTree: build.query({
+      query: () => ({
+        url: `/study_mode_tree/all`,
+        method: "GET",
+      }),
+    }),
+
+    getMcqBySubtopic: build.query({
+      query: (params) => ({
+        url: "/study_mode_tree/all-content",
+        method: "GET",
+        params, // { subject, system, topic, subtopic }
+      }),
+    }),
+
     // end
   }),
 });
 
-export const { useGllMCQBankQuery, useGetSingleMCQQuery } = mcqBankAPI;
+export const {
+  useGllMCQBankQuery,
+  useGetSingleMCQQuery,
+  useGetMCQBankTreeQuery,
+  useGetMcqBySubtopicQuery,
+} = mcqBankAPI;
