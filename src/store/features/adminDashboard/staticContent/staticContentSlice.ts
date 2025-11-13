@@ -1,6 +1,14 @@
-import { CreateContentDataType } from "@/components/AdminDashboard/Content&Resources/content/medical/createContent/ContentSelectionForm";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+type CreateContentDataType = {
+  title: string;
+  subject: string;
+  system: string;
+  topic: string;
+  subtopic: string;
+  type: "exam" | "study";
+  studentType: string;
+};
 interface CounterState {
   contentCard: boolean;
   studentDashboard: boolean;

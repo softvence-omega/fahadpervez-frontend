@@ -3,14 +3,18 @@ import CommonButton from "@/common/button/CommonButton";
 import CommonSelect from "@/common/custom/CommonSelect";
 import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
 import Tabs from "@/components/AdminDashboard/reuseable/Tabs";
-import { useState } from "react";
+import React from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import { RiDeleteBinLine } from "react-icons/ri";
-const statusOptions = [
-  { label: "All Status", value: "all" },
-  { label: "Published", value: "published" },
-  { label: "Draft", value: "draft" },
+export const difficultyOptions = [
+  { label: "All", value: "all" },
+  { label: "Basics", value: "Basics" },
+  { label: "Intermediate", value: "Intermediate" },
+  { label: "Advance", value: "Advance" },
 ] as const;
+
+type Difficulty = (typeof difficultyOptions)[number]["value"];
+
 export const tabs = [
   { label: "MCQ", value: "MCQ" },
   { label: "Flashcard", value: "Flashcard" },
@@ -22,13 +26,15 @@ export const tabs = [
 interface SearchWithTabsProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  difficulty: string;
+  setDifficulty: React.Dispatch<React.SetStateAction<Difficulty>>;
 }
 const SearchWithTabs: React.FC<SearchWithTabsProps> = ({
   activeTab,
   setActiveTab,
+  difficulty,
+  setDifficulty,
 }) => {
-  const [status, setStatus] = useState("");
-
   return (
     <div>
       <CommonBorderWrapper className="space-y-4">
@@ -42,9 +48,9 @@ const SearchWithTabs: React.FC<SearchWithTabsProps> = ({
             />
           </div>
           <CommonSelect
-            item={statusOptions}
-            value={status}
-            onValueChange={setStatus}
+            item={difficultyOptions}
+            value={difficulty}
+            onValueChange={(val) => setDifficulty(val as Difficulty)}
             className="!w-[150px]"
           />
         </div>
