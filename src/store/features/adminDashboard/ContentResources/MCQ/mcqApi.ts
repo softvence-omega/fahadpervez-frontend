@@ -1,4 +1,6 @@
 import { baseAPI } from "@/store/api/baseApi";
+import { AllContentMCQList } from "./type/allContent";
+import { ManualMCQBank } from "./type/manual";
 import { GetAllMcqResponse, GetStudyModeTree, McqBankParams } from "./type/mcq";
 import { SingleMcqData } from "./type/singleMcq";
 import { GetExamsResponse, PostExam, PostStudyModeTree } from "./type/tree";
@@ -42,6 +44,13 @@ export const mcqApi = baseAPI.injectEndpoints({
         body: formdata,
       }),
     }),
+    UploadManualMcq: build.mutation<void, ManualMCQBank>({
+      query: (data) => ({
+        url: `/mcq-bank/upload-manual`,
+        method: "POST",
+        body: data,
+      }),
+    }),
 
     // study mode
     postStudyModeTree: build.mutation<void, PostStudyModeTree>({
@@ -59,6 +68,24 @@ export const mcqApi = baseAPI.injectEndpoints({
       }),
       providesTags: ["StudyModeTree"],
     }),
+    getStudyModeAllContent: build.query<
+      AllContentMCQList,
+      { subject?: string; system?: string; topic?: string; subtopic?: string }
+    >({
+      query: (params) => {
+        const queryString = new URLSearchParams(
+          params as Record<string, string>
+        ).toString();
+        return {
+          url: `study_mode_tree/all-content${
+            queryString ? `?${queryString}` : ""
+          }`,
+          method: "GET",
+        };
+      },
+      providesTags: ["StudyModeTree"],
+    }),
+
     updateStudyModeTree: build.mutation<
       void,
       { data: PostStudyModeTree; treeId: string }
@@ -135,4 +162,6 @@ export const {
   useUpdateExamMutation,
   useDeleteExamMutation,
   useReportMcqMutation,
+  useUploadManualMcqMutation,
+  useGetStudyModeAllContentQuery,
 } = mcqApi;

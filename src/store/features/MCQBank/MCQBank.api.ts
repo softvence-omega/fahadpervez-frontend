@@ -23,7 +23,6 @@ export const mcqBankAPI = baseAPI.injectEndpoints({
         method: "GET",
       }),
     }),
-    // end
   }),
 });
 
