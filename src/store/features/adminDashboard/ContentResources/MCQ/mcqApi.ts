@@ -3,6 +3,7 @@ import { AllContentMCQList } from "./type/allContent";
 import { ManualMCQBank } from "./type/manual";
 import { GetAllMcqResponse, GetStudyModeTree, McqBankParams } from "./type/mcq";
 import { SingleMcqData } from "./type/singleMcq";
+import { CreateProfileTypePayload, ProfileTypeResponse } from "./type/student";
 import { GetExamsResponse, PostExam, PostStudyModeTree } from "./type/tree";
 
 export const mcqApi = baseAPI.injectEndpoints({
@@ -50,6 +51,39 @@ export const mcqApi = baseAPI.injectEndpoints({
         method: "POST",
         body: data,
       }),
+    }),
+
+    //student type get and post
+
+    getStudentTypeApi: build.query<ProfileTypeResponse, void>({
+      query: () => ({
+        url: "/profile_type_const/all",
+        method: "GET",
+      }),
+      providesTags: ["studentType"],
+    }),
+
+    createStudentTypeApi: build.mutation<void, CreateProfileTypePayload>({
+      query: (data) => ({
+        url: "/profile_type_const/create",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["studentType"],
+    }),
+    updateStudentTypeApi: build.mutation<void, string>({
+      query: (id) => ({
+        url: `/api/profile_type_const/update/${id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["studentType"],
+    }),
+    deleteStudentTypeApi: build.mutation<void, string>({
+      query: (id) => ({
+        url: `/api/profile_type_const/delete/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["studentType"],
     }),
 
     // study mode
@@ -164,4 +198,8 @@ export const {
   useReportMcqMutation,
   useUploadManualMcqMutation,
   useGetStudyModeAllContentQuery,
+  useCreateStudentTypeApiMutation,
+  useUpdateStudentTypeApiMutation,
+  useDeleteStudentTypeApiMutation,
+  useGetStudentTypeApiQuery,
 } = mcqApi;

@@ -43,6 +43,7 @@ const ContentManagement = () => {
   useEffect(() => {
     dispatch(showContentCard());
   }, []);
+
   return (
     <div>
       <div>
