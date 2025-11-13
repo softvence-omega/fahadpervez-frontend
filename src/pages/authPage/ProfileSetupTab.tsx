@@ -1,8 +1,8 @@
-
 // src/components/ProfileSetupTab.tsx
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ProfileSetupData } from "./schemas";
+import { useGetAllStudentTypeQuery } from "@/store/features/auth/auth.api";
 
 interface Props {
   onNext: (data: ProfileSetupData) => void;
@@ -33,7 +33,7 @@ export default function ProfileSetupTab({ onNext, defaultValues }: Props) {
     reset,
     setValue,
     formState: { errors },
-  } = useForm<FormValues>(
+  } = useForm<FormValues>();
   //   {
   //   resolver: zodResolver(profileSetupSchema),
   //   defaultValues: {
@@ -43,9 +43,12 @@ export default function ProfileSetupTab({ onNext, defaultValues }: Props) {
   //     ...defaultValues,
   //   },
   // }
-);
 
   const role = watch("role");
+
+  const { data: studentType } = useGetAllStudentTypeQuery({});
+  console.log(studentType?.data);
+  const studentTypes = studentType?.data;
 
   // reset fields when defaultValues change (e.g., user navigates back)
   useEffect(() => {
@@ -106,7 +109,12 @@ export default function ProfileSetupTab({ onNext, defaultValues }: Props) {
         ))}
       </div>
 
-      {!role && ( <p className="text-center text-red-500 font-medium mb-6"> Please select a role to continue filling the form </p> )}
+      {!role && (
+        <p className="text-center text-red-500 font-medium mb-6">
+          {" "}
+          Please select a role to continue filling the form{" "}
+        </p>
+      )}
 
       {/* Show form only after role is selected */}
       {role && (
@@ -127,15 +135,28 @@ export default function ProfileSetupTab({ onNext, defaultValues }: Props) {
                 <option value="">Select</option>
                 {role === "student" ? (
                   <>
-                    <option value="MEDICAL_STUDENT">MEDICAL STUDENT</option>
+                    {studentTypes?.map((studentType: any) => (
+                      <option key={studentType.id} value={studentType.typeName}>
+                        {studentType.typeName}
+                      </option>
+                    ))}
+                    {/* <option value="MEDICAL_STUDENT">MEDICAL STUDENT</option>
                     <option value="NURSING_STUDENT">NURSING STUDENT</option>
                     <option value="DENTAL_STUDENT">DENTAL STUDENT</option>
                     <option value="PHARMACY_STUDENT">PHARMACY STUDENT</option>
-                    <option value="PUBLIC_HEALTH_STUDENT">PUBLIC HEALTH STUDENT</option>
-                    <option value="DENTAL_HYGIENE_STUDENT">DENTAL HYGIENE STUDENT</option>
-                    <option value="MEDICAL_LAB_TECHNOLOGY_STUDENT">MEDICAL LAB TECHNOLOGY STUDENT</option>
+                    <option value="PUBLIC_HEALTH_STUDENT">
+                      PUBLIC HEALTH STUDENT
+                    </option>
+                    <option value="DENTAL_HYGIENE_STUDENT">
+                      DENTAL HYGIENE STUDENT
+                    </option>
+                    <option value="MEDICAL_LAB_TECHNOLOGY_STUDENT">
+                      MEDICAL LAB TECHNOLOGY STUDENT
+                    </option>
                     <option value="RADIOLOGY_STUDENT">RADIOLOGY STUDENT</option>
-                    <option value="PHYSIOTHERAPY_STUDENT">PHYSIOTHERAPY STUDENT</option>
+                    <option value="PHYSIOTHERAPY_STUDENT">
+                      PHYSIOTHERAPY STUDENT
+                    </option> */}
                   </>
                 ) : (
                   <>
