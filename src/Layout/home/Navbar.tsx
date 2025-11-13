@@ -31,6 +31,19 @@ const Navbar: React.FC = () => {
     navigate("/login"); // redirect
   };
 
+  const handleRedirectToDashboard = () => {
+    if (user?.account?.role === "ADMIN") {
+      navigate("/admin");
+      return;
+    } else if (user?.account?.role === "MENTOR") {
+      navigate("/mentor");
+      return;
+    } else if (user?.account?.role === "STUDENT") {
+      navigate("/dashboard");
+      return;
+    }
+  };
+
   // Scroll logic that works even after navigation
   const handleScroll = (section: string) => {
     if (location.pathname !== "/") {
@@ -90,12 +103,20 @@ const Navbar: React.FC = () => {
             {/* Right Side Buttons */}
             <div className="hidden lg:flex space-x-4">
               {user ? (
-                <button
-                  onClick={handleLogout}
-                  className="text-white px-8 py-2 rounded-[6px] bg-red-600 font-medium hover:bg-red-700 cursor-pointer"
-                >
-                  Logout
-                </button>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={handleRedirectToDashboard}
+                    className="text-white px-8 py-2 rounded-[6px] bg-blue-main font-medium hover:bg-blue-700 cursor-pointer"
+                  >
+                    Dashboard
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="text-white px-8 py-2 rounded-[6px] bg-red-600 font-medium hover:bg-red-700 cursor-pointer"
+                  >
+                    Logout
+                  </button>
+                </div>
               ) : (
                 <>
                   <Link

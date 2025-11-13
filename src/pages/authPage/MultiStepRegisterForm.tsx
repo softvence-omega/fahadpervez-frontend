@@ -152,7 +152,7 @@ export default function MultiStepRegisterForm() {
         <CommonWrapper>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-7">
-              <img src="/logo1.svg" className="h-16" alt="logo" />
+              <img src="/logo.svg" className="h-16" alt="logo" />
               <h2 className="text-xl font-semibold">Medical Student Hub</h2>
             </div>
             <p>
