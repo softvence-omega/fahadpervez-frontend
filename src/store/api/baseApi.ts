@@ -67,6 +67,7 @@ export const baseAPI = createApi({
     "Mcq",
     "StudyModeTree",
     "Exams",
+    "studentType",
   ],
   endpoints: () => ({}),
 });

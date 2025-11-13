@@ -24,6 +24,7 @@ type System = {
 export type PostStudyModeTree = {
   subjectName: string;
   systems: System[];
+  studentType: string;
 };
 
 // Zod validation schema
@@ -158,7 +159,11 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
   const [postStudyModeTree, { isLoading: isPostStudyModeTreeLoading }] =
     usePostStudyModeTreeMutation();
   const handleSave = async () => {
-    const payload: PostStudyModeTree = { subjectName, systems };
+    const payload: PostStudyModeTree = {
+      subjectName,
+      systems,
+      studentType: "Medical Student",
+    };
     const validation = postStudyModeTreeSchema.safeParse(payload);
 
     if (!validation.success) {
