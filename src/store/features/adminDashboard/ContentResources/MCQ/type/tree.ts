@@ -15,6 +15,7 @@ type System = {
 export type PostStudyModeTree = {
   subjectName: string;
   systems: System[];
+  studentType: string;
 };
 
 // post exam mode tree
