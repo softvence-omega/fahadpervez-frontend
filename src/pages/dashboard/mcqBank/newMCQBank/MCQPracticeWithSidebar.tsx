@@ -285,7 +285,7 @@
 import { useMemo, useState } from "react";
 import { MCQBankSidebar } from "./MCQBankSidebar";
 import { Menu } from "lucide-react";
-import QuizReportModal from "../../quizGenerator/QuizReportModal";
+// import QuizReportModal from "../../quizGenerator/QuizReportModal";
 import MCQCard from "./MCQCard";
 import {
   Breadcrumb,
@@ -304,6 +304,7 @@ import {
 import { useGetMCQBankTreeQuery } from "@/store/features/MCQBank/MCQBank.api";
 import { useGetMcqBySubtopicQuery } from "@/store/features/MCQBank/MCQBank.api";
 import Pagination from "@/components/AdminDashboard/Content & Resource_Component/Pagination";
+import QuizReportModal from "../../quizGenerator/QuizReportModal";
 
 // Helper: map backend data into frontend tree format
 const mapBackendToTreeData = (backendData: any[]): TreeNode[] => {
@@ -340,6 +341,7 @@ const MCQPracticeWithSidebar: React.FC = () => {
   const [expandedNodes, setExpandedNodes] = useState<ExpandedNodes>({});
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [breadcrumb, setBreadcrumb] = useState<string[]>([]);
+  const [openReportModal, setOpenReportModal] = useState(false);
 
   const handleToggleExpand = (nodeId: string) => {
     setExpandedNodes((prev) => ({ ...prev, [nodeId]: !prev[nodeId] }));
@@ -410,6 +412,7 @@ const MCQPracticeWithSidebar: React.FC = () => {
 
   const handleReport = (mcqId: string) => {
     console.log("Report MCQ:", mcqId);
+    setOpenReportModal(true);
   };
 
   const handlePageChange = (page: number) => {
@@ -543,7 +546,12 @@ const MCQPracticeWithSidebar: React.FC = () => {
       </div>
 
       {/* Report Modal */}
-      <QuizReportModal />
+      <QuizReportModal
+        open={openReportModal}
+        setOpen={setOpenReportModal}
+        mcqId={"mcqId"}
+        questionBankId={mcqData?._id}
+      />
     </div>
   );
 };
