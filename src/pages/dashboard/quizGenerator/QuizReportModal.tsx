@@ -15,8 +15,8 @@ import { useReportMcqMutation } from "@/store/features/adminDashboard/ContentRes
 export default function QuizReportModal({
   open,
   setOpen,
-  mcqId,
-  questionBankId,
+  mcqId = "",
+  questionBankId = "69146a0165d18f212161fa60",
 }: any) {
   const [issue, setIssue] = useState("");
   const [loading, setLoading] = useState(false);

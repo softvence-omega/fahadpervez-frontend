@@ -498,9 +498,9 @@ export const FilterControls: React.FC<FilterControlsProps> = ({
       className="px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
     >
       <option value="All">All Difficulty</option>
-      <option value="Easy">Easy</option>
-      <option value="Medium">Medium</option>
-      <option value="Hard">Hard</option>
+      <option value="Basics">Basics</option>
+      <option value="Intermediate">Intermediate</option>
+      <option value="Advance">Advance</option>
     </select>
 
     <select
