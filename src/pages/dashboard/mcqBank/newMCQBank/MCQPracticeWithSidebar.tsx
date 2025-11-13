@@ -281,8 +281,6 @@
 
 // export default MCQPracticeWithSidebar;
 
-
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from "react";
 import { MCQBankSidebar } from "./MCQBankSidebar";
@@ -305,6 +303,7 @@ import {
 } from "@/components/Test";
 import { useGetMCQBankTreeQuery } from "@/store/features/MCQBank/MCQBank.api";
 import { useGetMcqBySubtopicQuery } from "@/store/features/MCQBank/MCQBank.api";
+import Pagination from "@/components/AdminDashboard/Content & Resource_Component/Pagination";
 
 // Helper: map backend data into frontend tree format
 const mapBackendToTreeData = (backendData: any[]): TreeNode[] => {
@@ -354,10 +353,25 @@ const MCQPracticeWithSidebar: React.FC = () => {
     subtopic: string;
   } | null>(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 10;
+
   const { data: mcqData, isLoading: mcqLoading } = useGetMcqBySubtopicQuery(
-    selectedSubtopic,
+    selectedSubtopic
+      ? {
+          ...selectedSubtopic, // subject, system, topic, subtopic
+          page: currentPage,
+          limit,
+        }
+      : undefined,
     { skip: !selectedSubtopic }
   );
+  console.log(mcqData);
+
+  const meta = mcqData?.meta;
+  // const questions = mcqData?.mcqs || [];
+
+  const totalPages = meta?.total ? Math.ceil(meta.total / meta.limit) : 1;
 
   const handleSubtopicClick = (
     subject: string,
@@ -369,7 +383,7 @@ const MCQPracticeWithSidebar: React.FC = () => {
     setSelectedSubtopic({ subject, system, topic, subtopic });
     setBreadcrumb([subject, system, topic, subtopic]);
     setSidebarOpen(false);
-    console.log(id)
+    console.log(id);
   };
 
   // --- MCQ State ---
@@ -396,6 +410,12 @@ const MCQPracticeWithSidebar: React.FC = () => {
 
   const handleReport = (mcqId: string) => {
     console.log("Report MCQ:", mcqId);
+  };
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
   };
 
   // --- Filters ---
@@ -511,6 +531,14 @@ const MCQPracticeWithSidebar: React.FC = () => {
               />
             ))
           )}
+          {/* Pagination */}
+          <div className="mt-16 mb-32 flex justify-center space-x-5 ">
+            <Pagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+            />
+          </div>
         </div>
       </div>
 

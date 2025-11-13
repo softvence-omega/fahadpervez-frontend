@@ -33,7 +33,7 @@ const StudentDashboardHeader: React.FC<StudentDashboardHeaderProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-200">
+    <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200">
       <div className="flex items-center justify-between px-4 py-3 lg:px-6">
         {/* Left Section: Hamburger + Logo */}
         <div className="flex items-center gap-4">

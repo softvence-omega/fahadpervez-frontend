@@ -32,10 +32,10 @@ export const mcqBankAPI = baseAPI.injectEndpoints({
     }),
 
     getMcqBySubtopic: build.query({
-      query: (params) => ({
+      query: ({ subject, system, topic, subtopic, page = 1, limit = 10 }) => ({
         url: "/study_mode_tree/all-content",
         method: "GET",
-        params, // { subject, system, topic, subtopic }
+        params: { subject, system, topic, subtopic, page, limit },
       }),
     }),
 

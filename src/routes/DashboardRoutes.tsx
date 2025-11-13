@@ -137,8 +137,12 @@ const dashboardRoutes = {
     },
     {
       path: "mcq-bank",
-      element: <McqBank />,
+      element: <MCQPracticeWithSidebar />,
     },
+    // {
+    //   path: "mcq-bank",
+    //   element: <McqBank />,
+    // },
     {
       path: "practice-mcq/:id",
       element: <PracticeMCQ />,
@@ -306,7 +310,7 @@ const dashboardRoutes = {
     },
     {
       path: "test",
-      element: <MCQPracticeWithSidebar />,
+      element: <McqBank />,
     },
   ],
 };
