@@ -1,4 +1,3 @@
-// DashboardRoutes.tsx
 import DashboardLayout from "@/Layout/dashboard/DashboardLayout";
 import AITutor from "@/pages/dashboard/AI Tutor/AITutor";
 import ClinicalCaseGenerator from "@/pages/dashboard/ClinicalCaseGenerator";
@@ -44,7 +43,6 @@ import BookingPage from "@/components/dashboard/community-event/mentor/BookingPa
 import GroupDetails from "@/components/dashboard/community-event/study-group-page/GroupDetails";
 import Profile from "@/pages/profile/Profile";
 import Settings from "@/pages/profile/Settings";
-import Help from "@/pages/profile/Help";
 import MentorshipPage from "@/components/dashboard/community-event/MentorshipPage";
 import AskQuestion from "@/components/dashboard/community-event/mentor/AskQuestion";
 import MySession from "@/components/dashboard/community-event/mentor/MySession";
@@ -54,10 +52,19 @@ import OSCEStation from "@/components/dashboard/osce/OSCEStation";
 import PracticeWithChecklist from "@/components/dashboard/osce/PracticeWithChecklist";
 import OSCETutorial from "@/components/dashboard/osce/OSCETutorial";
 import CheckListResult from "@/components/dashboard/osce/CheckListResult";
+import HelpSupport from "@/pages/dashboard/help&support/HelpSupport";
+import StudentProfile from "@/pages/dashboard/student profile/StudentProfile";
+import PrivateRoute from "./PrivateRoute";
+import MCQPracticeWithSidebar from "@/pages/dashboard/mcqBank/newMCQBank/MCQPracticeWithSidebar";
+// import MCQPracticeWithSidebar from "@/components/Test";
 
 const dashboardRoutes = {
   path: "/dashboard",
-  element: <DashboardLayout />,
+  element: (
+    <PrivateRoute allowedRoles={["STUDENT"]}>
+      <DashboardLayout />
+    </PrivateRoute>
+  ),
   children: [
     {
       index: true,
@@ -67,6 +74,10 @@ const dashboardRoutes = {
     //   path: "community-event",
     //   element: <CommunityEvent />,
     // },
+    {
+      path: "progress",
+      element: <StudentProfile />,
+    },
     {
       path: "community-event",
       element: <AllCommunities />,
@@ -126,8 +137,12 @@ const dashboardRoutes = {
     },
     {
       path: "mcq-bank",
-      element: <McqBank />,
+      element: <MCQPracticeWithSidebar />,
     },
+    // {
+    //   path: "mcq-bank",
+    //   element: <McqBank />,
+    // },
     {
       path: "practice-mcq/:id",
       element: <PracticeMCQ />,
@@ -291,9 +306,12 @@ const dashboardRoutes = {
     },
     {
       path: "help",
-      element: <Help />,
+      element: <HelpSupport />,
     },
-    {},
+    {
+      path: "test",
+      element: <McqBank />,
+    },
   ],
 };
 
