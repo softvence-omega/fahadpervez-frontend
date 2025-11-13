@@ -17,6 +17,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
     <div className="flex items-center justify-between pt-6">
       <div className="flex flex-col sm:flex-row gap-3 ">
         <CommonButton
+          type="submit"
           onClick={onSavePublish}
           className="bg-blue-500 !text-white"
           disabled={isLoading}
@@ -27,12 +28,6 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
             "Save & Publish Question"
           )}
         </CommonButton>
-        {/* 
-        <ButtonWithIcon icon={Plus} onClick={onSaveAddAnother}>
-          Save & Add Another
-        </ButtonWithIcon>
-
-        <CommonButton onClick={onSaveDraft}>Save as draft</CommonButton> */}
       </div>
       <CommonButton onClick={onCancel}>Cancel</CommonButton>
     </div>

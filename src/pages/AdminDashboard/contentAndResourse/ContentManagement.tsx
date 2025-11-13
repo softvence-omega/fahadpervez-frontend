@@ -13,21 +13,21 @@ import { AppDispatch, RootState } from "@/store/store";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 export type StudentTypes =
-  | "Medical"
-  | "Nursing"
-  | "Dental"
-  | "Physicians"
-  | "Dentists"
-  | "Pharmacists"
+  | "Medical Student"
+  | "Nursing Student"
+  | "Dental Student"
+  | "Physicians Student"
+  | "Dentists Student"
+  | "Pharmacists Student"
   | "";
 
 const studentComponents = [
-  { type: "Medical", component: MedicalStudent },
-  { type: "Nursing", component: NursingStudent },
-  { type: "Dental", component: DentalStudent },
-  { type: "Physicians", component: PhysiciansStudent },
-  { type: "Dentists", component: DentistsStudent },
-  { type: "Pharmacists", component: PharmacistsStudent },
+  { type: "Medical Student", component: MedicalStudent },
+  { type: "Nursing Student", component: NursingStudent },
+  { type: "Dental Student", component: DentalStudent },
+  { type: "Physicians Student", component: PhysiciansStudent },
+  { type: "Dentists Student", component: DentistsStudent },
+  { type: "Pharmacists Student", component: PharmacistsStudent },
 ];
 const ContentManagement = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -61,7 +61,7 @@ const ContentManagement = () => {
 
       {(addContent || addMCQ) && (
         <div>
-          <CreateContent />
+          <CreateContent studentType={studentType} />
         </div>
       )}
     </div>

@@ -12,7 +12,11 @@ export const steps = [
   { id: 1, label: "Select Hierarchy" },
   { id: 2, label: "Add Content" },
 ];
-const CreateContent = () => {
+
+interface CreateContentProps {
+  studentType: string;
+}
+const CreateContent: React.FC<CreateContentProps> = ({ studentType }) => {
   const [activeTab, setActiveTab] = useState("MCQ");
   const { addMCQ } = useSelector((state: RootState) => state.staticContent);
   const [breadcrumb, setBreadcrumb] = useState("");
@@ -47,6 +51,7 @@ const CreateContent = () => {
               <ContentSelectionForm
                 handleBreadcrumb={handleBreadcrumb}
                 activeTab={activeTab}
+                studentType={studentType}
               />
             </div>
           </CommonSpace>
