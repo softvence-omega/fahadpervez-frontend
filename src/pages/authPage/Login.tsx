@@ -38,6 +38,7 @@ const Login = () => {
   const [getMeTrigger] = useLazyGetMeQuery(); // lazy query trigger
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  // const location = useLocation();
 
   const onSubmit = async (loginFormData: LoginFormInputs) => {
     try {
@@ -47,27 +48,40 @@ const Login = () => {
       }).unwrap();
 
       if (res?.success) {
-        const { accessToken, role } = res.data;
+        const { accessToken } = res.data;
         Cookies.set("accessToken", accessToken);
+
         const meData = await getMeTrigger(undefined, false).unwrap();
+
+        const user = meData?.data;
+        const role = user?.account?.role;
+        console.log(user, role);
         dispatch(
           setUser({
             accessToken,
-            user: meData?.data,
+            user,
           })
         );
-        if (role === "ADMIN") {
-          navigate("/admin");
-        } else if (role === "MENTOR") {
-          navigate("/mentor");
-        } else if (role === "STUDENT") {
-          navigate("/dashboard");
-        }
+
+        // const from = location.state?.from?.pathname;
+
+        const roleRoutes: Record<string, string> = {
+          ADMIN: "/admin",
+          MENTOR: "/mentor",
+          STUDENT: "/dashboard",
+        };
+
+        navigate(roleRoutes[role] || "/", { replace: true });
+        // if (from) {
+        //   navigate(from, { replace: true });
+        // } else {
+        //   navigate(roleRoutes[role] || "/", { replace: true });
+        // }
       } else {
         toast.error(res?.error?.data?.message || "Login failed");
       }
     } catch (err: any) {
-      console.error(" Login error:", err);
+      console.error("Login error:", err);
       toast.error(
         err?.data?.message || "Something went wrong. Please try again."
       );
@@ -88,7 +102,7 @@ const Login = () => {
         />
         <div className="absolute top-6 left-6">
           <Link to="/">
-          <img src="/logo.svg" alt="Logo" className="w-40 h-16 lg:h-20 " />
+            <img src="/logo.svg" alt="Logo" className="w-40 h-16 lg:h-20 " />
             {/* <img src={logo} alt="" /> */}
           </Link>
         </div>

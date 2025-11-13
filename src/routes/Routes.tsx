@@ -7,6 +7,7 @@ import dashboardRoutes from "./DashboardRoutes";
 import mentorRoutes from "./MentorRoutes";
 
 import adminRoutes from "./AdminRoutes";
+import UnauthorizedPage from "@/common/UnauthorizedPage";
 
 const routes = createBrowserRouter([
   homeRoutes,
@@ -16,6 +17,10 @@ const routes = createBrowserRouter([
   adminRoutes,
 
   ...authRoutes,
+  {
+    path: "unauthorized",
+    element: <UnauthorizedPage />,
+  },
   {
     path: "*",
     element: <NotFound />,
