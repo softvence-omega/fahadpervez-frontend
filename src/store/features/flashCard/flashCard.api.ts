@@ -4,7 +4,7 @@ export const flashCardAPI = baseAPI.injectEndpoints({
   endpoints: (build) => ({
     createFlashCard: build.mutation({
       query: (data) => ({
-        url: "/api/flash-card",
+        url: "/flash-card",
         method: "POST",
         body: data,
       }),
@@ -19,14 +19,14 @@ export const flashCardAPI = baseAPI.injectEndpoints({
 
     getSingleFlashCard: build.query({
       query: (id: string) => ({
-        url: `/api/flash-card/${id}`,
+        url: `/flash-card/single/${id}`,
         method: "GET",
       }),
     }),
 
     updateFlashCard: build.mutation({
       query: (data) => ({
-        url: "/api/flash-card",
+        url: "/flash-card",
         method: "PATCH",
         body: data,
       }),
@@ -34,8 +34,15 @@ export const flashCardAPI = baseAPI.injectEndpoints({
 
     deleteFlashCard: build.mutation({
       query: (id: string) => ({
-        url: `/api/flash-card/${id}`,
+        url: `/flash-card/${id}`,
         method: "DELETE",
+      }),
+    }),
+
+    getFlashCardBank: build.query({
+      query: () => ({
+        url: "/flash-card/all",
+        method: "GET",
       }),
     }),
 
@@ -49,4 +56,5 @@ export const {
   useGetSingleFlashCardQuery,
   useUpdateFlashCardMutation,
   useDeleteFlashCardMutation,
+  useGetFlashCardBankQuery
 } = flashCardAPI;
