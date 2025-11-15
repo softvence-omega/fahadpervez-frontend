@@ -73,6 +73,14 @@ export const userAPI = baseAPI.injectEndpoints({
         body: data,
       }),
     }),
+
+    getAllStudentType: build.query({
+      query: () => ({
+        url: "/profile_type_const/all",
+        method: "GET",
+      }),
+    }),
+    
     // end
   }),
 });
@@ -87,4 +95,5 @@ export const {
   useGetMeQuery,
   useResendOTPMutation,
   useUpdateInitialProfileMutation,
+  useGetAllStudentTypeQuery
 } = userAPI;

@@ -286,18 +286,17 @@ import { useMemo, useState } from "react";
 import { MCQBankSidebar } from "./MCQBankSidebar";
 import { Menu } from "lucide-react";
 // import QuizReportModal from "../../quizGenerator/QuizReportModal";
-import MCQCard from "./MCQCard";
 import {
   Breadcrumb,
   DifficultyFilter,
   ExpandedNodes,
   FilterControls,
   findBreadcrumbPath,
-  getReadStatusFromStorage,
-  ReadStatus,
-  saveReadStatusToStorage,
-  SelectedAnswers,
-  ShowAnswers,
+  // getReadStatusFromStorage,
+  // ReadStatus,
+  // saveReadStatusToStorage,
+  // SelectedAnswers,
+  // ShowAnswers,
   SortOption,
   TreeNode,
 } from "@/components/Test";
@@ -305,6 +304,7 @@ import { useGetMCQBankTreeQuery } from "@/store/features/MCQBank/MCQBank.api";
 import { useGetMcqBySubtopicQuery } from "@/store/features/MCQBank/MCQBank.api";
 import Pagination from "@/components/AdminDashboard/Content & Resource_Component/Pagination";
 import QuizReportModal from "../../quizGenerator/QuizReportModal";
+import MCQBankCard from "./MCQBankCard";
 
 // Helper: map backend data into frontend tree format
 const mapBackendToTreeData = (backendData: any[]): TreeNode[] => {
@@ -389,31 +389,31 @@ const MCQPracticeWithSidebar: React.FC = () => {
   };
 
   // --- MCQ State ---
-  const [selectedAnswers, setSelectedAnswers] = useState<SelectedAnswers>({});
-  const [showAnswers, setShowAnswers] = useState<ShowAnswers>({});
-  const [readStatus, setReadStatus] = useState<ReadStatus>(
-    getReadStatusFromStorage()
-  );
+  // const [selectedAnswers, setSelectedAnswers] = useState<SelectedAnswers>({});
+  // const [showAnswers, setShowAnswers] = useState<ShowAnswers>({});
+  // const [readStatus, setReadStatus] = useState<ReadStatus>(
+  //   getReadStatusFromStorage()
+  // );
 
-  const handleSelectAnswer = (mcqId: string, optionIndex: number) => {
-    setSelectedAnswers((prev) => ({ ...prev, [mcqId]: optionIndex }));
-  };
+  // const handleSelectAnswer = (mcqId: string, optionIndex: number) => {
+  //   setSelectedAnswers((prev) => ({ ...prev, [mcqId]: optionIndex }));
+  // };
 
-  const handleToggleAnswer = (mcqId: string) => {
-    const newShowAnswers = { ...showAnswers, [mcqId]: !showAnswers[mcqId] };
-    setShowAnswers(newShowAnswers);
+  // const handleToggleAnswer = (mcqId: string) => {
+  //   const newShowAnswers = { ...showAnswers, [mcqId]: !showAnswers[mcqId] };
+  //   setShowAnswers(newShowAnswers);
 
-    if (newShowAnswers[mcqId]) {
-      const newReadStatus = { ...readStatus, [mcqId]: true };
-      setReadStatus(newReadStatus);
-      saveReadStatusToStorage(newReadStatus);
-    }
-  };
+  //   if (newShowAnswers[mcqId]) {
+  //     const newReadStatus = { ...readStatus, [mcqId]: true };
+  //     setReadStatus(newReadStatus);
+  //     saveReadStatusToStorage(newReadStatus);
+  //   }
+  // };
 
-  const handleReport = (mcqId: string) => {
-    console.log("Report MCQ:", mcqId);
-    setOpenReportModal(true);
-  };
+  // const handleReport = (mcqId: string) => {
+  //   console.log("Report MCQ:", mcqId);
+  //   setOpenReportModal(true);
+  // };
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -429,6 +429,7 @@ const MCQPracticeWithSidebar: React.FC = () => {
 
   // --- Filter MCQs ---
   let filteredQuestions = mcqData?.data || [];
+  console.log("Filtered Questions:", filteredQuestions)
 
   if (searchQuery) {
     filteredQuestions = filteredQuestions.filter((q: any) =>
@@ -446,7 +447,7 @@ const MCQPracticeWithSidebar: React.FC = () => {
     filteredQuestions = [...filteredQuestions].reverse();
   }
 
-  const totalQuestions = filteredQuestions.length;
+  // const totalQuestions = filteredQuestions.length;
   // const unreadCount = filteredQuestions.filter(
   //   (q) => !readStatus[q.mcqId]
   // ).length;
@@ -517,21 +518,22 @@ const MCQPracticeWithSidebar: React.FC = () => {
             </div>
           ) : (
             filteredQuestions.map((q: any, idx: number) => (
-              <MCQCard
-                key={q.mcqId}
-                question={q}
-                questionNumber={idx + 1}
-                totalQuestions={totalQuestions}
-                subtopic={selectedSubtopic?.subtopic || ""}
-                isRead={readStatus[q.mcqId] || false}
-                selectedIndex={selectedAnswers[q.mcqId]}
-                showAnswer={showAnswers[q.mcqId] || false}
-                onSelectAnswer={(optionIndex) =>
-                  handleSelectAnswer(q.mcqId, optionIndex)
-                }
-                onToggleAnswer={() => handleToggleAnswer(q.mcqId)}
-                onReport={() => handleReport(q.mcqId)}
-              />
+              <MCQBankCard key={idx} mcq={q} />
+              // <MCQCard
+              //   key={q.mcqId}
+              //   question={q}
+              //   questionNumber={idx + 1}
+              //   totalQuestions={totalQuestions}
+              //   subtopic={selectedSubtopic?.subtopic || ""}
+              //   isRead={readStatus[q.mcqId] || false}
+              //   selectedIndex={selectedAnswers[q.mcqId]}
+              //   showAnswer={showAnswers[q.mcqId] || false}
+              //   onSelectAnswer={(optionIndex) =>
+              //     handleSelectAnswer(q.mcqId, optionIndex)
+              //   }
+              //   onToggleAnswer={() => handleToggleAnswer(q.mcqId)}
+              //   onReport={() => handleReport(q.mcqId)}
+              // />
             ))
           )}
           {/* Pagination */}
