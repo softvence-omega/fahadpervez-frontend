@@ -1,7 +1,6 @@
 import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import { PiSealQuestion } from "react-icons/pi";
-import FlashCard from "../flashcard/FlashCard";
 
 export default function DailyChallenge() {
 
@@ -47,8 +46,8 @@ export default function DailyChallenge() {
         <p className="text-sm text-[#717182]">Your AI-generated Cards ready to use</p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-5">
-          <FlashCard />
-          <FlashCard />
+          {/* <FlashCard />
+          <FlashCard /> */}
         </div>
       </div>
     </div>

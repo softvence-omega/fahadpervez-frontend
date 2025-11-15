@@ -45,3 +45,27 @@ export type McqQuestion = {
   correctOption: string; // e.g., "C"
   difficulty: "Easy" | "Medium" | "Advance"; // restrict to known levels
 };
+
+export interface IFlashCardItem {
+  flashCardId: string;
+  frontText: string;
+  backText: string;
+  explanation: string;
+  difficulty: string; // "Basics" etc.
+}
+
+export interface IFlashcardBank {
+  _id: string;
+  title: string;
+  slug: string;
+  type: string; // "study" | maybe others
+  studentType: string; // "Medical Student" etc.
+  subject: string; // e.g., "Neurology"
+  system: string; // e.g., "Anatomy"
+  topic: string; // e.g., "Tonatomy"
+  subtopic: string; // e.g., "Monatomy"
+  totalFlashCards: number;
+  flashCards: IFlashCardItem[];
+  uploadedBy: string; // e.g., "Admin admin"
+  createdAt: string; // ISO date string
+}
