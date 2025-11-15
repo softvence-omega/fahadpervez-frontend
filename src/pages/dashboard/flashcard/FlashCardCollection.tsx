@@ -1,36 +1,103 @@
-import DashboardHeading from "@/components/reusable/DashboardHeading";
-import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
-import FlashCard from "./FlashCard";
 import { useGetFlashCardBankQuery } from "@/store/features/flashCard/flashCard.api";
-import { IFlashcardBank } from "@/types";
+import { Filter, Search } from "lucide-react";
+import { useState } from "react";
+import AllGeneratedFlashCard from "./AllGeneratedFlashCard";
+import GeneratedFlashCard from "./GeneratedFlashCard";
+import FlashCardFilterModal from "./FlashCardFilterModal";
 
 export default function FlashCardCollection() {
-  const { data: flashcardData } = useGetFlashCardBankQuery({});
+  const tabs = [
+    { id: "all", label: "All" },
+    { id: "generated", label: "Generated" },
+  ];
+
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filters, setFilters] = useState({
+    subject: "",
+    system: "",
+    topic: "",
+  });
+  const [page, setPage] = useState(1);
+  const [activeTab, setActiveTab] = useState("all");
+  const { data: flashcardData, isLoading: flashcardBankLoading } =
+    useGetFlashCardBankQuery({
+      searchTerm,
+      ...filters,
+      page,
+      limit: 10,
+    });
+    
   const flashcardBank = flashcardData?.data;
-  console.log(flashcardBank);
+  const meta = flashcardData?.meta;
 
   return (
     <div>
-      <div className="flex items-center gap-3">
-        <Link to={"/dashboard/flashcard-page"} className="mb-7">
-          <ArrowLeft />
-        </Link>
-        <DashboardHeading
-          title="Your Flashcard Collection"
-          titleSize="text-xl"
-          description="AI-powered spaced repetition learning"
-          className="mt-12 mb-12 space-y-1"
-        />
+      <div className="flex items-center justify-between mb-6">
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search by condition or keyword"
+            className="w-full md:w-[450px] h-12 pl-10 pr-4 border border-slate-300 rounded"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setPage(1); // reset page
+            }}
+          />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
+        </div>
+
+        <button
+          onClick={() => setIsFilterOpen(true)}
+          className="flex items-center gap-2 ... bg-slate-500 text-white px-4 py-2 rounded cursor-pointer"
+        >
+          <Filter className="w-4 h-4" />
+          Filter
+        </button>
       </div>
 
-      <div className="bg-white border border-slate-300 p-5 rounded-[8px]">
+      <div>
+        {/* Tab Buttons */}
+        <div className="flex gap-4 my-6 items-end">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`min-w-[60px] text-center py-1 text-lg font-semibold leading-7 transition-colors duration-200 cursor-pointer border p-1 rounded 
+              ${
+                activeTab === tab.id
+                  ? " border-blue-500 text-blue-600"
+                  : "text-gray-500"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab Content */}
+        <div>
+          {activeTab === "all" && (
+            <AllGeneratedFlashCard
+              flashcardBanks={flashcardBank}
+              flashcardBankLoading={flashcardBankLoading}
+              meta={meta}
+              page={page}
+              setPage={setPage}
+            />
+          )}
+          {activeTab === "generated" && <GeneratedFlashCard />}
+        </div>
+      </div>
+
+      {/* <div className="bg-white border border-slate-300 p-5 rounded-[8px]">
         <h3 className="font-medium mb-6">Today's Generated Flashcards</h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 ">
           {flashcardBank?.map((flashcard: IFlashcardBank, idx: number) => (
             <FlashCard key={idx} {...flashcard} />
           ))}
-          {/* <FlashCard /> */}
         </div>
       </div>
 
@@ -49,7 +116,17 @@ export default function FlashCardCollection() {
             <FlashCard key={idx} {...flashcard} />
           ))}
         </div>
-      </div>
+      </div> */}
+      {isFilterOpen && (
+        <FlashCardFilterModal
+          close={() => setIsFilterOpen(false)}
+          onApply={(newFilters) => {
+            setFilters(newFilters);
+            setPage(1);
+            setIsFilterOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }

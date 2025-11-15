@@ -4,24 +4,28 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import FlashCardOverview from "./FlashCardOverview";
+import FlashCardCollection from "./FlashCardCollection";
 
 const FlashcardPage = () => {
   const [activeTab, setActiveTab] = useState("overview");
 
   // Only "overview" stays as tab
-  const tabs = [{ id: "overview", label: "Overview" }];
+  const tabs = [
+    { id: "overview", label: "Overview" },
+    { id: "flashcard", label: "Flashcards" }
+  ];
 
   return (
     <div>
       <div className="md:flex justify-between items-center">
         <DashboardHeading
-          title="Flashcard Generator Overview"
+          title="Your Flashcards"
           titleSize="text-xl"
           titleColor="text-[#0A0A0A]"
-          description="Create custom quizzes from your images and videos using AI"
+          description="AI-powered spaced repetition learning"
           descColor="text-[#4A5565]"
           descFont="text-sm"
-          className="mt-12 mb-8"
+          className=""
         />
 
         {/* Generate Flashcard Button */}
@@ -31,7 +35,7 @@ const FlashcardPage = () => {
             bgType="solid"
             iconPosition="left"
             bgColor="bg-blue-btn-1"
-            className="h-12 mb-4 hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer"
+            className="h-10 mb-4 hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer"
           >
             Generate Flash Card
           </PrimaryButton>
@@ -40,32 +44,28 @@ const FlashcardPage = () => {
 
       <div>
         {/* Tab Buttons */}
-        <div className="flex gap-4 my-6 md:my-8 items-end">
+        <div className="flex gap-4 my-6 items-end">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`py-1 text-start text-lg font-semibold leading-7 transition-colors duration-200 cursor-pointer
+              className={`py-1 text-start text-lg font-semibold leading-7 transition-colors duration-200 cursor-pointer border p-1 rounded 
         ${
           activeTab === tab.id
-            ? "border-b-2 border-blue-500 text-blue-600"
-            : "text-gray-500 hover:text-blue-500"
+            ? " border-blue-500 text-blue-600"
+            : "text-gray-500"
         }`}
             >
               {tab.label}
             </button>
           ))}
-
-          {/* Flashcards Button (align same as tab) */}
-          <Link to={"/dashboard/flashcard-collection"}>
-            <button className="py-1 text-lg font-semibold leading-7 text-gray-600 hover:text-blue-500 cursor-pointer">
-              Flashcards
-            </button>
-          </Link>
         </div>
 
         {/* Tab Content */}
-        <div>{activeTab === "overview" && <FlashCardOverview />}</div>
+        <div>
+          {activeTab === "overview" && <FlashCardOverview />}
+          {activeTab === "flashcard" && <FlashCardCollection />}
+        </div>
       </div>
     </div>
   );

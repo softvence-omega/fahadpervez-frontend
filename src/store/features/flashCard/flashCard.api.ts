@@ -40,9 +40,24 @@ export const flashCardAPI = baseAPI.injectEndpoints({
     }),
 
     getFlashCardBank: build.query({
-      query: () => ({
+      query: ({
+        searchTerm,
+        subject,
+        system,
+        topic,
+        page = 1,
+        limit = 10,
+      }) => ({
         url: "/flash-card/all",
         method: "GET",
+        params: {
+          searchTerm,
+          subject,
+          system,
+          topic,
+          page,
+          limit,
+        },
       }),
     }),
 
@@ -56,5 +71,5 @@ export const {
   useGetSingleFlashCardQuery,
   useUpdateFlashCardMutation,
   useDeleteFlashCardMutation,
-  useGetFlashCardBankQuery
+  useGetFlashCardBankQuery,
 } = flashCardAPI;
