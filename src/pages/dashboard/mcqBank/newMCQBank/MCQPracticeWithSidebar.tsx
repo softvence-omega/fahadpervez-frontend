@@ -581,6 +581,7 @@ import QuizReportModal from "../../quizGenerator/QuizReportModal";
 import MCQBankCard from "./MCQBankCard";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { Link } from "react-router-dom";
+import GlobalLoader2 from "@/common/GlobalLoader2";
 
 // Helper: map backend data into frontend tree format
 const mapBackendToTreeData = (backendData: any[]): TreeNode[] => {
@@ -638,7 +639,7 @@ const MCQPracticeWithSidebar: React.FC = () => {
     topic: string;
     subtopic: string;
   } | null>(null);
-  
+
   // --- Pagination ---
   const [banksPage, setBanksPage] = useState(1);
   const [mcqsPage, setMcqsPage] = useState(1);
@@ -758,7 +759,7 @@ const MCQPracticeWithSidebar: React.FC = () => {
   }
 
   // --- Loading/Error states ---
-  if (isLoading) return <p>Loading MCQ Tree...</p>;
+  if (isLoading) return <GlobalLoader2 />;
   if (isError) return <p>Failed to load MCQ Tree</p>;
 
   return (
@@ -826,7 +827,7 @@ const MCQPracticeWithSidebar: React.FC = () => {
               </div>
 
               {banksLoading ? (
-                <p>Loading MCQ Banks...</p>
+                <GlobalLoader2 />
               ) : mcqBanks.length === 0 ? (
                 <div className="text-center py-12 text-slate-500">
                   No MCQ banks found for this selection.
@@ -911,7 +912,7 @@ const MCQPracticeWithSidebar: React.FC = () => {
 
               {/* Questions */}
               {mcqsLoading ? (
-                <p>Loading MCQs...</p>
+                <GlobalLoader2 />
               ) : filteredQuestions.length === 0 ? (
                 <div className="text-center py-12 text-slate-500">
                   No questions found matching your filters.
