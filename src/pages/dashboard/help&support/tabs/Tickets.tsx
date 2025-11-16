@@ -1,16 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import TicketsList from "../TicketsList";
 import ChatWindow from "../ChatWindow";
 import CreateTicketModal from "../CreateTicketModal";
-import { mockTickets } from '../../../../data/mockData';
+import { mockTickets } from "../../../../data/mockData";
+import { useGetSingleUserReportQuery } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 
 export default function Tickets() {
   const [selectedTicket, setSelectedTicket] = useState(mockTickets[0]);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [tickets, setTickets] = useState(mockTickets);
+  const [tickets, setTickets] = useState<any[]>([]);
+
+  const { data: reportresponse } = useGetSingleUserReportQuery({});
+  useEffect(() => {
+    if (reportresponse?.data) {
+      setTickets(reportresponse.data);
+    }
+  }, [reportresponse]);
 
   const handleCreateTicket = (formData: any) => {
     // Prepare data for API
@@ -65,7 +74,9 @@ export default function Tickets() {
       {/* Header with Create Button */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-foreground mb-1">All Ticket</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-1">
+            All Ticket
+          </h2>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}

@@ -2,12 +2,14 @@ import { useGetFlashCardBankQuery } from "@/store/features/flashCard/flashCard.a
 import { IFlashcardBank } from "@/types";
 import FlashCard from "./FlashCard";
 import { Link } from "react-router-dom";
+import GlobalLoader2 from "@/common/GlobalLoader2";
 
 export default function GeneratedFlashCard() {
-  const { data: flashcardData } = useGetFlashCardBankQuery({});
+  const { data: flashcardData, isLoading } = useGetFlashCardBankQuery({});
   const flashcardBank = flashcardData?.data;
   console.log(flashcardBank);
 
+  if (isLoading) return <GlobalLoader2 />;
   return (
     <div>
       <div className="bg-white border border-slate-300 p-5 rounded-[8px]">
