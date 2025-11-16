@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,17 +16,17 @@ export default function QuizReportModal({
   open,
   setOpen,
   mcqId = "",
-  questionBankId = "69146a0165d18f212161fa60",
+  questionBankId = "",
 }: any) {
   const [issue, setIssue] = useState("");
   const [loading, setLoading] = useState(false);
   const [ReportMcq] = useReportMcqMutation();
 
-  useEffect(() => {
-    if (mcqId) {
-      console.log("Reporting MCQ ID:", mcqId);
-    }
-  }, [mcqId]);
+  // useEffect(() => {
+  //   if (mcqId) {
+  //     console.log("Reporting MCQ ID:", mcqId);
+  //   }
+  // }, [mcqId]);
 
   // Handle Report Submit
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,10 +44,8 @@ export default function QuizReportModal({
     };
     setLoading(true);
 
-    console.log(payloadData);
     try {
-      const result = await ReportMcq(payloadData).unwrap();
-      console.log("Report response:", result);
+      await ReportMcq(payloadData).unwrap();
 
       setIssue("");
       setOpen(false);
