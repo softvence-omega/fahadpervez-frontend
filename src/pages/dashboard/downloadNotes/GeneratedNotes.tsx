@@ -48,14 +48,19 @@ export default function GeneratedNotes() {
             .fill(null)
             .map(() => (
               <NoteCard
-                tag="Heart Sounds"
-                title="Types of Shock"
-                description="Shock is a life-threatening condition where tissue perfusion is inadequate to meet cellular demands, leading to cellular dysfunction and organ failure."
-                chapter={12}
+                key={2}
+                tag={"Anatomy"} // realistic subject
+                title={"Cardiovascular System Overview"} // relevant title
+                description={
+                  "This note covers heart chambers, valves, major arteries, and common cardiac conditions."
+                }
+                chapter={"Chapter 3"}
                 pages={12}
-                // downloads={45}
-                showDownload={false}
+                downloads={45}
+                pdfUrl={"https://example.com/sample.pdf"}
+                pdfId={"sample-pdf-id"}
                 onViewNotes={() => console.log("Viewing notes")}
+                onDownload={() => console.log("Downloading notes")}
               />
             ))}
         </div>

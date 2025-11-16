@@ -178,6 +178,14 @@ export const mcqApi = baseAPI.injectEndpoints({
         body: data,
       }),
     }),
+
+    getSingleUserReport: build.query({
+      query: () => ({
+        url: `/report/all-reporter`,
+        method: "GET",
+      }),
+    }),
+    //end
   }),
   overrideExisting: false,
 });
@@ -202,4 +210,5 @@ export const {
   useUpdateStudentTypeApiMutation,
   useDeleteStudentTypeApiMutation,
   useGetStudentTypeApiQuery,
+  useGetSingleUserReportQuery,
 } = mcqApi;
