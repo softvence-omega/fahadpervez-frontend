@@ -53,7 +53,6 @@ const MedicalSharedTable: React.FC<MedicalSharedTableProps> = ({
   data,
   mcqBankId,
 }) => {
-  const [activeTab, setActiveTab] = useState("MCQ");
   const [difficulty, setDifficulty] = useState<
     "all" | "Basics" | "Intermediate" | "Advance"
   >("all");
@@ -116,11 +115,9 @@ const MedicalSharedTable: React.FC<MedicalSharedTableProps> = ({
 
   return (
     <>
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full ">
         <div className="w-full flex flex-col gap-6">
           <SearchWithTabs
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
             difficulty={difficulty}
             setDifficulty={setDifficulty}
           />
