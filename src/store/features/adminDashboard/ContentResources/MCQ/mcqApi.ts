@@ -264,4 +264,5 @@ export const {
   useGetSingleMcqQuery,
   useDeleteMcqBankApiMutation,
   useUpdatedSingleMcqApiMutation,
+  useGetSingleUserReportQuery,
 } = mcqApi;
