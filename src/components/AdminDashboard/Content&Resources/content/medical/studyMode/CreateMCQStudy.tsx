@@ -6,7 +6,8 @@ import ToggleButtonGroup from "@/components/AdminDashboard/reuseable/ToggleButto
 import { useState } from "react";
 import StepIndicator from "../StepIndicator";
 import { steps } from "../createContent/CreateContent";
-import { tabs } from "../examMode/SearchWithTabs";
+
+import { tabs } from "../../MultipleTap";
 import AddBulkMCQ from "./AddBulkMCQ";
 import AddMCQForm from "./AddMCQForm";
 
