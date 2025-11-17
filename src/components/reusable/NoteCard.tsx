@@ -21,7 +21,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
   tag,
   title,
   description,
-  chapter,
+  // chapter,
   pages,
   downloads,
   showDownload = true,
@@ -43,11 +43,11 @@ const NoteCard: React.FC<NoteCardProps> = ({
       <p className="text-base text-slate-700 mt-2 mb-9">{description}</p>
 
       {/* Meta Info */}
-      <div className="flex justify-between flex-wrap gap-5">
-        <div>
+      <div className="flex flex-wrap gap-14">
+        {/* <div>
           <h3 className="text-base font-medium">Chapter</h3>
           <p className="text-base mt-1">{chapter}</p>
-        </div>
+        </div> */}
         <div>
           <h3 className="text-base font-medium">Pages</h3>
           <p className="text-base mt-1">{pages}</p>
