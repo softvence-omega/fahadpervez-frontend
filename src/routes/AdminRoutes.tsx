@@ -1,3 +1,8 @@
+import CreateContent from "@/components/AdminDashboard/Content&Resources/content/medical/createContent/CreateContent";
+import DentalStudent from "@/components/AdminDashboard/Content&Resources/content/students/Dental/DentalStudent";
+import MedicalStudent from "@/components/AdminDashboard/Content&Resources/content/students/Medical/MedicalStudent";
+import NursingStudent from "@/components/AdminDashboard/Content&Resources/content/students/Nursing/NursingStudent";
+import StudentsCard from "@/components/AdminDashboard/Content&Resources/content/students/StudentsCard";
 import MentorProfile from "@/components/AdminDashboard/userManagement/profile/MentorProfile";
 import ProfessionalProfile from "@/components/AdminDashboard/userManagement/profile/ProfessionalProfile";
 import StudentProfile from "@/components/AdminDashboard/userManagement/profile/StudentProfile";
@@ -51,7 +56,34 @@ const adminRoutes = {
     {
       path: "content-management",
       element: <ContentManagement />,
+      children: [
+        {
+          index: true,
+          element: <StudentsCard />,
+        },
+        {
+          path: "students",
+          element: <StudentsCard />,
+        },
+        {
+          path: "create-content",
+          element: <CreateContent />,
+        },
+        {
+          path: "medical-student",
+          element: <MedicalStudent />,
+        },
+        {
+          path: "dental-student",
+          element: <DentalStudent />,
+        },
+        {
+          path: "nursing-student",
+          element: <NursingStudent />,
+        },
+      ],
     },
+
     {
       path: "resource-management",
       element: <ResourceManagement />,
