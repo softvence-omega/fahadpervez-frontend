@@ -22,3 +22,13 @@ export interface ManualMCQBank {
   studentType: string;
   mcqs: MCQ[];
 }
+
+export interface UploadImageResponse {
+  success: boolean;
+  message: string;
+  data: {
+    fileId: string;
+    fileUrl: string;
+  };
+  meta: null;
+}

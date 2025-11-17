@@ -3,24 +3,24 @@ import CommonButton from "@/common/button/CommonButton";
 import React from "react";
 
 interface ActionButtonsProps {
-  onSavePublish?: () => void;
+  onSavePublish: () => void;
   isLoading?: boolean;
   onCancel?: () => void;
 }
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({
-  onSavePublish,
   isLoading,
   onCancel,
+  onSavePublish,
 }) => {
   return (
-    <div className="flex items-center justify-between pt-6">
+    <div className="flex items-center justify-end gap-6 pt-6">
       <div className="flex flex-col sm:flex-row gap-3 ">
         <CommonButton
-          type="submit"
-          onClick={onSavePublish}
+          type="button"
           className="bg-blue-500 !text-white"
           disabled={isLoading}
+          onClick={onSavePublish}
         >
           {isLoading ? (
             <ButtonWithLoading title="Saving..." />

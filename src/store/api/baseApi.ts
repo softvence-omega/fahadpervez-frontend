@@ -65,6 +65,7 @@ export const baseAPI = createApi({
     "Questions",
     "SocialPost",
     "Mcq",
+    "SingleMcq",
     "StudyModeTree",
     "Exams",
     "studentType",

@@ -1,9 +1,9 @@
 import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
 import { useUploadBulkMcqApiMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
-import { showAddContent } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
-import { AppDispatch, RootState } from "@/store/store";
+import { RootState } from "@/store/store";
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import ActionButtons from "../../ActionButtons";
 import RequiredColumnsList from "./RequiredColumsList";
 import UploadDropzone from "./UpdateDropZone";
@@ -39,7 +39,6 @@ const columns = [
 const AddBulkMCQ: React.FC<AddQuestionProps> = () => {
   const [detectedCount, setDetectedCount] = useState(0);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const dispatch = useDispatch<AppDispatch>();
 
   const selectFormData = useSelector(
     (state: RootState) => state.staticContent.formData
@@ -68,13 +67,16 @@ const AddBulkMCQ: React.FC<AddQuestionProps> = () => {
       }
       if (formData) {
         await uploadBulkMcqApi(formData);
-        dispatch(showAddContent());
       }
     } catch (error) {
       console.error("Upload error:", error);
     }
   };
 
+  const navigate = useNavigate();
+  const handleBack = () => {
+    navigate(-1);
+  };
   return (
     <>
       <CommonBorderWrapper>
@@ -100,7 +102,7 @@ const AddBulkMCQ: React.FC<AddQuestionProps> = () => {
       <ActionButtons
         onSavePublish={handleImport}
         isLoading={isUploading}
-        onCancel={() => dispatch(showAddContent())}
+        onCancel={handleBack}
       />
     </>
   );

@@ -2,10 +2,7 @@ import CommonButton from "@/common/button/CommonButton";
 import CommonSelect, { SelectOption } from "@/common/custom/CommonSelect";
 import CommonHeader from "@/common/header/CommonHeader";
 import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
-import { showAddMCQ } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
-import { AppDispatch } from "@/store/store";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 
 const inputClass = {
   label: "block text-sm font-normal text-[#020617] font-inter mb-2",
@@ -38,8 +35,6 @@ const CommonSelectionForm: React.FC<ContentSelectionFormProps> = ({
   const [system, setSystem] = useState<string>("");
   const [topic, setTopic] = useState<string>("");
   const [subtopic, setSubtopic] = useState<string>("");
-
-  const dispatch = useDispatch<AppDispatch>();
 
   const subjects = Object.keys(hierarchyData);
   const systems = subject ? Object.keys(hierarchyData[subject]) : [];
@@ -99,7 +94,6 @@ const CommonSelectionForm: React.FC<ContentSelectionFormProps> = ({
 
   const handleNext = () => {
     if (onNextStep) onNextStep();
-    else dispatch(showAddMCQ());
   };
 
   return (

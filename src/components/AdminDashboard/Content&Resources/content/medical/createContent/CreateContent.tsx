@@ -1,10 +1,8 @@
 import CommonSpace from "@/common/space/CommonSpace";
 import DashboardTopSection from "@/components/AdminDashboard/reuseable/DashboardTopSection";
 import Tabs from "@/components/AdminDashboard/reuseable/Tabs";
-import { RootState } from "@/store/store";
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { tabs } from "../examMode/SearchWithTabs";
+import { tabs } from "../../MultipleTap";
 import StepIndicator from "../StepIndicator";
 import CreateMCQStudy from "../studyMode/CreateMCQStudy";
 import ContentSelectionForm from "./ContentSelectionForm";
@@ -13,12 +11,8 @@ export const steps = [
   { id: 2, label: "Add Content" },
 ];
 
-interface CreateContentProps {
-  studentType: string;
-}
-const CreateContent: React.FC<CreateContentProps> = ({ studentType }) => {
+const CreateContent = () => {
   const [activeTab, setActiveTab] = useState("MCQ");
-  const { addMCQ } = useSelector((state: RootState) => state.staticContent);
   const [breadcrumb, setBreadcrumb] = useState("");
 
   const handleBreadcrumb = (text: string) => {
@@ -27,9 +21,11 @@ const CreateContent: React.FC<CreateContentProps> = ({ studentType }) => {
 
   const activeStep = 1;
 
+  const [isMcqCreation, setIsMcqCreation] = useState(false);
+
   return (
     <div>
-      {addMCQ ? (
+      {isMcqCreation ? (
         <CreateMCQStudy
           breadcrumb={breadcrumb}
           activeTab={activeTab}
@@ -51,7 +47,7 @@ const CreateContent: React.FC<CreateContentProps> = ({ studentType }) => {
               <ContentSelectionForm
                 handleBreadcrumb={handleBreadcrumb}
                 activeTab={activeTab}
-                studentType={studentType}
+                setIsMcqCreation={setIsMcqCreation}
               />
             </div>
           </CommonSpace>
