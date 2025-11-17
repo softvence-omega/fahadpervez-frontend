@@ -1,6 +1,5 @@
 import { Exam } from "@/store/features/adminDashboard/ContentResources/MCQ/type/tree";
 import { useState } from "react";
-import MedicalSharedTable from "../MedicalSharedTable";
 import CreateExamModal from "./CreateExamModal";
 import TableContentForExam from "./TableContentForExam";
 
@@ -16,7 +15,6 @@ const ExamMode = () => {
           iconAction={() => setIsCreateQuestionModalOpen(true)}
           setInitialData={setInitialData}
         />
-        <MedicalSharedTable />
       </div>
 
       {isCreateQuestionModalOpen && (

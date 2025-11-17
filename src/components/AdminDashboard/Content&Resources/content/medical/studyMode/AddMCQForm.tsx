@@ -1,16 +1,19 @@
-"use client";
+import CommonButton from "@/common/button/CommonButton";
 import CommonSelect from "@/common/custom/CommonSelect";
 import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
-import { useUploadManualMcqMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
-import { showAddContent } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
-import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { AppDispatch, RootState } from "@/store/store";
+import {
+  useUploadManualMcqMutation,
+  useUploadSingleImageMutation,
+} from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import { useAppSelector } from "@/store/hook";
+import { RootState } from "@/store/store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
+import { useState } from "react";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import ActionButtons from "../../ActionButtons";
 
-// ✅ Zod schema based on your given types
 const MCQOptionSchema = z.object({
   option: z.string(),
   optionText: z.string().min(1, { message: "Option text is required" }),
@@ -20,12 +23,16 @@ const MCQOptionSchema = z.object({
 const MCQSchema = z.object({
   difficulty: z.enum(["Basics", "Intermediate", "Advance"]),
   question: z.string().min(1, { message: "Question is required" }),
-  imageDescription: z.string().url().optional(),
+  imageDescription: z.string().url().optional().or(z.literal("")),
   options: z.array(MCQOptionSchema).length(4),
   correctOption: z.string(),
 });
 
-type MCQFormValues = z.infer<typeof MCQSchema>;
+const FinalSchema = z.object({
+  mcqs: z.array(MCQSchema).min(1),
+});
+
+type MCQFormValues = z.infer<typeof FinalSchema>;
 
 const inputClass = {
   label: "block text-sm font-normal text-[#020617] font-inter mb-2",
@@ -35,7 +42,6 @@ const inputClass = {
 };
 
 const AddMCQForm = () => {
-  const dispatch = useAppDispatch<AppDispatch>();
   const { formData } = useAppSelector(
     (state: RootState) => state.staticContent
   );
@@ -53,15 +59,27 @@ const AddMCQForm = () => {
     register,
     handleSubmit,
     control,
+    reset,
+    setValue,
     formState: { errors },
   } = useForm<MCQFormValues>({
-    resolver: zodResolver(MCQSchema),
+    resolver: zodResolver(FinalSchema),
     defaultValues: {
-      question: "",
-      difficulty: "Basics",
-      correctOption: "A",
-      options: defaultOptions,
+      mcqs: [
+        {
+          question: "",
+          difficulty: "Basics",
+          correctOption: "A",
+          options: defaultOptions,
+          imageDescription: "",
+        },
+      ],
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "mcqs",
   });
 
   const correctAnswerOptions = [
@@ -77,113 +95,231 @@ const AddMCQForm = () => {
     { label: "Advance", value: "Advance" },
   ] as const;
 
+  const [uploadSingleImage, { isLoading: isUploadingImage }] =
+    useUploadSingleImageMutation();
+
+  const [imagePreviews, setImagePreviews] = useState<Record<number, string>>(
+    {}
+  );
+
+  const handleUploadImage = async (file: File, qIndex: number) => {
+    const formData = new FormData();
+    formData.append("image", file);
+    try {
+      const result = await uploadSingleImage(formData).unwrap();
+      const fileUrl = result.data.fileUrl;
+
+      setValue(`mcqs.${qIndex}.imageDescription`, fileUrl);
+
+      console.log("Uploaded image URL:", fileUrl);
+
+      setImagePreviews((prev) => ({
+        ...prev,
+        [qIndex]: fileUrl,
+      }));
+    } catch (error) {
+      console.error("Image upload error:", error);
+    }
+  };
+
   const onSubmit = async (data: MCQFormValues) => {
     if (formData) {
       const formattedPayload = {
         ...formData,
-        mcqs: [data],
+        mcqs: data.mcqs,
       };
-      await uploadManualMcq(formattedPayload);
-      dispatch(showAddContent());
+
+      try {
+        await uploadManualMcq(formattedPayload).unwrap();
+      } catch (error) {
+        console.error("API Error:", error);
+      }
     }
   };
 
+  const handleSavePublish = () => {
+    handleSubmit(onSubmit)();
+    setImagePreviews({});
+    reset();
+  };
+
+  const navigate = useNavigate();
+  const handleCancel = () => {
+    navigate(-1);
+  };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <CommonBorderWrapper>
-        <div className="space-y-6">
-          <div>
-            <label className={inputClass.label}>Question</label>
-            <textarea
-              {...register("question")}
-              rows={4}
-              className={inputClass.input}
-              placeholder="Question Text"
-            />
-            {errors.question && (
-              <p className={inputClass.error}>{errors.question.message}</p>
+      {fields.map((field, qIndex) => (
+        <CommonBorderWrapper key={field.id} className="mb-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-base font-semibold">Question {qIndex + 1}</h2>
+
+            {fields.length > 1 && (
+              <CommonButton
+                type="button"
+                onClick={() => remove(qIndex)}
+                className="text-red-500 "
+              >
+                Remove Question
+              </CommonButton>
             )}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              Answer Options
-            </label>
-            <div className="space-y-3">
-              {defaultOptions.map((_, index) => (
-                <div
-                  key={index}
-                  className="flex gap-3 items-start rounded-md border border-[#CBD5E1] bg-[#EFF6FF]/60 p-4"
-                >
-                  <div className="flex items-center gap-2 pt-2">
+          <div className="space-y-6">
+            <div>
+              <label className={inputClass.label}>Question</label>
+              <textarea
+                {...register(`mcqs.${qIndex}.question`)}
+                rows={4}
+                className={inputClass.input}
+                placeholder="Question Text"
+              />
+              {errors.mcqs?.[qIndex]?.question && (
+                <p className={inputClass.error}>
+                  {errors.mcqs[qIndex]?.question?.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className={inputClass.label}>Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                className={` cursor-pointer ${inputClass.input}`}
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    handleUploadImage(e.target.files[0], qIndex);
+                  }
+                }}
+                disabled={isUploadingImage}
+              />
+              {isUploadingImage && (
+                <p className="text-blue-500 text-sm mt-1">Uploading image...</p>
+              )}
+              {imagePreviews[qIndex] && (
+                <div className="mt-2">
+                  <img
+                    src={imagePreviews[qIndex]}
+                    alt={`Preview for question ${qIndex + 1}`}
+                    className="max-h-40 object-contain border rounded"
+                  />
+                  <p className="text-green-600 text-sm mt-1">
+                    Image uploaded successfully!
+                  </p>
+                </div>
+              )}
+              <input
+                type="hidden"
+                {...register(`mcqs.${qIndex}.imageDescription`)}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Answer Options
+              </label>
+
+              <div className="space-y-3">
+                {defaultOptions.map((_, index) => (
+                  <div
+                    key={index}
+                    className="flex gap-3 items-start rounded-md border border-[#CBD5E1] bg-[#EFF6FF]/60 p-4"
+                  >
                     <span className={inputClass.label}>
                       {String.fromCharCode(65 + index)}
                     </span>
+
+                    <div className="flex-1">
+                      <input
+                        type="text"
+                        placeholder={`Enter option ${String.fromCharCode(
+                          65 + index
+                        )}`}
+                        {...register(
+                          `mcqs.${qIndex}.options.${index}.optionText` as const
+                        )}
+                        className={inputClass.input}
+                      />
+
+                      {errors.mcqs?.[qIndex]?.options?.[index]?.optionText && (
+                        <p className={inputClass.error}>
+                          {
+                            errors.mcqs[qIndex]?.options?.[index]?.optionText
+                              ?.message
+                          }
+                        </p>
+                      )}
+
+                      <textarea
+                        placeholder="Explanation (optional)"
+                        rows={2}
+                        {...register(
+                          `mcqs.${qIndex}.options.${index}.explanation` as const
+                        )}
+                        className={`${inputClass.input} resize-none mt-2`}
+                      />
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <input
-                      type="text"
-                      placeholder={`Enter option ${String.fromCharCode(
-                        65 + index
-                      )}`}
-                      {...register(`options.${index}.optionText` as const)}
-                      className={inputClass.input}
-                    />
-                    {errors.options?.[index]?.optionText && (
-                      <p className={inputClass.error}>
-                        {errors.options[index]?.optionText?.message}
-                      </p>
-                    )}
-                    <textarea
-                      placeholder="Explanation (optional)"
-                      rows={2}
-                      {...register(`options.${index}.explanation` as const)}
-                      className={`${inputClass.input} resize-none mt-2`}
-                    />
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className={inputClass.label}>Correct Answer</label>
+              <Controller
+                control={control}
+                name={`mcqs.${qIndex}.correctOption`}
+                render={({ field }) => (
+                  <CommonSelect
+                    className="!bg-white border-[#CBD5E1]"
+                    value={field.value}
+                    item={correctAnswerOptions}
+                    onValueChange={(val) => field.onChange(val)}
+                  />
+                )}
+              />
+            </div>
+
+            <div>
+              <label className={inputClass.label}>Difficulty Label</label>
+              <Controller
+                control={control}
+                name={`mcqs.${qIndex}.difficulty`}
+                render={({ field }) => (
+                  <CommonSelect
+                    className="!bg-white border-[#CBD5E1]"
+                    value={field.value}
+                    item={difficultyOptions}
+                    onValueChange={(val) => field.onChange(val)}
+                  />
+                )}
+              />
             </div>
           </div>
+        </CommonBorderWrapper>
+      ))}
 
-          {/* Correct Answer */}
-          <div>
-            <label className={inputClass.label}>Correct Answer</label>
-            <Controller
-              control={control}
-              name="correctOption"
-              render={({ field }) => (
-                <CommonSelect
-                  className="!bg-white border-[#CBD5E1]"
-                  value={field.value}
-                  item={correctAnswerOptions}
-                  onValueChange={(val) => field.onChange(val)}
-                />
-              )}
-            />
-          </div>
-
-          <div>
-            <label className={inputClass.label}>Difficulty Label</label>
-            <Controller
-              control={control}
-              name="difficulty"
-              render={({ field }) => (
-                <CommonSelect
-                  className="!bg-white border-[#CBD5E1]"
-                  value={field.value}
-                  item={difficultyOptions}
-                  onValueChange={(val) => field.onChange(val)}
-                />
-              )}
-            />
-          </div>
-        </div>
-      </CommonBorderWrapper>
+      <CommonButton
+        type="button"
+        onClick={() =>
+          append({
+            question: "",
+            difficulty: "Basics",
+            correctOption: "A",
+            options: defaultOptions,
+            imageDescription: "",
+          })
+        }
+        className=" !text-blue-600  "
+      >
+        + Add Another Question
+      </CommonButton>
 
       <ActionButtons
-        onCancel={() => dispatch(showAddContent())}
         isLoading={isUploading}
+        onSavePublish={handleSavePublish}
+        onCancel={handleCancel}
       />
     </form>
   );

@@ -1,8 +1,9 @@
 import { baseAPI } from "@/store/api/baseApi";
 import { AllContentMCQList } from "./type/allContent";
-import { ManualMCQBank } from "./type/manual";
+import { ManualMCQBank, UploadImageResponse } from "./type/manual";
 import { GetAllMcqResponse, GetStudyModeTree, McqBankParams } from "./type/mcq";
-import { SingleMcqData } from "./type/singleMcq";
+import { SingleMcqData, SingleMCQUpdatePayload } from "./type/singleMcq";
+import { SingleMCQResponse } from "./type/singleMcqBank";
 import { CreateProfileTypePayload, ProfileTypeResponse } from "./type/student";
 import { GetExamsResponse, PostExam, PostStudyModeTree } from "./type/tree";
 
@@ -17,14 +18,15 @@ export const mcqApi = baseAPI.injectEndpoints({
       providesTags: ["Mcq"],
     }),
 
-    deleteMcqApi: build.mutation<void, string>({
+    // for mcq bank
+    deleteMcqBankApi: build.mutation<void, string>({
       query: (id) => ({
         url: `/mcq-bank/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Mcq"],
+      invalidatesTags: ["Mcq", "StudyModeTree", "SingleMcq", "Exams"],
     }),
-
+    // for mcq bank
     getSingleMcqApi: build.query<SingleMcqData, string>({
       query: (id) => ({
         url: `/mcq-bank/${id}`,
@@ -52,6 +54,49 @@ export const mcqApi = baseAPI.injectEndpoints({
         body: data,
       }),
     }),
+    uploadSingleImage: build.mutation<UploadImageResponse, FormData>({
+      query: (data) => ({
+        url: `/aws/upload-single-image`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    // for single  mcq
+    getSingleMcq: build.query<
+      SingleMCQResponse,
+      { id: string; page?: number; limit?: number }
+    >({
+      query: ({ id, page, limit }) => ({
+        url: `/mcq-bank/${id}${
+          page && limit ? `?page=${page}&limit=${limit}` : ""
+        }`,
+        method: "GET",
+      }),
+      providesTags: ["SingleMcq"],
+    }),
+
+    deleteSingleMcqApi: build.mutation<
+      void,
+      { mcqBankId: string; mcqId: string }
+    >({
+      query: ({ mcqBankId, mcqId }) => ({
+        url: `/mcq-bank/single/${mcqBankId}/${mcqId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["SingleMcq", "Mcq", "StudyModeTree", "Exams"],
+    }),
+    updatedSingleMcqApi: build.mutation<
+      void,
+      { data: SingleMCQUpdatePayload; mcqBankId: string; mcqId: string }
+    >({
+      query: ({ data, mcqBankId, mcqId }) => ({
+        url: `/mcq-bank/${mcqBankId}/question/${mcqId}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["SingleMcq", "Mcq", "StudyModeTree", "Exams"],
+    }),
 
     //student type get and post
 
@@ -71,16 +116,21 @@ export const mcqApi = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ["studentType"],
     }),
-    updateStudentTypeApi: build.mutation<void, string>({
-      query: (id) => ({
-        url: `/api/profile_type_const/update/${id}`,
+    updateStudentTypeApi: build.mutation<
+      void,
+      { _id: string; typeName: string }
+    >({
+      query: ({ _id, typeName }) => ({
+        url: `/profile_type_const/update/${_id}`,
         method: "PATCH",
+        body: { typeName },
       }),
       invalidatesTags: ["studentType"],
     }),
+
     deleteStudentTypeApi: build.mutation<void, string>({
       query: (id) => ({
-        url: `/api/profile_type_const/delete/${id}`,
+        url: `/profile_type_const/delete/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["studentType"],
@@ -186,7 +236,6 @@ export const {
   useGetMcqApiQuery,
   useGetSingleMcqApiQuery,
   useUploadBulkMcqApiMutation,
-  useDeleteMcqApiMutation,
   usePostStudyModeTreeMutation,
   useGetStudyModeTreeQuery,
   useUpdateStudyModeTreeMutation,
@@ -202,4 +251,9 @@ export const {
   useUpdateStudentTypeApiMutation,
   useDeleteStudentTypeApiMutation,
   useGetStudentTypeApiQuery,
+  useUploadSingleImageMutation,
+  useDeleteSingleMcqApiMutation,
+  useGetSingleMcqQuery,
+  useDeleteMcqBankApiMutation,
+  useUpdatedSingleMcqApiMutation,
 } = mcqApi;

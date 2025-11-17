@@ -1,21 +1,18 @@
 import CommonSpace from "@/common/space/CommonSpace";
 import DashboardTopSection from "@/components/AdminDashboard/reuseable/DashboardTopSection";
 import Tabs from "@/components/AdminDashboard/reuseable/Tabs";
-import { showAddContent } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
-import { AppDispatch } from "@/store/store";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import ExamMode from "./examMode/ExamMode";
-import StudyMode from "./studyMode/StudyMode";
+import { useNavigate } from "react-router-dom";
+import ExamMode from "../../medical/examMode/ExamMode";
+import StudyMode from "../../medical/studyMode/StudyMode";
 
 const MedicalStudent = () => {
-  const Dispatch = useDispatch<AppDispatch>();
-
   const [selectMode, setSelectMode] = useState("study");
   const tabs = [
     { label: "Study Mode", value: "study" },
     { label: "Exam Mode", value: "exam" },
   ];
+  const navigate = useNavigate();
   return (
     <div>
       <div>
@@ -23,7 +20,9 @@ const MedicalStudent = () => {
           title="Medical Students Content Inventory"
           description="Manage and organize content for Medical Students."
           buttonText="Add Content"
-          action={() => Dispatch(showAddContent())}
+          action={() => {
+            navigate("/admin/content-management/create-content");
+          }}
         />
       </div>
       <CommonSpace>

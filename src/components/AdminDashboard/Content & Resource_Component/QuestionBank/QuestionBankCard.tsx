@@ -1,5 +1,4 @@
 import CommonButton from "@/common/button/CommonButton";
-import { useDeleteMcqApiMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import { BookOpenTextIcon, CircleChevronRight, DotIcon } from "lucide-react";
 
 export interface QuestionBankCardProps {
@@ -26,11 +25,6 @@ const QuestionBankCard: React.FC<QuestionBankCardProps> = ({
     onAdd();
   };
 
-  const [deleteMcqApi, { isLoading: isDeleting }] = useDeleteMcqApiMutation();
-
-  const handleDelete = async (id: string) => {
-    await deleteMcqApi(id);
-  };
   return (
     <div className="bg-white rounded-xl border border-gray-200 flex flex-col justify-between p-4 gap-4 w-full max-w-full">
       {/* Top Section */}
@@ -59,8 +53,6 @@ const QuestionBankCard: React.FC<QuestionBankCardProps> = ({
         {/* Right Content */}
         <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4 shrink-0 flex-wrap">
           <CommonButton
-            disabled={isDeleting}
-            onClick={() => handleDelete(_id)}
             className={`!px-3 !py-1 !text-xs rounded-full !bg-red-500 !text-white `}
           >
             Delete
