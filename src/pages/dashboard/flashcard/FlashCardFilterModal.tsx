@@ -62,7 +62,7 @@ export default function FlashCardFilterModal({ close, onApply }: FilterModalProp
         <select
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
-          className="w-full border p-2 rounded mb-4"
+          className="w-full border p-2 rounded mb-4 cursor-pointer"
         >
           <option value="">Select Subject</option>
           {subjects?.map((sub) => (
@@ -78,7 +78,7 @@ export default function FlashCardFilterModal({ close, onApply }: FilterModalProp
           value={system}
           onChange={(e) => setSystem(e.target.value)}
           disabled={!selectedSubject}
-          className="w-full border p-2 rounded mb-4 disabled:bg-gray-100"
+          className="w-full border p-2 rounded mb-4 disabled:bg-gray-100 cursor-pointer"
         >
           <option value="">Select System</option>
 
@@ -95,7 +95,7 @@ export default function FlashCardFilterModal({ close, onApply }: FilterModalProp
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
           disabled={!system}
-          className="w-full border p-2 rounded mb-2 disabled:bg-gray-100"
+          className="w-full border p-2 rounded mb-2 disabled:bg-gray-100 cursor-pointer"
         >
           <option value="">Select Topic</option>
 
@@ -107,11 +107,11 @@ export default function FlashCardFilterModal({ close, onApply }: FilterModalProp
         </select>
 
         <div className="flex justify-end gap-3 mt-4">
-          <button onClick={close}>Cancel</button>
+          <button onClick={close} className=" cursor-pointer">Cancel</button>
 
           <button
             onClick={() => onApply({ subject, system, topic })}
-            className="bg-blue-600 text-white px-4 py-2"
+            className="bg-blue-600 text-white px-4 py-2 cursor-pointer rounded"
             disabled={!subject}
           >
             Apply
