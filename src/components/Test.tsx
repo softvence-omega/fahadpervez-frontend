@@ -322,9 +322,10 @@ export const TreeNodeComponent: React.FC<TreeNodeProps> = ({
     if (hasChildren) {
       onToggleExpand(node.id);
     }
-    if (node.type === "subtopic") {
-      onSelect(node.id, node.name);
-    }
+    // if (node.type === "subtopic") {
+    //   onSelect(node.id, node.name);
+    // }
+    onSelect(node.id, node.name);
   };
 
   const getIcon = () => {

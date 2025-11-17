@@ -246,7 +246,7 @@ const dashboardRoutes = {
     },
     {
       path: "all-flash-card",
-      element: <AllGeneratedFlashCard />,
+      element: <AllGeneratedFlashCard />, //this is all flashcard component
     },
     {
       path: "solve-flash-card/:id",
