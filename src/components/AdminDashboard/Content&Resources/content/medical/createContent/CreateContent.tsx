@@ -2,7 +2,7 @@ import CommonSpace from "@/common/space/CommonSpace";
 import DashboardTopSection from "@/components/AdminDashboard/reuseable/DashboardTopSection";
 import Tabs from "@/components/AdminDashboard/reuseable/Tabs";
 import { useState } from "react";
-import { tabs } from "../examMode/SearchWithTabs";
+import { tabs } from "../../MultipleTap";
 import StepIndicator from "../StepIndicator";
 import CreateMCQStudy from "../studyMode/CreateMCQStudy";
 import ContentSelectionForm from "./ContentSelectionForm";

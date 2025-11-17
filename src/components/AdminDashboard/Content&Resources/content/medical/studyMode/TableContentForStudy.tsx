@@ -145,7 +145,7 @@ function TreeNode({
   };
 
   return (
-    <div className="ml-[2px] font-arial">
+    <div className="ml-[2px] font-arial ">
       <div
         className={`flex items-center justify-between py-1.5 cursor-pointer rounded-md hover:bg-gray-50 ${
           depth > 0 ? "ml-4" : ""
@@ -228,7 +228,7 @@ const TableContentForStudy: React.FC<TableContentProps> = ({
     : [];
 
   return (
-    <div className="w-[400px] bg-white rounded-2xl shadow p-4 ">
+    <div className="w-[400px] min-h-[400px] bg-white rounded-2xl shadow p-4 ">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">

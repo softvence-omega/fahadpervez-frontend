@@ -6,6 +6,7 @@ import {
 } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useState } from "react";
+import MultipleTap from "../../MultipleTap";
 import MedicalSharedTable from "../MedicalSharedTable";
 import AddSubjectModal from "./AddSubjectModal";
 import McqBankCardForAdmin from "./McqBankCardForAdmin";
@@ -31,15 +32,20 @@ const StudyMode = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const limit = 10;
 
-  const queryArg =
-    selectedNode.subtopic.trim() !== ""
-      ? {
-          subject: selectedNode.subject.trim(),
-          system: selectedNode.system.trim(),
-          topic: selectedNode.topic.trim(),
-          subtopic: selectedNode.subtopic.trim(),
-        }
-      : skipToken;
+  const isValidSelection =
+    selectedNode.subject.trim() !== "" ||
+    selectedNode.system.trim() !== "" ||
+    selectedNode.topic.trim() !== "" ||
+    selectedNode.subtopic.trim() !== "";
+
+  const queryArg = isValidSelection
+    ? {
+        subject: selectedNode.subject.trim(),
+        system: selectedNode.system.trim(),
+        topic: selectedNode.topic.trim(),
+        subtopic: selectedNode.subtopic.trim(),
+      }
+    : skipToken;
 
   const { data: mcqBank } = useGetStudyModeAllContentQuery(queryArg);
 
@@ -54,34 +60,48 @@ const StudyMode = () => {
   const singleMcqBankData = singleMcqBank?.data.mcqs ?? [];
   const totalPages = singleMcqBank?.meta?.totalPages ?? 1;
 
+  // tab state
+
+  const [activeTab, setActiveTab] = useState("MCQ");
+
   return (
     <div>
-      <div className="w-full flex gap-6">
+      <div className="w-full  flex  items-start gap-6">
         <TableContent
           iconAction={() => setIsSubjectModalOpen(true)}
-          setSelectedNode={setSelectedNode}
+          setSelectedNode={(node) => {
+            setSelectedNode(node);
+            setMcqBankId("");
+          }}
         />
 
-        {singleMcqBankData.length === 0 ? (
+        <div className="w-full flex flex-col gap-6">
           <div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-6">
-              {mcqBank?.data?.map((data) => (
-                <McqBankCardForAdmin
-                  key={data._id}
-                  data={data}
-                  setMcqBankId={setMcqBankId}
+            <MultipleTap activeTab={activeTab} setActiveTab={setActiveTab} />
+          </div>
+          <div>
+            {mcqBankId === "" ? (
+              <div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-6">
+                  {mcqBank?.data?.map((data) => (
+                    <McqBankCardForAdmin
+                      key={data._id}
+                      data={data}
+                      setMcqBankId={setMcqBankId}
+                    />
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="w-full flex flex-col gap-4">
+                <MedicalSharedTable
+                  data={singleMcqBankData}
+                  mcqBankId={mcqBankId}
                 />
-              ))}
-            </div>
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="w-full flex flex-col gap-4">
-            <MedicalSharedTable
-              data={singleMcqBankData}
-              mcqBankId={mcqBankId}
-            />
-          </div>
-        )}
+        </div>
       </div>
 
       {isSubjectModalOpen && (
