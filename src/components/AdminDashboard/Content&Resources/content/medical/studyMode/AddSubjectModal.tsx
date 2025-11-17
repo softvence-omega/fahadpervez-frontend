@@ -54,7 +54,7 @@ interface AddSubjectModalProps {
 const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
   const [subjectName, setSubjectName] = useState("");
   const [systems, setSystems] = useState<System[]>([]);
-  const [errors, setErrors] = useState<any>({}); // For Zod errors
+  const [errors, setErrors] = useState<any>({});
 
   const addSystem = () => setSystems([...systems, { name: "", topics: [] }]);
   const addTopic = (sIdx: number) =>

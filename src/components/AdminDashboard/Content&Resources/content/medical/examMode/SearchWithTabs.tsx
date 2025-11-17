@@ -1,11 +1,8 @@
-import ButtonWithIcon from "@/common/button/ButtonWithIcon";
-import CommonButton from "@/common/button/CommonButton";
 import CommonSelect from "@/common/custom/CommonSelect";
 import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
 import Tabs from "@/components/AdminDashboard/reuseable/Tabs";
 import React from "react";
 import { IoSearchOutline } from "react-icons/io5";
-import { RiDeleteBinLine } from "react-icons/ri";
 export const difficultyOptions = [
   { label: "All", value: "all" },
   { label: "Basics", value: "Basics" },
@@ -56,7 +53,7 @@ const SearchWithTabs: React.FC<SearchWithTabsProps> = ({
         </div>
         <div className="flex items-center justify-between  gap-4">
           <Tabs tabs={tabs} active={activeTab} onChange={setActiveTab} />
-          <div className="flex items-center gap-4.5">
+          {/* <div className="flex items-center gap-4.5">
             <ButtonWithIcon
               icon={RiDeleteBinLine}
               className="w-full md:w-auto flex justify-center  flex-shrink-0  !bg-white !border !border-[#E2E8F0] !text-[#B91C1C]"
@@ -66,7 +63,7 @@ const SearchWithTabs: React.FC<SearchWithTabsProps> = ({
             <CommonButton className="!bg-[#334155] !text-white">
               Publish
             </CommonButton>
-          </div>
+          </div> */}
         </div>
       </CommonBorderWrapper>
     </div>

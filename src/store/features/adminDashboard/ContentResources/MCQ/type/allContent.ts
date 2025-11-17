@@ -1,33 +1,21 @@
-// Individual MCQ option
-export type MCQOption = {
-  option: string; //
-  optionText: string;
-  explanation?: string;
-};
+export interface SingleMcqBank {
+  _id: string;
+  title: string;
+  subject: string;
+  system: string;
+  topic: string;
+  studentType: string;
+  subtopic: string;
+  slug: string;
+  type: string;
+  uploadedBy: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
-// Individual MCQ
-export type MCQ = {
-  mcqId: string;
-  difficulty: "Basics" | "Intermediate" | "Advance";
-  question: string;
-  imageDescription?: string;
-  options: MCQOption[];
-  correctOption: string;
-};
-
-// Pagination metadata
-export type Meta = {
-  page: number;
-  limit: number;
-  skip: number;
-  total: number;
-  totalPages: number;
-};
-
-// API response for fetching MCQs
-export type AllContentMCQList = {
+export interface AllContentMCQList {
   success: boolean;
   message: string;
-  data: MCQ[];
-  meta: Meta;
-};
+  data: SingleMcqBank[];
+  meta: null;
+}

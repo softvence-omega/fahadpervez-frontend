@@ -19,13 +19,22 @@ const persistConfig = {
   storage,
 };
 
+const staticContentPersistConfig = {
+  key: "staticContent",
+  storage,
+  whitelist: ["studentType"],
+};
 const persistedReducer = persistReducer(persistConfig, authReducer);
+const persistedStaticContentReducer = persistReducer(
+  staticContentPersistConfig,
+  staticContentSlice
+);
 
 export const store = configureStore({
   reducer: {
     [baseAPI.reducerPath]: baseAPI.reducer,
     auth: persistedReducer,
-    staticContent: staticContentSlice,
+    staticContent: persistedStaticContentReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

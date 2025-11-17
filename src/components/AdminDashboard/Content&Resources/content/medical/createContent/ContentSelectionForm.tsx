@@ -11,11 +11,9 @@ import {
   System,
   Topic,
 } from "@/store/features/adminDashboard/ContentResources/MCQ/type/mcq";
-import {
-  setFormData,
-  showAddMCQ,
-} from "@/store/features/adminDashboard/staticContent/staticContentSlice";
-import { AppDispatch } from "@/store/store";
+import { setFormData } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
+import { useAppSelector } from "@/store/hook";
+import { AppDispatch, RootState } from "@/store/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
@@ -36,7 +34,7 @@ export type CreateContentDataType = z.infer<typeof createContentSchema>;
 interface CreateMCQStudyProps {
   handleBreadcrumb: (text: string) => void;
   activeTab: string;
-  studentType: string;
+  setIsMcqCreation: (value: boolean) => void;
 }
 
 const inputClass = {
@@ -48,7 +46,7 @@ const inputClass = {
 
 const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
   handleBreadcrumb,
-  studentType,
+  setIsMcqCreation,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { data: allStudyModeData } = useGetStudyModeTreeQuery();
@@ -166,11 +164,13 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
 
   const isFormComplete = subject && system && topic && subtopic;
 
+  const studentType = useAppSelector(
+    (state: RootState) => state.staticContent.studentType
+  );
   const onSubmit = (data: CreateContentDataType) => {
     const payload = { ...data, studentType };
-
     dispatch(setFormData(payload));
-    dispatch(showAddMCQ());
+    setIsMcqCreation(true);
   };
 
   return (

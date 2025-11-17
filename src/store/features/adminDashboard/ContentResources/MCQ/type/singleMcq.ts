@@ -31,3 +31,19 @@ export interface SingleMcqData {
   message: string;
   data: McqBankDetails;
 }
+
+// single mcq updated
+
+export type SingleMCQUpdatePayload = {
+  difficulty: "Basics" | "Intermediate" | "Advance";
+  question: string;
+  optionA: string;
+  optionB: string;
+  optionC: string;
+  optionD: string;
+  correctOption: "A" | "B" | "C" | "D";
+  explanationA?: string;
+  explanationB?: string;
+  explanationC?: string;
+  explanationD?: string;
+};
