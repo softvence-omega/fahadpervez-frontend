@@ -83,7 +83,16 @@ const StudentDashboardHeader: React.FC<StudentDashboardHeaderProps> = ({
             >
               <div className="w-9 h-9 bg-gradient-to-r from-pink-400 to-orange-400 rounded-full flex items-center justify-center">
                 <span className="text-white text-sm font-semibold">
-                  {user?.profile?.firstName.slice(0, 2)}
+                  {/* {user?.profile?.firstName.slice(0, 2)} */}
+                  {user?.profile?.profile_photo ? (
+                    <img
+                      src={user?.profile?.profile_photo}
+                      alt="Profile"
+                      className="w-9 h-9 rounded-full object-cover"
+                    />
+                  ): (
+                    user?.profile?.firstName.slice(0, 2)
+                  )}
                 </span>
               </div>
               <div className="hidden lg:block text-left">

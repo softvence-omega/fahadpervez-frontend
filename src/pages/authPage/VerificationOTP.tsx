@@ -60,7 +60,7 @@ export default function VerificationOTP() {
       const result = await verifyOTP({ email, otp: data.otp }).unwrap();
 
       if (result.success === true) {
-        toast.success(result.message);
+        // toast.success(result.message);
         Cookies.set("accessToken", result.data.accessToken);
         navigate("/multi-step-register");
       }
