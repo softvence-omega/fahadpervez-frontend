@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import GlobalLoader2 from "@/common/GlobalLoader2";
 import NoteCard from "@/components/reusable/NoteCard";
+import { useIncrementNoteDownloadCountMutation } from "@/store/features/note/NoteAPI";
 // import { useIncrementNoteDownloadCountMutation } from "@/store/features/note/NoteAPI";
 import { useState, useEffect } from "react";
 
@@ -34,7 +35,7 @@ const getPdfPageCount = async (url: string): Promise<number> => {
 };
 
 export default function AllNotesTab({ notes, loading }: any) {
-  // const [incrementDownloadCount] = useIncrementNoteDownloadCountMutation();
+  const [incrementDownloadCount] = useIncrementNoteDownloadCountMutation();
   const [pageCountCache, setPageCountCache] = useState<Record<string, number>>(
     {}
   );
@@ -70,7 +71,7 @@ export default function AllNotesTab({ notes, loading }: any) {
     try {
       console.log(noteId)
       // Step 1: Increment download count via API
-      // await incrementDownloadCount(noteId).unwrap();
+      await incrementDownloadCount(noteId).unwrap();
 
       // Step 2: Convert Cloudinary URL to download URL
       // Change '/upload/' to '/upload/fl_attachment/'

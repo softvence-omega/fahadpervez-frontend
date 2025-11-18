@@ -50,7 +50,7 @@ const Signup = () => {
 
       // Success toast
       if (result.success) {
-        toast.success(result.message);
+        // toast.success(result.message);
 
         // Save email to localStorage
         localStorage.setItem("setVerificationEmail", data.email);

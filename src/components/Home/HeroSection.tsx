@@ -10,20 +10,20 @@ const roles = [
   {
     id: 1,
     icon: heroIcon1,
-    title: "Medical student",
-    alt: "Medical student icon",
+    title: "Student",
+    alt: "student icon",
   },
   {
     id: 2,
     icon: heroIcon2,
-    title: "Nursing student",
-    alt: "Nursing student icon",
+    title: "Professional",
+    alt: "professional icon",
   },
   {
     id: 3,
     icon: heroIcon3,
-    title: "Pharmacy student",
-    alt: "Pharmacy student icon",
+    title: "Mentor",
+    alt: "mentor icon",
   },
 ];
 

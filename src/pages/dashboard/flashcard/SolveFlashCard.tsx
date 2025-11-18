@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { BadgeHelp } from "lucide-react";
+import { ArrowLeft, BadgeHelp } from "lucide-react";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useGetSingleFlashCardQuery } from "@/store/features/flashCard/flashCard.api";
 import { IFlashcardBank } from "@/types";
+import DashboardHeading from "@/components/reusable/DashboardHeading";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { name: "Dashboard", link: "/dashboard" },
@@ -13,7 +14,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function SolveFlashCard() {
-  
   const { id } = useParams();
   const { data, isLoading } = useGetSingleFlashCardQuery(id as string);
 
@@ -85,14 +85,29 @@ export default function SolveFlashCard() {
 
   return (
     <div className="min-h-screen">
-      <div className="text-sm text-gray-600 my-10">
+      <div className="text-sm text-gray-600">
         <Breadcrumb breadcrumbs={breadcrumbs} />
       </div>
 
-      <h1 className="text-xl font-bold mb-1">{flashCardData?.title}</h1>
+      {/* <h1 className="text-xl font-bold mb-1">{flashCardData?.title}</h1>
       <p className="text-sm text-gray-600 mb-4">
         Flip the card to check the correct answer.
-      </p>
+      </p> */}
+
+      <div className="flex items-start gap-3 mb-4">
+        <Link to={"/dashboard/flashcard-page"} className="mt-0.5">
+          <ArrowLeft />
+        </Link>
+        <DashboardHeading
+          title={flashCardData?.title}
+          titleColor="text-[#0A0A0A]"
+          titleSize="text-xl"
+          description="Flip the card to check the correct answer."
+          descColor="text-[#4A5565]"
+          descSize="text-sm"
+          className=""
+        />
+      </div>
 
       <div className="flex flex-col md:flex-row gap-4">
         {/* Sidebar */}
