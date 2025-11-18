@@ -23,13 +23,13 @@ export const noteApi = baseAPI.injectEndpoints({
         },
       }),
       // Optional: Add providesTags for cache invalidation
-      // providesTags: ["Notes"],
+      providesTags: ["Notes"],
     }),
 
     incrementNoteDownloadCount: build.mutation({
       query: (noteId) => ({
         url: `/notes/download/${noteId}`,
-        method: "PATCH",
+        method: "PUT",
       }),
       // Invalidate the notes cache to refetch updated data
       invalidatesTags: ["Notes"],

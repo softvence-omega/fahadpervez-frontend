@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import CommonWrapper from "@/common/CommonWrapper";
 import { Progress } from "@/components/ui/progress";
@@ -9,7 +10,7 @@ import VerifyProfession from "./VerifyProfession";
 import UpdatePreference from "./UpdatePreference";
 import PlatformTraining from "./PlatformTraining";
 import PayoutSetup from "./PayoutSetup";
-import { MultiStepFormData, multiStepSchema } from "./schemas";
+import { MultiStepFormData } from "./schemas";
 import { useUpdateInitialProfileMutation } from "@/store/features/auth/auth.api";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -25,31 +26,40 @@ export default function MultiStepRegisterForm() {
   const isMentor = formData.profile?.role === "mentor";
   const steps = isMentor
     ? [
-      "AboutYourSelfTab",
-      "VerifyProfession",
-      "UpdatePreference",
-      "PlatformTraining",
-      "PayoutSetup",
-      "UploadProfile",
-    ]
+        "AboutYourSelfTab",
+        "VerifyProfession",
+        "UpdatePreference",
+        "PlatformTraining",
+        "PayoutSetup",
+        "UploadProfile",
+      ]
     : ["AboutYourSelfTab", "PreparingFor", "Preferences", "UploadProfile"];
   const stepCount = steps.length;
   const progressValue = ((step + 1) / stepCount) * 100;
 
   const handleNext = (partial: Partial<MultiStepFormData>) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    
     setFormData((prev: any) => ({ ...prev, ...partial }));
     setStep((s) => Math.min(s + 1, stepCount - 1));
   };
 
   const handleBack = () => setStep((s) => Math.max(0, s - 1));
 
+  const handleSkip = (key: keyof MultiStepFormData, emptyValue: any = {}) => {
+    setFormData((prev) => ({ ...prev, [key]: emptyValue }));
+    setStep((s) => Math.min(s + 1, stepCount - 1));
+  };
+
   const handleFinalSubmit = async (partial: Partial<MultiStepFormData>) => {
     const merged = { ...formData, ...partial } as MultiStepFormData;
 
     console.log(merged);
 
-    if (merged.profile.role === "student" && "preferences" in merged && merged.preferences) {
+    if (
+      merged.profile.role === "student" &&
+      "preferences" in merged &&
+      merged.preferences
+    ) {
       // Prepare the JS payload
       const studentData = {
         role: "STUDENT",
@@ -120,14 +130,14 @@ export default function MultiStepRegisterForm() {
     }
 
     // Validate final merged object
-    const check = multiStepSchema.safeParse({
-      ...merged,
-      role: formData.profile?.role,
-    });
-    if (!check.success) {
-      alert("Validation failed");
-      return;
-    }
+    // const check = multiStepSchema.safeParse({
+    //   ...merged,
+    //   role: formData.profile?.role,
+    // });
+    // if (!check.success) {
+    //   // alert("Validation failed");
+    //   return;
+    // }
 
     // Uncomment for actual API submission
     /*
@@ -173,7 +183,7 @@ export default function MultiStepRegisterForm() {
             {steps[step] === "AboutYourSelfTab" && (
               <AboutYourSelfTab
                 defaultValues={formData.profile ?? undefined}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                
                 onNext={(profile) => handleNext({ profile } as any)}
               />
             )}
@@ -194,6 +204,14 @@ export default function MultiStepRegisterForm() {
                 }
                 onBack={handleBack}
                 onNext={(preferences) => handleNext({ preferences })}
+                onSkip={() =>
+                  handleSkip("preferences" as keyof MultiStepFormData, {
+                    subjectPreference: "",
+                    systemPreference: "",
+                    topic: "",
+                    subTopic: "",
+                  })
+                }
               />
             )}
 
@@ -247,6 +265,9 @@ export default function MultiStepRegisterForm() {
                 defaultValues={formData.upload ?? undefined}
                 onBack={handleBack}
                 onNext={(upload) => handleFinalSubmit({ upload })}
+                onSkip={() =>
+                  handleSkip("upload", { photo: undefined, bio: "" })
+                }
               />
             )}
           </div>

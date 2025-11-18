@@ -5,14 +5,19 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PreferencesData, preferencesSchema } from "./schemas";
 
-
 interface Props {
   onNext: (data: PreferencesData) => void;
   onBack: () => void;
+  onSkip: () => void;
   defaultValues?: Partial<PreferencesData>;
 }
 
-export default function Preferences({ onNext, onBack, defaultValues }: Props) {
+export default function Preferences({
+  onNext,
+  onBack,
+  defaultValues,
+  // onSkip,
+}: Props) {
   type FormValues = PreferencesData;
 
   const {
@@ -42,10 +47,32 @@ export default function Preferences({ onNext, onBack, defaultValues }: Props) {
 
   return (
     <div className="w-full max-w-3xl mx-auto">
-      <h2 className="text-bricolage text-3xl font-semibold mb-2">
-        Setting your Preferences
-      </h2>
-      <p className="mb-6">Select preferences to personalize content</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-bricolage text-3xl font-semibold mb-2">
+            Setting your Preferences
+          </h2>
+          <p className="mb-6">Select preferences to personalize content</p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            const fakeData: any = {
+              subject: "",
+              systemPreference: "",
+              topic: "",
+              subTopic: "",
+              photo: undefined,
+              bio: "",
+            };
+
+            onNext(fakeData); // submit with defaults
+          }}
+        >
+          Skip
+        </button>
+      </div>
 
       <form
         onSubmit={handleSubmit(onSubmit)}

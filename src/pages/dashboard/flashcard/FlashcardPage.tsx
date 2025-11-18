@@ -5,18 +5,26 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import FlashCardOverview from "./FlashCardOverview";
 import FlashCardCollection from "./FlashCardCollection";
+import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types";
+import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
+
+const breadcrumbs: BreadcrumbItem[] = [
+  { name: "Dashboard", link: "/dashboard" },
+  { name: "Flashcards", link: "/dashboard/flashcard-page" },
+];
 
 const FlashcardPage = () => {
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("flashcard");
 
   // Only "overview" stays as tab
   const tabs = [
+    { id: "flashcard", label: "Flashcards" },
     { id: "overview", label: "Overview" },
-    { id: "flashcard", label: "Flashcards" }
   ];
 
   return (
     <div>
+      <Breadcrumb breadcrumbs={breadcrumbs} />
       <div className="md:flex justify-between items-center">
         <DashboardHeading
           title="Your Flashcards"
