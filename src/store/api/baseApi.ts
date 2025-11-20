@@ -70,6 +70,7 @@ export const baseAPI = createApi({
     "Exams",
     "studentType",
     "FlashCard",
+    "Notes",
   ],
   endpoints: () => ({}),
 });
