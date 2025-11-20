@@ -71,7 +71,7 @@ const StudentTypeCard: FC<CardProps> = ({
         <div className=" flex justify-between items-center  border-t border-black/10 pt-3">
           <CommonHeader
             onClick={() => {
-              navigate(`${toSlug(data.typeName)}`);
+              navigate(`dashboard/${toSlug(data.typeName)}`);
               dispatch(setStudentType(data.typeName));
             }}
             className="w-full flex items-center gap-2 cursor-pointer   !text-sm !font-inter !text-[#030213] !font-medium"

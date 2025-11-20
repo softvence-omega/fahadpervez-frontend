@@ -12,7 +12,7 @@ import { useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import ActionButtons from "../../ActionButtons";
+import ActionButtons from "../ActionButtons";
 
 const MCQOptionSchema = z.object({
   option: z.string(),
@@ -41,6 +41,17 @@ const inputClass = {
   error: "text-red-500 text-sm mt-1",
 };
 
+export const difficultyOptions = [
+  { label: "Basics", value: "Basics" },
+  { label: "Intermediate", value: "Intermediate" },
+  { label: "Advance", value: "Advance" },
+] as const;
+const correctAnswerOptions = [
+  { label: "Option A", value: "A" },
+  { label: "Option B", value: "B" },
+  { label: "Option C", value: "C" },
+  { label: "Option D", value: "D" },
+] as const;
 const AddMCQForm = () => {
   const { formData } = useAppSelector(
     (state: RootState) => state.staticContent
@@ -82,19 +93,6 @@ const AddMCQForm = () => {
     name: "mcqs",
   });
 
-  const correctAnswerOptions = [
-    { label: "Option A", value: "A" },
-    { label: "Option B", value: "B" },
-    { label: "Option C", value: "C" },
-    { label: "Option D", value: "D" },
-  ] as const;
-
-  const difficultyOptions = [
-    { label: "Basics", value: "Basics" },
-    { label: "Intermediate", value: "Intermediate" },
-    { label: "Advance", value: "Advance" },
-  ] as const;
-
   const [uploadSingleImage, { isLoading: isUploadingImage }] =
     useUploadSingleImageMutation();
 
@@ -110,9 +108,6 @@ const AddMCQForm = () => {
       const fileUrl = result.data.fileUrl;
 
       setValue(`mcqs.${qIndex}.imageDescription`, fileUrl);
-
-      console.log("Uploaded image URL:", fileUrl);
-
       setImagePreviews((prev) => ({
         ...prev,
         [qIndex]: fileUrl,
@@ -299,28 +294,29 @@ const AddMCQForm = () => {
           </div>
         </CommonBorderWrapper>
       ))}
+      <div className="mb-6 flex items-center justify-between ">
+        <CommonButton
+          type="button"
+          onClick={() =>
+            append({
+              question: "",
+              difficulty: "Basics",
+              correctOption: "A",
+              options: defaultOptions,
+              imageDescription: "",
+            })
+          }
+          className=" !text-blue-600  "
+        >
+          + Add Another Question
+        </CommonButton>
 
-      <CommonButton
-        type="button"
-        onClick={() =>
-          append({
-            question: "",
-            difficulty: "Basics",
-            correctOption: "A",
-            options: defaultOptions,
-            imageDescription: "",
-          })
-        }
-        className=" !text-blue-600  "
-      >
-        + Add Another Question
-      </CommonButton>
-
-      <ActionButtons
-        isLoading={isUploading}
-        onSavePublish={handleSavePublish}
-        onCancel={handleCancel}
-      />
+        <ActionButtons
+          isLoading={isUploading}
+          onSavePublish={handleSavePublish}
+          onCancel={handleCancel}
+        />
+      </div>
     </form>
   );
 };

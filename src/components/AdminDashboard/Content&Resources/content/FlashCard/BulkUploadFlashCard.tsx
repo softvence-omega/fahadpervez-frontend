@@ -1,42 +1,31 @@
 import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
-import { useUploadBulkMcqApiMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import { useBulkUploadFlashCardMutation } from "@/store/features/adminDashboard/ContentResources/flashCard/flashCardSlice";
 import { RootState } from "@/store/store";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import ActionButtons from "../../ActionButtons";
-import RequiredColumnsList from "./RequiredColumsList";
-import UploadDropzone from "./UpdateDropZone";
-import UploadPreview from "./UploadPreview";
-
-interface AddQuestionProps {
-  onBack?: () => void;
-}
+import ActionButtons from "../ActionButtons";
+import RequiredColumnsList from "../medical/studyMode/RequiredColumsList";
+import UploadDropzone from "../medical/studyMode/UpdateDropZone";
+import UploadPreview from "../medical/studyMode/UploadPreview";
 
 const columns = [
-  { label: "Question", description: "The question text" },
   {
-    label: "Image Description",
-    description: "Description of the question image (if any)",
+    label: "Front Side:",
+    description: "Front Side (Question/Term)",
+  },
+  {
+    label: "Back Side:",
+    description: "Back Side (Answer/Definition)",
   },
 
-  { label: "Option A", description: "First answer option" },
-  { label: "Explanation A", description: "Explanation for option A" },
-
-  { label: "Option B", description: "Second answer option" },
-  { label: "Explanation B", description: "Explanation for option B" },
-
-  { label: "Option C", description: "Third answer option" },
-  { label: "Explanation C", description: "Explanation for option C" },
-
-  { label: "Option D", description: "Fourth answer option" },
-  { label: "Explanation D", description: "Explanation for option D" },
-
-  { label: "Correct Option", description: "Correct answer: A, B, C, or D" },
-  { label: "Difficulty", description: "Basic, Intermediate, or Advanced" },
+  {
+    label: "Explanation:",
+    description: "Detailed explanation for correct answer",
+  },
 ];
 
-const AddBulkMCQ: React.FC<AddQuestionProps> = () => {
+const BulkUploadFlashCard = () => {
   const [detectedCount, setDetectedCount] = useState(0);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -44,8 +33,8 @@ const AddBulkMCQ: React.FC<AddQuestionProps> = () => {
     (state: RootState) => state.staticContent.formData
   );
 
-  const [uploadBulkMcqApi, { isLoading: isUploading }] =
-    useUploadBulkMcqApiMutation();
+  const [bulkUploadFlashCard, { isLoading: isUploading }] =
+    useBulkUploadFlashCardMutation();
   const handleFileSelect = (file: File, detectedCount: number) => {
     setSelectedFile(file);
     setDetectedCount(detectedCount);
@@ -66,7 +55,7 @@ const AddBulkMCQ: React.FC<AddQuestionProps> = () => {
         formData.append("data", JSON.stringify(selectFormData));
       }
       if (formData) {
-        await uploadBulkMcqApi(formData);
+        await bulkUploadFlashCard(formData);
       }
     } catch (error) {
       console.error("Upload error:", error);
@@ -99,13 +88,16 @@ const AddBulkMCQ: React.FC<AddQuestionProps> = () => {
           </div>
         </div>
       </CommonBorderWrapper>
-      <ActionButtons
-        onSavePublish={handleImport}
-        isLoading={isUploading}
-        onCancel={handleBack}
-      />
+
+      <div className="mb-6">
+        <ActionButtons
+          onSavePublish={handleImport}
+          isLoading={isUploading}
+          onCancel={handleBack}
+        />
+      </div>
     </>
   );
 };
 
-export default AddBulkMCQ;
+export default BulkUploadFlashCard;

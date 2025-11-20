@@ -154,7 +154,13 @@ export const mcqApi = baseAPI.injectEndpoints({
     }),
     getStudyModeAllContent: build.query<
       AllContentMCQList,
-      { subject?: string; system?: string; topic?: string; subtopic?: string }
+      {
+        key: string;
+        subject: string;
+        system?: string;
+        topic?: string;
+        subtopic?: string;
+      }
     >({
       query: (params) => {
         const queryString = new URLSearchParams(
@@ -167,7 +173,7 @@ export const mcqApi = baseAPI.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["StudyModeTree"],
+      providesTags: ["StudyModeTree", "Exams", "SingleMcq", "Mcq", "FlashCard"],
     }),
 
     updateStudyModeTree: build.mutation<
@@ -186,7 +192,13 @@ export const mcqApi = baseAPI.injectEndpoints({
         url: `/study_mode_tree/delete/${treeId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["StudyModeTree"],
+      invalidatesTags: [
+        "StudyModeTree",
+        "Exams",
+        "SingleMcq",
+        "Mcq",
+        "studentType",
+      ],
     }),
 
     //exam mode

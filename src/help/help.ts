@@ -17,6 +17,12 @@ export const loadingList = new Array(4).fill(null);
 
 export const toSlug = (str: string) =>
   str.toLowerCase().replace(/\s+/g, "-").trim();
+export const formatLabel = (str: string): string => {
+  return str
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
 
 export function toBerhanTime(isoString: string) {
   const date = new Date(isoString);

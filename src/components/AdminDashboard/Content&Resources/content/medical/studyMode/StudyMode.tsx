@@ -1,15 +1,18 @@
-import Pagination from "@/common/custom/Pagination";
 import TableContent from "@/components/AdminDashboard/Content&Resources/content/medical/studyMode/TableContentForStudy";
+import Tabs from "@/components/AdminDashboard/reuseable/Tabs";
+import { useGetStudyModeAllContentQuery } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import {
-  useGetSingleMcqQuery,
-  useGetStudyModeAllContentQuery,
-} from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+  ContentType,
+  setContentType,
+} from "@/store/features/adminDashboard/staticContent/staticContentSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
+import { RootState } from "@/store/store";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useState } from "react";
-import MultipleTap from "../../MultipleTap";
-import MedicalSharedTable from "../MedicalSharedTable";
+import FlashCardBank from "../../bank/FlashCardBank/FlashCardBank";
+import MCQBank from "../../bank/MCQBank/MCQBank";
+import { tabs } from "../../MultipleTap";
 import AddSubjectModal from "./AddSubjectModal";
-import McqBankCardForAdmin from "./McqBankCardForAdmin";
 
 export type SelectedNode = {
   subject: string;
@@ -19,6 +22,11 @@ export type SelectedNode = {
 };
 
 const StudyMode = () => {
+  //manage  key
+  const dispatch = useAppDispatch();
+  const contentType = useAppSelector(
+    (state: RootState) => state.staticContent.contentType
+  );
   const [isSubjectModalOpen, setIsSubjectModalOpen] = useState(false);
   const [selectedNode, setSelectedNode] = useState<SelectedNode>({
     subject: "",
@@ -26,11 +34,6 @@ const StudyMode = () => {
     topic: "",
     subtopic: "",
   });
-
-  const [mcqBankId, setMcqBankId] = useState<string>("");
-
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const limit = 10;
 
   const isValidSelection =
     selectedNode.subject.trim() !== "" ||
@@ -40,6 +43,7 @@ const StudyMode = () => {
 
   const queryArg = isValidSelection
     ? {
+        key: contentType,
         subject: selectedNode.subject.trim(),
         system: selectedNode.system.trim(),
         topic: selectedNode.topic.trim(),
@@ -49,55 +53,46 @@ const StudyMode = () => {
 
   const { data: mcqBank } = useGetStudyModeAllContentQuery(queryArg);
 
-  const singleMcqQueryArg = mcqBankId
-    ? { id: mcqBankId, page: currentPage, limit }
-    : skipToken;
-
-  const { data: singleMcqBank } = useGetSingleMcqQuery(singleMcqQueryArg, {
-    skip: mcqBankId === "",
-  });
-
-  const singleMcqBankData = singleMcqBank?.data.mcqs ?? [];
-  const totalPages = singleMcqBank?.meta?.totalPages ?? 1;
-
-  // tab state
-
-  const [activeTab, setActiveTab] = useState("MCQ");
+  const [bankId, setBankId] = useState<string>("");
 
   return (
     <div>
-      <div className="w-full  flex  items-start gap-6">
+      <div className="w-full  flex  items-start gap-6 pb-6">
         <TableContent
           iconAction={() => setIsSubjectModalOpen(true)}
           setSelectedNode={(node) => {
             setSelectedNode(node);
-            setMcqBankId("");
+            setBankId("");
           }}
         />
 
         <div className="w-full flex flex-col gap-6">
           <div>
-            <MultipleTap activeTab={activeTab} setActiveTab={setActiveTab} />
+            <Tabs
+              tabs={tabs}
+              active={contentType}
+              onChange={(value) =>
+                dispatch(setContentType(value as ContentType))
+              }
+            />
           </div>
           <div>
-            {mcqBankId === "" ? (
+            {mcqBank && (
               <div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-6">
-                  {mcqBank?.data?.map((data) => (
-                    <McqBankCardForAdmin
-                      key={data._id}
-                      data={data}
-                      setMcqBankId={setMcqBankId}
-                    />
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="w-full flex flex-col gap-4">
-                <MedicalSharedTable
-                  data={singleMcqBankData}
-                  mcqBankId={mcqBankId}
-                />
+                {contentType === "MCQ" && (
+                  <MCQBank
+                    mcqBank={mcqBank}
+                    bankId={bankId}
+                    setBankId={setBankId}
+                  />
+                )}
+                {contentType === "Flashcard" && (
+                  <FlashCardBank
+                    mcqBank={mcqBank}
+                    bankId={bankId}
+                    setBankId={setBankId}
+                  />
+                )}
               </div>
             )}
           </div>
@@ -108,7 +103,7 @@ const StudyMode = () => {
         <AddSubjectModal onClose={() => setIsSubjectModalOpen(false)} />
       )}
 
-      {totalPages > 1 && (
+      {/* {totalPages > 1 && (
         <div className="mt-10 w-full flex justify-center">
           <Pagination
             currentPage={currentPage}
@@ -116,7 +111,7 @@ const StudyMode = () => {
             onPageChange={(page) => setCurrentPage(page)}
           />
         </div>
-      )}
+      )} */}
     </div>
   );
 };

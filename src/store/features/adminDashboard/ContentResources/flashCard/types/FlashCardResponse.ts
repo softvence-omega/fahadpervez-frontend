@@ -1,30 +1,67 @@
-export interface FlashCardPost {
+export type SingleFlashCardParams = {
+  page?: number;
+  limit?: number;
+  flashCardId?: string;
+};
+// all flashcards
+export type FlashCardParams = {
+  page?: number;
+  limit?: number;
+  searchTerm?: string;
+  type?: string;
+  subject?: string;
+  system?: string;
+  topic?: string;
+  subtopic?: string;
+};
+
+// Single Flashcard Item
+export interface FlashcardItem {
   _id: string;
-  postedBy: string;
-  cardCustomization: CardCustomization[];
-  aiFlashCard: AiFlashCard[];
-  isDeleted: boolean;
+  title: string;
+  subject: string;
+  system: string;
+  topic: string;
+  subtopic: string;
+  slug: string;
+  type: "study" | string;
+  studentType: string;
+  uploadedBy: string;
+  totalFlashCards: number;
   createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
 }
 
-export interface CardCustomization {
-  prompt: string;
-  sectionName: string;
-  maxFlash: number;
-  category: string;
-  level: "EASY" | "MEDIUM" | "HARD" | string; // flexible enum
-  isPublic: boolean;
+// Meta information for pagination
+export interface FlashcardMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
 }
 
-export interface AiFlashCard {
-  category: string;
-  topicName: string;
-  level: "EASY" | "MEDIUM" | "HARD" | string;
-}
-export interface FlashCardResponse {
+// Full API response
+export interface FlashcardResponse {
   success: boolean;
   message: string;
-  data: FlashCardPost[];
-  meta: null | Record<string, any>;
+  data: FlashcardItem[];
+  meta: FlashcardMeta;
 }
+
+// manual
+type FlashCard = {
+  frontText: string;
+  backText: string;
+  explanation?: string;
+  difficulty: "Basics" | "Intermediate" | "Advance";
+};
+
+export type ManualFlashCardUpload = {
+  title: string;
+  subject: string;
+  system: string;
+  topic: string;
+  subtopic: string;
+  type: "study" | "exam";
+  studentType: string;
+  flashCards: FlashCard[];
+};

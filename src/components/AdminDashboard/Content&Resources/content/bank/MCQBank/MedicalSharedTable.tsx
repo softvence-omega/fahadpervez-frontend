@@ -16,9 +16,11 @@ import {
 } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import { OneMCQ } from "@/store/features/adminDashboard/ContentResources/MCQ/type/singleMcqBank";
 import { useMemo, useState } from "react";
-import { ContentCategory } from "./data/data";
-import SearchWithTabs from "./examMode/SearchWithTabs";
-import UpdateMcqModal, { BackendMCQData } from "./studyMode/UpdateMcqModal";
+import { ContentCategory } from "../../medical/data/data";
+import SearchWithTabs from "../../medical/examMode/SearchWithTabs";
+import UpdateMcqModal, {
+  BackendMCQData,
+} from "../../medical/studyMode/UpdateMcqModal";
 
 const tableHeaders = [
   { label: "ID", align: "text-center hidden sm:table-cell" },
@@ -30,7 +32,7 @@ const tableHeaders = [
 
 const tableDesign = {
   header:
-    "text-lg font-geist text-[#2C2C2C] font-medium bg-[#EFF6FF] hover:bg-[#EFF6FF] md:h-12",
+    "text-lg font-geist text-[#2C2C2C] font-medium bg-[#EFF6FF] hover:bg-[#EFF6FF] md:h-12 ",
   cellHeader: "border border-border px-4",
   bodyRow: "text-[#2C2C2C] font-inter text-sm font-normal md:h-12",
   cell: "border border-border px-4 text-center",
@@ -146,7 +148,7 @@ const MedicalSharedTable: React.FC<MedicalSharedTableProps> = ({
                       >
                         {item.mcqId}
                       </TableCell>
-                      <TableCell className={tableDesign.cell}>
+                      <TableCell className={`${tableDesign.cell} line-clamp-1`}>
                         {item.question}
                       </TableCell>
                       <TableCell
