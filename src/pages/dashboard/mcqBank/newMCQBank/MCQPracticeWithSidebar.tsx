@@ -739,7 +739,7 @@ const MCQPracticeWithSidebar: React.FC = () => {
 
   // --- Filter MCQs ---
   let filteredQuestions = [...questions];
-
+console.log(filteredQuestions[8])
   if (viewMode === "mcqs") {
     if (searchQuery) {
       filteredQuestions = filteredQuestions.filter((q: any) =>
@@ -959,6 +959,14 @@ const MCQPracticeWithSidebar: React.FC = () => {
                           <p className="text-slate-900 font-medium">
                             {q.question}
                           </p>
+
+                          {q?.imageDescription && (
+                            <img
+                              src={q.imageDescription}
+                              alt=""
+                              className="w-[200px] h-[200px] text-center mx-auto rounded"
+                            />
+                          )}
 
                           <div className="space-y-2">
                             {q.options.map((opt: any, optionIdx: number) => {

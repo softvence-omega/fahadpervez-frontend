@@ -8,6 +8,7 @@ import { UploadProfileData, uploadProfileSchema } from "./schemas";
 interface Props {
   onNext: (data: UploadProfileData) => void;
   onBack: () => void;
+  onSkip: () => void;
   defaultValues?: Partial<UploadProfileData>;
 }
 
@@ -17,6 +18,7 @@ export default function UploadProfile({
   onNext,
   onBack,
   defaultValues,
+  // onSkip,
 }: Props) {
   const {
     register,
@@ -28,7 +30,7 @@ export default function UploadProfile({
   } = useForm<FormValues>({
     resolver: zodResolver(uploadProfileSchema),
     defaultValues: {
-      photo: undefined,
+      photo: null,
       bio: "",
       ...(defaultValues ?? {}),
     },
@@ -91,6 +93,22 @@ export default function UploadProfile({
       <p className="mb-14 text-center text-gray-500">
         Select your primary goals so our AI can focus on what matters most
       </p>
+
+      <button
+        type="button"
+        onClick={() => {
+          const emptyData: UploadProfileData = {
+            photo: null,
+            bio: "",
+          };
+
+          reset(emptyData); // Clear errors
+          onNext(emptyData); // Move to next step (acts like Submit)
+        }}
+        className="text-end w-full mb-4 cursor-pointer text-bricolage font-medium underline pr-2"
+      >
+        Skip
+      </button>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Upload Box */}

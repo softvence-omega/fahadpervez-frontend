@@ -29,6 +29,7 @@ const AllClinicalCases: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBodySystem, setSelectedBodySystem] =
     useState<FilterOption>("All");
+  const [selectedTopic, setSelectedTopic] = useState<FilterOption>("All");
   const [selectedDifficulty, setSelectedDifficulty] =
     useState<FilterOption>("All");
   const [activeTab, setActiveTab] = useState<TabType>("All Cases");
@@ -50,6 +51,13 @@ const AllClinicalCases: React.FC = () => {
     "Neurology",
   ];
   const difficultyOptions: FilterOption[] = [
+    "All",
+    "Beginner",
+    "Intermediate",
+    "Advanced",
+  ];
+
+  const topicOptions: FilterOption[] = [
     "All",
     "Beginner",
     "Intermediate",
@@ -177,9 +185,7 @@ const AllClinicalCases: React.FC = () => {
 
   return (
     <div>
-      <h1 className="text-xl font-semibold text-gray-800 my-6">
-        All Clinical Cases
-      </h1>
+      <h1 className="text-xl font-semibold mb-6 mt-10">All Cases</h1>
 
       {/* Filters */}
       <div className="mb-6 space-y-4">
@@ -204,6 +210,12 @@ const AllClinicalCases: React.FC = () => {
               onChange={setSelectedBodySystem}
               options={bodySystemOptions}
               placeholder="Body System"
+            />
+            <Dropdown
+              value={selectedTopic}
+              onChange={setSelectedTopic}
+              options={topicOptions}
+              placeholder="Topic"
             />
             <Dropdown
               value={selectedDifficulty}
