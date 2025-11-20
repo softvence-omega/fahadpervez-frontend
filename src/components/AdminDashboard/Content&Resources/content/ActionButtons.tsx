@@ -6,12 +6,14 @@ interface ActionButtonsProps {
   onSavePublish: () => void;
   isLoading?: boolean;
   onCancel?: () => void;
+  importLabel?: string;
 }
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({
   isLoading,
   onCancel,
   onSavePublish,
+  importLabel = "Save & Publish Question",
 }) => {
   return (
     <div className="flex items-center justify-end gap-6 pt-6">
@@ -22,11 +24,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
           disabled={isLoading}
           onClick={onSavePublish}
         >
-          {isLoading ? (
-            <ButtonWithLoading title="Saving..." />
-          ) : (
-            "Save & Publish Question"
-          )}
+          {isLoading ? <ButtonWithLoading title="Saving..." /> : importLabel}
         </CommonButton>
       </div>
       <CommonButton onClick={onCancel}>Cancel</CommonButton>

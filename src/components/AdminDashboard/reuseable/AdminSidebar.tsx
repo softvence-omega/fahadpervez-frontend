@@ -125,6 +125,7 @@ const AdminSidebar: FC<SidebarProps> = ({ sidebarOpen, onLinkClick }) => {
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       } fixed inset-y-0 left-0 z-40 w-[280px] transition-transform duration-300 ease-in-out md:translate-x-0 md:static bg-white rounded-[10px] px-5 py-6`}
     >
+      {/* <Menu onClick={onLinkClick} className="h-8 w-8 mx-auto cursor-pointer" /> */}
       {/* Profile */}
       <div className="flex items-center gap-3 bg-white border border-[#F1F5F9] rounded-[5px] px-3 py-2 mb-5">
         <Avatar className="h-8 w-8">
@@ -136,7 +137,6 @@ const AdminSidebar: FC<SidebarProps> = ({ sidebarOpen, onLinkClick }) => {
           <div className="text-base text-slate-900">super-admin</div>
         </div>
       </div>
-
       {/* Menu */}
       <div className="flex-1 overflow-y-auto">
         {Object.entries(groupedItems).map(([section, items]) => (
