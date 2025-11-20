@@ -14,10 +14,10 @@ const ClinicalCaseGenerator = () => {
       <div className="flex flex-col md:flex-row justify-between items-center mb-10 text-center md:text-left gap-6">
         <div>
           <DashboardHeading
-            title="Community & Events"
+            title="Clinical Case Library"
             titleSize="text-xl md:text-2xl"
             titleColor="text-[#0A0A0A]"
-            description="Connect, learn, and grow with the medical education community"
+            description="Sharpen your diagnostic skills. Ready for your next challenge?"
             descColor="text-[#4A5565]"
             descFont="text-sm"
           />

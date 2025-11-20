@@ -33,8 +33,8 @@ export type CreateContentDataType = z.infer<typeof createContentSchema>;
 
 interface CreateMCQStudyProps {
   handleBreadcrumb: (text: string) => void;
-  activeTab: string;
-  setIsMcqCreation: (value: boolean) => void;
+
+  setIsContentCreation: (value: boolean) => void;
 }
 
 const inputClass = {
@@ -46,7 +46,7 @@ const inputClass = {
 
 const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
   handleBreadcrumb,
-  setIsMcqCreation,
+  setIsContentCreation,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { data: allStudyModeData } = useGetStudyModeTreeQuery();
@@ -170,7 +170,7 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
   const onSubmit = (data: CreateContentDataType) => {
     const payload = { ...data, studentType };
     dispatch(setFormData(payload));
-    setIsMcqCreation(true);
+    setIsContentCreation(true);
   };
 
   return (

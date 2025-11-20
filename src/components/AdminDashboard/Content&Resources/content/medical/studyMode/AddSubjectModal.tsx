@@ -6,6 +6,8 @@ import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
 import FormHeader from "@/components/AdminDashboard/reuseable/FormHeader";
 import ModalCloseButton from "@/components/AdminDashboard/reuseable/ModalCloseButton";
 import { usePostStudyModeTreeMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import { useAppSelector } from "@/store/hook";
+import { RootState } from "@/store/store";
 import { Trash2 } from "lucide-react";
 import React, { useState } from "react";
 import { GoPlus } from "react-icons/go";
@@ -55,6 +57,9 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
   const [subjectName, setSubjectName] = useState("");
   const [systems, setSystems] = useState<System[]>([]);
   const [errors, setErrors] = useState<any>({});
+  const { studentType } = useAppSelector(
+    (state: RootState) => state.staticContent
+  );
 
   const addSystem = () => setSystems([...systems, { name: "", topics: [] }]);
   const addTopic = (sIdx: number) =>
@@ -162,7 +167,7 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
     const payload: PostStudyModeTree = {
       subjectName,
       systems,
-      studentType: "Medical Student",
+      studentType,
     };
     const validation = postStudyModeTreeSchema.safeParse(payload);
 

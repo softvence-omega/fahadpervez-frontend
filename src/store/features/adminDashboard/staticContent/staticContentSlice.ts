@@ -9,14 +9,23 @@ type CreateContentDataType = {
   type: "exam" | "study";
   studentType: string;
 };
+export type ContentType =
+  | "MCQ"
+  | "Flashcard"
+  | "ClinicalCase"
+  | "OSCE"
+  | "Notes";
+
 interface StudentState {
   studentType: string;
   formData: CreateContentDataType | null;
+  contentType: ContentType;
 }
 
 const initialState: StudentState = {
   studentType: "",
   formData: null,
+  contentType: "MCQ",
 };
 
 const staticContentSlice = createSlice({
@@ -32,10 +41,13 @@ const staticContentSlice = createSlice({
     setStudentType: (state, action: PayloadAction<string>) => {
       state.studentType = action.payload;
     },
+    setContentType: (state, action: PayloadAction<ContentType>) => {
+      state.contentType = action.payload;
+    },
   },
 });
 
-export const { setFormData, resetFormData, setStudentType } =
+export const { setFormData, resetFormData, setStudentType, setContentType } =
   staticContentSlice.actions;
 
 export default staticContentSlice.reducer;

@@ -8,6 +8,7 @@ import { Outlet, useLocation } from "react-router-dom";
 
 const AdminLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const { pathname } = useLocation();
 
   const hideSidebar =

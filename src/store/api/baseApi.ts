@@ -69,6 +69,7 @@ export const baseAPI = createApi({
     "StudyModeTree",
     "Exams",
     "studentType",
+    "FlashCard",
     "Notes",
   ],
   endpoints: () => ({}),
