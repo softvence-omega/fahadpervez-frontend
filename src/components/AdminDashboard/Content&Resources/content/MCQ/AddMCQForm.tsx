@@ -21,7 +21,7 @@ const MCQOptionSchema = z.object({
 });
 
 const MCQSchema = z.object({
-  difficulty: z.enum(["Basics", "Intermediate", "Advance"]),
+  difficulty: z.enum(["Basic", "Intermediate", "Advance"]),
   question: z.string().min(1, { message: "Question is required" }),
   imageDescription: z.string().url().optional().or(z.literal("")),
   options: z.array(MCQOptionSchema).length(4),
@@ -42,7 +42,7 @@ const inputClass = {
 };
 
 export const difficultyOptions = [
-  { label: "Basics", value: "Basics" },
+  { label: "Basic", value: "Basic" },
   { label: "Intermediate", value: "Intermediate" },
   { label: "Advance", value: "Advance" },
 ] as const;
@@ -79,7 +79,7 @@ const AddMCQForm = () => {
       mcqs: [
         {
           question: "",
-          difficulty: "Basics",
+          difficulty: "Basic",
           correctOption: "A",
           options: defaultOptions,
           imageDescription: "",
@@ -300,7 +300,7 @@ const AddMCQForm = () => {
           onClick={() =>
             append({
               question: "",
-              difficulty: "Basics",
+              difficulty: "Basic",
               correctOption: "A",
               options: defaultOptions,
               imageDescription: "",

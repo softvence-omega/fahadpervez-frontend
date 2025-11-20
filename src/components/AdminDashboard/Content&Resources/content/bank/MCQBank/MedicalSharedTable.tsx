@@ -32,7 +32,7 @@ const tableHeaders = [
 
 const tableDesign = {
   header:
-    "text-lg font-geist text-[#2C2C2C] font-medium bg-[#EFF6FF] hover:bg-[#EFF6FF] md:h-12 ",
+    "text-lg font-geist text-[#2C2C2C] font-medium bg-[#EFF6FF] hover:bg-[#EFF6FF] md:h-12",
   cellHeader: "border border-border px-4",
   bodyRow: "text-[#2C2C2C] font-inter text-sm font-normal md:h-12",
   cell: "border border-border px-4 text-center",
@@ -148,7 +148,7 @@ const MedicalSharedTable: React.FC<MedicalSharedTableProps> = ({
                       >
                         {item.mcqId}
                       </TableCell>
-                      <TableCell className={`${tableDesign.cell} line-clamp-1`}>
+                      <TableCell className={tableDesign.cell}>
                         {item.question}
                       </TableCell>
                       <TableCell
