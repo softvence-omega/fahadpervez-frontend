@@ -10,9 +10,8 @@ import {
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { useNavigate } from "react-router-dom";
 import { useGetAllClinicalCaseQuery } from "@/store/features/clinicalCase/clinicalCase.api";
-import GlobalLoader from "@/common/GlobalLoader";
+import GlobalLoader2 from "@/common/GlobalLoader2";
 import { ClinicalCaseData } from "@/types/clinicalCase";
-// import { IClinicalCase } from "@/types/clinicalCase";
 
 // interface ClinicalCase {
 //   _id: string;
@@ -183,7 +182,7 @@ console.log(clinicalCases)
     );
   };
 
-  if (isLoading) return <GlobalLoader />;
+  if (isLoading) return <GlobalLoader2 />;
 
   return (
     <div>
