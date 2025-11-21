@@ -15,7 +15,7 @@ const FlashCardSchema = z.object({
   frontText: z.string().min(1, { message: "Front text is required" }),
   backText: z.string().min(1, { message: "Back text is required" }),
   explanation: z.string().optional(),
-  difficulty: z.enum(["Basics", "Intermediate", "Advance"]),
+  difficulty: z.enum(["Basic", "Intermediate", "Advance"]),
 });
 
 const FlashCardsFormSchema = z.object({
@@ -43,7 +43,7 @@ const ManualFlashUpload = () => {
     resolver: zodResolver(FlashCardsFormSchema),
     defaultValues: {
       flashCards: [
-        { frontText: "", backText: "", explanation: "", difficulty: "Basics" },
+        { frontText: "", backText: "", explanation: "", difficulty: "Basic" },
       ],
     },
   });
@@ -152,7 +152,7 @@ const ManualFlashUpload = () => {
               frontText: "",
               backText: "",
               explanation: "",
-              difficulty: "Basics",
+              difficulty: "Basic",
             })
           }
           className="!text-blue-600"

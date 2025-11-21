@@ -49,7 +49,9 @@ const CreateContent = () => {
           {contentType === "Flashcard" && (
             <FlashCardUpload breadcrumb={breadcrumb} />
           )}
-          {contentType === "ClinicalCase" && <ClinicalCaseUpload />}
+          {contentType === "ClinicalCase" && (
+            <ClinicalCaseUpload breadcrumb={breadcrumb} />
+          )}
           {contentType === "OSCE" && <OSCEUpload />}
           {contentType === "Notes" && <NotesUpload breadcrumb={breadcrumb} />}
         </div>
