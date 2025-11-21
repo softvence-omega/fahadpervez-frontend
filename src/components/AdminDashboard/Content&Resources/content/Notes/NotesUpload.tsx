@@ -147,7 +147,7 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
         const formdata = new FormData();
         formdata.append("data", JSON.stringify(data));
         notes.files.forEach((file) => {
-          formdata.append("files", file, file.name);
+          formdata.append("files", file);
         });
 
         await postNotes(formdata).unwrap();
