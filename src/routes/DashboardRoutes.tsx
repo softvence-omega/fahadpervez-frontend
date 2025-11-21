@@ -55,7 +55,7 @@ import CheckListResult from "@/components/dashboard/osce/CheckListResult";
 import HelpSupport from "@/pages/dashboard/help&support/HelpSupport";
 import StudentProfile from "@/pages/dashboard/student profile/StudentProfile";
 import PrivateRoute from "./PrivateRoute";
-// import MCQPracticeWithSidebar from "@/pages/dashboard/mcqBank/newMCQBank/MCQPracticeWithSidebar";
+import MCQPracticeWithSidebar from "@/pages/dashboard/mcqBank/newMCQBank/MCQPracticeWithSidebar";
 // import MCQPracticeWithSidebar from "@/components/Test";
 
 const dashboardRoutes = {
@@ -135,14 +135,14 @@ const dashboardRoutes = {
       path: "ai-tutor",
       element: <AITutor />,
     },
-    // {
-    //   path: "mcq-bank",
-    //   element: <MCQPracticeWithSidebar />,
-    // },
     {
       path: "mcq-bank",
-      element: <McqBank />,
+      element: <MCQPracticeWithSidebar />,
     },
+    // {
+    //   path: "mcq-bank",
+    //   element: <McqBank />,
+    // },
     {
       path: "practice-mcq/:id",
       element: <PracticeMCQ />,
