@@ -7,6 +7,7 @@ import {
 } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import { useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
+import { correctAnswerOptions, difficultyOptions } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
@@ -41,17 +42,6 @@ const inputClass = {
   error: "text-red-500 text-sm mt-1",
 };
 
-export const difficultyOptions = [
-  { label: "Basic", value: "Basic" },
-  { label: "Intermediate", value: "Intermediate" },
-  { label: "Advance", value: "Advance" },
-] as const;
-const correctAnswerOptions = [
-  { label: "Option A", value: "A" },
-  { label: "Option B", value: "B" },
-  { label: "Option C", value: "C" },
-  { label: "Option D", value: "D" },
-] as const;
 const AddMCQForm = () => {
   const { formData } = useAppSelector(
     (state: RootState) => state.staticContent

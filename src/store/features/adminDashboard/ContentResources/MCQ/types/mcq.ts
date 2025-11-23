@@ -33,33 +33,3 @@ export interface GetAllMcqResponse {
   data: McqBank[];
   meta: McqMeta;
 }
-
-// get all tree for study mode
-export type GetStudyModeTree = {
-  success: boolean;
-  message: string;
-  data: SubjectData[];
-  meta: null;
-};
-
-export type SubjectData = {
-  _id: string;
-  subjectName: string;
-  systems: System[];
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type System = {
-  name: string;
-  topics: Topic[];
-};
-
-export type Topic = {
-  topicName: string;
-  subTopics: (SubTopic | string)[];
-};
-
-export type SubTopic = {
-  subtopicName: string;
-};

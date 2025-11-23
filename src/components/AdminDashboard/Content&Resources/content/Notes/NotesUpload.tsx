@@ -1,5 +1,3 @@
-"use client";
-
 import CommonSpace from "@/common/space/CommonSpace";
 import DashboardTopSection from "@/components/AdminDashboard/reuseable/DashboardTopSection";
 import StepIndicator from "../medical/StepIndicator";
@@ -14,6 +12,7 @@ import { RootState } from "@/store/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 interface FileWithPreview {
@@ -34,32 +33,27 @@ const inputClass = {
 
 const activeStep = 2;
 
-// -------------------------
-// ✅ ZOD VALIDATION SCHEMA
-// -------------------------
+// *************** FIXED SCHEMA (file can be null) ***************
 const notesSchema = z.object({
   description: z.string().min(1, "Description is required"),
-  files: z
-    .array(
-      z
-        .custom<File>((val) => val instanceof File, {
-          message: "Invalid file format",
-        })
-        .refine(
-          (file) =>
-            [
-              "application/pdf",
-              "application/msword",
-              "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            ].includes(file.type),
-          "Only PDF, DOC, DOCX files allowed"
-        )
-        .refine(
-          (file) => file.size <= 10 * 1024 * 1024,
-          "Max file size is 10MB"
-        )
+  file: z
+    .instanceof(File)
+    .nullable()
+    .refine((file) => file !== null, "File is required")
+    .refine(
+      (file) =>
+        file === null ||
+        [
+          "application/pdf",
+          "application/msword",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ].includes(file.type),
+      "Only PDF, DOC, DOCX files allowed"
     )
-    .min(1, "At least one file is required"),
+    .refine(
+      (file) => file === null || file.size <= 10 * 1024 * 1024,
+      "Max file size is 10MB"
+    ),
 });
 
 type NotesFormValues = z.infer<typeof notesSchema>;
@@ -77,53 +71,39 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
     resolver: zodResolver(notesSchema),
     defaultValues: {
       description: "",
-      files: [],
+      file: null,
     },
   });
 
   // -------------------------
-  // HANDLE FILE UPLOAD
+  // HANDLE SINGLE FILE UPLOAD
   // -------------------------
   const handleFileUpload = (files: FileList | null) => {
-    if (!files) return;
+    if (!files || files.length === 0) return;
+    const file = files[0];
 
-    const validFiles = Array.from(files).filter((file) => {
-      const isValidType = [
-        "application/pdf",
-        "application/msword",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      ].includes(file.type);
+    const isValidType = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ].includes(file.type);
 
-      const isValidSize = file.size <= 10 * 1024 * 1024;
+    const isValidSize = file.size <= 10 * 1024 * 1024;
 
-      return isValidType && isValidSize;
-    });
+    if (!isValidType || !isValidSize) return;
 
-    const newFiles: FileWithPreview[] = validFiles.map((file) => ({
+    const newFile = {
       file,
-      id: `${file.name}-${Date.now()}-${Math.random()}`,
-    }));
+      id: `${file.name}-${Date.now()}`,
+    };
 
-    const updated = [...uploadedFiles, ...newFiles];
-    setUploadedFiles(updated);
-
-    // Push actual File[] into Zod form state
-    setValue(
-      "files",
-      updated.map((f) => f.file),
-      { shouldValidate: true }
-    );
+    setUploadedFiles([newFile]);
+    setValue("file", file, { shouldValidate: true });
   };
 
-  const removeFile = (id: string) => {
-    const updated = uploadedFiles.filter((f) => f.id !== id);
-    setUploadedFiles(updated);
-
-    setValue(
-      "files",
-      updated.map((f) => f.file),
-      { shouldValidate: true }
-    );
+  const removeFile = () => {
+    setUploadedFiles([]);
+    setValue("file", null, { shouldValidate: true });
   };
 
   const formatFileSize = (bytes: number): string => {
@@ -137,18 +117,18 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
   const selectFormData = useSelector(
     (state: RootState) => state.staticContent.formData
   );
-  const [postNotes] = usePostNotesMutation();
+  const [postNotes, { isLoading }] = usePostNotesMutation();
+
   const onSubmit = async (notes: NotesFormValues) => {
     try {
       if (selectFormData) {
-        const { description } = notes;
+        const { description, file } = notes;
         const data = { description, ...selectFormData };
 
         const formdata = new FormData();
         formdata.append("data", JSON.stringify(data));
-        notes.files.forEach((file) => {
-          formdata.append("files", file);
-        });
+
+        if (file) formdata.append("files", file);
 
         await postNotes(formdata).unwrap();
         console.log("FINAL SUBMIT PAYLOAD:", formdata);
@@ -157,6 +137,13 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
       console.error("API Error:", error);
     }
   };
+
+  const navigate = useNavigate();
+  const handleCancel = () => {
+    setUploadedFiles([]);
+    navigate(-1);
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <DashboardTopSection
@@ -169,9 +156,7 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
         <StepIndicator steps={steps} activeStep={activeStep} />
       </CommonSpace>
 
-      {/* ------------------------- */}
       {/* Description Field */}
-      {/* ------------------------- */}
       <div>
         <label className={inputClass.label}>Description</label>
         <textarea
@@ -184,9 +169,7 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
         )}
       </div>
 
-      {/* ------------------------- */}
-      {/* File Upload */}
-      {/* ------------------------- */}
+      {/* File Upload Section */}
       <div className="max-w-[670px] mx-auto py-6">
         <div
           onDragOver={(e) => {
@@ -213,7 +196,6 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
             id="file-upload"
             className="hidden"
             accept=".pdf,.doc,.docx"
-            multiple
             onChange={(e) => handleFileUpload(e.target.files)}
           />
           <label htmlFor="file-upload" className="cursor-pointer">
@@ -233,9 +215,9 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
           </label>
         </div>
 
-        {errors.files && (
+        {errors.file && (
           <p className={`${inputClass.error} mb-4`}>
-            {errors.files.message as string}
+            {errors.file.message as string}
           </p>
         )}
 
@@ -263,7 +245,7 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
                 </div>
                 <button
                   type="button"
-                  onClick={() => removeFile(item.id)}
+                  onClick={removeFile}
                   className="p-2 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
                 >
                   <X className="w-5 h-5 text-slate-500" />
@@ -275,12 +257,12 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
       </div>
 
       <ActionButtons
-        onCancel={() => {}}
+        onCancel={() => handleCancel()}
         importLabel="Save & Publish Notes"
         onSavePublish={() => {
           handleSubmit(onSubmit)();
         }}
-        isLoading={false}
+        isLoading={isLoading}
       />
     </form>
   );

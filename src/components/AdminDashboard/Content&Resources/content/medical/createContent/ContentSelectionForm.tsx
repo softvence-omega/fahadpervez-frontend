@@ -10,7 +10,7 @@ import {
   SubjectData,
   System,
   Topic,
-} from "@/store/features/adminDashboard/ContentResources/MCQ/type/mcq";
+} from "@/store/features/adminDashboard/ContentResources/MCQ/types/mcq";
 import { setFormData } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
 import { useAppSelector } from "@/store/hook";
 import { AppDispatch, RootState } from "@/store/store";

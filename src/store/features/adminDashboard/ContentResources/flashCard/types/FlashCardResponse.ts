@@ -52,7 +52,7 @@ type FlashCard = {
   frontText: string;
   backText: string;
   explanation?: string;
-  difficulty: "Basics" | "Intermediate" | "Advance";
+  difficulty: "Basic" | "Intermediate" | "Advance";
 };
 
 export type ManualFlashCardUpload = {

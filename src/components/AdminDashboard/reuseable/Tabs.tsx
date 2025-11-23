@@ -11,7 +11,7 @@ interface TabsProps<T extends string> {
 
 const Tabs = <T extends string>({ tabs, active, onChange }: TabsProps<T>) => {
   return (
-    <div className="flex items-center flex-wrap xl:bg-white xl:border border-border xl:rounded-full p-1 w-fit">
+    <div className="flex items-center flex-wrap bg-white border border-border rounded-full p-1 w-fit">
       {tabs.map((tab) => (
         <button
           key={tab.value}

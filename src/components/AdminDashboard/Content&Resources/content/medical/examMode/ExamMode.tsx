@@ -1,4 +1,4 @@
-import { Exam } from "@/store/features/adminDashboard/ContentResources/MCQ/type/tree";
+import { Exam } from "@/store/features/adminDashboard/ContentResources/MCQ/types/tree";
 import { useState } from "react";
 import CreateExamModal from "./CreateExamModal";
 import TableContentForExam from "./TableContentForExam";
