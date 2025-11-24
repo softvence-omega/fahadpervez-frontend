@@ -48,6 +48,7 @@ export type McqQuestion = {
 
 export interface IFlashCardItem {
   flashCardId: string;
+  image: string
   frontText: string;
   backText: string;
   explanation: string;

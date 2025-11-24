@@ -66,7 +66,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
       <div className="grid md:grid-cols-2 mt-8 gap-4">
         <Button
           onClick={onViewNotes}
-          className="bg-yellow-900 hover:bg-yellow-800 text-white rounded-[6px] cursor-pointer md:text-lg py-2 h-auto flex items-center justify-center gap-2"
+          className="bg-yellow-900 hover:bg-yellow-800 text-white rounded-[6px] cursor-pointer py-2 h-auto flex items-center justify-center gap-2"
         >
           <View className="w-5 h-5" /> View Notes
         </Button>
@@ -74,7 +74,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
         {showDownload && (
           <Button
             onClick={onDownload}
-            className="bg-green-900 hover:bg-green-800 text-white rounded-[6px] cursor-pointer md:text-lg py-2 h-auto flex items-center justify-center gap-2"
+            className="bg-green-900 hover:bg-green-800 text-white rounded-[6px] cursor-pointer py-2 h-auto flex items-center justify-center gap-2"
           >
             <Download className="w-5 h-5" /> Download PDF
           </Button>

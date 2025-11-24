@@ -10,17 +10,18 @@ import {
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { useNavigate } from "react-router-dom";
 import { useGetAllClinicalCaseQuery } from "@/store/features/clinicalCase/clinicalCase.api";
-import GlobalLoader from "@/common/GlobalLoader";
+import GlobalLoader2 from "@/common/GlobalLoader2";
+import { ClinicalCaseData } from "@/types/clinicalCase";
 
-interface ClinicalCase {
-  _id: string;
-  caseName: string;
-  caseHistory: string;
-  topic: string;
-  isAIGenerated: boolean;
-  profile_type: string;
-  status?: "completed" | "available"; // optional fallback
-}
+// interface ClinicalCase {
+//   _id: string;
+//   caseName: string;
+//   caseHistory: string;
+//   topic: string;
+//   isAIGenerated: boolean;
+//   profile_type: string;
+//   status?: "completed" | "available"; // optional fallback
+// }
 
 type TabType = "All Cases" | "AI Generated" | "Complete Cases";
 type FilterOption = string;
@@ -39,8 +40,8 @@ const AllClinicalCases: React.FC = () => {
   const { data, isLoading } = useGetAllClinicalCaseQuery(undefined);
 
   // Extract clinical cases
-  const clinicalCases: ClinicalCase[] = useMemo(() => data?.data || [], [data]);
-
+  const clinicalCases: ClinicalCaseData[] = useMemo(() => data?.data || [], [data]);
+console.log(clinicalCases)
   const casesPerPage = 6;
 
   const bodySystemOptions: FilterOption[] = [
@@ -69,18 +70,18 @@ const AllClinicalCases: React.FC = () => {
     let filtered = [...clinicalCases];
 
     if (activeTab === "AI Generated") {
-      filtered = filtered.filter((c) => c.isAIGenerated);
+      // filtered = filtered.filter((c) => c.isAIGenerated);
     } else if (activeTab === "Complete Cases") {
-      filtered = filtered.filter((c) => c.status === "completed");
+      // filtered = filtered.filter((c) => c.status === "completed");
     }
 
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (c) =>
-          c.caseName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          c.caseHistory.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
+    // if (searchTerm) {
+    //   filtered = filtered.filter(
+    //     (c) =>
+    //       c.caseName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //       c.caseHistory.toLowerCase().includes(searchTerm.toLowerCase())
+    //   );
+    // }
 
     if (selectedBodySystem !== "All") {
       filtered = filtered.filter((c) => c.topic === selectedBodySystem);
@@ -145,7 +146,7 @@ const AllClinicalCases: React.FC = () => {
     </div>
   );
 
-  const CaseCard = ({ caseData }: { caseData: ClinicalCase }) => {
+  const CaseCard = ({ caseData }: { caseData: ClinicalCaseData }) => {
     const handleStartCase = () => {
       navigate(`/dashboard/clinical-case/${caseData._id}`);
     };
@@ -156,18 +157,18 @@ const AllClinicalCases: React.FC = () => {
           <span className="px-2 py-1 rounded-full text-xs font-semibold bg-slate-100 border border-slate-200 text-slate-800">
             {caseData.topic || "General"}
           </span>
-          {caseData.isAIGenerated && (
+          {caseData?.difficultyLevel && (
             <span className="px-2 py-1 text-xs font-medium border rounded-full text-purple-600">
-              AI Generated
+              {caseData?.difficultyLevel}
             </span>
           )}
         </div>
 
         <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          {caseData.caseName}
+          {caseData.caseTitle}
         </h3>
         <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-          {caseData.caseHistory}
+          {caseData?.patientPresentation}
         </p>
 
         <PrimaryButton
@@ -181,7 +182,7 @@ const AllClinicalCases: React.FC = () => {
     );
   };
 
-  if (isLoading) return <GlobalLoader />;
+  if (isLoading) return <GlobalLoader2 />;
 
   return (
     <div>
@@ -250,8 +251,8 @@ const AllClinicalCases: React.FC = () => {
 
       {/* Cases Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        {paginatedCases.map((caseData) => (
-          <CaseCard key={caseData._id} caseData={caseData} />
+        {paginatedCases.map((caseData, idx: number) => (
+          <CaseCard key={idx} caseData={caseData} />
         ))}
       </div>
 

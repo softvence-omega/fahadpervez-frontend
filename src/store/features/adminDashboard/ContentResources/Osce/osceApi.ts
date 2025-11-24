@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseAPI } from "@/store/api/baseApi";
 import { CreateOsceContentResponse } from "./types/createOsce";
+import { OsceListResponse } from "./types/getOsce";
 import { SingleOsceResponse } from "./types/singleOsce";
 
 export const osceApi = baseAPI.injectEndpoints({
@@ -26,11 +28,27 @@ export const osceApi = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ["OSCE"],
     }),
+
+    getAllOsce: build.query<OsceListResponse, any>({
+      query: () => ({
+        url: `/osce`,
+        method: "GET",
+      }),
+    }),
+
+    getSingleOsce: build.query<OsceListResponse, any>({
+      query: (id) => ({
+        url: `/osce/${id}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
 export const {
   useCreateOsceMutation,
+  useGetAllOsceQuery,
+  useGetSingleOsceQuery,
   useSingleOsceQuery,
   useDeleteOsceMutation,
 } = osceApi;

@@ -3,72 +3,80 @@
 import { useState } from "react";
 import DecisionPoint from "./DecisionPoint";
 import EvidenceReview from "./EvidenceReview";
-import DiagnosisAssessment from "./DiagnosisAssessment";
-import { Case } from "./type/case";
+// import PracticeMCQ from "./PracticeMCQ";
+// import { ClinicalCaseData } from "@/types/clinicalCase.types";
 import { Progress } from "@/components/ui/progress";
 import { Bookmark, Printer, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ClinicalCaseData } from "@/types/clinicalCase";
+import ClinicalCaseMCQ from "./ClinicalCaseMCQ";
 
 type Props = {
-  clinicalCase: Case;
+  clinicalCase: ClinicalCaseData;
 };
 
 const ClinicalCaseFlow: React.FC<Props> = ({ clinicalCase }) => {
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
-  const [score, setScore] = useState(0);
+  const [selectedOptionName, setSelectedOptionName] = useState<string | null>(
+    null
+  );
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  console.log(isConfirmed)
 
-  const question = clinicalCase.questions[currentQuestionIndex];
-
-  const handleNext = () => {
-    if (currentStep < 3) {
-      setCurrentStep((prev) => (prev + 1) as 1 | 2 | 3);
-    } else {
-      // Step 3 finished, go to next question if exists
-      if (selectedOptionId === question.correctOptionId) {
-        setScore((prev) => prev + 1);
-      }
-
-      if (currentQuestionIndex < clinicalCase.questions.length - 1) {
-        setCurrentQuestionIndex((prev) => prev + 1);
-        setSelectedOptionId(null);
-        setCurrentStep(1);
-      } else {
-        alert(
-          `Quiz finished! Your score: ${
-            score + (selectedOptionId === question.correctOptionId ? 1 : 0)
-          } / ${clinicalCase.questions.length}`
-        );
-      }
-    }
+  const handleConfirmDiagnosis = () => {
+    setIsConfirmed(true);
+    setCurrentStep(2);
   };
 
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-4 items- gap-8 my-9">
-      <div className="col-span-3">
-        {/* <p className="text-gray-600 mb-6">{clinicalCase.caseDetails}</p> */}
+  const handleStartQuiz = () => {
+    setCurrentStep(3);
+  };
 
+  const getButtonConfig = () => {
+    if (currentStep === 1) {
+      return {
+        label: "Next",
+        disabled: true,
+        onClick: () => {},
+      };
+    }
+    if (currentStep === 2) {
+      return {
+        label: "Start Quiz",
+        disabled: false,
+        onClick: handleStartQuiz,
+      };
+    }
+    return {
+      label: "Next Question",
+      disabled: false,
+      onClick: () => {},
+    };
+  };
+
+  const buttonConfig = getButtonConfig();
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-4 items-start gap-8 my-9">
+      <div className="col-span-3">
         {currentStep === 1 && (
           <DecisionPoint
-            question={question}
-            selectedOptionId={selectedOptionId}
-            setSelectedOptionId={setSelectedOptionId}
+            clinicalCase={clinicalCase}
+            selectedOptionName={selectedOptionName}
+            setSelectedOptionName={setSelectedOptionName}
+            onConfirm={handleConfirmDiagnosis}
           />
         )}
 
-        {currentStep === 2 && selectedOptionId && (
+        {currentStep === 2 && selectedOptionName && (
           <EvidenceReview
-            question={question}
-            selectedOptionId={selectedOptionId}
+            clinicalCase={clinicalCase}
+            selectedOptionName={selectedOptionName}
           />
         )}
 
-        {currentStep === 3 && selectedOptionId && (
-          <DiagnosisAssessment
-            question={question}
-            selectedOptionId={selectedOptionId}
-          />
+        {currentStep === 3 && (
+          <ClinicalCaseMCQ clinicalCase={clinicalCase} />
         )}
       </div>
 
@@ -76,18 +84,20 @@ const ClinicalCaseFlow: React.FC<Props> = ({ clinicalCase }) => {
         <div className="border border-gray-300 rounded-2xl p-6 space-y-4 bg-white">
           <p className="text-xl font-semibold">Decision Point</p>
           <Progress value={(currentStep * 100) / 3} />
-          <p className="">Continue reading to unlock the next step</p>
+          <p className="">
+            {currentStep === 1
+              ? "Select a diagnosis to continue"
+              : currentStep === 2
+              ? "Review evidence to unlock quiz"
+              : "Complete the practice questions"}
+          </p>
           <div className="mt-6 flex justify-end">
             <button
-              onClick={handleNext}
-              disabled={currentStep === 1 && !selectedOptionId}
-              className="w-full px-6 py-2 bg-blue-600 text-white rounded disabled:opacity-50 cursor-pointer"
+              onClick={buttonConfig.onClick}
+              disabled={buttonConfig.disabled}
+              className="w-full px-6 py-2 bg-blue-600 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer hover:bg-blue-700"
             >
-              {currentStep < 3
-                ? "Next"
-                : currentQuestionIndex < clinicalCase.questions.length - 1
-                ? "Next Question"
-                : "Finish"}
+              {buttonConfig.label}
             </button>
           </div>
         </div>
@@ -96,11 +106,11 @@ const ClinicalCaseFlow: React.FC<Props> = ({ clinicalCase }) => {
           <p className="text-xl font-semibold">Quick Actions</p>
           <Button className="w-full bg-[#F9FAFB] text-slate-900 hover:text-white px-6 py-2 border border-gray-300 items-center rounded disabled:opacity-50 cursor-pointer">
             <Bookmark />
-            Share Case
+            Bookmark Case
           </Button>
           <Button className="w-full bg-[#F9FAFB] text-slate-900 hover:text-white px-6 py-2 border border-gray-300 items-center rounded disabled:opacity-50 cursor-pointer">
             <Printer />
-            Share Case
+            Print Case
           </Button>
           <Button className="w-full bg-[#F9FAFB] text-slate-900 hover:text-white px-6 py-2 border border-gray-300 items-center rounded disabled:opacity-50 cursor-pointer">
             <Share />
