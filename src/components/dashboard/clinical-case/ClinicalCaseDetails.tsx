@@ -16,72 +16,8 @@ import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useGetSingleClinicalCaseQuery } from "@/store/features/clinicalCase/clinicalCase.api";
 import GlobalLoader from "@/common/GlobalLoader";
-
-// Updated type definitions based on backend response
-interface PatientDetails {
-  age: number;
-  sex: string;
-  ethnicity: string;
-  occupation: string;
-  remark?: string;
-}
-
-interface VitalSigns {
-  temperature: string;
-  heartRate: string;
-  bloodPressure: string;
-  respiratoryRate: string;
-  generalAppearance: string[];
-  abdominalExamination: string[];
-}
-
-interface LabSubTest {
-  testName: string;
-  testResult: string;
-  refValue: string;
-}
-
-interface LaboratoryResult {
-  testName: string;
-  testResult: string;
-  subTest: LabSubTest[];
-}
-
-interface StudentDecision {
-  question: string;
-  supportingEvidence: string[];
-  refutingEvidence: string[];
-  isCorrect: boolean;
-}
-
-interface DetailedExplanation {
-  explanation: string;
-  keyFeatures: string[];
-}
-
-interface PublishedBy {
-  firstName: string;
-  lastName: string;
-  // Add other fields if needed
-}
-
-interface ClinicalCaseData {
-  _id: string;
-  caseName: string;
-  topic: string;
-  patientDetails: PatientDetails;
-  caseHistory: string;
-  vital_signs: VitalSigns;
-  laboratory_result: LaboratoryResult;
-  imaging_studies: string[];
-  caseTips: string[];
-  studentDecision: StudentDecision[];
-  detailedExplanation: DetailedExplanation;
-  isAIGenerated: boolean;
-  createdAt: string;
-  updatedAt: string;
-  publishedBy?: PublishedBy;
-}
+import { ClinicalCaseData } from "@/types/clinicalCase";
+// import { ClinicalCaseData } from "@/types/clinicalCase.types";
 
 interface CaseDetailProps {
   onBack?: () => void;
@@ -152,7 +88,8 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
   };
 
   const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty.toLowerCase()) {
+    switch (difficulty?.toLowerCase()) {
+      case "basic":
       case "beginner":
         return "bg-green-100 text-green-800";
       case "intermediate":
@@ -165,36 +102,35 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
   };
 
   const getSpecialtyColor = (specialty: string) => {
-    const colors = {
+    const colors: Record<string, string> = {
       cardiology: "bg-red-100 text-red-800",
       gastroenterology: "bg-blue-100 text-blue-800",
+      gastrointestinal: "bg-blue-100 text-blue-800",
       emergency: "bg-orange-100 text-orange-800",
       surgery: "bg-purple-100 text-purple-800",
       "internal medicine": "bg-green-100 text-green-800",
     };
     return (
-      colors[specialty.toLowerCase() as keyof typeof colors] ||
-      "bg-blue-100 text-blue-800"
+      colors[specialty?.toLowerCase()] || "bg-blue-100 text-blue-800"
     );
   };
 
   // Helper function to parse vital sign values and units
-  const parseVitalSign = (vitalString: string) => {
-    // Simple parser for vital signs like "38.2°C", "102 bpm", etc.
-    const match = vitalString.match(/([\d./]+)\s*(.*)/);
-    if (match) {
-      return {
-        value: match[1],
-        unit: match[2],
-        isAbnormal: false, // You might want to add logic to determine this
-      };
-    }
-    return {
-      value: vitalString,
-      unit: "",
-      isAbnormal: false,
-    };
-  };
+  // const parseVitalSign = (vitalString: string) => {
+  //   const match = vitalString?.match(/([\d./]+)\s*(.*)/);
+  //   if (match) {
+  //     return {
+  //       value: match[1],
+  //       unit: match[2],
+  //       isAbnormal: false,
+  //     };
+  //   }
+  //   return {
+  //     value: vitalString || "",
+  //     unit: "",
+  //     isAbnormal: false,
+  //   };
+  // };
 
   const SectionHeader: React.FC<{
     title: string;
@@ -214,32 +150,32 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
     </button>
   );
 
-  const VitalSignCard: React.FC<{
-    label: string;
-    value: string;
-    unit: string;
-    isAbnormal?: boolean;
-  }> = ({ label, value, unit, isAbnormal }) => (
-    <div
-      className={`p-3 rounded-lg ${
-        isAbnormal ? "bg-red-50 border border-red-200" : "bg-gray-50"
-      }`}
-    >
-      <span className="text-sm font-medium text-gray-500">{label}:</span>
-      <p
-        className={`font-semibold ${
-          isAbnormal ? "text-red-600" : "text-gray-900"
-        }`}
-      >
-        {value} {unit}
-      </p>
-    </div>
-  );
+  // const VitalSignCard: React.FC<{
+  //   label: string;
+  //   value: string;
+  //   unit: string;
+  //   isAbnormal?: boolean;
+  // }> = ({ label, value, unit, isAbnormal }) => (
+  //   <div
+  //     className={`p-3 rounded-lg ${
+  //       isAbnormal ? "bg-red-50 border border-red-200" : "bg-gray-50"
+  //     }`}
+  //   >
+  //     <span className="text-sm font-medium text-gray-500">{label}:</span>
+  //     <p
+  //       className={`font-semibold ${
+  //         isAbnormal ? "text-red-600" : "text-gray-900"
+  //       }`}
+  //     >
+  //       {value} {unit}
+  //     </p>
+  //   </div>
+  // );
 
   const LabResultCard: React.FC<{
     test: string;
     value: string;
-    unit: string;
+    unit?: string;
     isAbnormal?: boolean;
     referenceRange?: string;
   }> = ({ test, value, unit, isAbnormal, referenceRange }) => (
@@ -261,7 +197,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
           isAbnormal ? "text-red-600" : "text-gray-900"
         }`}
       >
-        {value} {unit}
+        {value} {unit || ""}
       </span>
     </div>
   );
@@ -313,22 +249,22 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
           <div className="mt-6 flex items-center gap-4">
             <span
               className={`px-3 py-1 rounded-full text-sm font-medium ${getSpecialtyColor(
-                clinicalCase.topic
+                clinicalCase?.subject || ""
               )}`}
             >
-              {clinicalCase.topic}
+              {clinicalCase?.subject}
             </span>
             <span
               className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(
-                "Intermediate" // You might want to add difficulty to your backend
+                clinicalCase?.difficultyLevel || ""
               )}`}
             >
-              Intermediate
+              {clinicalCase?.difficultyLevel}
             </span>
           </div>
 
           <h1 className="text-2xl font-bold text-gray-900 mt-4 mb-6">
-            {clinicalCase.caseName}
+            {clinicalCase?.caseTitle}
           </h1>
 
           {/* Navigation Tabs */}
@@ -379,33 +315,28 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
 
               {expandedSections.presentation && (
                 <div className="px-6 pb-6">
-                  {/* Patient Details */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                    {Object.entries(clinicalCase.patientDetails).map(
-                      ([key, value]) => (
-                        <div key={key} className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-gray-500 capitalize">
-                            {key}:
-                          </span>
-                          <p className="text-gray-900">{value}</p>
-                        </div>
-                      )
-                    )}
-                  </div>
-
-                  {clinicalCase.patientDetails.remark && (
-                    <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
-                      <span className="text-sm font-medium text-gray-500">
-                        Remark:{" "}
-                      </span>
-                      <span className="text-gray-700">
-                        {clinicalCase.patientDetails.remark}
-                      </span>
+                  {/* Patient Details - COMMENTED OUT - No parsing from patientPresentation */}
+                  {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-500">Age:</span>
+                      <p className="text-gray-900">--</p>
                     </div>
-                  )}
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-500">Sex:</span>
+                      <p className="text-gray-900">--</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-500">Ethnicity:</span>
+                      <p className="text-gray-900">--</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-500">Occupation:</span>
+                      <p className="text-gray-900">--</p>
+                    </div>
+                  </div> */}
 
                   <p className="text-gray-700 leading-relaxed">
-                    {clinicalCase.caseHistory}
+                    {clinicalCase?.patientPresentation}
                   </p>
                 </div>
               )}
@@ -417,7 +348,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
               className="bg-white rounded-lg shadow-sm border border-gray-200"
             >
               <SectionHeader
-                title="Case History"
+                title="History of Present Illness"
                 icon={<History size={20} />}
                 isExpanded={expandedSections.history}
                 onToggle={() => toggleSection("history")}
@@ -426,7 +357,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
               {expandedSections.history && (
                 <div className="px-6 pb-6">
                   <div className="space-y-4 text-gray-700 leading-relaxed">
-                    <p>{clinicalCase.caseHistory}</p>
+                    <p>{clinicalCase?.historyOfPresentIllness}</p>
                   </div>
                 </div>
               )}
@@ -444,66 +375,45 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
                 onToggle={() => toggleSection("physical")}
               />
 
-              {expandedSections.physical && clinicalCase.vital_signs && (
+              {expandedSections.physical && (
                 <div className="px-6 pb-6">
-                  <div className="mb-6">
+                  {/* Display the physical examination as text */}
+                  <div className="text-gray-700 leading-relaxed">
+                    <p>{clinicalCase?.physicalExamination}</p>
+                  </div>
+
+                  {/* COMMENTED OUT - Structured vital signs display (no parsing) */}
+                  {/* <div className="mb-6">
                     <h3 className="font-semibold text-gray-900 mb-3">
                       Vital Signs
                     </h3>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                      {Object.entries({
-                        temperature: clinicalCase.vital_signs.temperature,
-                        heartRate: clinicalCase.vital_signs.heartRate,
-                        bloodPressure: clinicalCase.vital_signs.bloodPressure,
-                        respiratoryRate:
-                          clinicalCase.vital_signs.respiratoryRate,
-                      }).map(([key, value]) => {
-                        const parsed = parseVitalSign(value);
-                        return (
-                          <VitalSignCard
-                            key={key}
-                            label={
-                              key.charAt(0).toUpperCase() +
-                              key.slice(1).replace(/([A-Z])/g, " $1")
-                            }
-                            value={parsed.value}
-                            unit={parsed.unit}
-                            isAbnormal={parsed.isAbnormal}
-                          />
-                        );
-                      })}
+                      <VitalSignCard
+                        label="Temperature"
+                        value="--"
+                        unit=""
+                        isAbnormal={false}
+                      />
+                      <VitalSignCard
+                        label="Heart Rate"
+                        value="--"
+                        unit=""
+                        isAbnormal={false}
+                      />
+                      <VitalSignCard
+                        label="Blood Pressure"
+                        value="--"
+                        unit=""
+                        isAbnormal={false}
+                      />
+                      <VitalSignCard
+                        label="Respiratory Rate"
+                        value="--"
+                        unit=""
+                        isAbnormal={false}
+                      />
                     </div>
-                  </div>
-
-                  {clinicalCase.vital_signs.generalAppearance && (
-                    <div className="mb-6">
-                      <h3 className="font-semibold text-gray-900 mb-3">
-                        General Appearance
-                      </h3>
-                      <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                        {clinicalCase.vital_signs.generalAppearance.map(
-                          (finding, index) => (
-                            <li key={index}>{finding}</li>
-                          )
-                        )}
-                      </ul>
-                    </div>
-                  )}
-
-                  {clinicalCase.vital_signs.abdominalExamination && (
-                    <div>
-                      <h3 className="font-semibold text-gray-900 mb-3">
-                        Abdominal Examination
-                      </h3>
-                      <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                        {clinicalCase.vital_signs.abdominalExamination.map(
-                          (finding, index) => (
-                            <li key={index}>{finding}</li>
-                          )
-                        )}
-                      </ul>
-                    </div>
-                  )}
+                  </div> */}
                 </div>
               )}
             </div>
@@ -521,37 +431,21 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
               />
 
               {expandedSections.investigations &&
-                clinicalCase.laboratory_result && (
+                clinicalCase?.laboratoryResults && (
                   <div className="px-6 pb-6">
-                    <div className="mb-4">
-                      <h3 className="font-semibold text-gray-900 mb-2">
-                        {clinicalCase.laboratory_result.testName}
-                      </h3>
-                      <p className="text-gray-700">
-                        {clinicalCase.laboratory_result.testResult}
-                      </p>
+                    <h3 className="font-semibold text-gray-900 mb-4">
+                      Test Results
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {clinicalCase?.laboratoryResults?.map((test, index) => (
+                        <LabResultCard
+                          key={index}
+                          test={test?.name || ""}
+                          value={test?.value || ""}
+                          unit=""
+                        />
+                      ))}
                     </div>
-
-                    {clinicalCase.laboratory_result.subTest && (
-                      <>
-                        <h3 className="font-semibold text-gray-900 mb-4">
-                          Detailed Results
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {clinicalCase.laboratory_result.subTest.map(
-                            (test, index) => (
-                              <LabResultCard
-                                key={index}
-                                test={test.testName}
-                                value={test.testResult}
-                                unit=""
-                                referenceRange={test.refValue}
-                              />
-                            )
-                          )}
-                        </div>
-                      </>
-                    )}
                   </div>
                 )}
             </div>
@@ -568,38 +462,17 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
                 onToggle={() => toggleSection("imaging")}
               />
 
-              {expandedSections.imaging && clinicalCase.imaging_studies && (
+              {expandedSections.imaging && clinicalCase?.imaging && (
                 <div className="px-6 pb-6 space-y-4">
-                  {clinicalCase.imaging_studies.map((study, index) => (
-                    <div key={index}>
-                      <h3 className="font-semibold text-gray-900 mb-2">
-                        Imaging Study {index + 1}:
-                      </h3>
-                      <p className="text-gray-700">{study}</p>
-                    </div>
-                  ))}
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-2">
+                      Imaging Findings:
+                    </h3>
+                    <p className="text-gray-700">{clinicalCase?.imaging}</p>
+                  </div>
                 </div>
               )}
             </div>
-
-            {/* Case Tips */}
-            {clinicalCase.caseTips && clinicalCase.caseTips.length > 0 && (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-                <SectionHeader
-                  title="Clinical Tips"
-                  icon={<Sparkles size={20} />}
-                  isExpanded={true}
-                  onToggle={() => {}}
-                />
-                <div className="px-6 pb-6">
-                  <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                    {clinicalCase.caseTips.map((tip, index) => (
-                      <li key={index}>{tip}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Sidebar */}
@@ -647,23 +520,35 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
               </h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Created:</span>
+                  <span className="text-gray-500">Subject:</span>
                   <span className="text-gray-700">
-                    {new Date(clinicalCase.createdAt).toLocaleDateString()}
+                    {clinicalCase?.subject}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">AI Generated:</span>
+                  <span className="text-gray-500">System:</span>
                   <span className="text-gray-700">
-                    {clinicalCase.isAIGenerated ? "Yes" : "No"}
+                    {clinicalCase?.system}
                   </span>
                 </div>
-                {clinicalCase.publishedBy && (
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Topic:</span>
+                  <span className="text-gray-700">
+                    {clinicalCase?.topic}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Created:</span>
+                  <span className="text-gray-700">
+                    {clinicalCase?.createdAt ? new Date(clinicalCase.createdAt).toLocaleDateString() : "--"}
+                  </span>
+                </div>
+                {clinicalCase?.publishedBy && (
                   <div className="flex justify-between">
                     <span className="text-gray-500">Published by:</span>
                     <span className="text-gray-700">
-                      {clinicalCase.publishedBy.firstName}{" "}
-                      {clinicalCase.publishedBy.lastName}
+                      {clinicalCase?.publishedBy?.firstName}{" "}
+                      {clinicalCase?.publishedBy?.lastName}
                     </span>
                   </div>
                 )}

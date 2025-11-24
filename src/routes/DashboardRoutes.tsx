@@ -196,7 +196,7 @@ const dashboardRoutes = {
       element: <PracticeWithChecklist />,
     },
     {
-      path: "osce-tutorial/:id",
+      path: "osce-tutorial",
       element: <OSCETutorial />,
     },
     {

@@ -1,37 +1,58 @@
 import { Button } from "@/components/ui/button";
 import { FilePlus2 } from "lucide-react";
 import ClinicalCaseFlow from "./ClinicalCaseFlow";
-import { mockCase } from "@/data/case";
+import { useParams, Link } from "react-router-dom";
+import { useGetSingleClinicalCaseQuery } from "@/store/features/clinicalCase/clinicalCase.api";
+import GlobalLoader from "@/common/GlobalLoader";
+import { ClinicalCaseData } from "@/types/clinicalCase";
+// import { ClinicalCaseData } from "@/types/clinicalCase.types";
 
-const MakeDecesion = () => {
+const MakeDecision = () => {
+  const { id } = useParams();
+  const { data, isLoading, error } = useGetSingleClinicalCaseQuery(
+    id as string
+  );
+  const clinicalCase = data?.data as ClinicalCaseData;
+
+  if (isLoading) {
+    return <GlobalLoader />;
+  }
+
+  if (error || !clinicalCase) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Error loading clinical case
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="border border-slate-300 rounded-2xl p-6 mt-10 bg-white">
         <div className="md:flex items-center justify-between gap-3">
           <div className="flex items-center gap-4 mb-4">
             <p className="bg-slate-200 text-slate-900 px-[10px] py-[2px] rounded-full">
-              Cardiology
+              {clinicalCase?.subject}
             </p>
             <p className="border border-slate-200 text-slate-950 px-[10px] py-[2px] rounded-full">
-              Cardiology
+              {clinicalCase?.difficultyLevel}
             </p>
           </div>
-          <Button
-            // variant={"outline"}
-            className="px-3 h-10 border border-indigo-500 bg-white text-indigo-500"
-          >
-            <FilePlus2 />
-            Review Case Details
-          </Button>
+          <Link to={`/dashboard/clinical-case/${id}`}>
+            <Button className="px-3 h-10 border border-indigo-500 bg-white text-indigo-500 hover:bg-indigo-50">
+              <FilePlus2 />
+              Review Case Details
+            </Button>
+          </Link>
         </div>
         <h2 className="text-3xl font-semibold mt-5">
-          Case: Acute Abdominal Pain in a Young Female
+          {clinicalCase?.caseTitle}
         </h2>
       </div>
 
-      <ClinicalCaseFlow clinicalCase={mockCase} />
+      <ClinicalCaseFlow clinicalCase={clinicalCase} />
     </div>
   );
 };
 
-export default MakeDecesion;
+export default MakeDecision;

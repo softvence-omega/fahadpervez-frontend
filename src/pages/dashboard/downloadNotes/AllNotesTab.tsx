@@ -114,7 +114,7 @@ export default function AllNotesTab({ notes, loading }: any) {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-4 p-4 bg-white shadow rounded-lg">
+        <div className="grid grid-cols-1 :grid-cols-2 lg:grid-cols-2 2xl:grid-cols-3 gap-5 mt-4 p-4 bg-white shadow rounded-lg">
           {notes.map((note: any) => (
             <NoteCard
               key={note._id}

@@ -7,6 +7,7 @@ import { Link, useParams } from "react-router-dom";
 import { useGetSingleFlashCardQuery } from "@/store/features/flashCard/flashCard.api";
 import { IFlashcardBank } from "@/types";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
+import GlobalLoader2 from "@/common/GlobalLoader2";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { name: "Dashboard", link: "/dashboard" },
@@ -21,7 +22,7 @@ export default function SolveFlashCard() {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <GlobalLoader2 />;
 
   const flashCardData: IFlashcardBank = data?.data;
 
@@ -39,6 +40,7 @@ export default function SolveFlashCard() {
     text: fc?.frontText,
     answer: fc?.backText,
     explanation: fc?.explanation,
+    image: fc?.image,
   }));
 
   if (!questions || questions.length === 0) {
@@ -167,6 +169,7 @@ export default function SolveFlashCard() {
                 <p className="text-lg text-black font-medium mt-4 mb-3">
                   Question
                 </p>
+                <img src={questions?.[currentQuestion]?.image} alt="" />
                 <p className="text-center">
                   {questions?.[currentQuestion]?.text}
                 </p>
