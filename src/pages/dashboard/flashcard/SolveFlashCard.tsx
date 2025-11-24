@@ -40,6 +40,7 @@ export default function SolveFlashCard() {
     text: fc?.frontText,
     answer: fc?.backText,
     explanation: fc?.explanation,
+    image: fc?.image,
   }));
 
   if (!questions || questions.length === 0) {
@@ -168,6 +169,7 @@ export default function SolveFlashCard() {
                 <p className="text-lg text-black font-medium mt-4 mb-3">
                   Question
                 </p>
+                <img src={questions?.[currentQuestion]?.image} alt="" />
                 <p className="text-center">
                   {questions?.[currentQuestion]?.text}
                 </p>
