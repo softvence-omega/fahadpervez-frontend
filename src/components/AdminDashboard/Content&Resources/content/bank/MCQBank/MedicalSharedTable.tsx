@@ -16,9 +16,11 @@ import {
 } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import { OneMCQ } from "@/store/features/adminDashboard/ContentResources/MCQ/type/singleMcqBank";
 import { useMemo, useState } from "react";
-import { ContentCategory } from "./data/data";
-import SearchWithTabs from "./examMode/SearchWithTabs";
-import UpdateMcqModal, { BackendMCQData } from "./studyMode/UpdateMcqModal";
+import { ContentCategory } from "../../medical/data/data";
+import SearchWithTabs from "../../medical/examMode/SearchWithTabs";
+import UpdateMcqModal, {
+  BackendMCQData,
+} from "../../medical/studyMode/UpdateMcqModal";
 
 const tableHeaders = [
   { label: "ID", align: "text-center hidden sm:table-cell" },
