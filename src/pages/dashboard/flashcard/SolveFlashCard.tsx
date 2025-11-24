@@ -169,7 +169,7 @@ export default function SolveFlashCard() {
                 <p className="text-lg text-black font-medium mt-4 mb-3">
                   Question
                 </p>
-                <img src={questions?.[currentQuestion]?.image} alt="" />
+                <img src={questions?.[currentQuestion]?.image} alt="" className="w-[300px] h-[150px] mb-2 rounded object-cover"/>
                 <p className="text-center">
                   {questions?.[currentQuestion]?.text}
                 </p>
