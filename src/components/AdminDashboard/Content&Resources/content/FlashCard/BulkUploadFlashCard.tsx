@@ -32,6 +32,9 @@ const BulkUploadFlashCard = () => {
   const selectFormData = useSelector(
     (state: RootState) => state.staticContent.formData
   );
+  const contentType = useSelector(
+    (state: RootState) => state.staticContent.contentType
+  );
 
   const [bulkUploadFlashCard, { isLoading: isUploading }] =
     useBulkUploadFlashCardMutation();
@@ -56,6 +59,7 @@ const BulkUploadFlashCard = () => {
       }
       if (formData) {
         await bulkUploadFlashCard(formData);
+        navigate(`/admin/content-management/dashboard/${contentType}`);
       }
     } catch (error) {
       console.error("Upload error:", error);

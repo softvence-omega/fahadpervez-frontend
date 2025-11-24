@@ -4,6 +4,7 @@ export interface FlashCard {
   backText: string;
   explanation: string;
   difficulty: string;
+  image: string;
 }
 
 export interface FlashCardBank {
@@ -42,4 +43,5 @@ export type FlashCardInput = {
   backText: string;
   explanation: string;
   difficulty: string;
+  image: string;
 };

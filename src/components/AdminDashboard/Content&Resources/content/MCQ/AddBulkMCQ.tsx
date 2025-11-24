@@ -39,6 +39,9 @@ const AddBulkMCQ = () => {
   const selectFormData = useSelector(
     (state: RootState) => state.staticContent.formData
   );
+  const contentType = useSelector(
+    (state: RootState) => state.staticContent.contentType
+  );
 
   const [uploadBulkMcqApi, { isLoading: isUploading }] =
     useUploadBulkMcqApiMutation();
@@ -63,6 +66,7 @@ const AddBulkMCQ = () => {
       }
       if (formData) {
         await uploadBulkMcqApi(formData);
+        navigate(`/admin/content-management/dashboard/${contentType}`);
       }
     } catch (error) {
       console.error("Upload error:", error);

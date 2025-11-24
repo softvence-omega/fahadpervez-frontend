@@ -33,7 +33,6 @@ const inputClass = {
 
 const activeStep = 2;
 
-// *************** FIXED SCHEMA (file can be null) ***************
 const notesSchema = z.object({
   description: z.string().min(1, "Description is required"),
   file: z
@@ -117,6 +116,9 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
   const selectFormData = useSelector(
     (state: RootState) => state.staticContent.formData
   );
+  const contentType = useSelector(
+    (state: RootState) => state.staticContent.contentType
+  );
   const [postNotes, { isLoading }] = usePostNotesMutation();
 
   const onSubmit = async (notes: NotesFormValues) => {
@@ -131,7 +133,7 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
         if (file) formdata.append("files", file);
 
         await postNotes(formdata).unwrap();
-        console.log("FINAL SUBMIT PAYLOAD:", formdata);
+        navigate(`/admin/content-management/dashboard/${contentType}`);
       }
     } catch (error) {
       console.error("API Error:", error);

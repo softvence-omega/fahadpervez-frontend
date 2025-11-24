@@ -52,6 +52,7 @@ type FlashCard = {
   frontText: string;
   backText: string;
   explanation?: string;
+  image: string;
   difficulty: "Basic" | "Intermediate" | "Advance";
 };
 

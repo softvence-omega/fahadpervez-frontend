@@ -1,4 +1,5 @@
 import CommonButton from "@/common/button/CommonButton";
+import AlertDialogBox from "@/common/custom/AlertDialogBox";
 import { toBerhanTime } from "@/help/help";
 import { useDeleteFlashCardBankMutation } from "@/store/features/adminDashboard/ContentResources/flashCard/flashCardSlice";
 import { useDeleteMcqBankApiMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
@@ -20,10 +21,6 @@ const McqBankCardForAdmin: FC<Props> = ({ data, setMcqBankId }) => {
     useDeleteFlashCardBankMutation();
 
   const handleDelete = async (id: string) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this MCQ bank?"
-    );
-    if (!confirmDelete) return;
     if (contentType === "MCQ") {
       await deleteMcqBankApi(id);
     }
@@ -82,13 +79,10 @@ const McqBankCardForAdmin: FC<Props> = ({ data, setMcqBankId }) => {
       </div>
 
       <div className="p-4 bg-gray-50 flex justify-between border-t border-border ">
-        <CommonButton
-          disabled={isLoading}
-          onClick={() => handleDelete(data._id)}
-          className=" bg-red-500 !text-white"
-        >
-          {isLoading || isDeleting ? "Deleting..." : "Delete"}
-        </CommonButton>
+        <AlertDialogBox
+          action={() => handleDelete(data._id)}
+          isLoading={isDeleting || isLoading}
+        />
         <CommonButton
           onClick={() => setMcqBankId(data._id)}
           className=" bg-blue-500 !text-white"
