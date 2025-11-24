@@ -4,6 +4,7 @@ type FlashCardProps = {
   backText: string;
   explanation: string;
   difficulty: string;
+  image: string;
   isLoading?: boolean;
   onEdit?: () => void;
   onDelete?: () => void;
@@ -15,12 +16,13 @@ const SingleFlashCardCard = ({
   backText,
   explanation,
   difficulty,
+  image,
   isLoading,
   onEdit,
   onDelete,
 }: FlashCardProps) => {
   return (
-    <div className="border rounded-xl shadow p-5 w-full max-w-md bg-white">
+    <div className="border border-border rounded-xl shadow p-5 w-full max-w-md bg-white">
       <div className="flex justify-between items-center mb-3">
         <span className="text-sm text-gray-500 font-medium">
           ID: {flashCardId}
@@ -30,6 +32,11 @@ const SingleFlashCardCard = ({
         </span>
       </div>
 
+      <img
+        src={image}
+        alt="Image"
+        className="w-full h-48 object-cover rounded-lg mb-4"
+      />
       <h3 className="text-lg font-semibold text-gray-800 mb-2">Front</h3>
       <p className="text-gray-700 mb-4">{frontText}</p>
 

@@ -9,7 +9,7 @@ import {
   usePostExamMutation,
   useUpdateExamMutation,
 } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
-import { Exam } from "@/store/features/adminDashboard/ContentResources/MCQ/type/tree";
+import { Exam } from "@/store/features/adminDashboard/ContentResources/MCQ/types/tree";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";

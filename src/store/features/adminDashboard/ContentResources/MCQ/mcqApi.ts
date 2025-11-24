@@ -1,11 +1,17 @@
 import { baseAPI } from "@/store/api/baseApi";
-import { AllContentMCQList } from "./type/allContent";
-import { ManualMCQBank, UploadImageResponse } from "./type/manual";
-import { GetAllMcqResponse, GetStudyModeTree, McqBankParams } from "./type/mcq";
-import { SingleMcqData, SingleMCQUpdatePayload } from "./type/singleMcq";
-import { SingleMCQResponse } from "./type/singleMcqBank";
-import { CreateProfileTypePayload, ProfileTypeResponse } from "./type/student";
-import { GetExamsResponse, PostExam, PostStudyModeTree } from "./type/tree";
+import {
+  AllContentMCQList,
+  ClinicalCaseTreeResponse,
+  NotesTreeResponse,
+  OsceTreeResponse,
+} from "./types/allContent";
+import { ManualMCQBank, UploadImageResponse } from "./types/manual";
+import { GetAllMcqResponse, McqBankParams } from "./types/mcq";
+import { SingleMcqData, SingleMCQUpdatePayload } from "./types/singleMcq";
+import { SingleMCQResponse } from "./types/singleMcqBank";
+import { CreateProfileTypePayload, ProfileTypeResponse } from "./types/student";
+import { GetExamsResponse, PostExam, PostStudyModeTree } from "./types/tree";
+import { GetStudyModeTree } from "./types/TreeResponse";
 
 export const mcqApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
@@ -153,7 +159,10 @@ export const mcqApi = baseAPI.injectEndpoints({
       providesTags: ["StudyModeTree"],
     }),
     getStudyModeAllContent: build.query<
-      AllContentMCQList,
+      | AllContentMCQList
+      | ClinicalCaseTreeResponse
+      | OsceTreeResponse
+      | NotesTreeResponse,
       {
         key: string;
         subject: string;
@@ -173,7 +182,16 @@ export const mcqApi = baseAPI.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["StudyModeTree", "Exams", "SingleMcq", "Mcq", "FlashCard"],
+      providesTags: [
+        "StudyModeTree",
+        "Exams",
+        "SingleMcq",
+        "Mcq",
+        "FlashCard",
+        "studentType",
+        "ClinicalCase",
+        "OSCE",
+      ],
     }),
 
     updateStudyModeTree: build.mutation<

@@ -3,7 +3,7 @@ import {
   useGetSingleFlashCardsQuery,
   useUpdateSingleFlashCardMutation,
 } from "@/store/features/adminDashboard/ContentResources/flashCard/flashCardSlice";
-import { AllContentMCQList } from "@/store/features/adminDashboard/ContentResources/MCQ/type/allContent";
+import { AllContentMCQList } from "@/store/features/adminDashboard/ContentResources/MCQ/types/allContent";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useState } from "react";
 import McqBankCardForAdmin from "../../bank/MCQBank/McqBankCardForAdmin";
@@ -106,6 +106,7 @@ const FlashCardBank: React.FC<FlashCardBank> = ({
               frontText={data.frontText}
               explanation={data.explanation}
               difficulty={data.difficulty}
+              image={data.image}
               onEdit={() =>
                 handleEdit(data as EditFlashCardInput, data.flashCardId)
               }
@@ -126,6 +127,7 @@ const FlashCardBank: React.FC<FlashCardBank> = ({
             backText: selectedCard.backText,
             explanation: selectedCard.explanation,
             difficulty: selectedCard.difficulty,
+            image: selectedCard.image,
           }}
         />
       )}

@@ -1,6 +1,13 @@
+import Spinner from "@/common/button/Spinner";
 import TableContent from "@/components/AdminDashboard/Content&Resources/content/medical/studyMode/TableContentForStudy";
 import Tabs from "@/components/AdminDashboard/reuseable/Tabs";
 import { useGetStudyModeAllContentQuery } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import {
+  AllContentMCQList,
+  ClinicalCaseTreeResponse,
+  NotesTreeResponse,
+  OsceTreeResponse,
+} from "@/store/features/adminDashboard/ContentResources/MCQ/types/allContent";
 import {
   ContentType,
   setContentType,
@@ -9,8 +16,11 @@ import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useState } from "react";
+import ClinicalCaseBank from "../../bank/ClinicalBank/ClinicalCaseBank";
 import FlashCardBank from "../../bank/FlashCardBank/FlashCardBank";
 import MCQBank from "../../bank/MCQBank/MCQBank";
+import NotesBank from "../../bank/NotesBank/NotesBank";
+import OSCEBank from "../../bank/OSCEBank/OSCEBank";
 import { tabs } from "../../MultipleTap";
 import AddSubjectModal from "./AddSubjectModal";
 
@@ -51,7 +61,10 @@ const StudyMode = () => {
       }
     : skipToken;
 
-  const { data: mcqBank } = useGetStudyModeAllContentQuery(queryArg);
+  const { data: mcqBank, isLoading } = useGetStudyModeAllContentQuery(
+    queryArg,
+    { refetchOnMountOrArgChange: true }
+  );
 
   const [bankId, setBankId] = useState<string>("");
 
@@ -77,18 +90,42 @@ const StudyMode = () => {
             />
           </div>
           <div>
-            {mcqBank && (
+            {isLoading ? (
+              <Spinner />
+            ) : (
               <div>
-                {contentType === "MCQ" && (
+                {contentType === "MCQ" && mcqBank && (
                   <MCQBank
-                    mcqBank={mcqBank}
+                    mcqBank={mcqBank as AllContentMCQList}
                     bankId={bankId}
                     setBankId={setBankId}
                   />
                 )}
-                {contentType === "Flashcard" && (
+                {contentType === "Flashcard" && mcqBank && (
                   <FlashCardBank
-                    mcqBank={mcqBank}
+                    mcqBank={mcqBank as AllContentMCQList}
+                    bankId={bankId}
+                    setBankId={setBankId}
+                  />
+                )}
+                {contentType === "ClinicalCase" &&
+                  (mcqBank as ClinicalCaseTreeResponse) && (
+                    <ClinicalCaseBank
+                      mcqBank={mcqBank as ClinicalCaseTreeResponse}
+                      bankId={bankId}
+                      setBankId={setBankId}
+                    />
+                  )}
+                {contentType === "OSCE" && (mcqBank as OsceTreeResponse) && (
+                  <OSCEBank
+                    mcqBank={mcqBank as OsceTreeResponse}
+                    bankId={bankId}
+                    setBankId={setBankId}
+                  />
+                )}
+                {contentType === "Notes" && (mcqBank as NotesTreeResponse) && (
+                  <NotesBank
+                    mcqBank={mcqBank as NotesTreeResponse}
                     bankId={bankId}
                     setBankId={setBankId}
                   />

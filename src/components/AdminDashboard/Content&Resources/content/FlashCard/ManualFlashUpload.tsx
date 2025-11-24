@@ -2,19 +2,23 @@ import CommonButton from "@/common/button/CommonButton";
 import CommonSelect from "@/common/custom/CommonSelect";
 import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
 import { useManualUploadFlashCardMutation } from "@/store/features/adminDashboard/ContentResources/flashCard/flashCardSlice";
+import { useUploadSingleImageMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import { useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
+import { difficultyOptions } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Upload } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { RiDeleteBinLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import ActionButtons from "../ActionButtons";
-import { difficultyOptions } from "../MCQ/AddMCQForm";
 
 const FlashCardSchema = z.object({
   frontText: z.string().min(1, { message: "Front text is required" }),
   backText: z.string().min(1, { message: "Back text is required" }),
   explanation: z.string().optional(),
+  image: z.string().min(1, { message: "Image is required" }),
   difficulty: z.enum(["Basic", "Intermediate", "Advance"]),
 });
 
@@ -37,32 +41,70 @@ const ManualFlashUpload = () => {
     register,
     handleSubmit,
     control,
+    setValue,
     reset,
     formState: { errors },
   } = useForm<FlashCardsFormValues>({
     resolver: zodResolver(FlashCardsFormSchema),
     defaultValues: {
       flashCards: [
-        { frontText: "", backText: "", explanation: "", difficulty: "Basic" },
+        {
+          frontText: "",
+          backText: "",
+          explanation: "",
+          difficulty: "Basic",
+          image: "",
+        },
       ],
     },
   });
 
   const { fields, append, remove } = useFieldArray({
     control,
+
     name: "flashCards",
   });
 
-  const { formData } = useAppSelector(
+  const { formData, contentType } = useAppSelector(
     (state: RootState) => state.staticContent
   );
   const [manualUploadFlashCard, { isLoading }] =
     useManualUploadFlashCardMutation();
+
+  const [uploadSingleImage] = useUploadSingleImageMutation();
+
+  const handleImageChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const formDataImg = new FormData();
+      formDataImg.append("image", file);
+
+      const result = await uploadSingleImage(formDataImg).unwrap();
+      const imageUrl = result.data.fileUrl;
+
+      // Set image in RHF
+      setValue(`flashCards.${index}.image`, imageUrl);
+    } catch (err) {
+      console.error("Image upload failed:", err);
+    }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setValue(`flashCards.${index}.image`, "");
+  };
+
   const onSubmit = async (data: FlashCardsFormValues) => {
     try {
       if (formData) {
         const formattedPayload = { ...formData, flashCards: data.flashCards };
         await manualUploadFlashCard(formattedPayload);
+        navigate(`/admin/content-management/dashboard/${contentType}`);
+
         reset();
       }
     } catch (error) {
@@ -82,14 +124,57 @@ const ManualFlashUpload = () => {
               <CommonButton
                 type="button"
                 onClick={() => remove(index)}
-                className="text-red-500"
+                className="text-red-500 !px-3 !py-2 rounded-md"
               >
-                Remove
+                <RiDeleteBinLine size={20} className="text-red-500" />
               </CommonButton>
             )}
           </div>
 
           <div className="space-y-4">
+            <div>
+              <label
+                htmlFor={`flash-upload-${index}`}
+                className="flex items-center gap-2 p-3 text-blue-600 hover:bg-blue-50 rounded-md border border-gray-300 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Upload size={20} />
+              </label>
+
+              <input
+                id={`flash-upload-${index}`}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => handleImageChange(e, index)}
+              />
+
+              {/* Preview */}
+              {control._formValues.flashCards[index].image && (
+                <div className="mt-3">
+                  <img
+                    src={control._formValues.flashCards[index].image}
+                    alt="preview"
+                    className="w-40 h-40 object-cover rounded-md border"
+                  />
+
+                  <CommonButton
+                    type="button"
+                    onClick={() => handleRemoveImage(index)}
+                    className="text-red-500 mt-3"
+                  >
+                    Remove Image
+                  </CommonButton>
+                </div>
+              )}
+
+              {/* Error */}
+              {errors.flashCards?.[index]?.image && (
+                <p className={inputClass.error}>
+                  {errors.flashCards[index]?.image?.message}
+                </p>
+              )}
+            </div>
+
             <div>
               <label className={inputClass.label}>Front Text</label>
               <textarea
@@ -153,6 +238,7 @@ const ManualFlashUpload = () => {
               backText: "",
               explanation: "",
               difficulty: "Basic",
+              image: "",
             })
           }
           className="!text-blue-600"
