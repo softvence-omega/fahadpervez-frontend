@@ -85,3 +85,77 @@ export interface MCQOption {
   optionText: string;
   explanation: string;
 }
+
+// OSCE
+export interface LearningResource {
+  resourceTitle: string;
+  resourceUrl: string;
+}
+
+export interface Task {
+  taskName: string;
+  checklistItem: string[];
+}
+
+export interface OsceContent {
+  learningResource: LearningResource;
+  _id: string;
+  name: string;
+  description: string;
+  scenario: string;
+  timeLimit: string;
+  candidateInstruction: string;
+  patientInstruction: string;
+  tasks: Task[];
+  tutorial: string[];
+  subject: string;
+  system: string;
+  topic: string;
+  subtopic: string;
+  studentType: string;
+  type: string;
+  slug: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface OsceTreeResponse {
+  success: boolean;
+  message: string;
+  data: OsceContent[];
+  meta: null;
+}
+
+// notes tree response
+
+export interface NotesTreeResponse {
+  success: boolean;
+  message: string;
+  data: NotesTreeItem[];
+  meta: null;
+}
+
+export interface NotesTreeItem {
+  _id: string;
+  title: string;
+  description: string;
+  subject: string;
+  system: string;
+  topic: string;
+  subtopic: string;
+  slug: string;
+  studentType: string;
+  type: string;
+  uploadedBy: string;
+  notes: Note[];
+  downloadCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Note {
+  fileId: string;
+  fileType: string;
+  fileUrl: string;
+  fileName: string;
+}

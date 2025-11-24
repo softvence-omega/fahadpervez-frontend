@@ -43,7 +43,7 @@ const inputClass = {
 };
 
 const AddMCQForm = () => {
-  const { formData } = useAppSelector(
+  const { formData, contentType } = useAppSelector(
     (state: RootState) => state.staticContent
   );
   const [uploadManualMcq, { isLoading: isUploading }] =
@@ -116,6 +116,7 @@ const AddMCQForm = () => {
 
       try {
         await uploadManualMcq(formattedPayload).unwrap();
+        navigate(`/admin/content-management/dashboard/${contentType}`);
       } catch (error) {
         console.error("API Error:", error);
       }

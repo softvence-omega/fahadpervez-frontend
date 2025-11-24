@@ -5,6 +5,8 @@ import { useGetStudyModeAllContentQuery } from "@/store/features/adminDashboard/
 import {
   AllContentMCQList,
   ClinicalCaseTreeResponse,
+  NotesTreeResponse,
+  OsceTreeResponse,
 } from "@/store/features/adminDashboard/ContentResources/MCQ/types/allContent";
 import {
   ContentType,
@@ -17,6 +19,8 @@ import { useState } from "react";
 import ClinicalCaseBank from "../../bank/ClinicalBank/ClinicalCaseBank";
 import FlashCardBank from "../../bank/FlashCardBank/FlashCardBank";
 import MCQBank from "../../bank/MCQBank/MCQBank";
+import NotesBank from "../../bank/NotesBank/NotesBank";
+import OSCEBank from "../../bank/OSCEBank/OSCEBank";
 import { tabs } from "../../MultipleTap";
 import AddSubjectModal from "./AddSubjectModal";
 
@@ -61,8 +65,6 @@ const StudyMode = () => {
     queryArg,
     { refetchOnMountOrArgChange: true }
   );
-
-  console.log("mcqBank", mcqBank);
 
   const [bankId, setBankId] = useState<string>("");
 
@@ -114,6 +116,20 @@ const StudyMode = () => {
                       setBankId={setBankId}
                     />
                   )}
+                {contentType === "OSCE" && (mcqBank as OsceTreeResponse) && (
+                  <OSCEBank
+                    mcqBank={mcqBank as OsceTreeResponse}
+                    bankId={bankId}
+                    setBankId={setBankId}
+                  />
+                )}
+                {contentType === "Notes" && (mcqBank as NotesTreeResponse) && (
+                  <NotesBank
+                    mcqBank={mcqBank as NotesTreeResponse}
+                    bankId={bankId}
+                    setBankId={setBankId}
+                  />
+                )}
               </div>
             )}
           </div>
