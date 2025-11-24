@@ -49,8 +49,16 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
   handleBreadcrumb,
   setIsContentCreation,
 }) => {
+  const { studentType } = useAppSelector(
+    (state: RootState) => state.staticContent
+  );
   const dispatch = useDispatch<AppDispatch>();
-  const { data: allStudyModeData } = useGetStudyModeTreeQuery();
+  const { data: allStudyModeData } = useGetStudyModeTreeQuery(
+    { studentType },
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
   const backendData = allStudyModeData?.data || [];
 
   const {
@@ -165,9 +173,6 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
 
   const isFormComplete = subject && system && topic && subtopic;
 
-  const studentType = useAppSelector(
-    (state: RootState) => state.staticContent.studentType
-  );
   const onSubmit = (data: CreateContentDataType) => {
     const payload = { ...data, studentType };
     dispatch(setFormData(payload));
