@@ -5,7 +5,7 @@ import {
   useDeleteExamMutation,
   useGetExamQuery,
 } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
-import { Exam } from "@/store/features/adminDashboard/ContentResources/MCQ/type/tree";
+import { Exam } from "@/store/features/adminDashboard/ContentResources/MCQ/types/tree";
 import { Plus } from "lucide-react";
 
 interface TableContentProps {

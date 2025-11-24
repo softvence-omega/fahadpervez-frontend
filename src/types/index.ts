@@ -69,3 +69,18 @@ export interface IFlashcardBank {
   uploadedBy: string; // e.g., "Admin admin"
   createdAt: string; // ISO date string
 }
+
+export type DifficultyLevel = "Basic" | "Intermediate" | "Advance";
+
+export const difficultyOptions = [
+  { label: "Basic", value: "Basic" },
+  { label: "Intermediate", value: "Intermediate" },
+  { label: "Advance", value: "Advance" },
+] as const;
+
+export const correctAnswerOptions = [
+  { label: "Option A", value: "A" },
+  { label: "Option B", value: "B" },
+  { label: "Option C", value: "C" },
+  { label: "Option D", value: "D" },
+] as const;

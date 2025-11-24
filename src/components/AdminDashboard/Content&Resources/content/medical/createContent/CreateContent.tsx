@@ -52,7 +52,7 @@ const CreateContent = () => {
           {contentType === "ClinicalCase" && (
             <ClinicalCaseUpload breadcrumb={breadcrumb} />
           )}
-          {contentType === "OSCE" && <OSCEUpload />}
+          {contentType === "OSCE" && <OSCEUpload breadcrumb={breadcrumb} />}
           {contentType === "Notes" && <NotesUpload breadcrumb={breadcrumb} />}
         </div>
       ) : (

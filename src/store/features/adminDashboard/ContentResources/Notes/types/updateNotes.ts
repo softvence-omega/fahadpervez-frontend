@@ -1,4 +1,4 @@
-export interface NotesResponse {
+export interface UpdateNotesResponse {
   success: boolean;
   message: string;
   data: NotesData;
