@@ -1,7 +1,7 @@
 import ButtonWithLoading from "@/common/button/ButtonWithLoading";
 import CommonHeader from "@/common/header/CommonHeader";
 import { toSlug } from "@/help/help";
-import { ProfileType } from "@/store/features/adminDashboard/ContentResources/MCQ/type/student";
+import { ProfileType } from "@/store/features/adminDashboard/ContentResources/MCQ/types/student";
 import { setStudentType } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
 import { BookOpen, GraduationCap } from "lucide-react";
 import { FC } from "react";

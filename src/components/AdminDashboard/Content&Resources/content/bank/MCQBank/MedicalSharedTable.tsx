@@ -14,7 +14,7 @@ import {
   useDeleteSingleMcqApiMutation,
   useUpdatedSingleMcqApiMutation,
 } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
-import { OneMCQ } from "@/store/features/adminDashboard/ContentResources/MCQ/type/singleMcqBank";
+import { OneMCQ } from "@/store/features/adminDashboard/ContentResources/MCQ/types/singleMcqBank";
 import { useMemo, useState } from "react";
 import { ContentCategory } from "../../medical/data/data";
 import SearchWithTabs from "../../medical/examMode/SearchWithTabs";

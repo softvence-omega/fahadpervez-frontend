@@ -3,7 +3,7 @@ import {
   useGetSingleFlashCardsQuery,
   useUpdateSingleFlashCardMutation,
 } from "@/store/features/adminDashboard/ContentResources/flashCard/flashCardSlice";
-import { AllContentMCQList } from "@/store/features/adminDashboard/ContentResources/MCQ/type/allContent";
+import { AllContentMCQList } from "@/store/features/adminDashboard/ContentResources/MCQ/types/allContent";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useState } from "react";
 import McqBankCardForAdmin from "../../bank/MCQBank/McqBankCardForAdmin";

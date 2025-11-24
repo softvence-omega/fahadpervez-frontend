@@ -2,7 +2,7 @@ import CommonButton from "@/common/button/CommonButton";
 import { toBerhanTime } from "@/help/help";
 import { useDeleteFlashCardBankMutation } from "@/store/features/adminDashboard/ContentResources/flashCard/flashCardSlice";
 import { useDeleteMcqBankApiMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
-import { SingleMcqBank } from "@/store/features/adminDashboard/ContentResources/MCQ/type/allContent";
+import { SingleMcqBank } from "@/store/features/adminDashboard/ContentResources/MCQ/types/allContent";
 import { useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
 import { FC } from "react";
@@ -18,9 +18,6 @@ const McqBankCardForAdmin: FC<Props> = ({ data, setMcqBankId }) => {
   const [deleteMcqBankApi, { isLoading }] = useDeleteMcqBankApiMutation();
   const [deleteFlashCardBank, { isLoading: isDeleting }] =
     useDeleteFlashCardBankMutation();
-
-  // useDeleteFlashCardBankMutation,
-  // useDeleteSingleFlashCardMutation,
 
   const handleDelete = async (id: string) => {
     const confirmDelete = window.confirm(

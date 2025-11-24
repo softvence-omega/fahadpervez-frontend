@@ -4,12 +4,12 @@ import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
 import { useManualUploadFlashCardMutation } from "@/store/features/adminDashboard/ContentResources/flashCard/flashCardSlice";
 import { useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
+import { difficultyOptions } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import ActionButtons from "../ActionButtons";
-import { difficultyOptions } from "../MCQ/AddMCQForm";
 
 const FlashCardSchema = z.object({
   frontText: z.string().min(1, { message: "Front text is required" }),
