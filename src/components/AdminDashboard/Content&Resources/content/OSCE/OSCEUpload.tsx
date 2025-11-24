@@ -60,11 +60,9 @@ const OSCEUpload: React.FC<{ breadcrumb: string }> = ({ breadcrumb }) => {
 
   const { errors } = formState;
 
-  // Get current values
   const tasks = watch("tasks");
   const tutorial = watch("tutorial");
 
-  // Manual array management for tasks
   const appendTask = () => {
     const currentTasks = tasks || [];
     setValue("tasks", [...currentTasks, { taskName: "", checklistItem: [""] }]);
@@ -78,8 +76,6 @@ const OSCEUpload: React.FC<{ breadcrumb: string }> = ({ breadcrumb }) => {
     );
   };
 
-  // Manual array management for tutorial
-  // In OSCEUpload.tsx - update the appendTutorial function
   const appendTutorial = (value: string = "") => {
     const currentTutorial = tutorial || [];
     setValue("tutorial", [...currentTutorial, value]);

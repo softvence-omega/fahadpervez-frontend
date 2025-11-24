@@ -2,6 +2,8 @@ import { baseAPI } from "@/store/api/baseApi";
 import {
   AllContentMCQList,
   ClinicalCaseTreeResponse,
+  NotesTreeResponse,
+  OsceTreeResponse,
 } from "./types/allContent";
 import { ManualMCQBank, UploadImageResponse } from "./types/manual";
 import { GetAllMcqResponse, McqBankParams } from "./types/mcq";
@@ -157,7 +159,10 @@ export const mcqApi = baseAPI.injectEndpoints({
       providesTags: ["StudyModeTree"],
     }),
     getStudyModeAllContent: build.query<
-      AllContentMCQList | ClinicalCaseTreeResponse,
+      | AllContentMCQList
+      | ClinicalCaseTreeResponse
+      | OsceTreeResponse
+      | NotesTreeResponse,
       {
         key: string;
         subject: string;
@@ -185,6 +190,7 @@ export const mcqApi = baseAPI.injectEndpoints({
         "FlashCard",
         "studentType",
         "ClinicalCase",
+        "OSCE",
       ],
     }),
 

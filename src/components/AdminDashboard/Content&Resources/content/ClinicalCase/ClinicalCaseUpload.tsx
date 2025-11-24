@@ -191,7 +191,7 @@ const ClinicalCaseUpload: React.FC<{ breadcrumb: string }> = ({
   } = useFieldArray({ control, name: "mcqs" });
 
   const [createClinicalCase, { isLoading }] = useCreateClinicalCaseMutation();
-  const { formData } = useAppSelector(
+  const { formData, contentType } = useAppSelector(
     (state: RootState) => state.staticContent
   );
   const onSubmit: SubmitHandler<ClinicalCaseForm> = async (data) => {
@@ -201,6 +201,7 @@ const ClinicalCaseUpload: React.FC<{ breadcrumb: string }> = ({
         ...data,
       };
       await createClinicalCase(formattedPayload).unwrap();
+      navigate(`/admin/content-management/dashboard/${contentType}`);
     }
   };
 

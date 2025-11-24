@@ -106,6 +106,7 @@ const FlashCardBank: React.FC<FlashCardBank> = ({
               frontText={data.frontText}
               explanation={data.explanation}
               difficulty={data.difficulty}
+              image={data.image}
               onEdit={() =>
                 handleEdit(data as EditFlashCardInput, data.flashCardId)
               }
@@ -126,6 +127,7 @@ const FlashCardBank: React.FC<FlashCardBank> = ({
             backText: selectedCard.backText,
             explanation: selectedCard.explanation,
             difficulty: selectedCard.difficulty,
+            image: selectedCard.image,
           }}
         />
       )}

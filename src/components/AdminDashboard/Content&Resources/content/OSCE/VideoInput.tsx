@@ -66,7 +66,6 @@ const VideoInput: React.FC<VideoInputProps> = ({
           setValue(`tutorial.${emptyFieldIndex}`, fileUrl);
         } else {
           appendTutorial();
-          // Wait for the next render cycle to ensure the new field exists
           setTimeout(() => {
             setValue(`tutorial.${tutorialFields.length}`, fileUrl);
           }, 0);
@@ -87,7 +86,6 @@ const VideoInput: React.FC<VideoInputProps> = ({
     }
   };
 
-  // Fix the button click handler to prevent event propagation
   const handleAddStep = (e: React.MouseEvent) => {
     e.preventDefault();
     appendTutorial();
@@ -142,7 +140,7 @@ const VideoInput: React.FC<VideoInputProps> = ({
             <div key={idx} className="flex items-center gap-2">
               <input
                 type="text"
-                placeholder={`Step ${idx + 1}`}
+                placeholder={`Checklist Item ${idx + 1}`}
                 {...register(`tutorial.${idx}`)}
                 className={inputClass.input}
               />

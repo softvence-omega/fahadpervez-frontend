@@ -1,4 +1,5 @@
 import CommonButton from "@/common/button/CommonButton";
+import AlertDialogBox from "@/common/custom/AlertDialogBox";
 import {
   useDeleteClinicalCaseMutation,
   useGetClinicalCaseQuery,
@@ -24,10 +25,6 @@ const ClinicalCaseBank: React.FC<Props> = ({ mcqBank, bankId, setBankId }) => {
     useDeleteClinicalCaseMutation();
 
   const handleDelete = async (id: string) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this Clinical Case?"
-    );
-    if (!confirmDelete) return;
     await deleteClinicalCase(id)
       .unwrap()
 
@@ -60,13 +57,10 @@ const ClinicalCaseBank: React.FC<Props> = ({ mcqBank, bankId, setBankId }) => {
               </p>
 
               <div className=" flex justify-between mt-4">
-                <CommonButton
-                  disabled={isDeleting}
-                  onClick={() => handleDelete(item._id)}
-                  className=" bg-red-500 !text-white"
-                >
-                  {isDeleting ? "Deleting..." : "Delete"}
-                </CommonButton>
+                <AlertDialogBox
+                  action={() => handleDelete(item._id)}
+                  isLoading={isDeleting}
+                />
                 <CommonButton
                   onClick={() => setBankId(item._id)}
                   className=" bg-blue-500 !text-white"

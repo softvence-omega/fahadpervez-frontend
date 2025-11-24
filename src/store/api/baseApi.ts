@@ -72,6 +72,7 @@ export const baseAPI = createApi({
     "FlashCard",
     "Notes",
     "ClinicalCase",
+    "OSCE",
   ],
   endpoints: () => ({}),
 });
