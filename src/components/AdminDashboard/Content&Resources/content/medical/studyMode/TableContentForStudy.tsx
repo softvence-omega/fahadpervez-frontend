@@ -7,6 +7,8 @@ import {
   useDeleteStudyModeTreeMutation,
   useGetStudyModeTreeQuery,
 } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import { useAppSelector } from "@/store/hook";
+import { RootState } from "@/store/store";
 import { ChevronRight, FileText, Plus } from "lucide-react";
 import { useState } from "react";
 import { SelectedNode } from "./StudyMode";
@@ -221,7 +223,15 @@ const TableContentForStudy: React.FC<TableContentProps> = ({
   iconAction,
   setSelectedNode,
 }) => {
-  const { data: allStudyModeData } = useGetStudyModeTreeQuery();
+  const { studentType } = useAppSelector(
+    (state: RootState) => state.staticContent
+  );
+  const { data: allStudyModeData } = useGetStudyModeTreeQuery(
+    { studentType },
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
   const tocDataFromBackend: TOCItem[] = allStudyModeData
     ? mapBackendToTOC(allStudyModeData.data as Subject[])
