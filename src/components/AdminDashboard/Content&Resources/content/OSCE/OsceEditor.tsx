@@ -1,3 +1,4 @@
+// OsceEditor.tsx
 import CommonHeader from "@/common/header/CommonHeader";
 import BulletList from "@tiptap/extension-bullet-list";
 import Link from "@tiptap/extension-link";
@@ -25,9 +26,16 @@ import OsceHeader from "./OsceHeader";
 
 interface OsceEditorProps {
   title: string;
+  value?: string;
+  onChange?: (val: string) => void;
+  className?: string;
 }
 
-const OsceEditor: React.FC<OsceEditorProps> = ({ title }) => {
+const OsceEditor: React.FC<OsceEditorProps> = ({
+  title,
+  value = "",
+  onChange,
+}) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -50,10 +58,23 @@ const OsceEditor: React.FC<OsceEditorProps> = ({ title }) => {
         },
       }),
     ],
-    content: "",
+    content: value || "",
   });
 
-  // Force re-render on selection change
+  // keep Tiptap content synced to parent (RHF)
+  useEffect(() => {
+    if (!editor) return;
+    if (value !== editor.getHTML()) {
+      editor.commands.setContent(value || "");
+    }
+    const handler = () => onChange?.(editor.getHTML());
+    editor.on("update", handler);
+    return () => {
+      editor.off("update", handler);
+    };
+  }, [editor, value, onChange]);
+
+  // Force re-render on selection change (for active toolbar highlighting)
   const [, setTick] = useState(0);
   useEffect(() => {
     if (!editor) return;
@@ -73,7 +94,7 @@ const OsceEditor: React.FC<OsceEditorProps> = ({ title }) => {
   const activeClass = "bg-gray-300 border border-gray-500 rounded";
 
   return (
-    <div className="space-y-2 w-full bg-white p-6">
+    <div className="space-y-2 w-full bg-white p-6  border border-border rounded-md">
       <CommonHeader className="pb-3">{title}</CommonHeader>
 
       <label className="block text-sm font-normal text-[#020617] font-inter mb-2">
@@ -87,22 +108,17 @@ const OsceEditor: React.FC<OsceEditorProps> = ({ title }) => {
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={editor.isActive("bold") ? activeClass : ""}
         />
-        {/* Italic */}
         <OsceHeader
           imgUrl={i}
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={editor.isActive("italic") ? activeClass : ""}
         />
-        {/* Underline */}
         <OsceHeader
           imgUrl={u}
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           className={editor.isActive("underline") ? activeClass : ""}
         />
-
         <hr className="h-6 border border-[#D1D5DC]" />
-
-        {/* Headings */}
         <OsceHeader
           imgUrl={h1}
           onClick={() =>
@@ -121,8 +137,6 @@ const OsceEditor: React.FC<OsceEditorProps> = ({ title }) => {
             editor.isActive("heading", { level: 2 }) ? activeClass : ""
           }
         />
-
-        {/* Lists */}
         <OsceHeader
           imgUrl={list1}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -133,8 +147,6 @@ const OsceEditor: React.FC<OsceEditorProps> = ({ title }) => {
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={editor.isActive("orderedList") ? activeClass : ""}
         />
-
-        {/* Alignment */}
         <OsceHeader
           imgUrl={left}
           onClick={() => editor.chain().focus().setTextAlign("left").run()}
@@ -152,10 +164,7 @@ const OsceEditor: React.FC<OsceEditorProps> = ({ title }) => {
           onClick={() => editor.chain().focus().setTextAlign("right").run()}
           className={editor.isActive({ textAlign: "right" }) ? activeClass : ""}
         />
-
         <hr className="h-6 border border-[#D1D5DC]" />
-
-        {/* Link */}
         <OsceHeader
           imgUrl={link}
           onClick={() => {
