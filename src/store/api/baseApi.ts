@@ -73,6 +73,7 @@ export const baseAPI = createApi({
     "Notes",
     "ClinicalCase",
     "OSCE",
+    "PricePlan",
   ],
   endpoints: () => ({}),
 });

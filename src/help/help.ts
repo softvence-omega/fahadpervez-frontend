@@ -54,7 +54,7 @@ export const mapCorrectOption = (option: string): "A" | "B" | "C" | "D" => {
     case "D":
       return option;
     default:
-      return "A"; // fallback
+      return "A";
   }
 };
 
@@ -67,6 +67,12 @@ export const mapDifficulty = (
     case "Advance":
       return difficulty;
     default:
-      return "Basics"; // fallback
+      return "Basics";
   }
 };
+
+export const createOptions = (items: string[]) =>
+  items.map((item) => ({
+    label: item,
+    value: item,
+  }));
