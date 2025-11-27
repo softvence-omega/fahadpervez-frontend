@@ -1,4 +1,5 @@
 import CommonHeader from "@/common/header/CommonHeader";
+import { EventsOverview } from "@/store/features/adminDashboard/ContentResources/event/types/allEvent";
 import CommonBorderWrapper from "../reuseable/CommonBorderWrapper";
 import EventCard from "./EventCard";
 const UpcomingEvents = [
@@ -46,7 +47,11 @@ const registrations = [
   },
 ];
 
-const UpcomingEvent = () => {
+interface Event {
+  overview: EventsOverview;
+}
+const UpcomingEvent: React.FC<Event> = ({ overview }) => {
+  console.log("first", overview);
   return (
     <div className=" grid grid-cols-1 xl:grid-cols-2 gap-6">
       <CommonBorderWrapper className=" flex flex-col gap-4">
