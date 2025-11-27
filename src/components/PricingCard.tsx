@@ -11,15 +11,21 @@ const PricingCard = ({
   return (
     <div className="w-full max-w-md mx-auto border border-gray-200 rounded-2xl shadow-sm bg-white p-6 flex flex-col justify-between hover:shadow-md transition-shadow duration-300">
       {/* Header */}
-      <div>
-        <h3 className="text-gray-900 font-semibold text-lg mb-1">{title}</h3>
-        <p className="text-3xl font-bold text-gray-900">
-          {price}
-          <span className="text-base font-normal text-gray-500 ml-1">
-            {period}
-          </span>
-        </p>
-        <p className="text-gray-500 text-sm mt-1">{description}</p>
+      <div className="flex flex-col justify-between">
+        <div>
+          <div>
+            <h3 className="text-gray-600 font-semibold text-lg mb-1">
+              {title}
+            </h3>
+            <p className="text-3xl font-bold text-gray-900">
+              {price}
+              <span className="text-base font-normal text-gray-500 ml-1">
+                {period}
+              </span>
+            </p>
+          </div>
+          <p className="text-gray-500 text-sm mt-2 h-14">{description}</p>
+        </div>
 
         <hr className="my-4 border-gray-200" />
 
