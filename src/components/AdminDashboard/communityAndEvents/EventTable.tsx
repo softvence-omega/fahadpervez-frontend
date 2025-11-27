@@ -1,19 +1,22 @@
+import CommonSpace from "@/common/space/CommonSpace";
+import {
+  EventsOverview,
+  SingleEvent,
+} from "@/store/features/adminDashboard/ContentResources/event/types/allEvent";
 import { useState } from "react";
 import Tabs from "../reuseable/Tabs";
-import CommonSpace from "@/common/space/CommonSpace";
-import UpcomingEvent from "./UpcomingEvent";
 import AllEvent from "./AllEvent";
-import { AllEventData, allEvents } from "./Data";
+import UpcomingEvent from "./UpcomingEvent";
 const tabs = [
   { label: "Overview", value: "overview" },
   { label: "All Events", value: "all" },
 ];
-const EventTable = () => {
+interface EventTableProps {
+  eventData: SingleEvent[];
+  overview: EventsOverview;
+}
+const EventTable: React.FC<EventTableProps> = ({ eventData, overview }) => {
   const [activeTab, setActiveTab] = useState("overview");
-  const [event, setEvent] = useState<AllEventData[]>(allEvents);
-  const eventDelete = (subscription: AllEventData) => {
-    setEvent((prev) => prev.filter((p) => p.id !== subscription.id));
-  };
 
   return (
     <div>
@@ -21,12 +24,10 @@ const EventTable = () => {
         <Tabs tabs={tabs} active={activeTab} onChange={setActiveTab} />
       </div>
       <CommonSpace>
-        <div>{activeTab === "overview" && <UpcomingEvent />}</div>
         <div>
-          {activeTab === "all" && (
-            <AllEvent events={event} onDelete={eventDelete} />
-          )}
+          {activeTab === "overview" && <UpcomingEvent overview={overview} />}
         </div>
+        <div>{activeTab === "all" && <AllEvent events={eventData} />}</div>
       </CommonSpace>
     </div>
   );

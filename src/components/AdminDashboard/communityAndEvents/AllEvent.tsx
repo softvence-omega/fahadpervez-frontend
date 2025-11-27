@@ -1,31 +1,21 @@
 import { type FC } from "react";
-import { RiDeleteBinLine } from "react-icons/ri";
 import { BiSolidEdit } from "react-icons/bi";
 import { HiOutlineVideoCamera } from "react-icons/hi";
+import { RiDeleteBinLine } from "react-icons/ri";
 
 import {
   Table,
-  TableHeader,
-  TableRow,
-  TableHead,
   TableBody,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
+import { toBerhanTime } from "@/help/help";
+import { SingleEvent } from "@/store/features/adminDashboard/ContentResources/event/types/allEvent";
 
-export interface AllEventData {
-  id: number;
-  event: {
-    eventName: string;
-    doctorName: string;
-  };
-  type: string | "Seminar" | "Workshop";
-  registration: number;
-  price: string;
-  date: string;
-}
 interface PlanSubscriptionTableProps {
-  events: AllEventData[];
-  onDelete?: (event: AllEventData) => void;
+  events: SingleEvent[];
 }
 const tableHeaders = [
   { label: "Event", align: "text-left" },
@@ -43,7 +33,7 @@ const tableDesign = {
   bodyRow: "text-[#2C2C2C] font-inter text-sm font-normal md:h-12",
   cell: "border border-border px-4 text-center",
 };
-const AllEvent: FC<PlanSubscriptionTableProps> = ({ events, onDelete }) => {
+const AllEvent: FC<PlanSubscriptionTableProps> = ({ events }) => {
   return (
     <Table>
       <TableHeader>
@@ -61,37 +51,36 @@ const AllEvent: FC<PlanSubscriptionTableProps> = ({ events, onDelete }) => {
 
       <TableBody>
         {events.map((p) => (
-          <TableRow key={p.id} className={tableDesign.bodyRow}>
-            <TableCell className={`${tableDesign.cell}`}>
-              <div>{p.event.eventName}</div>
-              <div>by {p.event.doctorName}</div>
+          <TableRow key={p._id} className={tableDesign.bodyRow}>
+            <TableCell className={`text-left ${tableDesign.cell}`}>
+              <div className="flex flex-col items-start justify-start">
+                <div>{p.eventTitle}</div>
+                <div>by {p.instructor}</div>
+              </div>
             </TableCell>
             <TableCell className={`hidden xl:table-cell ${tableDesign.cell}`}>
               <div className="flex gap-1 justify-center">
-                {p.type}, online
+                {p.eventType}, online
                 <span>
                   <HiOutlineVideoCamera size={24} />
                 </span>
               </div>
             </TableCell>
             <TableCell className={`lg:table-cell  hidden ${tableDesign.cell}`}>
-              <div>{p.registration}</div>
+              <div>{p.meetingDetails}</div>
             </TableCell>
             <TableCell className={`hidden md:table-cell ${tableDesign.cell}`}>
-              <div>{p.price}</div>
+              <div>${p.eventPrice}</div>
             </TableCell>
             <TableCell className={`hidden lg:table-cell ${tableDesign.cell}`}>
-              <div>{p.date}</div>
+              <div>{toBerhanTime(p.startTime)}</div>
             </TableCell>
             <TableCell className={`${tableDesign.cell}`}>
               <div className="flex justify-center gap-3 text-[#B91C1C] ">
                 <span className="text-blue-500 cursor-pointer">
                   <BiSolidEdit size={24} />
                 </span>
-                <button
-                  className="hover:text-red-800 cursor-pointer"
-                  onClick={() => onDelete?.(p)}
-                >
+                <button className="hover:text-red-800 cursor-pointer">
                   <RiDeleteBinLine size={24} />
                 </button>
               </div>
