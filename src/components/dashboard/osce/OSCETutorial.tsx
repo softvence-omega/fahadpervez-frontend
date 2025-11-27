@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import { BreadcrumbItem } from "../gamified-learning/types";
 import { useGetSingleOsceQuery } from "@/store/features/adminDashboard/ContentResources/Osce/osceApi";
