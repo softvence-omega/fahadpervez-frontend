@@ -2,96 +2,83 @@ import ButtonWithLoading from "@/common/button/ButtonWithLoading";
 import CommonButton from "@/common/button/CommonButton";
 import CommonSelect from "@/common/custom/CommonSelect";
 import MediumHeader from "@/common/header/MediumHeader";
-import CommonSpace from "@/common/space/CommonSpace";
 import { createOptions } from "@/help/help";
 import { useGetStudentTypeApiQuery } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
-import { usePostPricePlanMutation } from "@/store/features/adminDashboard/planAndFaq/PricePlanApi";
+import { useUpdatePricePlanMutation } from "@/store/features/adminDashboard/planAndFaq/PricePlanApi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, Resolver, useFieldArray, useForm } from "react-hook-form";
 import CommonBorderWrapper from "../reuseable/CommonBorderWrapper";
-import DashboardTopSection from "../reuseable/DashboardTopSection";
+import FormHeader from "../reuseable/FormHeader";
+import ModalCloseButton from "../reuseable/ModalCloseButton";
+import { billingCycleOptions, inputClass, priceOptions } from "./PlanForm";
 import { planFormSchema, PlanFormValues } from "./schema";
 
-export const inputClass = {
-  input:
-    "text-sm font-normal  text-[#0F172A]  font-inter leading-[20px] outline-none transition w-full px-4 py-3 border border-border rounded-md ",
-  label:
-    "text-sm font-normal  text-[#18181B]  font-inter leading-[20px] block mb-2",
-  error: "text-red-500 text-sm mt-1",
-};
-
-export const billingCycleOptions = [
-  { label: "Monthly", value: "Monthly" },
-  { label: "Yearly", value: "Yearly" },
-] as const;
-
-export const priceOptions = [
-  { label: "100/month", value: "100/month" },
-  { label: "200/month", value: "200/month" },
-  { label: "300/month", value: "300/month" },
-  { label: "400/month", value: "400/month" },
-  { label: "500/month", value: "500/month" },
-  { label: "600/month", value: "600/month" },
-  { label: "700/month", value: "700/month" },
-  { label: "800/month", value: "800/month" },
-  { label: "900/month", value: "900/month" },
-  { label: "1000/month", value: "1000/month" },
-];
-
-interface PlanFormProps {
-  handleCancel: () => void;
+interface UpdatePlanModalProps {
+  onClose: () => void;
+  planData: PlanFormValues | null;
+  selectedPlanId: string | null;
 }
 
-const PlanForm: React.FC<PlanFormProps> = ({ handleCancel }) => {
+const UpdatePlanModal: React.FC<UpdatePlanModalProps> = ({
+  planData,
+  onClose,
+  selectedPlanId,
+}) => {
   const { data } = useGetStudentTypeApiQuery();
   const userTypes = data?.data.map((item) => item.typeName) ?? [];
   const userTypeOptions = createOptions(userTypes);
+
+  const formattedPlanData = planData
+    ? {
+        ...planData,
+        billingCycle: planData.billingCycle as "Monthly" | "Yearly",
+      }
+    : undefined;
 
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
+    reset,
   } = useForm<PlanFormValues>({
     resolver: zodResolver(planFormSchema) as Resolver<PlanFormValues>,
-    defaultValues: {
-      planName: "",
-
-      description: "",
-      billingCycle: "Monthly",
-      userType: userTypes[0] || "",
-      planFeatures: [{ featureName: "", featureLimit: "100/month" }],
-    },
+    defaultValues: formattedPlanData,
   });
+
+  useEffect(() => {
+    reset(planData ?? {});
+  }, [planData, reset]);
 
   const { fields, append } = useFieldArray({
     control,
     name: "planFeatures",
   });
 
-  const [postPricePlan, { isLoading }] = usePostPricePlanMutation();
+  const [updatePlan, { isLoading }] = useUpdatePricePlanMutation();
+
   const handleSubmitForm = async (data: PlanFormValues) => {
     try {
-      await postPricePlan(data).unwrap();
-      handleCancel();
+      if (selectedPlanId) {
+        await updatePlan({ id: selectedPlanId, data }).unwrap();
+        onClose();
+      }
     } catch (error) {
-      console.error("Failed to submit plan:", error);
+      console.error("Failed to update plan:", error);
     }
   };
 
   return (
-    <div>
-      <DashboardTopSection
-        title="Create Plan"
-        description="Create a new online event, seminar, or workshop with detailed scheduling and pricing options."
-      />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="bg-white w-full max-w-3xl p-6 rounded-lg shadow-lg overflow-y-auto max-h-[90vh] relative">
+        <ModalCloseButton onClick={onClose} />
+        <FormHeader title="Update Plan" />
 
-      <CommonSpace>
-        <CommonBorderWrapper className=" !border-0 !rounded-none">
+        <CommonBorderWrapper className="!border-0 !rounded-none">
           <form className="space-y-6" onSubmit={handleSubmit(handleSubmitForm)}>
-            <div className=" grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="planName" className={inputClass.label}>
                   Plan Name
@@ -112,15 +99,13 @@ const PlanForm: React.FC<PlanFormProps> = ({ handleCancel }) => {
                 <label htmlFor="price" className={inputClass.label}>
                   Price
                 </label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    id="price"
-                    className={inputClass.input}
-                    {...register("price", { valueAsNumber: true })}
-                    placeholder="Enter plan price"
-                  />
-                </div>
+                <input
+                  type="number"
+                  id="price"
+                  className={inputClass.input}
+                  {...register("price", { valueAsNumber: true })}
+                  placeholder="Enter plan price"
+                />
                 {errors.price && (
                   <p className={inputClass.error}>{errors.price.message}</p>
                 )}
@@ -258,7 +243,7 @@ const PlanForm: React.FC<PlanFormProps> = ({ handleCancel }) => {
             </div>
 
             <div className="flex space-x-4 pt-6 pb-5 sm:pb-0">
-              <CommonButton type="button" onClick={handleCancel}>
+              <CommonButton type="button" onClick={onClose}>
                 Cancel
               </CommonButton>
               <CommonButton
@@ -267,17 +252,17 @@ const PlanForm: React.FC<PlanFormProps> = ({ handleCancel }) => {
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <ButtonWithLoading title="Creating..." />
+                  <ButtonWithLoading title="Updating..." />
                 ) : (
-                  "Create Plan"
+                  "Update Plan"
                 )}
               </CommonButton>
             </div>
           </form>
         </CommonBorderWrapper>
-      </CommonSpace>
+      </div>
     </div>
   );
 };
 
-export default PlanForm;
+export default UpdatePlanModal;

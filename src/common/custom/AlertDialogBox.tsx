@@ -9,21 +9,27 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import CommonButton from "../button/CommonButton";
 
 interface IAlertDialogBoxProps {
-  action: () => Promise<void>; // make it a promise for async handling
+  action: () => Promise<void>; // async action
   isLoading: boolean;
+  trigger?: ReactNode; // optional custom trigger
+  title?: string; // optional title
+  description?: string; // optional description
 }
 
 const AlertDialogBox: React.FC<IAlertDialogBoxProps> = ({
   action,
   isLoading,
+  trigger,
+  title = "Are you absolutely sure?",
+  description = "This action cannot be undone. This will permanently delete your account and remove your data from our servers.",
 }) => {
   const [open, setOpen] = useState(false);
 
-  const handleDelete = async () => {
+  const handleAction = async () => {
     try {
       await action();
       setOpen(false);
@@ -35,15 +41,15 @@ const AlertDialogBox: React.FC<IAlertDialogBoxProps> = ({
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <CommonButton className="bg-red-500 !text-white">Delete</CommonButton>
+        {trigger ?? (
+          <CommonButton className="bg-red-500 !text-white">Delete</CommonButton>
+        )}
       </AlertDialogTrigger>
+
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </AlertDialogDescription>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel className="cursor-pointer">
@@ -51,8 +57,8 @@ const AlertDialogBox: React.FC<IAlertDialogBoxProps> = ({
           </AlertDialogCancel>
           <AlertDialogAction
             disabled={isLoading}
-            onClick={handleDelete}
-            className="cursor-pointer"
+            onClick={handleAction}
+            className="cursor-pointer bg-red-500 !text-white hover:bg-red-600"
           >
             {isLoading ? "Deleting..." : "Delete"}
           </AlertDialogAction>
