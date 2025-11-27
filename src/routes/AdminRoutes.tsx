@@ -10,10 +10,12 @@ import CreateEvents from "@/pages/AdminDashboard/communityAndEvents/CreateEvents
 import ResourceManagement from "@/pages/AdminDashboard/contentAndResourse/content_and_resource_page/ResourceManagement";
 import ContentManagement from "@/pages/AdminDashboard/contentAndResourse/ContentManagement";
 import AdminDashboard from "@/pages/AdminDashboard/dashboard/AdminDashboard";
+import Faq from "@/pages/AdminDashboard/faq/Faq";
 import MentorsOverview from "@/pages/AdminDashboard/mentorshipManagement/MentorsOverview";
 import Transaction from "@/pages/AdminDashboard/mentorshipManagement/Transaction";
 import CreatePlan from "@/pages/AdminDashboard/planManagement/CreatePlan";
 import Setting from "@/pages/AdminDashboard/settings/Setting";
+import Support from "@/pages/AdminDashboard/support/Support";
 import Mentor from "@/pages/AdminDashboard/userManagement/Mentor";
 import Professional from "@/pages/AdminDashboard/userManagement/Professional";
 import Student from "@/pages/AdminDashboard/userManagement/Student";
@@ -97,6 +99,14 @@ const adminRoutes = {
     {
       path: "create-plan",
       element: <CreatePlan />,
+    },
+    {
+      path: "support",
+      element: <Support />,
+    },
+    {
+      path: "faq",
+      element: <Faq />,
     },
     {
       path: "platform-performance",
