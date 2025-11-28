@@ -13,7 +13,7 @@ interface FeaturedEventCardProps {
     price: string;
     status: "Free" | "Paid";
   };
-  getTypeColor: (type: string) => string; // ✅ added prop type
+  getTypeColor: (type: string) => string; //added prop type
 }
 
 const FeaturedEventCard: React.FC<FeaturedEventCardProps> = ({

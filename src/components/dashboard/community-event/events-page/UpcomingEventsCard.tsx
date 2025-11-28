@@ -1,33 +1,49 @@
 import { Button } from "@/components/ui/button";
 import { Clock, Video } from "lucide-react";
-import React from "react";
 
-interface Event {
-  id: string;
-  title: string;
-  type:
-    | "PLAB Prep"
-    | "Workshop"
-    | "Conference"
-    | "Telemedicine"
-    | "Health Summit";
-  date: string;
-  time?: string;
+// interface Event {
+//   id: string;
+//   title: string;
+//   type:
+//     | "PLAB Prep"
+//     | "Workshop"
+//     | "Conference"
+//     | "Telemedicine"
+//     | "Health Summit";
+//   date: string;
+//   time?: string;
+//   description: string;
+//   price: string;
+//   status: "Free" | "Paid";
+//   featured?: boolean;
+//   startTime: string;
+//   endTime: string;
+//   color: string;
+//   speakerName?: string; // optional for now
+//   speakerRole?: string;
+//   speakerImage?: string;
+//   platform?: string;
+// }
+
+// types/event.api.ts
+
+export interface IEvent {
+  _id: string;
+  eventTitle: string;
+  eventType: string; // "Webinar" | others from backend
+  eventFormat: string; // "Online" | "Offline"
+  category: string;
   description: string;
-  price: string;
-  status: "Free" | "Paid";
-  featured?: boolean;
-  startTime: string;
-  endTime: string;
-  color: string;
-  speakerName?: string; // optional for now
-  speakerRole?: string;
-  speakerImage?: string;
-  platform?: string;
-}
-
-interface UpcomingEventsCardProps {
-  event: Event;
+  eventData?: string;
+  startTime: string; // ISO string
+  eventDuration: string; // "2 hours"
+  instructor: string;
+  eventPrice: number;
+  meetingDetails?: string;
+  status: string; // "Up-Coming"
+  totalRegistrations: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 const getTypeColor = (type: Event["type"]) => {
@@ -47,23 +63,36 @@ const getTypeColor = (type: Event["type"]) => {
   }
 };
 
-const UpcomingEventsCard: React.FC<UpcomingEventsCardProps> = ({ event }) => {
+const UpcomingEventsCard = ({ event }: { event: IEvent }) => {
+  console.log(" event: ", event);
+
+  const start = new Date(event.startTime);
+  const date = start.toLocaleDateString("en-US", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+  const time = start.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  // ${getTypeColor(event.eventType)}
+
   return (
     <div className="hover:shadow-md transition-shadow border border-gray-200 p-4 rounded-xl bg-white flex flex-col justify-between">
       {/* Top Row */}
       <div className="flex items-center justify-between mb-2">
         <span
-          className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(
-            event.type
-          )}`}
+            className={`px-2 py-1 rounded-full text-xs font-medium bg-[#FEE2E2] text-[#B91C1C]`}  
         >
-          {event.type}
+          {event.eventType}
         </span>
-        <span className="text-sm text-gray-500">{event.date}</span>
+        <span className="text-sm text-gray-500">{date}</span>
       </div>
 
       {/* Title */}
-      <h3 className="font-semibold text-gray-900 mb-2">{event.title}</h3>
+      <h3 className="font-semibold text-gray-900 mb-2">{event.eventTitle}</h3>
 
       {/* Speaker Info */}
       <div className="flex items-center gap-2 mb-3">
@@ -74,9 +103,9 @@ const UpcomingEventsCard: React.FC<UpcomingEventsCardProps> = ({ event }) => {
         />
         <div>
           <p className="text-md font-medium text-gray-800">
-            {event.speakerName}
+            {event.instructor}
           </p>
-          <p className="text-xs text-gray-500">{event.speakerRole}</p>
+          <p className="text-xs text-gray-500">{event.category}</p>
         </div>
       </div>
 
@@ -84,10 +113,10 @@ const UpcomingEventsCard: React.FC<UpcomingEventsCardProps> = ({ event }) => {
       <div className="mb-1.5 border-t pt-2 border-gray-200">
         <div className="flex items-center gap-4 text-[.8rem] text-gray-600">
           <span className="flex items-center gap-1">
-            <Clock size={14} /> {event.time}
+            <Clock size={14} /> {time}
           </span>
           <span className="flex items-center gap-1">
-            <Video size={14} /> {event.platform}
+            <Video size={14} /> {event.eventData}
           </span>
         </div>
       </div>
@@ -109,7 +138,7 @@ const UpcomingEventsCard: React.FC<UpcomingEventsCardProps> = ({ event }) => {
             event.status === "Free" ? "text-purple-600" : "text-blue-600"
           }`}
         >
-          {event.price}
+          {event.eventPrice}
         </span>
       </div>
     </div>

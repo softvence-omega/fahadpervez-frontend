@@ -4,6 +4,7 @@ import FeaturedEventCard from "./events-page/FeaturedEventCard";
 import UpcomingEventsCard from "./events-page/UpcomingEventsCard";
 import EventCalander from "./events-page/EventCalander";
 import { useState } from "react";
+import { useGetAllEventsQuery } from "@/store/features/event/event.api";
 
 interface Event {
   id: string;
@@ -42,6 +43,10 @@ const EventPage: React.FC<EventPageProps> = ({
   isLoading,
   getTypeColor,
 }) => {
+  const { data: eventResponse } = useGetAllEventsQuery({});
+  const allEvents = eventResponse?.data?.events || [];
+  console.log("allEvents", allEvents);
+
   const [activeEvent, setActiveEvent] = useState("all"); // "all" or "my"
   const featuredEvent = events.find((e) => e.featured) || events[0];
 
@@ -128,7 +133,7 @@ const EventPage: React.FC<EventPageProps> = ({
 
         <div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {events.slice(1).map((event) => (
+            {allEvents.slice(1).map((event) => (
               <UpcomingEventsCard key={event.id} event={event} />
             ))}
           </div>
