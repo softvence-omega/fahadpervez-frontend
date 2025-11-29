@@ -171,7 +171,7 @@ export default function CareerResourcePage() {
     ];
   }, [resources]);
 
-  // ✅ filter by tab
+  // filter by tab
   const filteredResources =
     activeTab === "all"
       ? resources
@@ -242,7 +242,7 @@ export default function CareerResourcePage() {
               "bg-blue-main text-white border-transparent"
             }`}
           >
-            {tab.icon}
+            {/* {tab.icon} */}
             {tab.label}
           </button>
         ))}
