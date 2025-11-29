@@ -38,7 +38,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const MedicalEventsDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("Social Feed");
+  const [activeTab, setActiveTab] = useState("Events");
   const [activeEventFilter, setActiveEventFilter] = useState("All Event");
   const [isLoading, setIsLoading] = useState(true);
   const [events, setEvents] = useState<Event[]>([]);
