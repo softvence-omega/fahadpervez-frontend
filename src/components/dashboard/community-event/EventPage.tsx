@@ -5,6 +5,7 @@ import UpcomingEventsCard, { IEvent } from "./events-page/UpcomingEventsCard";
 import EventCalander from "./events-page/EventCalander";
 import { useState } from "react";
 import { useGetAllEventsQuery } from "@/store/features/event/event.api";
+import GlobalLoader2 from "@/common/GlobalLoader2";
 
 interface Event {
   id: string;
@@ -43,7 +44,8 @@ const EventPage: React.FC<EventPageProps> = ({
   isLoading,
   getTypeColor,
 }) => {
-  const { data: eventResponse } = useGetAllEventsQuery({});
+  const { data: eventResponse, isLoading: isEventLoading } =
+    useGetAllEventsQuery({});
   const allEvents = eventResponse?.data?.events || [];
   console.log("allEvents", allEvents);
 
@@ -88,9 +90,9 @@ const EventPage: React.FC<EventPageProps> = ({
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mt-10 mb-6 ">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mt-10 mb-6 ">
         {activeEvent === "all" && (
-          <div className="lg:col-span-2">
+          <div className="">
             <FeaturedEventCard
               featuredEvent={featuredEvent}
               getTypeColor={getTypeColor}
@@ -128,17 +130,21 @@ const EventPage: React.FC<EventPageProps> = ({
       </div> */}
 
       {/* Upcoming Events */}
-      <div className="bg-white px-8 py-6 border border-gray-200 rounded-lg">
-        <h2 className="text-xl font-semibold mb-4 md:mb-6">Upcoming Events</h2>
+      {/* <div className="bg-white px-8 py-6 border border-gray-200 rounded-lg">
+        <h2 className="text-xl font-semibold mb-4 md:mb-6">Upcoming Events</h2> */}
 
-        <div>
+      <div>
+        {isEventLoading ? (
+          <GlobalLoader2 />
+        ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {allEvents.slice(1).map((event: IEvent) => (
               <UpcomingEventsCard key={event._id} event={event} />
             ))}
           </div>
-        </div>
+        )}
       </div>
+      {/* </div> */}
     </>
   );
 };
