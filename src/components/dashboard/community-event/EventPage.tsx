@@ -1,7 +1,7 @@
 import React from "react";
 import CommonSkeletonLoader from "@/components/reusable/CommonSkeletonLoader";
 import FeaturedEventCard from "./events-page/FeaturedEventCard";
-import UpcomingEventsCard from "./events-page/UpcomingEventsCard";
+import UpcomingEventsCard, { IEvent } from "./events-page/UpcomingEventsCard";
 import EventCalander from "./events-page/EventCalander";
 import { useState } from "react";
 import { useGetAllEventsQuery } from "@/store/features/event/event.api";
@@ -59,7 +59,7 @@ const EventPage: React.FC<EventPageProps> = ({
       <div className="flex gap-2 mb-4">
         <button
           className={`
-      px-4 py-2 border rounded-md transition-transform duration-200
+      px-4 py-2 border rounded-md transition-transform duration-200 cursor-pointer
       ${
         activeEvent === "all"
           ? "border-blue-500 text-blue-500"
@@ -74,7 +74,7 @@ const EventPage: React.FC<EventPageProps> = ({
 
         <button
           className={`
-      px-4 py-2 border rounded-md transition-transform duration-200
+      px-4 py-2 border rounded-md transition-transform duration-200 cursor-pointer
       ${
         activeEvent === "my"
           ? "border-blue-500 text-blue-500"
@@ -133,8 +133,8 @@ const EventPage: React.FC<EventPageProps> = ({
 
         <div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {allEvents.slice(1).map((event) => (
-              <UpcomingEventsCard key={event.id} event={event} />
+            {allEvents.slice(1).map((event: IEvent) => (
+              <UpcomingEventsCard key={event._id} event={event} />
             ))}
           </div>
         </div>

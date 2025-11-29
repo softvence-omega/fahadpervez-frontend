@@ -46,22 +46,22 @@ export interface IEvent {
   updatedAt: string;
 }
 
-const getTypeColor = (type: Event["type"]) => {
-  switch (type) {
-    case "PLAB Prep":
-      return "bg-red-100 text-red-600";
-    case "Workshop":
-      return "bg-green-100 text-green-600";
-    case "Conference":
-      return "bg-purple-100 text-purple-600";
-    case "Telemedicine":
-      return "bg-blue-100 text-blue-600";
-    case "Health Summit":
-      return "bg-indigo-100 text-indigo-600";
-    default:
-      return "bg-gray-100 text-gray-600";
-  }
-};
+// const getTypeColor = (type: Event["type"]) => {
+//   switch (type) {
+//     case "PLAB Prep":
+//       return "bg-red-100 text-red-600";
+//     case "Workshop":
+//       return "bg-green-100 text-green-600";
+//     case "Conference":
+//       return "bg-purple-100 text-purple-600";
+//     case "Telemedicine":
+//       return "bg-blue-100 text-blue-600";
+//     case "Health Summit":
+//       return "bg-indigo-100 text-indigo-600";
+//     default:
+//       return "bg-gray-100 text-gray-600";
+//   }
+// };
 
 const UpcomingEventsCard = ({ event }: { event: IEvent }) => {
   console.log(" event: ", event);
@@ -97,10 +97,15 @@ const UpcomingEventsCard = ({ event }: { event: IEvent }) => {
       {/* Speaker Info */}
       <div className="flex items-center gap-2 mb-3">
         <img
+          src={"/image/avatar.jpg"}
+          alt={"instructor image"}
+          className="w-10 h-10 rounded-full object-cover"
+        />
+        {/* <img
           src={event.speakerImage || "/image/avatar.jpg"}
           alt={event.speakerName}
           className="w-10 h-10 rounded-full object-cover"
-        />
+        /> */}
         <div>
           <p className="text-md font-medium text-gray-800">
             {event.instructor}
