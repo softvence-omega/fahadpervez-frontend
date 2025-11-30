@@ -4,7 +4,7 @@ type SubTopic = string;
 
 type Topic = {
   topicName: string;
-  subTopics: SubTopic[];
+  subTopics?: SubTopic[];
 };
 
 type System = {

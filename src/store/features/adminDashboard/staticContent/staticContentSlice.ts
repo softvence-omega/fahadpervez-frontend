@@ -5,7 +5,7 @@ type CreateContentDataType = {
   subject: string;
   system: string;
   topic: string;
-  subtopic: string;
+  subtopic?: string;
   type: "exam" | "study";
   studentType: string;
 };
