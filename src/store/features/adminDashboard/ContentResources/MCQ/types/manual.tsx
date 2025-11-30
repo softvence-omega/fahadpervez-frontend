@@ -17,7 +17,7 @@ export interface ManualMCQBank {
   subject: string;
   system: string;
   topic: string;
-  subtopic: string;
+  subtopic?: string;
   type: string;
   studentType: string;
   mcqs: MCQ[];

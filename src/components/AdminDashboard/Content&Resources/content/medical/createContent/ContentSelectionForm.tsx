@@ -1,5 +1,3 @@
-"use client";
-
 import CommonButton from "@/common/button/CommonButton";
 import CommonSelect, { SelectOption } from "@/common/custom/CommonSelect";
 import CommonHeader from "@/common/header/CommonHeader";
@@ -26,7 +24,7 @@ const createContentSchema = z.object({
   subject: z.string().min(1, "Subject is required"),
   system: z.string().min(1, "System is required"),
   topic: z.string().min(1, "Topic is required"),
-  subtopic: z.string().min(1, "Subtopic is required"),
+  subtopic: z.string().optional(),
   type: z.enum(["exam", "study"]),
 });
 
@@ -171,7 +169,7 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
     handleBreadcrumb(getHierarchyPath());
   }, [subject, system, topic, subtopic]);
 
-  const isFormComplete = subject && system && topic && subtopic;
+  const isFormComplete = subject && system && topic;
 
   const onSubmit = (data: CreateContentDataType) => {
     const payload = { ...data, studentType };
@@ -264,7 +262,7 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
           <div>
             <label className={inputClass.label}>Subtopic</label>
             <CommonSelect
-              value={subtopic}
+              value={subtopic || ""}
               item={subtopicOptions}
               onValueChange={(val) => setValue("subtopic", val)}
               placeholder="Select Subtopic"
