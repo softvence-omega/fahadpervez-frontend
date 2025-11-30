@@ -18,7 +18,7 @@ const FlashCardSchema = z.object({
   frontText: z.string().min(1, { message: "Front text is required" }),
   backText: z.string().min(1, { message: "Back text is required" }),
   explanation: z.string().optional(),
-  image: z.string().min(1, { message: "Image is required" }),
+  image: z.string().optional(),
   difficulty: z.enum(["Basic", "Intermediate", "Advance"]),
 });
 

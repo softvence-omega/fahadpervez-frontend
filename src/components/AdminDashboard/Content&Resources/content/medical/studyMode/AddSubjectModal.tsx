@@ -17,7 +17,7 @@ import { z } from "zod";
 type SubTopic = string;
 type Topic = {
   topicName: string;
-  subTopics: SubTopic[];
+  subTopics?: SubTopic[];
 };
 type System = {
   name: string;
@@ -34,9 +34,7 @@ const subTopicSchema = z.string().min(1, "Subtopic name is required");
 
 const topicSchema = z.object({
   topicName: z.string().min(1, "Topic name is required"),
-  subTopics: z
-    .array(subTopicSchema)
-    .min(1, "At least one subtopic is required"),
+  subTopics: z.array(subTopicSchema).optional(),
 });
 
 const systemSchema = z.object({
@@ -81,7 +79,7 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
               ...sys,
               topics: sys.topics.map((t, topicIdx) =>
                 topicIdx === tIdx
-                  ? { ...t, subTopics: [...t.subTopics, ""] }
+                  ? { ...t, subTopics: [...(t.subTopics ?? []), ""] }
                   : t
               ),
             }
@@ -121,8 +119,8 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
                 topicIdx === tIdx
                   ? {
                       ...t,
-                      subTopics: t.subTopics.map((s, subI) =>
-                        subI === subIdx ? value : s
+                      subTopics: (t.subTopics ?? []).map((s, sIndex) =>
+                        sIndex === subIdx ? value : s
                       ),
                     }
                   : t
@@ -152,7 +150,9 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
                 topicIdx === tIdx
                   ? {
                       ...t,
-                      subTopics: t.subTopics.filter((_, i) => i !== subIdx),
+                      subTopics: (t.subTopics ?? []).filter(
+                        (_, i) => i !== subIdx
+                      ),
                     }
                   : t
               ),
@@ -305,7 +305,7 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
                           </CommonButton>
                         </div>
 
-                        {topic.subTopics.map((sub, subIdx) => (
+                        {(topic.subTopics ?? []).map((sub, subIdx) => (
                           <div
                             key={subIdx}
                             className="flex items-center gap-2 mb-1"

@@ -34,8 +34,8 @@ export type SelectedNode = {
 const StudyMode = () => {
   //manage  key
   const dispatch = useAppDispatch();
-  const contentType = useAppSelector(
-    (state: RootState) => state.staticContent.contentType
+  const { contentType, studentType } = useAppSelector(
+    (state: RootState) => state.staticContent
   );
   const [isSubjectModalOpen, setIsSubjectModalOpen] = useState(false);
   const [selectedNode, setSelectedNode] = useState<SelectedNode>({
@@ -54,6 +54,7 @@ const StudyMode = () => {
   const queryArg = isValidSelection
     ? {
         key: contentType,
+        studentType,
         subject: selectedNode.subject.trim(),
         system: selectedNode.system.trim(),
         topic: selectedNode.topic.trim(),

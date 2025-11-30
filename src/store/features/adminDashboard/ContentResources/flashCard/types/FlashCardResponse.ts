@@ -1,3 +1,5 @@
+import { DifficultyLevel } from "@/types";
+
 export type SingleFlashCardParams = {
   page?: number;
   limit?: number;
@@ -52,8 +54,8 @@ type FlashCard = {
   frontText: string;
   backText: string;
   explanation?: string;
-  image: string;
-  difficulty: "Basic" | "Intermediate" | "Advance";
+  image?: string;
+  difficulty: DifficultyLevel;
 };
 
 export type ManualFlashCardUpload = {
@@ -61,7 +63,7 @@ export type ManualFlashCardUpload = {
   subject: string;
   system: string;
   topic: string;
-  subtopic: string;
+  subtopic?: string;
   type: "study" | "exam";
   studentType: string;
   flashCards: FlashCard[];

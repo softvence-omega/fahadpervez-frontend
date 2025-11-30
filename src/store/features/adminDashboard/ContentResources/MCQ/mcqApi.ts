@@ -168,6 +168,7 @@ export const mcqApi = baseAPI.injectEndpoints({
       {
         key: string;
         subject: string;
+        studentType: string;
         system?: string;
         topic?: string;
         subtopic?: string;
@@ -198,7 +199,7 @@ export const mcqApi = baseAPI.injectEndpoints({
 
     updateStudyModeTree: build.mutation<
       void,
-      { data: PostStudyModeTree; treeId: string }
+      { data: Partial<PostStudyModeTree>; treeId: string }
     >({
       query: ({ data, treeId }) => ({
         url: `/study_mode_tree/update/${treeId}`,
