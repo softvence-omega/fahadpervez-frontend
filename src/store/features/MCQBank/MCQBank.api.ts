@@ -1,12 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseAPI } from "@/store/api/baseApi";
 
 export const mcqBankAPI = baseAPI.injectEndpoints({
   endpoints: (build) => ({
     gllMCQBank: build.query({
-      query: () => ({
-        url: "/mcq-bank",
-        method: "GET",
-      }),
+      query: ({ searchTerm, subject, system, topic, page, limit }) => {
+        const params: any = { page, limit };
+
+        if (searchTerm) params.searchTerm = searchTerm;
+        if (subject) params.subject = subject;
+        if (system) params.system = system;
+        if (topic) params.topic = topic;
+
+        return {
+          url: "/mcq-bank",
+          method: "GET",
+          params,
+        };
+      },
     }),
 
     getSingleMCQ: build.query({

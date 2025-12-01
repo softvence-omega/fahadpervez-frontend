@@ -5,7 +5,7 @@ import mcqBankImg from "@/assets/dashboard/MCQ Bank img.png";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { Link } from "react-router-dom";
-import { Clock10, Cog, FileText, Plus, Target } from "lucide-react";
+import { Clock10, Cog, FileText, Plus, Search, Target } from "lucide-react";
 import TestOverviewCard from "@/components/reusable/TestOverviewCard";
 import { useGllMCQBankQuery } from "@/store/features/MCQBank/MCQBank.api";
 import GlobalLoader from "@/common/GlobalLoader";
@@ -45,8 +45,11 @@ const McqBank = () => {
 
   // const [files, setFiles] = useState<File[]>([]);
   // const [note, setNote] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [openModal, setOpenModal] = useState(false);
-  const { data, isLoading } = useGllMCQBankQuery(undefined);
+  const { data, isLoading } = useGllMCQBankQuery({
+    searchTerm,
+  });
   const MCQBank = data?.data;
   console.log(MCQBank);
 
@@ -58,10 +61,19 @@ const McqBank = () => {
     };
 
     console.log("Final Payload:", combinedData);
-
-    // ✅ Call API here
-    // await fetch("/api/generate-quiz", { method: "POST", body: JSON.stringify(combinedData) })
   };
+
+  const filteredMCQBank = searchTerm
+    ? MCQBank?.filter((mcq: TMCQBank) => {
+        const keyword = searchTerm.toLowerCase();
+
+        return (
+          mcq?.title?.toLowerCase().includes(keyword) ||
+          mcq?.topic?.toLowerCase().includes(keyword) ||
+          mcq?.uploadedBy?.toLowerCase().includes(keyword)
+        );
+      })
+    : MCQBank;
 
   return (
     <div className="my-6 md:my-10">
@@ -136,7 +148,7 @@ const McqBank = () => {
         />
       </div>
 
-      <div className="md:flex justify-between items-end">
+      {/* <div className="md:flex justify-between items-end">
         <DashboardHeading
           title="Straight from the Expert"
           titleSize="text-xl"
@@ -145,19 +157,43 @@ const McqBank = () => {
           descColor="text-[#4A5565]"
           descFont="text-sm"
           className="mt-12 mb-8"
-        />
-        {/* <Link to={"/dashboard/view-more"}> */}
-        <button className="cursor-pointer text-blue-main underline font-medium">
+        /> */}
+      {/* <Link to={"/dashboard/view-more"}> */}
+      {/* <button className="cursor-pointer text-blue-main underline font-medium">
           View More
-        </button>
-        {/* </Link> */}
+        </button> */}
+      {/* </Link> */}
+      {/* </div> */}
+
+      <div className="flex items-center justify-between my-8">
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search by condition or keyword"
+            className="w-full md:w-[450px] h-12 pl-10 pr-4 border border-slate-300 rounded"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              // setPage(1); // reset page
+            }}
+          />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
+        </div>
+
+        {/* <button
+          onClick={() => setIsFilterOpen(true)}
+          className="flex items-center gap-2 ... bg-slate-500 text-white px-4 py-2 rounded cursor-pointer"
+        >
+          <Filter className="w-4 h-4" />
+          Filter
+        </button> */}
       </div>
 
       {isLoading ? (
         <GlobalLoader />
       ) : (
         <div className="space-y-6 my-6">
-          {MCQBank?.map((mcq: TMCQBank) => (
+          {filteredMCQBank?.map((mcq: TMCQBank) => (
             <div
               key={mcq?._id}
               className="border border-slate-300 rounded-lg py-4 px-5"
