@@ -7,11 +7,11 @@ import DashboardHeading from "@/components/reusable/DashboardHeading";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { useGetSingleMCQQuery } from "@/store/features/MCQBank/MCQBank.api";
 import { McqQuestion } from "@/types";
-import { ArrowLeft, CircleAlert, Plus } from "lucide-react";
+import { ArrowLeft, CircleAlert, Copy, Plus } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import QuizReportModal from "../quizGenerator/QuizReportModal";
-import Pagination from "@/components/AdminDashboard/Content & Resource_Component/Pagination";
+import { toast } from "sonner";
 
 export default function PracticeMCQ() {
   const breadcrumbs: BreadcrumbItem[] = [
@@ -21,7 +21,7 @@ export default function PracticeMCQ() {
 
   const { id } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 10;
+  const limit = 1;
   const { data, isLoading } = useGetSingleMCQQuery({
     id: id as string,
     page: currentPage,
@@ -29,7 +29,7 @@ export default function PracticeMCQ() {
   });
 
   const meta = data?.meta;
-  console.log(data?.meta);
+  
   const [selected, setSelected] = useState<{ [key: string]: number | null }>(
     {}
   );
@@ -53,6 +53,15 @@ export default function PracticeMCQ() {
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
+    }
+  };
+
+  const handleCopy = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Question copied to clipboard");
+    } catch (err) {
+      console.error("Copy failed", err);
     }
   };
 
@@ -81,7 +90,7 @@ export default function PracticeMCQ() {
             </div>
 
             {/* Right Section */}
-            <Link to={"/dashboard/quiz-generator"} className="w-full sm:w-auto">
+            <Link to={"/dashboard/quiz-collection"} className="w-full sm:w-auto">
               <PrimaryButton
                 bgType="solid"
                 bgColor="bg-blue-btn-1"
@@ -89,7 +98,7 @@ export default function PracticeMCQ() {
                 icon={<Plus />}
                 className="h-12 w-full sm:w-auto hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer"
               >
-                Create Quiz
+                Start Quiz
               </PrimaryButton>
             </Link>
           </div>
@@ -109,6 +118,13 @@ export default function PracticeMCQ() {
                 key={qId}
                 className="border border-slate-300 rounded-lg p-5 space-y-4"
               >
+                <div
+                  onClick={() => handleCopy(qId)}
+                  className="flex items-center gap-2 cursor-pointer"
+                >
+                  <Copy className="w-5 h-5" />
+                  <p className="text-slate-700 text-sm font-normal">{qId}</p>
+                </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-5">
                     <p className="text-slate-700 text-sm font-normal">
@@ -229,11 +245,35 @@ export default function PracticeMCQ() {
       )}
       {/* Pagination */}
       <div className="mt-16 mb-32 flex justify-center space-x-5 ">
-        <Pagination
+        {/* <Pagination
           totalPages={totalPages}
           currentPage={currentPage}
           onPageChange={handlePageChange}
-        />
+        /> */}
+
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className={`px-6 py-2 rounded border font-medium cursor-pointer ${
+            currentPage === 1
+              ? "cursor-not-allowed bg-gray-200 text-gray-400"
+              : "bg-white hover:bg-gray-100 text-gray-700"
+          }`}
+        >
+          Previous
+        </button>
+
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className={`px-6 py-2 rounded border font-medium cursor-pointer ${
+            currentPage === totalPages
+              ? "cursor-not-allowed bg-gray-200 text-gray-400"
+              : "bg-blue-main text-white hover:bg-blue-main/90"
+          }`}
+        >
+          Next
+        </button>
       </div>
     </>
   );
