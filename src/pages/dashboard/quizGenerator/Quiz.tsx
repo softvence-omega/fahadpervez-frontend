@@ -189,51 +189,52 @@ const Quiz = () => {
         </div>
 
         {/* Question Area */}
-        <div className="w-full md:w-3/4 bg-white p-4 rounded-lg shadow">
-          <h3 className="font-semibold mb-4">
-            Question {questions[currentQuestion].id}
-          </h3>
-          <p className="mb-4">{questions[currentQuestion].text}</p>
-          <RadioGroup
-            value={answers[currentQuestion] || ""}
-            onValueChange={handleAnswerChange}
-          >
-            {questions[currentQuestion].options.map((option) => (
-              <div
-                key={option.value}
-                className="flex items-center space-x-2 mb-2"
-              >
-                <RadioGroupItem value={option.value} id={option.value} />
-                <Label htmlFor={option.value}>{option.label}</Label>
-              </div>
-            ))}
-          </RadioGroup>
-
-          {/* Navigation Buttons */}
-          <div className="flex justify-between mt-6">
-            {currentQuestion > 0 ? (
-              <Button variant="outline" onClick={handlePrevious}>
-                Previous
-              </Button>
-            ) : (
-              <div></div>
-            )}
-            <Button onClick={handleNext}>
-              {currentQuestion === questions.length - 1 ? "Submit" : "Next"}
+        <div className="w-full md:w-3/4">
+          {/* Timer */}
+          <div className=" bg-white border-e-slate-300 rounded p-4 flex justify-between items-center mb-5">
+            <div className="flex items-center">
+              <Timer className="mr-2" />
+              {formatTime(timeElapsed)}
+            </div>
+            <Button variant="secondary" onClick={handleEndQuiz}>
+              End Quiz
             </Button>
           </div>
-        </div>
-      </div>
+          <div className="w-full bg-white p-4 rounded-lg shadow">
+            <h3 className="font-semibold mb-4">
+              Question {questions[currentQuestion].id}
+            </h3>
+            <p className="mb-4">{questions[currentQuestion].text}</p>
+            <RadioGroup
+              value={answers[currentQuestion] || ""}
+              onValueChange={handleAnswerChange}
+            >
+              {questions[currentQuestion].options.map((option) => (
+                <div
+                  key={option.value}
+                  className="flex items-center space-x-2 mb-2"
+                >
+                  <RadioGroupItem value={option.value} id={option.value} />
+                  <Label htmlFor={option.value}>{option.label}</Label>
+                </div>
+              ))}
+            </RadioGroup>
 
-      {/* Bottom Timer */}
-      <div className=" bg-white p-4 shadow-lg flex justify-between items-center mt-5">
-        <div className="flex items-center">
-          <Timer className="mr-2" />
-          {formatTime(timeElapsed)}
+            {/* Navigation Buttons */}
+            <div className="flex justify-between mt-6">
+              {currentQuestion > 0 ? (
+                <Button variant="outline" onClick={handlePrevious}>
+                  Previous
+                </Button>
+              ) : (
+                <div></div>
+              )}
+              <Button onClick={handleNext}>
+                {currentQuestion === questions.length - 1 ? "Submit" : "Next"}
+              </Button>
+            </div>
+          </div>
         </div>
-        <Button variant="secondary" onClick={handleEndQuiz}>
-          End Quiz
-        </Button>
       </div>
     </div>
   );
