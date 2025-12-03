@@ -35,24 +35,25 @@ const activeStep = 2;
 
 const notesSchema = z.object({
   description: z.string().min(1, "Description is required"),
-  file: z
-    .instanceof(File)
-    .nullable()
-    .refine((file) => file !== null, "File is required")
-    .refine(
-      (file) =>
-        file === null ||
-        [
-          "application/pdf",
-          "application/msword",
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        ].includes(file.type),
-      "Only PDF, DOC, DOCX files allowed"
+  files: z
+    .array(
+      z
+        .instanceof(File)
+        .refine(
+          (file) =>
+            [
+              "application/pdf",
+              "application/msword",
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            ].includes(file.type),
+          "Only PDF, DOC, DOCX files allowed"
+        )
+        .refine(
+          (file) => file.size <= 10 * 1024 * 1024,
+          "Max file size is 10MB"
+        )
     )
-    .refine(
-      (file) => file === null || file.size <= 10 * 1024 * 1024,
-      "Max file size is 10MB"
-    ),
+    .min(1, "At least one file is required"),
 });
 
 type NotesFormValues = z.infer<typeof notesSchema>;
@@ -70,39 +71,57 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
     resolver: zodResolver(notesSchema),
     defaultValues: {
       description: "",
-      file: null,
+      files: [],
     },
   });
 
-  // -------------------------
-  // HANDLE SINGLE FILE UPLOAD
-  // -------------------------
+  // -------------------------------------
+  // MULTIPLE FILE UPLOAD HANDLER
+  // -------------------------------------
   const handleFileUpload = (files: FileList | null) => {
     if (!files || files.length === 0) return;
-    const file = files[0];
 
-    const isValidType = [
+    const acceptedTypes = [
       "application/pdf",
       "application/msword",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ].includes(file.type);
+    ];
 
-    const isValidSize = file.size <= 10 * 1024 * 1024;
+    const newValidFiles: FileWithPreview[] = [];
 
-    if (!isValidType || !isValidSize) return;
+    Array.from(files).forEach((file) => {
+      const isValidType = acceptedTypes.includes(file.type);
+      const isValidSize = file.size <= 10 * 1024 * 1024;
 
-    const newFile = {
-      file,
-      id: `${file.name}-${Date.now()}`,
-    };
+      if (isValidType && isValidSize) {
+        newValidFiles.push({
+          file,
+          id: `${file.name}-${Date.now()}-${Math.random()}`,
+        });
+      }
+    });
 
-    setUploadedFiles([newFile]);
-    setValue("file", file, { shouldValidate: true });
+    if (newValidFiles.length > 0) {
+      const updatedFiles = [...uploadedFiles, ...newValidFiles];
+      setUploadedFiles(updatedFiles);
+
+      setValue(
+        "files",
+        updatedFiles.map((f) => f.file),
+        { shouldValidate: true }
+      );
+    }
   };
 
-  const removeFile = () => {
-    setUploadedFiles([]);
-    setValue("file", null, { shouldValidate: true });
+  const removeFile = (id: string) => {
+    const updated = uploadedFiles.filter((f) => f.id !== id);
+    setUploadedFiles(updated);
+
+    setValue(
+      "files",
+      updated.map((f) => f.file),
+      { shouldValidate: true }
+    );
   };
 
   const formatFileSize = (bytes: number): string => {
@@ -121,26 +140,28 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
   );
   const [postNotes, { isLoading }] = usePostNotesMutation();
 
+  const navigate = useNavigate();
+
   const onSubmit = async (notes: NotesFormValues) => {
     try {
-      if (selectFormData) {
-        const { description, file } = notes;
-        const data = { description, ...selectFormData };
+      if (!selectFormData) return;
 
-        const formdata = new FormData();
-        formdata.append("data", JSON.stringify(data));
+      const { description, files } = notes;
 
-        if (file) formdata.append("files", file);
+      const data = { description, ...selectFormData };
 
-        await postNotes(formdata).unwrap();
-        navigate(`/admin/content-management/dashboard/${contentType}`);
-      }
+      const formdata = new FormData();
+      formdata.append("data", JSON.stringify(data));
+
+      files.forEach((file) => formdata.append("files", file));
+
+      await postNotes(formdata).unwrap();
+      navigate(`/admin/content-management/dashboard/${contentType}`);
     } catch (error) {
       console.error("API Error:", error);
     }
   };
 
-  const navigate = useNavigate();
   const handleCancel = () => {
     setUploadedFiles([]);
     navigate(-1);
@@ -171,7 +192,7 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
         )}
       </div>
 
-      {/* File Upload Section */}
+      {/* FILE UPLOAD SECTION */}
       <div className="max-w-[670px] mx-auto py-6">
         <div
           onDragOver={(e) => {
@@ -198,8 +219,10 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
             id="file-upload"
             className="hidden"
             accept=".pdf,.doc,.docx"
+            multiple
             onChange={(e) => handleFileUpload(e.target.files)}
           />
+
           <label htmlFor="file-upload" className="cursor-pointer">
             <div className="flex flex-col items-center space-y-4">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
@@ -217,12 +240,14 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
           </label>
         </div>
 
-        {errors.file && (
+        {/* FILE VALIDATION ERROR */}
+        {errors.files && (
           <p className={`${inputClass.error} mb-4`}>
-            {errors.file.message as string}
+            {errors.files.message as string}
           </p>
         )}
 
+        {/* FILE LIST */}
         {uploadedFiles.length > 0 && (
           <div className="space-y-2">
             {uploadedFiles.map((item) => (
@@ -245,9 +270,10 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
                     </p>
                   </div>
                 </div>
+
                 <button
                   type="button"
-                  onClick={removeFile}
+                  onClick={() => removeFile(item.id)}
                   className="p-2 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
                 >
                   <X className="w-5 h-5 text-slate-500" />
@@ -259,11 +285,9 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
       </div>
 
       <ActionButtons
-        onCancel={() => handleCancel()}
+        onCancel={handleCancel}
         importLabel="Save & Publish Notes"
-        onSavePublish={() => {
-          handleSubmit(onSubmit)();
-        }}
+        onSavePublish={() => handleSubmit(onSubmit)()}
         isLoading={isLoading}
       />
     </form>

@@ -73,10 +73,13 @@ export interface IFlashcardBank {
 export type DifficultyLevel = "Basic" | "Intermediate" | "Advance";
 
 export const difficultyOptions = [
+  { label: "All", value: "All" },
   { label: "Basic", value: "Basic" },
   { label: "Intermediate", value: "Intermediate" },
   { label: "Advance", value: "Advance" },
 ] as const;
+
+export type DifficultyFilter = DifficultyLevel | "All";
 
 export const correctAnswerOptions = [
   { label: "Option A", value: "A" },

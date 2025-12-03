@@ -80,7 +80,7 @@ const TreeNode = ({
       treeId: item._id,
     };
 
-    await updateStudyModeTree(payload);
+    await updateStudyModeTree(payload as any);
     setModalOpen(false);
   };
 

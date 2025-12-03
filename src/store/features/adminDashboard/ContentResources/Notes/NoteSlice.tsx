@@ -13,10 +13,10 @@ export const notesApi = baseAPI.injectEndpoints({
     }),
     updatedNotes: build.mutation<
       void,
-      { id: string; data: UpdateNotesResponse }
+      { id: string; data: Partial<UpdateNotesResponse> }
     >({
       query: ({ id, data }) => ({
-        url: `api/notes/download/${id}`,
+        url: `/notes/download/${id}`,
         method: "PUT",
         body: data,
       }),
@@ -24,7 +24,7 @@ export const notesApi = baseAPI.injectEndpoints({
     }),
     deleteNotes: build.mutation<void, string>({
       query: (id) => ({
-        url: `/api/notes/delete/${id}`,
+        url: `/notes/delete/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Notes"],

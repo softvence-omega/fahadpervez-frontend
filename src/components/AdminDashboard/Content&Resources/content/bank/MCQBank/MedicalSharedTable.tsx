@@ -1,6 +1,8 @@
 "use client";
 
 import Spinner from "@/common/button/Spinner";
+import Pagination from "@/common/custom/Pagination";
+import { useDebounce } from "@/common/custom/useDebounce";
 import TableAction from "@/components/reusable/TableAction";
 import {
   Table,
@@ -12,10 +14,13 @@ import {
 } from "@/components/ui/table";
 import {
   useDeleteSingleMcqApiMutation,
+  useGetSingleMcqQuery,
   useUpdatedSingleMcqApiMutation,
 } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import { OneMCQ } from "@/store/features/adminDashboard/ContentResources/MCQ/types/singleMcqBank";
-import { useMemo, useState } from "react";
+import { DifficultyFilter, DifficultyLevel } from "@/types";
+import { skipToken } from "@reduxjs/toolkit/query";
+import { useState } from "react";
 import { ContentCategory } from "../../medical/data/data";
 import SearchWithTabs from "../../medical/examMode/SearchWithTabs";
 import UpdateMcqModal, {
@@ -47,17 +52,32 @@ export const contentTabs: ContentCategory[] = [
 ];
 
 interface MedicalSharedTableProps {
-  data?: OneMCQ[];
   mcqBankId: string;
 }
 
 const MedicalSharedTable: React.FC<MedicalSharedTableProps> = ({
-  data,
   mcqBankId,
 }) => {
-  const [difficulty, setDifficulty] = useState<
-    "all" | "Basics" | "Intermediate" | "Advance"
-  >("all");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [difficulty, setDifficulty] = useState<DifficultyFilter>("All");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const limit = 10;
+  const singleMcqQueryArg = mcqBankId
+    ? {
+        id: mcqBankId,
+        page: currentPage,
+        limit,
+        ...(difficulty !== "All" ? { difficulty } : {}),
+        searchTerm: debouncedSearchTerm,
+      }
+    : skipToken;
+  const { data: singleMcqBank, isLoading: isSingleMcqLoading } =
+    useGetSingleMcqQuery(singleMcqQueryArg, {
+      skip: mcqBankId === "",
+    });
+
+  const data = singleMcqBank?.data.mcqs ?? [];
 
   const [deleteSingleMcqApi] = useDeleteSingleMcqApiMutation();
   const [updatedSingleMcqApi, { isLoading }] = useUpdatedSingleMcqApiMutation();
@@ -108,23 +128,24 @@ const MedicalSharedTable: React.FC<MedicalSharedTableProps> = ({
     }
   };
 
-  const filteredData = useMemo(() => {
-    if (!data) return [];
-    return data.filter((item) => {
-      return difficulty === "all" ? true : item.difficulty === difficulty;
-    });
-  }, [data, difficulty]);
-
   return (
     <>
-      <div className="flex flex-col w-full ">
+      <div className="flex flex-col w-full">
         <div className="w-full flex flex-col gap-6">
           <SearchWithTabs
             difficulty={difficulty}
             setDifficulty={setDifficulty}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
           />
 
-          {data ? (
+          {isSingleMcqLoading ? (
+            <Spinner message="Please wait..." />
+          ) : data.length === 0 ? (
+            <div className="text-center py-10 text-gray-500 font-medium">
+              No data found
+            </div>
+          ) : (
             <div className="overflow-x-auto rounded-md border border-border">
               <Table>
                 <TableHeader>
@@ -141,14 +162,16 @@ const MedicalSharedTable: React.FC<MedicalSharedTableProps> = ({
                 </TableHeader>
 
                 <TableBody>
-                  {filteredData.map((item) => (
+                  {data.map((item) => (
                     <TableRow key={item.mcqId} className={tableDesign.bodyRow}>
                       <TableCell
                         className={`${tableDesign.cell} hidden sm:table-cell`}
                       >
                         {item.mcqId}
                       </TableCell>
-                      <TableCell className={tableDesign.cell}>
+                      <TableCell
+                        className={`${tableDesign.cell} max-w-[150px] break-words overflow-hidden whitespace-nowrap overflow-ellipsis`}
+                      >
                         {item.question}
                       </TableCell>
                       <TableCell
@@ -174,8 +197,6 @@ const MedicalSharedTable: React.FC<MedicalSharedTableProps> = ({
                 </TableBody>
               </Table>
             </div>
-          ) : (
-            <Spinner message="Please wait" />
           )}
         </div>
       </div>
@@ -183,10 +204,7 @@ const MedicalSharedTable: React.FC<MedicalSharedTableProps> = ({
       {isUpdateModalOpen && selectedMCQ && (
         <UpdateMcqModal
           data={{
-            difficulty: selectedMCQ.difficulty as
-              | "Basics"
-              | "Intermediate"
-              | "Advance",
+            difficulty: selectedMCQ.difficulty as DifficultyLevel,
             question: selectedMCQ.question,
             optionA: selectedMCQ.options[0]?.optionText || "",
             optionB: selectedMCQ.options[1]?.optionText || "",
@@ -202,6 +220,15 @@ const MedicalSharedTable: React.FC<MedicalSharedTableProps> = ({
           onSubmit={handleUpdate}
           isLoading={isLoading}
         />
+      )}
+      {data.length !== 0 && !isLoading && (
+        <div className="py-5">
+          <Pagination
+            totalPages={singleMcqBank?.meta.totalPages ?? 1}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+        </div>
       )}
     </>
   );
