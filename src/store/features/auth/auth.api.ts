@@ -43,6 +43,14 @@ export const userAPI = baseAPI.injectEndpoints({
       }),
     }),
 
+    updateProfile: build.mutation({
+      query: (data) => ({
+        url: "/auth/update-profiles",
+        method: "PUT",
+        body: data,
+      }),
+    }),
+
     // updatePassword: build.mutation({
     //   query: (payload) => ({
     //     url: "/user/update-password",
@@ -95,5 +103,6 @@ export const {
   useGetMeQuery,
   useResendOTPMutation,
   useUpdateInitialProfileMutation,
+  useUpdateProfileMutation,
   useGetAllStudentTypeQuery
 } = userAPI;

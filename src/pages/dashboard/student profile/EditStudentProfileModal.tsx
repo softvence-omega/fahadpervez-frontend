@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import {
   useLazyGetMeQuery,
-  useUpdateInitialProfileMutation,
+  useUpdateProfileMutation,
 } from "@/store/features/auth/auth.api";
 import { useAppDispatch } from "@/hooks/useRedux";
 import { setUser } from "@/store/features/auth/auth.slice";
@@ -23,8 +23,7 @@ import Cookies from "js-cookie";
 
 export default function EditStudentProfileModal({ open, setOpen, user }: any) {
   const dispatch = useAppDispatch();
-  const [updateInitialProfile, { isLoading }] =
-    useUpdateInitialProfileMutation();
+  const [updateProfile, { isLoading }] = useUpdateProfileMutation();
   const [getMe] = useLazyGetMeQuery();
   // const { data } = useGetMeQuery(undefined);
   console.log(user);
@@ -43,16 +42,17 @@ export default function EditStudentProfileModal({ open, setOpen, user }: any) {
     try {
       // Construct data object
       const studentData = {
-        role: user.account?.role,
-        student: {
-          firstName,
-          lastName,
-          university,
-          country,
-          year_of_study: yearOfStudy,
-          studentType,
-          preparingFor,
-        },
+        // role: user.account?.role,
+        // student: {
+        firstName,
+        lastName,
+        university,
+        country,
+        year_of_study: yearOfStudy,
+        studentType,
+        preparingFor,
+        bio,
+        // },
 
         // those field not set in frontend
         preference: {
@@ -61,7 +61,6 @@ export default function EditStudentProfileModal({ open, setOpen, user }: any) {
           topic: user?.profile?.preference?.topic,
           subTopic: user?.profile?.preference?.subTopic,
         },
-        bio,
       };
 
       // Validate
@@ -70,7 +69,7 @@ export default function EditStudentProfileModal({ open, setOpen, user }: any) {
         return;
       }
 
-      // ✅ Prepare FormData
+      // Prepare FormData
       const formDataToSend = new FormData();
 
       // if (photo) {
@@ -79,8 +78,8 @@ export default function EditStudentProfileModal({ open, setOpen, user }: any) {
 
       formDataToSend.append("data", JSON.stringify(studentData));
 
-      // ✅ API call
-      const res = await updateInitialProfile(formDataToSend).unwrap();
+      // API call
+      const res = await updateProfile(formDataToSend).unwrap();
 
       if (res.success) {
         const meRes = await getMe(undefined).unwrap();
