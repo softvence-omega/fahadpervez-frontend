@@ -13,29 +13,6 @@ import { TMCQBank } from "@/types";
 import { QuizGeneratorDialog } from "../quizGenerator/QuizGenerateModal";
 import { useState } from "react";
 
-// const resources = [
-//   {
-//     id: 1,
-//     title: "Anatomy Essentials MCQs",
-//     questions: "100 Question",
-//     tags: ["Anatomy", "Anatomy"],
-//     uploader: "DR. Root Silva",
-//   },
-//   {
-//     id: 2,
-//     title: "Physiology Quick Review",
-//     questions: "80 Question",
-//     tags: ["Physiology", "Medical"],
-//     uploader: "Prof. Jane Doe",
-//   },
-//   {
-//     id: 3,
-//     title: "Pathology Exam Prep",
-//     questions: "120 Question",
-//     tags: ["Pathology"],
-//     uploader: "Dr. Khan",
-//   },
-// ];
 
 const McqBank = () => {
   const breadcrumbs: BreadcrumbItem[] = [
@@ -51,7 +28,7 @@ const McqBank = () => {
     searchTerm,
   });
   const MCQBank = data?.data;
-  console.log(MCQBank);
+  // console.log(MCQBank);
 
   const handleFinalSubmit = (modalData: any) => {
     const combinedData = {
@@ -66,10 +43,13 @@ const McqBank = () => {
   const filteredMCQBank = searchTerm
     ? MCQBank?.filter((mcq: TMCQBank) => {
         const keyword = searchTerm.toLowerCase();
-
+        console.log(mcq);
         return (
           mcq?.title?.toLowerCase().includes(keyword) ||
+          mcq?.subject?.toLowerCase().includes(keyword) ||
+          mcq?.system?.toLowerCase().includes(keyword) ||
           mcq?.topic?.toLowerCase().includes(keyword) ||
+          mcq?.subtopic?.toLowerCase().includes(keyword) ||
           mcq?.uploadedBy?.toLowerCase().includes(keyword)
         );
       })
@@ -179,7 +159,7 @@ const McqBank = () => {
           />
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
         </div>
-
+        <p>{filteredMCQBank?.length} MCQs Bank found</p>
         {/* <button
           onClick={() => setIsFilterOpen(true)}
           className="flex items-center gap-2 ... bg-slate-500 text-white px-4 py-2 rounded cursor-pointer"
