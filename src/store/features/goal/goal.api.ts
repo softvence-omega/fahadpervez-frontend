@@ -2,6 +2,16 @@ import { baseAPI } from "@/store/api/baseApi";
 
 export const goalAPI = baseAPI.injectEndpoints({
   endpoints: (build) => ({
+    createGoal: build.mutation({
+      query: (data: FormData) => {
+        return {
+          url: "/goal",
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
+
     getGoal: build.query({
       query: () => {
         return {
@@ -15,4 +25,4 @@ export const goalAPI = baseAPI.injectEndpoints({
   }),
 });
 
-export const { useGetGoalQuery } = goalAPI;
+export const { useCreateGoalMutation, useGetGoalQuery } = goalAPI;
