@@ -1,18 +1,21 @@
 import React from "react";
-import Header from "@/components/dashboard_new/Header";
+// import Header from "@/components/dashboard_new/Header";
 import OverviewSection from "@/components/dashboard_new/OverviewSection";
 import SmartStudyPlan from "@/components/dashboard_new/SmartStudyPlan";
 import DailyChallenge from "@/components/dashboard_new/DailyChallenge";
 import PerformanceBySubject from "@/components/dashboard_new/PerformanceBySubject";
 import WeeklyLeaderboard from "@/components/dashboard_new/WeeklyLeaderboard";
 import WeeklyHighlights from "@/components/dashboard_new/WeeklyHighlights";
+import MedicalStudyGoalTracker from "@/components/dashboard/goal/MedicalStudyGoalTracker";
+// import MedicalStudyGoalTracker from "./MedicalStudyGoalTracker";
 // import ChatInterface from "@/components/dashboard_new/message";
 
 const Dashboard: React.FC = () => {
   return (
     <div className="my-6 md:my-10">
       {/* Header */}
-      <Header userName="Emma Harrison" goal="Anatomy" dailyTarget="2 hours" />
+      {/* <Header userName="Emma Harrison" goal="Anatomy" dailyTarget="2 hours" /> */}
+      <MedicalStudyGoalTracker />
 
       {/* Overview Section */}
       <OverviewSection />
