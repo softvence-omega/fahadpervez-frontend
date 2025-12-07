@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // import { useState } from "react";
 // import { Goal, SelectedSubject, Subject } from "./type";
 // import { Modal, Step1, Step2, Step3 } from "./Modal";
@@ -302,18 +303,124 @@
 
 // export default MedicalStudyGoalTracker;
 
-
 import { useState } from "react";
-import { Goal, SelectedSubject, Subject, FormData as GoalFormData } from "./type";
+import {
+  SelectedSubject,
+  Subject,
+  FormData as GoalFormData,
+} from "./type";
 import { Modal, Step1, Step2, Step3 } from "./Modal";
 import { GoalEmptyState } from "./GoalEmptyState";
 import { GoalDashboard } from "./GoalDashboard";
+import {
+  useCreateGoalMutation,
+  useGetGoalQuery,
+} from "@/store/features/goal/goal.api";
+import { toast } from "sonner";
+
+const availableSubjects: Subject[] = [
+  {
+    name: "Pathology",
+    systems: [
+      "General Pathology",
+      "Systemic Pathology",
+      "Clinical Pathology",
+      "Hematology",
+      "Immunology",
+      "Genetics",
+      "Neoplasia",
+      "Inflammation",
+      "Cell Injury",
+      "Hemodynamics",
+    ],
+  },
+  {
+    name: "Pharmacology",
+    systems: [
+      "General Pharmacology",
+      "Autonomic Drugs",
+      "CNS Drugs",
+      "Cardiovascular Drugs",
+      "Antibiotics",
+      "Chemotherapy",
+      "Endocrine Drugs",
+      "GI Drugs",
+      "Respiratory Drugs",
+      "Toxicology",
+    ],
+  },
+  {
+    name: "Microbiology",
+    systems: [
+      "Bacteriology",
+      "Virology",
+      "Mycology",
+      "Parasitology",
+      "Immunology",
+      "Infection Control",
+      "Gram Positive",
+      "Gram Negative",
+      "Anaerobes",
+      "Mycobacteria",
+    ],
+  },
+  {
+    name: "Biochemistry",
+    systems: [
+      "Carbohydrates",
+      "Proteins",
+      "Lipids",
+      "Nucleic Acids",
+      "Enzymes",
+      "Vitamins",
+      "Minerals",
+      "Metabolism",
+      "Clinical Biochemistry",
+      "Molecular Biology",
+    ],
+  },
+  {
+    name: "Anatomy",
+    systems: [
+      "Cardiovascular",
+      "Respiratory",
+      "Digestive",
+      "Urinary",
+      "Reproductive",
+      "Endocrine",
+      "Nervous",
+      "Musculoskeletal",
+      "Lymphatic",
+      "Integumentary",
+    ],
+  },
+  {
+    name: "Physiology",
+    systems: [
+      "Cardiovascular",
+      "Respiratory",
+      "Nervous",
+      "Digestive",
+      "Renal",
+      "Endocrine",
+      "Reproductive",
+      "Musculoskeletal",
+      "Blood",
+      "Special Senses",
+    ],
+  },
+];
 
 // Main Component
 const MedicalStudyGoalTracker: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(1);
-  const [goal, setGoal] = useState<Goal | null>(null);
+  // const [goal, setGoal] = useState<Goal | null>(null);
+
+  const [createGoal] = useCreateGoalMutation();
+  const { data } = useGetGoalQuery({});
+  
+  const apiGoal = data?.data?.[0];
 
   const [formData, setFormData] = useState<GoalFormData>({
     goalName: "",
@@ -322,100 +429,9 @@ const MedicalStudyGoalTracker: React.FC = () => {
     endDate: "",
   });
 
-  const availableSubjects: Subject[] = [
-    {
-      name: "Pathology",
-      systems: [
-        "General Pathology",
-        "Systemic Pathology",
-        "Clinical Pathology",
-        "Hematology",
-        "Immunology",
-        "Genetics",
-        "Neoplasia",
-        "Inflammation",
-        "Cell Injury",
-        "Hemodynamics",
-      ],
-    },
-    {
-      name: "Pharmacology",
-      systems: [
-        "General Pharmacology",
-        "Autonomic Drugs",
-        "CNS Drugs",
-        "Cardiovascular Drugs",
-        "Antibiotics",
-        "Chemotherapy",
-        "Endocrine Drugs",
-        "GI Drugs",
-        "Respiratory Drugs",
-        "Toxicology",
-      ],
-    },
-    {
-      name: "Microbiology",
-      systems: [
-        "Bacteriology",
-        "Virology",
-        "Mycology",
-        "Parasitology",
-        "Immunology",
-        "Infection Control",
-        "Gram Positive",
-        "Gram Negative",
-        "Anaerobes",
-        "Mycobacteria",
-      ],
-    },
-    {
-      name: "Biochemistry",
-      systems: [
-        "Carbohydrates",
-        "Proteins",
-        "Lipids",
-        "Nucleic Acids",
-        "Enzymes",
-        "Vitamins",
-        "Minerals",
-        "Metabolism",
-        "Clinical Biochemistry",
-        "Molecular Biology",
-      ],
-    },
-    {
-      name: "Anatomy",
-      systems: [
-        "Cardiovascular",
-        "Respiratory",
-        "Digestive",
-        "Urinary",
-        "Reproductive",
-        "Endocrine",
-        "Nervous",
-        "Musculoskeletal",
-        "Lymphatic",
-        "Integumentary",
-      ],
-    },
-    {
-      name: "Physiology",
-      systems: [
-        "Cardiovascular",
-        "Respiratory",
-        "Nervous",
-        "Digestive",
-        "Renal",
-        "Endocrine",
-        "Reproductive",
-        "Musculoskeletal",
-        "Blood",
-        "Special Senses",
-      ],
-    },
-  ];
-
-  const [selectedSubjects, setSelectedSubjects] = useState<SelectedSubject[]>([]);
+  const [selectedSubjects, setSelectedSubjects] = useState<SelectedSubject[]>(
+    []
+  );
 
   const handleSubjectToggle = (subjectName: string): void => {
     const existingIndex = selectedSubjects.findIndex(
@@ -463,7 +479,10 @@ const MedicalStudyGoalTracker: React.FC = () => {
     }
   };
 
-  const handleSystemToggle = (subjectName: string, systemName: string): void => {
+  const handleSystemToggle = (
+    subjectName: string,
+    systemName: string
+  ): void => {
     const subject = availableSubjects.find((s) => s.name === subjectName);
     if (!subject) return;
 
@@ -473,12 +492,13 @@ const MedicalStudyGoalTracker: React.FC = () => {
 
     if (existingIndex >= 0) {
       const updated = [...selectedSubjects];
-      const systemIndex = updated[existingIndex].systemNames.indexOf(systemName);
+      const systemIndex =
+        updated[existingIndex].systemNames.indexOf(systemName);
 
       if (systemIndex >= 0) {
-        updated[existingIndex].systemNames = updated[existingIndex].systemNames.filter(
-          (s) => s !== systemName
-        );
+        updated[existingIndex].systemNames = updated[
+          existingIndex
+        ].systemNames.filter((s) => s !== systemName);
       } else {
         updated[existingIndex].systemNames = [
           ...updated[existingIndex].systemNames,
@@ -514,22 +534,49 @@ const MedicalStudyGoalTracker: React.FC = () => {
     return (calculateTotalStudyHours() / totalSystems).toFixed(1);
   };
 
-  const handleCreateGoal = (): void => {
-    const goalData: Goal = {
-      ...formData,
+  const handleCreateGoal = async () => {
+    // console.log("formData :", formData);
+    // const goalData: Goal = {
+    //   ...formData,
+    //   selectedSubjects: selectedSubjects.map((s) => ({
+    //     subjectName: s.subjectName,
+    //     systemNames: s.systemNames,
+    //     fullSubject: s.fullSubject,
+    //   })),
+    //   accuracy: 75,
+    //   completed: 85,
+    //   daysRemaining: 36,
+    //   totalHours: calculateTotalStudyHours(),
+    // };
+
+    const goalDataToSend = {
+      goalName: formData.goalName,
+      studyHoursPerDay: Number(formData.studyHoursPerDay),
+      startDate: formData.startDate,
+      endDate: formData.endDate,
       selectedSubjects: selectedSubjects.map((s) => ({
         subjectName: s.subjectName,
         systemNames: s.systemNames,
-        fullSubject: s.fullSubject,
       })),
-      accuracy: 75,
-      completed: 85,
-      daysRemaining: 36,
-      totalHours: calculateTotalStudyHours(),
     };
 
-    console.log("Creating goal:", goalData);
-    setGoal(goalData);
+    try {
+      await createGoal(goalDataToSend).unwrap();
+
+      // optional ─ reset form or redirect
+      // reset();
+      // navigate("/goals");
+    } catch (error: any) {
+      console.error("Create goal error:", error);
+
+      toast.error(
+        error?.data?.message || "Failed to create goal. Please try again ❌"
+      );
+    }
+
+    // console.log("to send :", goalDataToSend);
+    // console.log("Creating goal:", goalData);
+    // setGoal(goalData);
     handleCloseModal();
   };
 
@@ -546,17 +593,17 @@ const MedicalStudyGoalTracker: React.FC = () => {
   };
 
   const handleChangeGoal = (): void => {
-    setGoal(null);
+    // setGoal(null);
     setShowModal(true);
   };
 
   return (
     <div className="bg-gray-50 mb-12">
       <div>
-        {!goal ? (
+        {!apiGoal ? (
           <GoalEmptyState onSetGoal={() => setShowModal(true)} />
         ) : (
-          <GoalDashboard goal={goal} onChangeGoal={handleChangeGoal} />
+          <GoalDashboard goal={apiGoal} onChangeGoal={handleChangeGoal} />
         )}
 
         <Modal

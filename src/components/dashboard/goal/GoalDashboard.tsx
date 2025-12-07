@@ -37,7 +37,7 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
           <div>
             <div className="text-sm text-gray-600">Time Left</div>
             <div className="font-semibold">
-              {goal.daysRemaining} days remaining ({goal.totalHours} hrs)
+              {goal.daysLeft} days remaining ({goal.remainingHours} hrs)
             </div>
           </div>
         </div>
@@ -61,11 +61,11 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
           <div className="flex gap-4 text-sm">
             <span className="flex items-center gap-1">
               <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
-              Accuracy {goal.accuracy}%
+              Accuracy {goal.accuracy || 0}%
             </span>
             <span className="flex items-center gap-1">
               <span className="w-3 h-3 bg-blue-300 rounded-full"></span>
-              Completed {goal.completed}%
+              Completed {goal.progressPercentage}%
             </span>
           </div>
         </div>
@@ -73,11 +73,11 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
           <div className="h-full flex">
             <div
               className="bg-blue-500 h-full"
-              style={{ width: `${goal.accuracy}%` }}
+              style={{ width: `${goal.accuracy || 0}%` }}
             ></div>
             <div
               className="bg-blue-300 h-full"
-              style={{ width: `${goal.completed - goal.accuracy}%` }}
+              style={{ width: `${goal.progressPercentage - (goal.accuracy || 0)}%` }}
             ></div>
           </div>
         </div>
