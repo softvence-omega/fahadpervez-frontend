@@ -168,6 +168,7 @@ export const mcqApi = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ["StudyModeTree"],
     }),
+
     getStudyModeTree: build.query<GetStudyModeTree, { studentType: string }>({
       query: ({ studentType }) => ({
         url: `/study_mode_tree/all`,

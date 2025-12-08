@@ -84,7 +84,10 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
   const subtopic = watch("subtopic");
 
   const subjects = useMemo(
-    () => backendData.map((item: SubjectData) => item.subjectName),
+    () =>
+      backendData
+        .map((item: SubjectData) => item.subjectName)
+        .filter((name) => name && name.trim() !== ""),
     [backendData]
   );
 
@@ -93,7 +96,9 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
   );
 
   const systems = selectedSubjectData
-    ? selectedSubjectData.systems.map((sys: System) => sys.name)
+    ? selectedSubjectData.systems
+        .map((sys: System) => sys.name)
+        .filter((name) => name && name.trim() !== "")
     : [];
 
   const selectedSystemData = selectedSubjectData?.systems.find(
@@ -101,7 +106,9 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
   );
 
   const topics = selectedSystemData
-    ? selectedSystemData.topics.map((t: Topic) => t.topicName)
+    ? selectedSystemData.topics
+        .map((t: Topic) => t.topicName)
+        .filter((name) => name && name.trim() !== "")
     : [];
 
   const selectedTopicData = selectedSystemData?.topics.find(
@@ -109,9 +116,9 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
   );
 
   const subtopics = selectedTopicData
-    ? selectedTopicData.subTopics.map((s: any) =>
-        typeof s === "string" ? s : s.subtopicName
-      )
+    ? selectedTopicData.subTopics
+        .map((s: any) => (typeof s === "string" ? s : s.subtopicName))
+        .filter((name) => name && name.trim() !== "")
     : [];
 
   const subjectOptions: SelectOption<string>[] = subjects.map((s, index) => ({
@@ -262,7 +269,7 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
           <div>
             <label className={inputClass.label}>Subtopic</label>
             <CommonSelect
-              value={subtopic || ""}
+              value={subtopic || undefined}
               item={subtopicOptions}
               onValueChange={(val) => setValue("subtopic", val)}
               placeholder="Select Subtopic"
