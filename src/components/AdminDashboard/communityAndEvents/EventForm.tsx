@@ -1,64 +1,64 @@
-import { FC, useState } from "react";
-import DashboardTopSection from "../reuseable/DashboardTopSection";
+import CommonButton from "@/common/button/CommonButton";
 import CommonSelect from "@/common/custom/CommonSelect";
+import CustomSwitch from "@/common/custom/CustomSwitch";
 import MediumHeader from "@/common/header/MediumHeader";
 import CommonSpace from "@/common/space/CommonSpace";
+import { FC, useState } from "react";
 import CommonBorderWrapper from "../reuseable/CommonBorderWrapper";
-import CustomSwitch from "@/common/custom/CustomSwitch";
-import CommonButton from "@/common/button/CommonButton";
+import DashboardTopSection from "../reuseable/DashboardTopSection";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+
+import {
+  useCreateEventMutation,
+  useUpdateEventMutation,
+} from "@/store/features/adminDashboard/ContentResources/event/eventApi";
+import { SingleEvent } from "@/store/features/adminDashboard/ContentResources/event/types/allEvent";
+import { CreateEventForm, createEventSchema } from "./createEventSchema";
 
 interface EventFormProps {
   handleCancel: () => void;
+  initialData?: SingleEvent;
 }
 
-const EventForm: FC<EventFormProps> = ({ handleCancel }) => {
-  type EventFormData = {
-    eventTitle: string;
-    eventType: string;
-    format: string;
-    category: string;
-    description: string;
-    date: string;
-    startTime: string;
-    duration: string;
-    instructor: string;
-    isPricingEnabled: boolean;
-    price?: string;
-    meetingLink: string;
-  };
+const EventForm: FC<EventFormProps> = ({ handleCancel, initialData }) => {
+  const [createEvent, { isLoading: isCreating }] = useCreateEventMutation();
+  const [updateEvent, { isLoading: isUpdating }] = useUpdateEventMutation();
 
-  const [formData, setFormData] = useState<EventFormData>({
-    eventTitle: "",
-    eventType: "Seminar",
-    format: "Seminar",
-    category: "Seminar",
-    description: "",
-    date: "",
-    startTime: "",
-    duration: "60 Min",
-    instructor: "",
-    isPricingEnabled: false,
-    price: "",
-    meetingLink: "",
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<CreateEventForm>({
+    resolver: zodResolver(createEventSchema),
+    defaultValues: initialData
+      ? {
+          eventTitle: initialData.eventTitle,
+          eventType: initialData.eventType,
+          eventFormat: initialData.eventFormat,
+          category: initialData.category,
+          description: initialData.description,
+          eventData: initialData.eventData,
+          startTime: initialData.startTime,
+          eventDuration: initialData.eventDuration,
+          instructor: initialData.instructor,
+          eventPrice: initialData.eventPrice,
+          meetingDetails: initialData.meetingDetails,
+        }
+      : undefined,
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
+  const [isPricingEnabled, setIsPricingEnabled] = useState(
+    initialData?.eventPrice ? false : true
+  );
   const inputClass = {
     input:
-      "text-sm font-normal  text-[#0F172A]  font-inter leading-[20px] outline-none transition w-full px-4 py-3 border border-border rounded-md ",
+      "text-sm font-normal text-[#0F172A] font-inter leading-[20px] outline-none transition w-full px-4 py-3 border border-border rounded-md ",
     label:
-      "text-sm font-normal  text-[#18181B]  font-inter leading-[20px] block mb-2",
+      "text-sm font-normal text-[#18181B] font-inter leading-[20px] block mb-2",
   };
 
   const seminarOptions = [
@@ -67,23 +67,33 @@ const EventForm: FC<EventFormProps> = ({ handleCancel }) => {
     { label: "Conference", value: "Conference" },
   ] as const;
 
+  const onSubmit = async (data: CreateEventForm) => {
+    const payload = { ...data, eventPrice: data.eventPrice ?? 0 };
+    console.log("payload", payload);
+
+    if (initialData?._id) {
+      await updateEvent({ id: initialData._id, data: payload }).unwrap();
+    } else {
+      await createEvent(payload).unwrap();
+    }
+    handleCancel();
+  };
+
   return (
     <div>
       <DashboardTopSection
-        title="Create New Event"
-        description="Create a new online event, seminar, or workshop with detailed scheduling and pricing options."
+        title={initialData ? "Edit Event" : "Create New Event"}
+        description={
+          initialData
+            ? "Update event details."
+            : "Create a new online event, seminar, or workshop with detailed scheduling and pricing options."
+        }
       />
 
       <CommonSpace>
         <CommonBorderWrapper className="!border-0 !rounded-none">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              console.log("Form Data:", formData);
-            }}
-            className="space-y-6"
-          >
-            <MediumHeader className=" !text-xl !font-normal ">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <MediumHeader className="!text-xl !font-normal ">
               Basic Information
             </MediumHeader>
 
@@ -91,62 +101,90 @@ const EventForm: FC<EventFormProps> = ({ handleCancel }) => {
               <div>
                 <label className={inputClass.label}>Event Title</label>
                 <input
-                  name="eventTitle"
+                  {...register("eventTitle")}
                   placeholder="Event Title"
-                  value={formData.eventTitle}
-                  onChange={handleChange}
                   className={inputClass.input}
                 />
+                {errors.eventTitle && (
+                  <p className="text-red-500 text-xs">
+                    {errors.eventTitle.message}
+                  </p>
+                )}
               </div>
 
               <div>
                 <label className={inputClass.label}>Event Type</label>
-                <CommonSelect<string>
-                  value={formData.eventType}
-                  onValueChange={(val) =>
-                    setFormData((prev) => ({ ...prev, eventType: val }))
-                  }
+                <CommonSelect
                   item={seminarOptions}
+                  value={watch("eventType")}
+                  onValueChange={(v) => setValue("eventType", v)}
                   className="w-full mb-4 !border-[#9DA4AE] !bg-white"
                 />
+                {errors.eventType && (
+                  <p className="text-red-500 text-xs">
+                    {errors.eventType.message}
+                  </p>
+                )}
               </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div>
                 <label className={inputClass.label}>Format</label>
-                <CommonSelect<string>
-                  value={formData.format}
-                  onValueChange={(val) =>
-                    setFormData((prev) => ({ ...prev, format: val }))
-                  }
+                <CommonSelect
                   item={seminarOptions}
-                  className="w-full  !border-[#9DA4AE] !bg-white !outline-none"
+                  value={watch("eventFormat")}
+                  onValueChange={(v) => setValue("eventFormat", v)}
+                  className="w-full !border-[#9DA4AE] !bg-white"
                 />
+                {errors.eventFormat && (
+                  <p className="text-red-500 text-xs">
+                    {errors.eventFormat.message}
+                  </p>
+                )}
               </div>
 
               <div>
                 <label className={inputClass.label}>Category</label>
-                <CommonSelect<string>
-                  value={formData.category}
-                  onValueChange={(val) =>
-                    setFormData((prev) => ({ ...prev, category: val }))
-                  }
+                <CommonSelect
                   item={seminarOptions}
-                  className="w-full  !border-[#9DA4AE] !bg-white"
+                  value={watch("category")}
+                  onValueChange={(v) => setValue("category", v)}
+                  className="w-full !border-[#9DA4AE] !bg-white"
                 />
+                {errors.category && (
+                  <p className="text-red-500 text-xs">
+                    {errors.category.message}
+                  </p>
+                )}
               </div>
             </div>
 
             <div>
               <label className={inputClass.label}>Description</label>
               <textarea
-                name="description"
+                {...register("description")}
                 placeholder="Enter description"
-                value={formData.description}
-                onChange={handleChange}
                 className={inputClass.input}
               />
+              {errors.description && (
+                <p className="text-red-500 text-xs">
+                  {errors.description.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <label className={inputClass.label}>Event Data</label>
+              <input
+                {...register("eventData")}
+                placeholder="Enter event data"
+                className={inputClass.input}
+              />
+              {errors.eventData && (
+                <p className="text-red-500 text-xs">
+                  {errors.eventData.message}
+                </p>
+              )}
             </div>
 
             <MediumHeader className="!text-xl !font-normal mb-3">
@@ -155,77 +193,68 @@ const EventForm: FC<EventFormProps> = ({ handleCancel }) => {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               <div>
-                <label className={inputClass.label}>Date</label>
-                <input
-                  type="date"
-                  name="date"
-                  value={formData.date}
-                  onChange={handleChange}
-                  className={inputClass.input}
-                />
-              </div>
-              <div>
                 <label className={inputClass.label}>Start Time</label>
                 <input
-                  type="time"
-                  name="startTime"
-                  value={formData.startTime}
-                  onChange={handleChange}
+                  {...register("startTime")}
+                  type="datetime-local"
                   className={inputClass.input}
                 />
+                {errors.startTime && (
+                  <p className="text-red-500 text-xs">
+                    {errors.startTime.message}
+                  </p>
+                )}
               </div>
+
               <div>
                 <label className={inputClass.label}>Duration</label>
                 <input
-                  name="duration"
-                  value={formData.duration}
-                  onChange={handleChange}
+                  {...register("eventDuration")}
                   placeholder="Duration"
                   className={inputClass.input}
                 />
+                {errors.eventDuration && (
+                  <p className="text-red-500 text-xs">
+                    {errors.eventDuration.message}
+                  </p>
+                )}
               </div>
             </div>
 
             <MediumHeader className="!text-xl !font-normal mb-3">
               Instructor
             </MediumHeader>
-
             <input
-              name="instructor"
+              {...register("instructor")}
               placeholder="Instructor"
-              value={formData.instructor}
-              onChange={handleChange}
               className={inputClass.input}
             />
+            {errors.instructor && (
+              <p className="text-red-500 text-xs">
+                {errors.instructor.message}
+              </p>
+            )}
 
             <MediumHeader className="!text-xl !font-normal mb-3">
               Pricing
             </MediumHeader>
 
             <div className="flex items-center gap-2">
-              <label htmlFor="" className={inputClass.label}>
-                pricing
-              </label>
+              <label className={inputClass.label}>Pricing</label>
+
               <CustomSwitch
-                checked={formData.isPricingEnabled}
-                onChange={(val: boolean) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    isPricingEnabled: val,
-                  }))
-                }
+                checked={isPricingEnabled}
+                onChange={(v) => setIsPricingEnabled(v)}
               />
 
-              <input
-                name="price"
-                type="text"
-                placeholder="Enter price"
-                value={formData.price}
-                onChange={handleChange}
-                className={`${
-                  formData.isPricingEnabled ? "invisible" : " visible"
-                } ${inputClass.input}`}
-              />
+              {!isPricingEnabled && (
+                <input
+                  {...register("eventPrice", { valueAsNumber: true })}
+                  type="number"
+                  placeholder="Enter price"
+                  className={inputClass.input}
+                />
+              )}
             </div>
 
             <MediumHeader className="!text-xl !font-normal mb-3">
@@ -233,16 +262,17 @@ const EventForm: FC<EventFormProps> = ({ handleCancel }) => {
             </MediumHeader>
 
             <div>
-              <label className={inputClass.label}>
-                Meeting Link (Zoom, Teams, etc.)
-              </label>
+              <label className={inputClass.label}>Meeting Link</label>
               <input
-                name="meetingLink"
+                {...register("meetingDetails")}
                 placeholder="Meeting Link (Zoom, Teams, etc.)"
-                value={formData.meetingLink}
-                onChange={handleChange}
                 className={inputClass.input}
               />
+              {errors.meetingDetails && (
+                <p className="text-red-500 text-xs">
+                  {errors.meetingDetails.message}
+                </p>
+              )}
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 pb-5 sm:pb-0">
@@ -253,11 +283,19 @@ const EventForm: FC<EventFormProps> = ({ handleCancel }) => {
               >
                 Cancel
               </CommonButton>
+
               <CommonButton
                 type="submit"
-                className="w-full sm:w-auto !text-white !bg-[linear-gradient(103deg,#0076F5_6.94%,#0058B8_99.01%)]"
+                disabled={isCreating || isUpdating}
+                className="!bg-blue-600 !text-white"
               >
-                Create and Publish
+                {initialData
+                  ? isUpdating
+                    ? "Updating..."
+                    : "Update Event"
+                  : isCreating
+                  ? "Creating..."
+                  : "Create and Publish"}
               </CommonButton>
             </div>
           </form>
