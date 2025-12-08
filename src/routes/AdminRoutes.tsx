@@ -1,6 +1,8 @@
 import CreateContent from "@/components/AdminDashboard/Content&Resources/content/medical/createContent/CreateContent";
 import ParentComponent from "@/components/AdminDashboard/Content&Resources/content/ParentComponent";
 import StudentsCard from "@/components/AdminDashboard/Content&Resources/content/students/StudentsCard";
+import UploadResourceForm from "@/components/AdminDashboard/Content&Resources/resources/carrier/UploadResourceForm";
+import ResourcesTab from "@/components/AdminDashboard/Content&Resources/resources/ResourcesTab";
 import MentorProfile from "@/components/AdminDashboard/userManagement/profile/MentorProfile";
 import ProfessionalProfile from "@/components/AdminDashboard/userManagement/profile/ProfessionalProfile";
 import StudentProfile from "@/components/AdminDashboard/userManagement/profile/StudentProfile";
@@ -82,6 +84,17 @@ const adminRoutes = {
     {
       path: "resource-management",
       element: <ResourceManagement />,
+
+      children: [
+        {
+          path: "",
+          element: <ResourcesTab />,
+        },
+        {
+          path: "create-carrier",
+          element: <UploadResourceForm />,
+        },
+      ],
     },
 
     {

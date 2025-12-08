@@ -82,7 +82,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
     setModalOpen(true); // open modal
   };
 
-  const handleModalConfirm = async (newTitle?: string) => {
+  const handleModalConfirm = async () => {
     if (!selectedAction || !item._id) return;
 
     updateStudyModeTree({ data: treeData, treeId: treeId });

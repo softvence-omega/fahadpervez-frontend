@@ -14,8 +14,19 @@ const tabs = [
 interface EventTableProps {
   eventData: SingleEvent[];
   overview: EventsOverview;
+  totalPages: number;
+  currentPage: number;
+  handlePageChange: (page: number) => void;
+  handleEditClick: (event: SingleEvent) => void;
 }
-const EventTable: React.FC<EventTableProps> = ({ eventData, overview }) => {
+const EventTable: React.FC<EventTableProps> = ({
+  eventData,
+  overview,
+  totalPages,
+  currentPage,
+  handlePageChange,
+  handleEditClick,
+}) => {
   const [activeTab, setActiveTab] = useState("overview");
 
   return (
@@ -27,7 +38,17 @@ const EventTable: React.FC<EventTableProps> = ({ eventData, overview }) => {
         <div>
           {activeTab === "overview" && <UpcomingEvent overview={overview} />}
         </div>
-        <div>{activeTab === "all" && <AllEvent events={eventData} />}</div>
+        <div>
+          {activeTab === "all" && (
+            <AllEvent
+              events={eventData}
+              totalPages={totalPages}
+              currentPage={currentPage}
+              handlePageChange={handlePageChange}
+              handleEditClick={handleEditClick}
+            />
+          )}
+        </div>
       </CommonSpace>
     </div>
   );

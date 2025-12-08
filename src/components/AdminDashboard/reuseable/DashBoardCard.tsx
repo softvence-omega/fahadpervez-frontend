@@ -1,10 +1,10 @@
-import type { LucideIcon } from "lucide-react";
-import { FC, ReactNode } from "react";
-import Paragraph from "@/common/header/Paragraph";
 import MediumHeader from "@/common/header/MediumHeader";
 import MiniTitle from "@/common/header/MiniTitle";
-import { IconType } from "react-icons/lib";
+import Paragraph from "@/common/header/Paragraph";
+import type { LucideIcon } from "lucide-react";
+import { FC, ReactNode } from "react";
 import { FaRegStar } from "react-icons/fa6";
+import { IconType } from "react-icons/lib";
 
 interface StatCardProps {
   title?: string;
@@ -16,6 +16,7 @@ interface StatCardProps {
   className?: string;
   children?: ReactNode;
   star?: boolean;
+  des?: string;
 }
 
 const DashBoardCard: FC<StatCardProps> = ({
@@ -28,6 +29,7 @@ const DashBoardCard: FC<StatCardProps> = ({
   className = "",
   star,
   children,
+  des,
 }) => {
   return (
     <div className={`bg-white border border-border rounded-xl ${className}`}>
@@ -51,11 +53,14 @@ const DashBoardCard: FC<StatCardProps> = ({
                     <FaRegStar />
                   </span>
                 )}
-                {subtitle && (
-                  <MiniTitle className={` ${subtitleColor}`}>
-                    {subtitle}
-                  </MiniTitle>
-                )}
+                <div className="flex flex-col ">
+                  {des && <MiniTitle className={` `}>{des}</MiniTitle>}
+                  {subtitle && (
+                    <MiniTitle className={` ${subtitleColor}`}>
+                      {subtitle}
+                    </MiniTitle>
+                  )}
+                </div>
               </div>
             </div>
           </>
