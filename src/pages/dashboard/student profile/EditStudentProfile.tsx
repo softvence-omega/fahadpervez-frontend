@@ -35,7 +35,6 @@ export default function EditStudentProfile() {
       formDataToSend.append("image", selectedImage);
       formDataToSend.append("data", JSON.stringify({}));
 
-
       const res = await updateProfile(formDataToSend).unwrap();
       console.log(res);
       if (res.success) {

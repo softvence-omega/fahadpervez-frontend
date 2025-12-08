@@ -7,7 +7,7 @@ export interface Subject {
 export interface SelectedSubject {
   subjectName: string;
   systemNames: string[];
-  fullSubject: boolean;
+  fullSubject?: boolean;
 }
 
 export interface FormData {
@@ -17,12 +17,26 @@ export interface FormData {
   endDate: string;
 }
 
-export interface Goal extends FormData {
+export interface Goal {
+  _id: string;
+  goalName: string;
+  studyHoursPerDay: number;
+  startDate: string;
+  endDate: string;
   selectedSubjects: SelectedSubject[];
-  accuracy: number;
-  completed: number;
-  daysRemaining: number;
-  totalHours: number;
+  studentId: string;
+  goalStatus: string;
+  totalCompletedStudyHours: number;
+  createdAt: string;
+  updatedAt: string;
+  totalDays: number;
+  totalRequiredHours: number;
+  completedHours: number;
+  progressPercentage: number;
+  daysLeft: number;
+  remainingHours: number;
+  // UI specific or legacy fields that might be used
+  accuracy?: number; 
 }
 
 export interface StepIndicatorProps {
@@ -43,6 +57,7 @@ export interface ModalProps {
   currentStep: number;
   onClose: () => void;
   children: React.ReactNode;
+  isEditMode?: boolean;
 }
 
 export interface Step1Props {
@@ -71,4 +86,5 @@ export interface Step3Props {
   calculateHoursPerSystem: () => string;
   onPrevious: () => void;
   onCreate: () => void;
+  isEditMode?: boolean;
 }
