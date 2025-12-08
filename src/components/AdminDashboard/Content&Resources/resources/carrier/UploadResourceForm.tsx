@@ -19,7 +19,7 @@ const inputClass = {
     "text-sm font-normal text-[#18181B] font-inter leading-[20px] block mb-2",
 };
 
-// Zod schema - Make tags required but allow empty string
+// Zod schema
 const ResourceSchema = z.object({
   title: z.string().min(1, "Title is required"),
   category: z.string().min(1, "Category is required"),
@@ -39,7 +39,6 @@ const ResourceSchema = z.object({
     .refine((file) => file?.size <= 25 * 1024 * 1024, "Max size is 25MB"),
 });
 
-// Form type - All fields are required
 type ResourceFormType = z.infer<typeof ResourceSchema>;
 
 const UploadResourceForm: React.FC = () => {
@@ -61,7 +60,7 @@ const UploadResourceForm: React.FC = () => {
       category: "",
       description: "",
       tags: "",
-      file: undefined as any, // Initialize as undefined but cast to any
+      file: undefined as any,
     },
     mode: "onChange",
   });
@@ -72,38 +71,48 @@ const UploadResourceForm: React.FC = () => {
     const file = e.target.files?.[0];
     if (file) {
       setValue("file", file);
-      await trigger("file"); // Validate file immediately
+      await trigger("file");
     }
   };
 
   const onSubmit: SubmitHandler<ResourceFormType> = async (data) => {
-    // Transform tags from comma-separated string to array
-    const tagsArray = data.tags
-      ? data.tags
-          .split(",")
-          .map((v) => v.trim())
-          .filter(Boolean)
-      : [];
-
-    // Create the resource data object matching the backend type
-    const resourceData = {
-      resourceName: data.title,
-      category: data.category,
-      description: data.description,
-      tags: tagsArray,
-    };
-
-    // Create FormData for the file
-    const formData = new FormData();
-    formData.append("file", data.file);
-
-    // Add the resource data as a JSON string
-    formData.append("resourceData", JSON.stringify(resourceData));
-
     try {
-      await createResourceCarrier(formData);
-    } catch (error) {
+      const tagsArray = data.tags
+        ? data.tags
+            .split(",")
+            .map((v) => v.trim())
+            .filter(Boolean)
+        : [];
+      const resourceData = {
+        resourceName: data.title,
+        category: data.category,
+        description: data.description,
+        tags: tagsArray,
+      };
+
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(resourceData));
+      formData.append("file", data.file);
+      for (let [key, value] of formData.entries()) {
+        if (key === "data") {
+          console.log(key, ":", value);
+        } else {
+        }
+      }
+
+      const response = await createResourceCarrier(formData).unwrap();
+
+      console.log("Upload successful:", response);
+
+      navigate(-1);
+    } catch (error: any) {
       console.error("Upload failed:", error);
+
+      if (error.data?.message) {
+        alert(`Upload failed: ${error.data.message}`);
+      } else {
+        alert("Upload failed. Please try again.");
+      }
     }
   };
 
@@ -197,9 +206,14 @@ const UploadResourceForm: React.FC = () => {
                   </div>
 
                   {selectedFile ? (
-                    <p className="text-sm text-gray-700 font-medium">
-                      {selectedFile.name}
-                    </p>
+                    <div className="text-center">
+                      <p className="text-sm text-gray-700 font-medium mb-1">
+                        {selectedFile.name}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                    </div>
                   ) : (
                     <>
                       <p className="text-sm text-gray-900 font-medium mb-1">
@@ -239,7 +253,7 @@ const UploadResourceForm: React.FC = () => {
 
               <CommonButton
                 type="submit"
-                className="!bg-blue-600 !text-white"
+                className="!bg-blue-600 !text-white hover:!bg-blue-700"
                 disabled={isLoading}
               >
                 {isLoading ? "Uploading..." : "Upload Resource"}
