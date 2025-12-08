@@ -75,6 +75,8 @@ export const baseAPI = createApi({
     "OSCE",
     "PricePlan",
     "Goal",
+    "Faq",
+    "Event",
   ],
   endpoints: () => ({}),
 });

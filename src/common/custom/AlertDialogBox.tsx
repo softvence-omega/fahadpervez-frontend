@@ -52,7 +52,7 @@ const AlertDialogBox: React.FC<IAlertDialogBoxProps> = ({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="cursor-pointer">
+          <AlertDialogCancel className="cursor-pointer border border-border">
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction

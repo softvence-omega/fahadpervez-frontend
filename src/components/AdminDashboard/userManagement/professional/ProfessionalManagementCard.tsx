@@ -1,8 +1,6 @@
-import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import CommonHeader from "@/common/header/CommonHeader";
-import { MoreVertical, Plus } from "lucide-react";
-import { FC, useState } from "react";
-import AddProfessionalTypeModal from "./AddProfessionalTypeModal";
+import { MoreVertical } from "lucide-react";
+import { FC } from "react";
 
 interface StudentType {
   id: string;
@@ -17,22 +15,12 @@ const studentTypes: StudentType[] = [
 ];
 
 const ProfessionalManagementCard: FC = () => {
-  const [open, setOpen] = useState(false);
-
-  const handleSubmit = (data: any) => {
-    console.log("Form submitted:", data);
-  };
   return (
     <div className="">
       <div className="flex justify-between items-center mb-6">
         <CommonHeader>Professional Types</CommonHeader>
-
-        <ButtonWithIcon onClick={() => setOpen(true)} icon={Plus}>
-          Add New Type
-        </ButtonWithIcon>
       </div>
 
-      {/* Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {studentTypes.map((type) => (
           <div
@@ -57,11 +45,6 @@ const ProfessionalManagementCard: FC = () => {
           </div>
         ))}
       </div>
-      <AddProfessionalTypeModal
-        open={open}
-        onClose={() => setOpen(false)}
-        onSubmit={handleSubmit}
-      />
     </div>
   );
 };

@@ -1,5 +1,5 @@
+import { FC, useEffect, useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
-import { FC, useState, useEffect } from "react";
 
 interface DashboardSearchProps {
   className?: string;
@@ -34,7 +34,7 @@ const DashboardSearch: FC<DashboardSearchProps> = ({
 
   return (
     <div
-      className={`${className} lg:w-[451px] flex items-center w-full gap-1 border border-border rounded-full bg-white px-3`}
+      className={`${className} flex items-center w-full gap-1 border border-border rounded-full bg-white px-3`}
     >
       <span className="text-xl flex items-center justify-center text-[#94A3B8] rounded-full transition-colors duration-200">
         <IoSearchSharp />
@@ -42,7 +42,7 @@ const DashboardSearch: FC<DashboardSearchProps> = ({
       <input
         type="text"
         placeholder="Type here..."
-        className="flex-grow outline-none bg-transparent text-[#AEAEB2] py-2"
+        className=" w-ful outline-none bg-transparent text-[#AEAEB2] py-2   "
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />

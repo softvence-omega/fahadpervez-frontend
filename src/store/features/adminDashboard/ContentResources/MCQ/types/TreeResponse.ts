@@ -15,7 +15,7 @@ export type System = {
 
 export type Topic = {
   topicName: string;
-  subTopics: (SubTopic | string)[];
+  subTopics: SubTopic[];
 };
 
 export type SubTopic = {

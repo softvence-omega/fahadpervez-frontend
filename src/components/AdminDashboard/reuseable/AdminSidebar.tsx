@@ -12,9 +12,10 @@ import {
   Users,
 } from "lucide-react";
 import { BiBookAlt } from "react-icons/bi";
-import { LuBookOpenText } from "react-icons/lu";
+import { LuBookOpenText, LuShieldQuestion } from "react-icons/lu";
 
 import { type FC } from "react";
+import { IoIosChatboxes } from "react-icons/io";
 import { NavLink } from "react-router-dom";
 
 interface SidebarItem {
@@ -92,9 +93,23 @@ const sidebarItems: SidebarItem[] = [
   // Plan
   {
     icon: CreditCard,
-    label: "Create Plan",
+    label: "Pricing and Plan",
     path: "/admin/create-plan",
     section: "Plan Management",
+  },
+  // Support
+
+  {
+    icon: IoIosChatboxes,
+    label: "Support",
+    path: "/admin/support",
+    section: "Support System",
+  },
+  {
+    icon: LuShieldQuestion,
+    label: "FAQ",
+    path: "/admin/faq",
+    section: "Support System",
   },
   // Reports
   {

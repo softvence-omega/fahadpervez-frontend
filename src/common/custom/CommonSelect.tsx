@@ -13,7 +13,7 @@ export interface SelectOption<T extends string> {
 }
 
 interface SelectProps<T extends string> {
-  value: T;
+  value: T | undefined;
   item: readonly SelectOption<T>[];
   w?: number;
   onValueChange: (val: T) => void;
@@ -33,7 +33,7 @@ const CommonSelect = <T extends string>({
   placeholder,
 }: SelectProps<T>) => {
   return (
-    <Select value={value} onValueChange={onValueChange}>
+    <Select value={value || undefined} onValueChange={onValueChange}>
       <SelectTrigger
         style={{ minWidth: w }}
         className={` ${className} bg-[#FCFCFC] border !border-[#CBD5E1] px-3 py-3 cursor-pointer rounded-md  text-sm  transition-all duration-200 ${

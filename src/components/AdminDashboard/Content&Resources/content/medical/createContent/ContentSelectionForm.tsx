@@ -1,5 +1,3 @@
-"use client";
-
 import CommonButton from "@/common/button/CommonButton";
 import CommonSelect, { SelectOption } from "@/common/custom/CommonSelect";
 import CommonHeader from "@/common/header/CommonHeader";
@@ -26,7 +24,7 @@ const createContentSchema = z.object({
   subject: z.string().min(1, "Subject is required"),
   system: z.string().min(1, "System is required"),
   topic: z.string().min(1, "Topic is required"),
-  subtopic: z.string().min(1, "Subtopic is required"),
+  subtopic: z.string().optional(),
   type: z.enum(["exam", "study"]),
 });
 
@@ -86,7 +84,10 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
   const subtopic = watch("subtopic");
 
   const subjects = useMemo(
-    () => backendData.map((item: SubjectData) => item.subjectName),
+    () =>
+      backendData
+        .map((item: SubjectData) => item.subjectName)
+        .filter((name) => name && name.trim() !== ""),
     [backendData]
   );
 
@@ -95,7 +96,9 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
   );
 
   const systems = selectedSubjectData
-    ? selectedSubjectData.systems.map((sys: System) => sys.name)
+    ? selectedSubjectData.systems
+        .map((sys: System) => sys.name)
+        .filter((name) => name && name.trim() !== "")
     : [];
 
   const selectedSystemData = selectedSubjectData?.systems.find(
@@ -103,7 +106,9 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
   );
 
   const topics = selectedSystemData
-    ? selectedSystemData.topics.map((t: Topic) => t.topicName)
+    ? selectedSystemData.topics
+        .map((t: Topic) => t.topicName)
+        .filter((name) => name && name.trim() !== "")
     : [];
 
   const selectedTopicData = selectedSystemData?.topics.find(
@@ -111,9 +116,9 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
   );
 
   const subtopics = selectedTopicData
-    ? selectedTopicData.subTopics.map((s: any) =>
-        typeof s === "string" ? s : s.subtopicName
-      )
+    ? selectedTopicData.subTopics
+        .map((s: any) => (typeof s === "string" ? s : s.subtopicName))
+        .filter((name) => name && name.trim() !== "")
     : [];
 
   const subjectOptions: SelectOption<string>[] = subjects.map((s, index) => ({
@@ -171,7 +176,7 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
     handleBreadcrumb(getHierarchyPath());
   }, [subject, system, topic, subtopic]);
 
-  const isFormComplete = subject && system && topic && subtopic;
+  const isFormComplete = subject && system && topic;
 
   const onSubmit = (data: CreateContentDataType) => {
     const payload = { ...data, studentType };
@@ -264,7 +269,7 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
           <div>
             <label className={inputClass.label}>Subtopic</label>
             <CommonSelect
-              value={subtopic}
+              value={subtopic || undefined}
               item={subtopicOptions}
               onValueChange={(val) => setValue("subtopic", val)}
               placeholder="Select Subtopic"

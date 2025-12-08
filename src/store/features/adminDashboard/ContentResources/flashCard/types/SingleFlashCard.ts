@@ -1,13 +1,15 @@
-export interface FlashCard {
+import { DifficultyLevel } from "@/types";
+
+export type FlashCard = {
   flashCardId: string;
   frontText: string;
+  image: string;
   backText: string;
   explanation: string;
-  difficulty: string;
-  image: string;
-}
+  difficulty: DifficultyLevel;
+};
 
-export interface FlashCardBank {
+export type FlashCardData = {
   _id: string;
   title: string;
   subject: string;
@@ -21,22 +23,20 @@ export interface FlashCardBank {
   flashCards: FlashCard[];
   createdAt: string;
   updatedAt: string;
-}
+};
 
-export interface FlashCardMeta {
-  page: number;
-  limit: number;
-  skip: number;
-  total: number;
-  totalPages: number;
-}
-
-export interface SingleFlashCardApiResponse {
+export type SingleFlashCardApiResponse = {
   success: boolean;
   message: string;
-  data: FlashCardBank;
-  meta: FlashCardMeta;
-}
+  data: FlashCardData;
+  meta: {
+    page: number;
+    limit: number;
+    skip: number;
+    total: number;
+    totalPages: number;
+  };
+};
 
 export type FlashCardInput = {
   frontText: string;

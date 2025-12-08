@@ -1,3 +1,10 @@
+export type Meta = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+};
+
 export interface SingleMcqBank {
   _id: string;
   title: string;
@@ -17,7 +24,7 @@ export interface AllContentMCQList {
   success: boolean;
   message: string;
   data: SingleMcqBank[];
-  meta: null;
+  meta: Meta;
 }
 
 // Clinical Case
@@ -26,7 +33,7 @@ export interface ClinicalCaseTreeResponse {
   success: boolean;
   message: string;
   data: ContentTreeItem[];
-  meta: null;
+  meta: Meta;
 }
 
 export interface ContentTreeItem {
@@ -123,7 +130,7 @@ export interface OsceTreeResponse {
   success: boolean;
   message: string;
   data: OsceContent[];
-  meta: null;
+  meta: Meta;
 }
 
 // notes tree response
@@ -132,7 +139,7 @@ export interface NotesTreeResponse {
   success: boolean;
   message: string;
   data: NotesTreeItem[];
-  meta: null;
+  meta: Meta;
 }
 
 export interface NotesTreeItem {

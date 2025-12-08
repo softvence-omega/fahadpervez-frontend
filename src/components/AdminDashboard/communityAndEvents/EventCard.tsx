@@ -1,63 +1,63 @@
 import CommonHeader from "@/common/header/CommonHeader";
+import { toBerhanTime } from "@/help/help";
 import React from "react";
-import { HiOutlineVideoCamera } from "react-icons/hi";
 import { BsDot } from "react-icons/bs";
-
-// Define the interface for a single event
-export interface Event {
-  id: string;
-  title?: string;
-  name?: string;
-  progress?: string;
-  date?: string;
-  time?: string;
-  status: "registered" | string;
-  dateTime?: string;
-  price?: string;
-  email?: string;
-  iconColor?: string;
-  textColor?: string;
-}
+import { HiOutlineVideoCamera } from "react-icons/hi";
+import { RegistrationType, UpcomingEventType } from "./UpcomingEvent";
 
 // Props for EventCard
 interface EventCardProps {
-  event: Event;
+  event: Partial<RegistrationType & UpcomingEventType>;
 }
 
 // Reusable EventCard component
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
   return (
-    <div className="bg-white p-4 md:p-5  flex justify-between border border-border rounded-xl">
+    <div className="bg-white p-4 md:p-5 flex justify-between border border-border rounded-xl">
       <div className="flex gap-5 items-center">
         <div
-          className={`${event.iconColor} w-15 h-15 sm:flex items-center justify-center rounded-full hidden`}
+          className={`w-15 h-15 sm:flex items-center justify-center rounded-full hidden ${
+            event?.price && "bg-[#DCFCE7] "
+          } ${event?.progress && "bg-[#DBEAFE] "} `}
         >
-          <span className={` ${event.textColor} `}>
+          <span
+            className={` ${event?.price && "text-[#15803D] "}  ${
+              event?.progress && "text-[#1D4ED8] "
+            } `}
+          >
             <HiOutlineVideoCamera size={24} />
           </span>
         </div>
-        <div className=" ">
-          <CommonHeader className="!font-normal">{event.title}</CommonHeader>
-          <CommonHeader className="!font-normal">{event.name}</CommonHeader>
-          <CommonHeader className="!font-normal">{event.email}</CommonHeader>
+        <div>
+          {event.title && (
+            <CommonHeader className="!font-normal">{event.title}</CommonHeader>
+          )}
+          {event.name && (
+            <CommonHeader className="!font-normal">{event.name}</CommonHeader>
+          )}
+          {event.email && (
+            <CommonHeader className="!font-normal">{event.email}</CommonHeader>
+          )}
 
           {event.dateTime && (
-            <div className="flex ">
+            <div className="flex">
               <CommonHeader className="!font-normal">
-                {event.dateTime}
+                {toBerhanTime(event.dateTime)}
               </CommonHeader>
               <span>
                 <BsDot size={20} />
               </span>
-              <CommonHeader className="!font-normal">{event.time}</CommonHeader>
+              <CommonHeader className="!font-normal">
+                {toBerhanTime(event.dateTime)}
+              </CommonHeader>
             </div>
           )}
         </div>
       </div>
       <div className="flex flex-col gap-3 items-center">
-        <CommonHeader>{event.progress}</CommonHeader>
-        <CommonHeader>{event.price}</CommonHeader>
-        <CommonHeader>{event.status}</CommonHeader>
+        {event.progress && <CommonHeader>{event.progress}</CommonHeader>}
+        {event.price && <CommonHeader>${event.price}</CommonHeader>}
+        {event.status && <CommonHeader>{event.status}</CommonHeader>}
       </div>
     </div>
   );

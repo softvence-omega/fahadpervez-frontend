@@ -21,7 +21,7 @@ export interface CreateOsceContentResponse {
   subject: string;
   system: string;
   topic: string;
-  subtopic: string;
+  subtopic?: string;
   studentType: string;
   type: "study" | "exam";
 }

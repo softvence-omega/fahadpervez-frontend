@@ -1,42 +1,44 @@
-import { FC } from "react";
-import DashboardTopSection from "../reuseable/DashboardTopSection";
 import CommonSpace from "@/common/space/CommonSpace";
-import DashBoardCard from "../reuseable/DashBoardCard";
+import { EventsOverview } from "@/store/features/adminDashboard/ContentResources/event/types/allEvent";
+import { FC } from "react";
 import { RiCalendarTodoLine } from "react-icons/ri";
+import DashBoardCard from "../reuseable/DashBoardCard";
+import DashboardTopSection from "../reuseable/DashboardTopSection";
 
 interface EventTopProps {
   handleCreateEvent: () => void;
+  overview: EventsOverview;
 }
 
-const dashboardStats = [
-  {
-    title: "Total Events",
-    value: "03",
-    subtitle: "+12.3% from last month",
-    icon: RiCalendarTodoLine,
-    subtitleColor: "text-[#000]",
-    iconColor: "!text-[#14B8A6]",
-  },
-  {
-    title: "Total Registrations",
-    value: "12",
+const EventTop: FC<EventTopProps> = ({ handleCreateEvent, overview }) => {
+  const dashboardStats = [
+    {
+      title: "Total Events",
+      value: overview.totalEvents ?? 0,
+      subtitle: "+12.3% from last month",
+      icon: RiCalendarTodoLine,
+      subtitleColor: "text-[#000]",
+      iconColor: "!text-[#14B8A6]",
+    },
+    {
+      title: "Total Registrations",
+      value: overview.totalRegisteredEvents ?? 0,
 
-    icon: RiCalendarTodoLine,
-    iconColor: "text-[#14B8A6]",
-    subtitleColor: "text-[##15803D]",
-    subtitle: "+12% from last month",
-  },
-  {
-    title: "Total Revenue",
-    value: "$15,500",
-    subtitle: "01 New this month",
+      icon: RiCalendarTodoLine,
+      iconColor: "text-[#14B8A6]",
+      subtitleColor: "text-[##15803D]",
+      subtitle: "+12% from last month",
+    },
+    {
+      title: "Total Revenue",
+      value: overview.totalRevenueGenerated ?? 0,
+      subtitle: "01 New this month",
 
-    icon: RiCalendarTodoLine,
-    iconColor: "!text-[#14B8A6]",
-    subtitleColor: "text-[#000]",
-  },
-];
-const EventTop: FC<EventTopProps> = ({ handleCreateEvent }) => {
+      icon: RiCalendarTodoLine,
+      iconColor: "!text-[#14B8A6]",
+      subtitleColor: "text-[#000]",
+    },
+  ];
   return (
     <div>
       <DashboardTopSection

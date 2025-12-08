@@ -1,4 +1,5 @@
 import Spinner from "@/common/button/Spinner";
+import Pagination from "@/common/custom/Pagination";
 import TableContent from "@/components/AdminDashboard/Content&Resources/content/medical/studyMode/TableContentForStudy";
 import Tabs from "@/components/AdminDashboard/reuseable/Tabs";
 import { useGetStudyModeAllContentQuery } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
@@ -34,8 +35,8 @@ export type SelectedNode = {
 const StudyMode = () => {
   //manage  key
   const dispatch = useAppDispatch();
-  const contentType = useAppSelector(
-    (state: RootState) => state.staticContent.contentType
+  const { contentType, studentType } = useAppSelector(
+    (state: RootState) => state.staticContent
   );
   const [isSubjectModalOpen, setIsSubjectModalOpen] = useState(false);
   const [selectedNode, setSelectedNode] = useState<SelectedNode>({
@@ -51,13 +52,19 @@ const StudyMode = () => {
     selectedNode.topic.trim() !== "" ||
     selectedNode.subtopic.trim() !== "";
 
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const limit = 5;
+
   const queryArg = isValidSelection
     ? {
         key: contentType,
+        studentType,
         subject: selectedNode.subject.trim(),
         system: selectedNode.system.trim(),
         topic: selectedNode.topic.trim(),
         subtopic: selectedNode.subtopic.trim(),
+        page: currentPage,
+        limit,
       }
     : skipToken;
 
@@ -67,6 +74,7 @@ const StudyMode = () => {
   );
 
   const [bankId, setBankId] = useState<string>("");
+  const totalPages = mcqBank?.meta?.totalPages || 1;
 
   return (
     <div>
@@ -140,15 +148,15 @@ const StudyMode = () => {
         <AddSubjectModal onClose={() => setIsSubjectModalOpen(false)} />
       )}
 
-      {/* {totalPages > 1 && (
-        <div className="mt-10 w-full flex justify-center">
+      {totalPages > 1 && mcqBank?.data.length !== 0 && (
+        <div className="my-10 w-full flex justify-center">
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={(page) => setCurrentPage(page)}
           />
         </div>
-      )} */}
+      )}
     </div>
   );
 };
