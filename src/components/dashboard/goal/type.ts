@@ -57,6 +57,7 @@ export interface ModalProps {
   currentStep: number;
   onClose: () => void;
   children: React.ReactNode;
+  isEditMode?: boolean;
 }
 
 export interface Step1Props {
@@ -85,4 +86,5 @@ export interface Step3Props {
   calculateHoursPerSystem: () => string;
   onPrevious: () => void;
   onCreate: () => void;
+  isEditMode?: boolean;
 }

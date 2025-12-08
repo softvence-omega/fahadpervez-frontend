@@ -28,6 +28,7 @@ export const goalAPI = baseAPI.injectEndpoints({
           body: data,
         };
       },
+      invalidatesTags: ["Goal"],
     }),
 
     getGoal: build.query({
@@ -37,10 +38,22 @@ export const goalAPI = baseAPI.injectEndpoints({
           method: "GET",
         };
       },
+      providesTags: ["Goal"],
+    }),
+
+    updateGoal: build.mutation<IGoal, ICreateGoalPayload>({
+      query: (data) => {
+        return {
+          url: "/goal",
+          method: "PUT",
+          body: data,
+        };
+      },
+      invalidatesTags: ["Goal"],
     }),
 
     // end
   }),
 });
 
-export const { useCreateGoalMutation, useGetGoalQuery } = goalAPI;
+export const { useCreateGoalMutation, useGetGoalQuery, useUpdateGoalMutation } = goalAPI;

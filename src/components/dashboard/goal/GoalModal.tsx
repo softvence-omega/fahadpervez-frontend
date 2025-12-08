@@ -8,12 +8,13 @@ import {
   Subject,
 } from "./type";
 
-// Modal Component
-export const Modal: React.FC<ModalProps> = ({
+// GoalModal Component
+export const GoalModal: React.FC<ModalProps> = ({
   showModal,
   currentStep,
   onClose,
   children,
+  isEditMode = false,
 }) => {
   if (!showModal) return null;
 
@@ -27,7 +28,7 @@ export const Modal: React.FC<ModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
-          <h2 className="text-xl font-semibold">Create Your Goal</h2>
+          <h2 className="text-xl font-semibold">{isEditMode ? "Update Your Goal" : "Create Your Goal"}</h2>
 
           <button
             onClick={onClose}
@@ -325,6 +326,7 @@ export const Step3: React.FC<Step3Props> = ({
   calculateTotalStudyHours,
   calculateHoursPerSystem,
   onPrevious,
+  isEditMode = false,
   onCreate,
 }) => {
   return (
@@ -396,7 +398,7 @@ export const Step3: React.FC<Step3Props> = ({
           onClick={onCreate}
           className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
         >
-          Create Goal
+          {isEditMode ? "Update Goal" : "Create Goal"}
         </button>
       </div>
     </div>

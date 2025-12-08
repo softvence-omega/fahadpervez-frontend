@@ -309,12 +309,13 @@ import {
   Subject,
   FormData as GoalFormData,
 } from "./type";
-import { Modal, Step1, Step2, Step3 } from "./Modal";
+import { GoalModal, Step1, Step2, Step3 } from "./GoalModal";
 import { GoalEmptyState } from "./GoalEmptyState";
 import { GoalDashboard } from "./GoalDashboard";
 import {
   useCreateGoalMutation,
   useGetGoalQuery,
+  useUpdateGoalMutation,
 } from "@/store/features/goal/goal.api";
 import { toast } from "sonner";
 
@@ -415,9 +416,11 @@ const availableSubjects: Subject[] = [
 const MedicalStudyGoalTracker: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(1);
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
   // const [goal, setGoal] = useState<Goal | null>(null);
 
   const [createGoal] = useCreateGoalMutation();
+  const [updateGoal] = useUpdateGoalMutation();
   const { data } = useGetGoalQuery({});
   
   const apiGoal = data?.data?.[0];
@@ -535,20 +538,6 @@ const MedicalStudyGoalTracker: React.FC = () => {
   };
 
   const handleCreateGoal = async () => {
-    // console.log("formData :", formData);
-    // const goalData: Goal = {
-    //   ...formData,
-    //   selectedSubjects: selectedSubjects.map((s) => ({
-    //     subjectName: s.subjectName,
-    //     systemNames: s.systemNames,
-    //     fullSubject: s.fullSubject,
-    //   })),
-    //   accuracy: 75,
-    //   completed: 85,
-    //   daysRemaining: 36,
-    //   totalHours: calculateTotalStudyHours(),
-    // };
-
     const goalDataToSend = {
       goalName: formData.goalName,
       studyHoursPerDay: Number(formData.studyHoursPerDay),
@@ -561,28 +550,27 @@ const MedicalStudyGoalTracker: React.FC = () => {
     };
 
     try {
-      await createGoal(goalDataToSend).unwrap();
-
-      // optional ─ reset form or redirect
-      // reset();
-      // navigate("/goals");
+      if (isEditMode) {
+        await updateGoal(goalDataToSend).unwrap();
+        toast.success("Goal updated successfully! ✅");
+      } else {
+        await createGoal(goalDataToSend).unwrap();
+        toast.success("Goal created successfully! ✅");
+      }
     } catch (error: any) {
-      console.error("Create goal error:", error);
-
+      console.error("Goal operation error:", error);
       toast.error(
-        error?.data?.message || "Failed to create goal. Please try again ❌"
+        error?.data?.message || `Failed to ${isEditMode ? "update" : "create"} goal. Please try again ❌`
       );
     }
 
-    // console.log("to send :", goalDataToSend);
-    // console.log("Creating goal:", goalData);
-    // setGoal(goalData);
     handleCloseModal();
   };
 
   const handleCloseModal = (): void => {
     setShowModal(false);
     setCurrentStep(1);
+    setIsEditMode(false);
     setFormData({
       goalName: "",
       studyHoursPerDay: 0,
@@ -593,7 +581,25 @@ const MedicalStudyGoalTracker: React.FC = () => {
   };
 
   const handleChangeGoal = (): void => {
-    // setGoal(null);
+    if (apiGoal) {
+      // Pre-populate form with existing goal data
+      setIsEditMode(true);
+      setFormData({
+        goalName: apiGoal.goalName,
+        studyHoursPerDay: apiGoal.studyHoursPerDay,
+        startDate: apiGoal.startDate.split("T")[0], // Convert to YYYY-MM-DD format
+        endDate: apiGoal.endDate.split("T")[0],
+      });
+      
+      // Pre-populate selected subjects
+      setSelectedSubjects(
+        apiGoal.selectedSubjects.map((subject: any) => ({
+          subjectName: subject.subjectName,
+          systemNames: subject.systemNames,
+          fullSubject: subject.fullSubject || false,
+        }))
+      );
+    }
     setShowModal(true);
   };
 
@@ -606,10 +612,11 @@ const MedicalStudyGoalTracker: React.FC = () => {
           <GoalDashboard goal={apiGoal} onChangeGoal={handleChangeGoal} />
         )}
 
-        <Modal
+        <GoalModal
           showModal={showModal}
           currentStep={currentStep}
           onClose={handleCloseModal}
+          isEditMode={isEditMode}
         >
           {currentStep === 1 && (
             <Step1
@@ -640,9 +647,10 @@ const MedicalStudyGoalTracker: React.FC = () => {
               calculateHoursPerSystem={calculateHoursPerSystem}
               onPrevious={() => setCurrentStep(2)}
               onCreate={handleCreateGoal}
+              isEditMode={isEditMode}
             />
           )}
-        </Modal>
+        </GoalModal>
       </div>
     </div>
   );

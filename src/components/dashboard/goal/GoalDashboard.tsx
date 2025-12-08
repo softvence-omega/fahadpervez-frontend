@@ -12,7 +12,7 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
         <h1 className="text-2xl font-bold">Good Morning, Emma Harrison!</h1>
         <button
           onClick={onChangeGoal}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center gap-2"
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center gap-2 cursor-pointer"
         >
           <PencilLine className="w-4 h-4" />
           Change Goal
