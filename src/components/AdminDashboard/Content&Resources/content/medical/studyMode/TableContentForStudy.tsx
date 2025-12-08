@@ -1,9 +1,6 @@
 import preview from "@/assets/dashboard/tablePreview.svg";
 import CommonHeader from "@/common/header/CommonHeader";
-import {
-  useGetStudyModeTreeQuery,
-  useUpdateStudyModeTreeMutation,
-} from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import { useGetStudyModeTreeQuery } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import { useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
 import { Plus } from "lucide-react";
@@ -27,7 +24,7 @@ interface SubTopic {
 interface Topic {
   _id?: string;
   topicName: string;
-  subTopics: (string | SubTopic)[];
+  subTopics: SubTopic[];
 }
 
 interface System {
@@ -101,9 +98,11 @@ const TableContentForStudy: React.FC<TableContentProps> = ({
     ? mapBackendToTOC(allStudyModeData.data as Subject[])
     : [];
 
-  const [updateStudyModeTree, { isLoading: isUpdating }] =
-    useUpdateStudyModeTreeMutation();
+  const treeData = allStudyModeData?.data.map((item) => item.systems) ?? [];
+  const alltreeData = allStudyModeData?.data ?? [];
 
+  console.log("treeData", treeData);
+  console.log("alltreeData", alltreeData);
   return (
     <div className="w-[400px] min-h-[400px] bg-white rounded-2xl shadow p-4 ">
       {/* Header */}
@@ -130,8 +129,7 @@ const TableContentForStudy: React.FC<TableContentProps> = ({
             depth={0}
             onSelect={setSelectedNode}
             parentNames={{}}
-            updateStudyModeTree={updateStudyModeTree}
-            isUpdating={isUpdating}
+            treeData={treeData}
           />
         ))}
       </div>

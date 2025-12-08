@@ -12,7 +12,7 @@ interface Props {
   setBankId: (id: string) => void;
 }
 const NotesBank: React.FC<Props> = ({ mcqBank, bankId, setBankId }) => {
-  const notesBank = mcqBank.data ?? [];
+  const notesBank = mcqBank?.data ?? [];
 
   // single clinical case
   const { data: singleNotes } = useGetNotesQuery(bankId, {

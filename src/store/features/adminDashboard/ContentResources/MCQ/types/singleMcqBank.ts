@@ -1,19 +1,21 @@
-export interface MCQOption {
+import { DifficultyLevel } from "@/types";
+
+export type MCQOption = {
   option: string;
   optionText: string;
   explanation: string;
-}
+};
 
-export interface OneMCQ {
+export type OneMCQ = {
   mcqId: string;
-  difficulty: string;
+  difficulty: DifficultyLevel;
   question: string;
   imageDescription?: string;
   options: MCQOption[];
   correctOption: string;
-}
+};
 
-export interface MCQData {
+export type MCQBankData = {
   _id: string;
   title: string;
   subject: string;
@@ -27,19 +29,17 @@ export interface MCQData {
   mcqs: OneMCQ[];
   createdAt: string;
   updatedAt: string;
-}
+};
 
-export interface Meta {
-  page: number;
-  limit: number;
-  skip: number;
-  total: number;
-  totalPages: number;
-}
-
-export interface SingleMCQResponse {
+export type SingleMCQResponse = {
   success: boolean;
   message: string;
-  data: MCQData;
-  meta: Meta;
-}
+  data: MCQBankData;
+  meta: {
+    page: number;
+    limit: number;
+    skip: number;
+    total: number;
+    totalPages: number;
+  };
+};

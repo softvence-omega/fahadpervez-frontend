@@ -259,7 +259,7 @@ const AddMCQForm = () => {
                 render={({ field }) => (
                   <CommonSelect
                     className="!bg-white border-[#CBD5E1]"
-                    value={field.value}
+                    value={field.value || undefined}
                     item={correctAnswerOptions}
                     onValueChange={(val) => field.onChange(val)}
                   />
