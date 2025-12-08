@@ -1,3 +1,5 @@
+import { DifficultyLevel } from "@/types";
+
 export interface SingleClinicalCaseResponse {
   success: boolean;
   message: string;
@@ -17,7 +19,7 @@ export interface ClinicalCase {
   imaging: string;
   diagnosisQuestion: DiagnosisQuestion;
   correctOption: CorrectOption;
-  difficultyLevel: string;
+  difficultyLevel: DifficultyLevel;
   mcqs: MCQ[];
   subject: string;
   system: string;

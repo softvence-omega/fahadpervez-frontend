@@ -1,6 +1,8 @@
 import TreeTableAction from "@/common/TreeTableAction";
 import { useUpdateStudyModeTreeMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
-import { PostStudyModeTree } from "@/store/features/adminDashboard/ContentResources/MCQ/types/tree";
+import { setTreeId } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
+import { RootState } from "@/store/store";
 import { ChevronRight, FileText } from "lucide-react";
 import { useState } from "react";
 import { SelectedNode } from "./StudyMode";
@@ -13,20 +15,21 @@ type TOCItem = {
   children?: TOCItem[];
 };
 
-const TreeNode = ({
-  item,
-  depth,
-  onSelect,
-  parentNames,
-  updateStudyModeTree,
-  isUpdating,
-}: {
+interface TreeNodeProps {
   item: TOCItem;
   depth: number;
   onSelect: (value: SelectedNode) => void;
   parentNames: { subject?: string; system?: string; topic?: string };
-  updateStudyModeTree: ReturnType<typeof useUpdateStudyModeTreeMutation>[0];
-  isUpdating?: boolean;
+
+  treeData: any;
+}
+const TreeNode: React.FC<TreeNodeProps> = ({
+  item,
+  depth,
+  onSelect,
+  parentNames,
+
+  treeData,
 }) => {
   const [open, setOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -34,9 +37,19 @@ const TreeNode = ({
     "add" | "rename" | "delete" | null
   >(null);
 
+  const [updateStudyModeTree, { isLoading: isUpdating }] =
+    useUpdateStudyModeTreeMutation();
+
+  const { treeId } = useAppSelector((state: RootState) => state.staticContent);
+  const dispatch = useAppDispatch();
+
+  console.log("treeId", treeId);
+
   const hasChildren = item.children && item.children.length > 0;
 
   const handleClick = () => {
+    dispatch(setTreeId(item._id || ""));
+
     setOpen(!open);
     // Update selected node
     if (depth === 0)
@@ -72,22 +85,14 @@ const TreeNode = ({
   const handleModalConfirm = async (newTitle?: string) => {
     if (!selectedAction || !item._id) return;
 
-    const payload = {
-      data: {
-        action: selectedAction,
-        title: newTitle || item.title,
-      } as Partial<PostStudyModeTree>,
-      treeId: item._id,
-    };
-
-    await updateStudyModeTree(payload);
+    updateStudyModeTree({ data: treeData, treeId: treeId });
     setModalOpen(false);
   };
 
   return (
     <div className="ml-[2px] font-arial">
       <div
-        className={`flex items-center justify-between py-1.5 cursor-pointer rounded-md hover:bg-gray-50 ${
+        className={`flex items-center justify-between py-1.5 cursor-pointer rounded-md hover:bg-gray-50  ${
           depth > 0 ? "ml-4" : ""
         }`}
         onClick={handleClick}
@@ -137,7 +142,7 @@ const TreeNode = ({
                 system: depth === 1 ? item.title : parentNames.system,
                 topic: depth === 2 ? item.title : parentNames.topic,
               }}
-              updateStudyModeTree={updateStudyModeTree}
+              treeData={treeData}
             />
           ))}
         </div>

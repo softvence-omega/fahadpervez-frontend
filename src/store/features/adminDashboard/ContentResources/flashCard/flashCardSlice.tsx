@@ -1,4 +1,5 @@
 import { baseAPI } from "@/store/api/baseApi";
+import { DifficultyFilter } from "@/types";
 import {
   FlashCardParams,
   FlashcardResponse,
@@ -20,13 +21,18 @@ export const flashCardApi = baseAPI.injectEndpoints({
     }),
     getSingleFlashCards: build.query<
       SingleFlashCardApiResponse,
-      { id: string; page?: number; limit?: number }
+      {
+        id: string;
+        difficulty?: DifficultyFilter;
+        searchTerm?: string;
+        page?: number;
+        limit?: number;
+      }
     >({
-      query: ({ id, page, limit }) => ({
-        url: `/flash-card/single/${id}${
-          page && limit ? `?page=${page}&limit=${limit}` : ""
-        }`,
+      query: ({ id, difficulty, searchTerm, page, limit }) => ({
+        url: `/flash-card/single/${id}`,
         method: "GET",
+        params: { difficulty, searchTerm, page, limit },
       }),
       providesTags: ["FlashCard"],
     }),

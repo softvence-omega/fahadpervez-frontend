@@ -1,7 +1,4 @@
-import { useGetSingleMcqQuery } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import { AllContentMCQList } from "@/store/features/adminDashboard/ContentResources/MCQ/types/allContent";
-import { skipToken } from "@reduxjs/toolkit/query";
-import { useState } from "react";
 import McqBankCardForAdmin from "../../bank/MCQBank/McqBankCardForAdmin";
 import MedicalSharedTable from "../../bank/MCQBank/MedicalSharedTable";
 
@@ -12,18 +9,6 @@ interface MCQBankProps {
 }
 
 const MCQBank: React.FC<MCQBankProps> = ({ mcqBank, bankId, setBankId }) => {
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  console.log("first", setCurrentPage);
-  const limit = 10;
-
-  const singleMcqQueryArg = bankId
-    ? { id: bankId, page: currentPage, limit }
-    : skipToken;
-  const { data: singleMcqBank } = useGetSingleMcqQuery(singleMcqQueryArg, {
-    skip: bankId === "",
-  });
-
-  const singleMcqBankData = singleMcqBank?.data.mcqs ?? [];
   return (
     <div>
       {bankId === "" ? (
@@ -40,7 +25,7 @@ const MCQBank: React.FC<MCQBankProps> = ({ mcqBank, bankId, setBankId }) => {
         </div>
       ) : (
         <div className="w-full flex flex-col gap-4">
-          <MedicalSharedTable data={singleMcqBankData} mcqBankId={bankId} />
+          <MedicalSharedTable mcqBankId={bankId} />
         </div>
       )}
     </div>

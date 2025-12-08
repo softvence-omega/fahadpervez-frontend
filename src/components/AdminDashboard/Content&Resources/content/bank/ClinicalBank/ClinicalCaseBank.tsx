@@ -16,7 +16,6 @@ interface Props {
 const ClinicalCaseBank: React.FC<Props> = ({ mcqBank, bankId, setBankId }) => {
   const ClinicalBank = mcqBank.data ?? [];
 
-  // single clinical case
   const { data: singleClinicalCase } = useGetClinicalCaseQuery(bankId, {
     skip: bankId === "",
   });

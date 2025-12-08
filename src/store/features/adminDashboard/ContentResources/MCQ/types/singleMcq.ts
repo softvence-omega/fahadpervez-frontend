@@ -1,3 +1,5 @@
+import { DifficultyLevel } from "@/types";
+
 export interface McqOption {
   option: string;
   optionText: string;
@@ -5,7 +7,7 @@ export interface McqOption {
 }
 
 export interface McqQuestion {
-  difficulty: "Basics" | "Intermediate" | "Advance";
+  difficulty: DifficultyLevel;
   question: string;
   options: McqOption[];
   correctOption: string;
@@ -35,7 +37,7 @@ export interface SingleMcqData {
 // single mcq updated
 
 export type SingleMCQUpdatePayload = {
-  difficulty: "Basics" | "Intermediate" | "Advance";
+  difficulty: DifficultyLevel;
   question: string;
   optionA: string;
   optionB: string;

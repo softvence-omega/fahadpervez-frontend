@@ -6,17 +6,23 @@ export const editFlashCardSchema = z.object({
   frontText: z.string().min(1, "Front text is required"),
   backText: z.string().min(1, "Back text is required"),
   explanation: z.string().min(1, "Explanation is required"),
-  difficulty: z.string().min(1, "Difficulty is required"),
+  difficulty: z.enum(
+    ["Basic", "Intermediate", "Advance"],
+    "Difficulty is required"
+  ),
   image: z.string().min(1, "Image is required"),
 });
 
-// 👇 Infer TypeScript type from schema
+const difficultyLevels = [
+  { label: "Basic", value: "Basic" },
+  { label: "Intermediate", value: "Intermediate" },
+  { label: "Advance", value: "Advance" },
+] as const;
 export type EditFlashCardInput = z.infer<typeof editFlashCardSchema>;
 
 import ButtonWithLoading from "@/common/button/ButtonWithLoading";
 import CommonButton from "@/common/button/CommonButton";
 import CommonSelect from "@/common/custom/CommonSelect";
-import { difficultyOptions } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -61,7 +67,6 @@ const EditFlashCardModal: React.FC<EditFlashCardModalProps> = ({
   };
   const submit = async (values: EditFlashCardInput) => {
     await onSubmit(values);
-    // you can choose to close on success inside parent; we'll close here:
     onClose();
   };
 
@@ -124,7 +129,7 @@ const EditFlashCardModal: React.FC<EditFlashCardModalProps> = ({
               <CommonSelect
                 className="!bg-white border-[#CBD5E1]"
                 value={field.value}
-                item={difficultyOptions}
+                item={difficultyLevels}
                 onValueChange={(val) => field.onChange(val)}
               />
             )}
@@ -153,57 +158,3 @@ const EditFlashCardModal: React.FC<EditFlashCardModalProps> = ({
 };
 
 export default EditFlashCardModal;
-
-{
-  /* <div className="space-y-2">
-  <label className={inputClass.label}>Image</label>
-
-  <div>
-    <input
-      type="file"
-      accept="image/*"
-      id="flashcard-image"
-      className="hidden"
-      onChange={(e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = () => {
-        
-          setValue("image", reader.result as string);
-        };
-        reader.readAsDataURL(file);
-      }}
-    />
-
-    <label
-      htmlFor="flashcard-image"
-      className="flex items-center gap-2 p-3 text-blue-600 hover:bg-blue-50 rounded-md border border-gray-300 transition cursor-pointer"
-    >
-      Upload Image
-    </label>
-  </div>
-
-
-  {control._formValues.image && (
-    <div className="relative w-32">
-      <img
-        src={control._formValues.image}
-        alt="preview"
-        className="w-32 h-32 object-cover rounded border"
-      />
-
-
-      <button
-        type="button"
-        onClick={() => setValue("image", "")}
-        className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full"
-      >
-        ✕
-      </button>
-    </div>
-  )}
-
-  {errors.image && <p className={inputClass.error}>{errors.image.message}</p>}
-</div>; */
-}

@@ -11,13 +11,7 @@ export const clinicalCaseApi = baseAPI.injectEndpoints({
       }),
       providesTags: ["ClinicalCase"],
     }),
-    updateClinicalCase: build.mutation<void, string>({
-      query: (id) => ({
-        url: `/clinical-case/${id}`,
-        method: "PATCH",
-      }),
-      invalidatesTags: ["ClinicalCase"],
-    }),
+
     deleteClinicalCase: build.mutation<void, string>({
       query: (id) => ({
         url: `/clinical-case/${id}`,
@@ -25,6 +19,18 @@ export const clinicalCaseApi = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ["ClinicalCase"],
     }),
+    updateClinicalCase: build.mutation<
+      void,
+      { id: string; data: Partial<ClinicalCaseInput> }
+    >({
+      query: ({ id, data }) => ({
+        url: `/clinical-case/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["ClinicalCase"],
+    }),
+
     createClinicalCase: build.mutation<void, ClinicalCaseInput>({
       query: (data) => ({
         url: "/clinical-case/create-new",

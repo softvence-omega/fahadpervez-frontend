@@ -1,4 +1,5 @@
 import { baseAPI } from "@/store/api/baseApi";
+import { DifficultyFilter } from "@/types";
 import {
   AllContentMCQList,
   ClinicalCaseTreeResponse,
@@ -71,13 +72,18 @@ export const mcqApi = baseAPI.injectEndpoints({
     // for single  mcq
     getSingleMcq: build.query<
       SingleMCQResponse,
-      { id: string; page?: number; limit?: number }
+      {
+        id: string;
+        difficulty?: DifficultyFilter;
+        searchTerm?: string;
+        page?: number;
+        limit?: number;
+      }
     >({
-      query: ({ id, page, limit }) => ({
-        url: `/mcq-bank/${id}${
-          page && limit ? `?page=${page}&limit=${limit}` : ""
-        }`,
+      query: ({ id, difficulty, searchTerm, page, limit }) => ({
+        url: `/mcq-bank/${id}`,
         method: "GET",
+        params: { difficulty, searchTerm, page, limit },
       }),
       providesTags: ["SingleMcq"],
     }),
@@ -151,6 +157,18 @@ export const mcqApi = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ["StudyModeTree"],
     }),
+    updateStudyModeTree: build.mutation<
+      void,
+      { data: PostStudyModeTree; treeId: string }
+    >({
+      query: ({ data, treeId }) => ({
+        url: `/study_mode_tree/update/${treeId}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["StudyModeTree"],
+    }),
+
     getStudyModeTree: build.query<GetStudyModeTree, { studentType: string }>({
       query: ({ studentType }) => ({
         url: `/study_mode_tree/all`,
@@ -172,19 +190,16 @@ export const mcqApi = baseAPI.injectEndpoints({
         system?: string;
         topic?: string;
         subtopic?: string;
+        searchTerm?: string;
+        page?: number;
+        limit?: number;
       }
     >({
-      query: (params) => {
-        const queryString = new URLSearchParams(
-          params as Record<string, string>
-        ).toString();
-        return {
-          url: `study_mode_tree/all-content${
-            queryString ? `?${queryString}` : ""
-          }`,
-          method: "GET",
-        };
-      },
+      query: (params) => ({
+        url: "study_mode_tree/all-content",
+        method: "GET",
+        params,
+      }),
       providesTags: [
         "StudyModeTree",
         "Exams",
@@ -197,17 +212,6 @@ export const mcqApi = baseAPI.injectEndpoints({
       ],
     }),
 
-    updateStudyModeTree: build.mutation<
-      void,
-      { data: Partial<PostStudyModeTree>; treeId: string }
-    >({
-      query: ({ data, treeId }) => ({
-        url: `/study_mode_tree/update/${treeId}`,
-        method: "PATCH",
-        body: data,
-      }),
-      invalidatesTags: ["StudyModeTree"],
-    }),
     deleteStudyModeTree: build.mutation<void, string>({
       query: (treeId) => ({
         url: `/study_mode_tree/delete/${treeId}`,
