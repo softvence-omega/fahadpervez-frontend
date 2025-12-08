@@ -1,5 +1,10 @@
+import { Outlet } from "react-router-dom";
 const ResourceManagement = () => {
-  return <div>ResourceManagement</div>;
+  return (
+    <div>
+      <Outlet />
+    </div>
+  );
 };
 
 export default ResourceManagement;

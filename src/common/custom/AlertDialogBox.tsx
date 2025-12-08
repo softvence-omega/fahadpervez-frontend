@@ -13,11 +13,11 @@ import { ReactNode, useState } from "react";
 import CommonButton from "../button/CommonButton";
 
 interface IAlertDialogBoxProps {
-  action: () => Promise<void>; // async action
+  action: () => Promise<void>;
   isLoading: boolean;
-  trigger?: ReactNode; // optional custom trigger
-  title?: string; // optional title
-  description?: string; // optional description
+  trigger?: ReactNode;
+  title?: string;
+  description?: string;
 }
 
 const AlertDialogBox: React.FC<IAlertDialogBoxProps> = ({
@@ -42,7 +42,9 @@ const AlertDialogBox: React.FC<IAlertDialogBoxProps> = ({
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         {trigger ?? (
-          <CommonButton className="bg-red-500 !text-white">Delete</CommonButton>
+          <CommonButton className="bg-red-500 !text-white cursor-pointer">
+            Delete
+          </CommonButton>
         )}
       </AlertDialogTrigger>
 

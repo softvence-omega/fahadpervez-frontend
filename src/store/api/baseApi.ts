@@ -76,6 +76,7 @@ export const baseAPI = createApi({
     "PricePlan",
     "Faq",
     "Event",
+    "ResourceCarrier",
   ],
   endpoints: () => ({}),
 });
