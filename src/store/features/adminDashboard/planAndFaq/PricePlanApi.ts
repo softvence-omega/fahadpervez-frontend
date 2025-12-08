@@ -1,4 +1,5 @@
 import { baseAPI } from "@/store/api/baseApi";
+import { GetFaqResponse, PostFaq } from "./types/Faq";
 import { CreatePlanPayload, PricePlanResponse } from "./types/plan";
 
 export const pricePlanApi = baseAPI.injectEndpoints({
@@ -36,6 +37,38 @@ export const pricePlanApi = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ["PricePlan"],
     }),
+    //faq
+    getFaq: build.query<GetFaqResponse, void>({
+      query: () => ({
+        url: `/faq`,
+        method: "GET",
+      }),
+      providesTags: ["Faq"],
+    }),
+    postFaq: build.mutation<void, PostFaq>({
+      query: (data) => ({
+        url: `/faq`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Faq"],
+    }),
+    updateFaq: build.mutation<void, { id: string; data: PostFaq }>({
+      query: ({ id, data }) => ({
+        url: `/faq/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Faq"],
+    }),
+    deleteFaq: build.mutation<void, string>({
+      query: (id) => ({
+        url: `/faq/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Faq"],
+    }),
+    //faq
   }),
 });
 
@@ -44,4 +77,8 @@ export const {
   usePostPricePlanMutation,
   useUpdatePricePlanMutation,
   useDeletePricePlanMutation,
+  useGetFaqQuery,
+  usePostFaqMutation,
+  useUpdateFaqMutation,
+  useDeleteFaqMutation,
 } = pricePlanApi;

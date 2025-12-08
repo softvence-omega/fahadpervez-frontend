@@ -5,6 +5,7 @@ import CommonButton from "@/common/button/CommonButton";
 import CommonSelect from "@/common/custom/CommonSelect";
 import FormHeader from "@/components/AdminDashboard/reuseable/FormHeader";
 import ModalCloseButton from "@/components/AdminDashboard/reuseable/ModalCloseButton";
+import { DifficultyLevel } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FC, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -18,7 +19,7 @@ interface UpdateMCQModalProps {
 }
 
 export interface BackendMCQData {
-  difficulty: "Basics" | "Intermediate" | "Advance";
+  difficulty: DifficultyLevel;
   question: string;
   optionA: string;
   optionB: string;
@@ -34,7 +35,7 @@ export interface BackendMCQData {
 
 // Zod schema
 const UpdateMCQSchema = z.object({
-  difficulty: z.enum(["Basics", "Intermediate", "Advance"]),
+  difficulty: z.enum(["Basic", "Intermediate", "Advance"]),
   question: z.string().min(1, "Question is required"),
   optionA: z.string().min(1, "Option A is required"),
   optionB: z.string().min(1, "Option B is required"),
@@ -63,7 +64,7 @@ type OptionKey = (typeof options)[number];
 
 const correctAnswerOptions = options.map((o) => ({ label: o, value: o }));
 const difficultyOptions = [
-  { label: "Basics", value: "Basics" },
+  { label: "Basic", value: "Basic" },
   { label: "Intermediate", value: "Intermediate" },
   { label: "Advance", value: "Advance" },
 ];

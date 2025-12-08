@@ -1,4 +1,4 @@
-import ButtonWithLoading from "@/common/button/ButtonWithLoading";
+import AlertDialogBox from "@/common/custom/AlertDialogBox";
 import CommonHeader from "@/common/header/CommonHeader";
 import { toSlug } from "@/help/help";
 import { ProfileType } from "@/store/features/adminDashboard/ContentResources/MCQ/types/student";
@@ -79,23 +79,19 @@ const StudentTypeCard: FC<CardProps> = ({
             <BookOpen size={16} className="text-[#030213] " />
             Manage Content
           </CommonHeader>
-          <span
-            onClick={() => handleDelete(data._id)}
-            className=" cursor-pointer "
-          >
-            {isDeleting ? (
-              <ButtonWithLoading
-                title="Deleting..."
-                textColor="!text-red-500"
-                borderColor="!border-red-500"
-              />
-            ) : (
+
+          <AlertDialogBox
+            trigger={
               <RiDeleteBinLine
                 size={20}
                 className="text-[#030213] hover:text-red-600 transition-colors duration-200"
               />
-            )}
-          </span>
+            }
+            action={async () => handleDelete(data._id)}
+            title="Delete Student Type"
+            description="Are you sure you want to delete this student type?"
+            isLoading={isDeleting ?? false}
+          />
         </div>
       </div>
     )

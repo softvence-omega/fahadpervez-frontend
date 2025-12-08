@@ -76,6 +76,8 @@ export const baseAPI = createApi({
     "PricePlan",
     "Goal",
     "AITutor",
+    "Faq",
+    "Event",
   ],
   endpoints: () => ({}),
 });
