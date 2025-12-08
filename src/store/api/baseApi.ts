@@ -75,6 +75,7 @@ export const baseAPI = createApi({
     "OSCE",
     "PricePlan",
     "Goal",
+    "AITutor",
   ],
   endpoints: () => ({}),
 });

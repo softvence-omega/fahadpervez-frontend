@@ -8,7 +8,6 @@ interface ChatMessagesProps {
 }
 
 export default function ChatMessages({ messages, lastMessageRef }: ChatMessagesProps) {
-    console.log(messages);
     return (
         <div>
             {messages.length ? (
@@ -19,8 +18,8 @@ export default function ChatMessages({ messages, lastMessageRef }: ChatMessagesP
                             className={`flex ${msg.role === "ai" ? 'justify-start' : 'justify-end'}`}
                             ref={index === messages.length - 1 ? lastMessageRef : null}
                         >
-                            <div className={`p-3 rounded-lg max-w-xs ${msg.role === "ai" ? 'bg-blue-100' : 'bg-gray-100'} ${msg.role === "user" && "bg-gray-600 text-white"}`}>
-                                {msg.content}
+                            <div className={`p-4 rounded-lg ${msg.role === "ai" ? 'bg-blue-50 max-w-2xl' : 'bg-gray-600 text-white max-w-md'}`}>
+                                <div className="whitespace-pre-wrap">{msg.content}</div>
                             </div>
                         </li>
                     ))}
