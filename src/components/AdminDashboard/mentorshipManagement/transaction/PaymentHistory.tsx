@@ -1,18 +1,18 @@
 import {
   Table,
-  TableHeader,
-  TableRow,
-  TableHead,
   TableBody,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { FC } from "react";
 import { LuDot } from "react-icons/lu";
 
 import CommonButton from "@/common/button/CommonButton";
 import { BsFillFileEarmarkPdfFill } from "react-icons/bs";
-import { PaymentProps } from "./data/PaymentHistory";
 import { GoDotFill } from "react-icons/go";
+import { PaymentProps } from "./data/PaymentHistory";
 
 interface AllStudentProfileTable {
   payment: PaymentProps[];
@@ -29,7 +29,7 @@ const tableDesign = {
   header:
     "text-lg font-geist text-[#2C2C2C] font-medium bg-[#EFF6FF] hover:bg-[#EFF6FF] md:h-12",
   cellHeader: "border border-border px-4 ",
-  bodyRow: "text-[#2C2C2C] font-inter text-sm font-normal md:h-12",
+  bodyRow: "text-[#2C2C2C] font-inter text-sm font-normal md:h-12 bg-white",
   cell: "border border-border px-4 text-center",
 };
 

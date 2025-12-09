@@ -1,18 +1,28 @@
+import AlertDialogBox from "@/common/custom/AlertDialogBox";
+import { useDeleteResourceCarrierMutation } from "@/store/features/adminDashboard/ContentResources/resourceCariier/resourceCarrierApi";
 import { CareerResource } from "@/store/features/adminDashboard/ContentResources/resourceCariier/types/resorce";
 import { DownloadIcon, FileText, StarIcon, Trash2Icon } from "lucide-react";
 import React from "react";
 
 interface Props {
-  data: CareerResource[]; // Receive array from backend
+  data: CareerResource[];
+  handleViewAll: () => void;
 }
 
-const ResourceCard: React.FC<Props> = ({ data }) => {
+const ResourceCard: React.FC<Props> = ({ data, handleViewAll }) => {
+  const [deleteResource, { isLoading }] = useDeleteResourceCarrierMutation();
+  const handleDelete = async (id: string) => {
+    await deleteResource(id);
+  };
   return (
     <div>
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Notes</h1>
-        <button className="text-blue-600 hover:text-blue-700 text-sm font-medium cursor-pointer">
+        <h1 className="text-2xl font-semibold text-gray-900">Book Library</h1>
+        <button
+          onClick={handleViewAll}
+          className="text-blue-600 hover:text-blue-700 text-sm font-medium cursor-pointer"
+        >
           View All
         </button>
       </div>
@@ -37,7 +47,6 @@ const ResourceCard: React.FC<Props> = ({ data }) => {
               </button>
             </div>
 
-            {/* Title & Description */}
             <div>
               <h3 className="font-semibold text-gray-900 text-base mb-2">
                 {resource.resourceName}
@@ -47,7 +56,6 @@ const ResourceCard: React.FC<Props> = ({ data }) => {
               </p>
             </div>
 
-            {/* Tags */}
             <div className="flex gap-2 flex-wrap">
               {resource.tags?.map((tag, index) => (
                 <span
@@ -59,13 +67,11 @@ const ResourceCard: React.FC<Props> = ({ data }) => {
               ))}
             </div>
 
-            {/* Downloads (backend has no downloads, so show 0) */}
             <div className="flex items-center text-sm text-gray-500 gap-2">
               <DownloadIcon className="w-4 h-4 text-gray-400" />
               <span>0 downloads</span>
             </div>
 
-            {/* Actions */}
             <div className="flex items-center gap-2 mt-2">
               <button
                 className={`flex-1 py-2.5 rounded-md text-sm font-medium transition-colors cursor-pointer bg-blue-600 hover:bg-blue-700 text-white`}
@@ -73,9 +79,15 @@ const ResourceCard: React.FC<Props> = ({ data }) => {
                 Publish Resource
               </button>
 
-              <button className="p-2.5 rounded-md border border-slate-200 hover:bg-gray-50 transition-colors cursor-pointer">
-                <Trash2Icon className="w-5 h-5 text-gray-500" />
-              </button>
+              <AlertDialogBox
+                action={() => handleDelete(resource._id)}
+                isLoading={isLoading}
+                trigger={
+                  <button className="p-2.5 rounded-md border border-slate-200 hover:bg-gray-50 transition-colors cursor-pointer">
+                    <Trash2Icon className="w-5 h-5 text-gray-500" />
+                  </button>
+                }
+              />
             </div>
           </div>
         ))}
