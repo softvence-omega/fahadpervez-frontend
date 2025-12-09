@@ -8,8 +8,10 @@ import { Upload } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+import ButtonWithLoading from "@/common/button/ButtonWithLoading";
+import CommonSelect from "@/common/custom/CommonSelect";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
 const inputClass = {
@@ -51,6 +53,7 @@ const UploadResourceForm: React.FC = () => {
     handleSubmit,
     setValue,
     watch,
+    control,
     trigger,
     formState: { errors },
   } = useForm<ResourceFormType>({
@@ -116,6 +119,11 @@ const UploadResourceForm: React.FC = () => {
     }
   };
 
+  const categoryOptions = [
+    { label: "Cardiovascular", value: "Cardiovascular" },
+    { label: "Neurology", value: "Neurology" },
+    { label: "Surgery", value: "Surgery" },
+  ];
   return (
     <div>
       <DashboardTopSection
@@ -145,15 +153,22 @@ const UploadResourceForm: React.FC = () => {
               )}
             </div>
 
-            {/* Category */}
             <div>
               <label className={inputClass.label}>Career Category</label>
-              <select {...register("category")} className={inputClass.input}>
-                <option value="">Select category</option>
-                <option value="Cardiovascular">Cardiovascular</option>
-                <option value="Neurology">Neurology</option>
-                <option value="Surgery">Surgery</option>
-              </select>
+              <Controller
+                name="category"
+                control={control}
+                render={({ field }) => (
+                  <CommonSelect
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    item={categoryOptions}
+                    placeholder="Select category"
+                    w={200}
+                    className={inputClass.input}
+                  />
+                )}
+              />
               {errors.category && (
                 <p className="text-red-500 text-sm">
                   {errors.category?.message?.toString()}
@@ -256,7 +271,11 @@ const UploadResourceForm: React.FC = () => {
                 className="!bg-blue-600 !text-white hover:!bg-blue-700"
                 disabled={isLoading}
               >
-                {isLoading ? "Uploading..." : "Upload Resource"}
+                {isLoading ? (
+                  <ButtonWithLoading title="Uploading..." />
+                ) : (
+                  "Upload Resource"
+                )}
               </CommonButton>
             </div>
           </form>

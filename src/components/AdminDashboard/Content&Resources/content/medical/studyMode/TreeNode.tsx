@@ -89,7 +89,6 @@ const TreeNode: React.FC<TreeNodeProps> = ({
     setModalOpen(false);
   };
 
-  console.log("treeData", treeData);
   return (
     <div className="ml-[2px] font-arial ">
       <div

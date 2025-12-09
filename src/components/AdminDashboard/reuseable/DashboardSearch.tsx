@@ -3,9 +3,9 @@ import { IoSearchSharp } from "react-icons/io5";
 
 interface DashboardSearchProps {
   className?: string;
-  value?: string; // optional controlled value
-  onChange?: (value: string) => void; // callback when input changes
-  debounce?: number; // optional debounce in ms
+  value?: string;
+  onChange?: (value: string) => void;
+  debounce?: number;
 }
 
 const DashboardSearch: FC<DashboardSearchProps> = ({

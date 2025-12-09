@@ -2,19 +2,19 @@ import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 
 import {
   Table,
-  TableHeader,
-  TableRow,
-  TableHead,
   TableBody,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { FC } from "react";
 import { LuDot } from "react-icons/lu";
 
-import { LuEye } from "react-icons/lu";
-import { PayoutProps } from "./data/payout";
 import CommonButton from "@/common/button/CommonButton";
 import { FiSend } from "react-icons/fi";
+import { LuEye } from "react-icons/lu";
+import { PayoutProps } from "./data/payout";
 
 const tableHeaders = [
   { label: "Session Details", align: "text-left" },
@@ -31,7 +31,7 @@ const tableDesign = {
   header:
     "text-lg font-geist text-[#2C2C2C] font-medium bg-[#EFF6FF] hover:bg-[#EFF6FF] md:h-12",
   cellHeader: "border border-border px-4 ",
-  bodyRow: "text-[#2C2C2C] font-inter text-sm font-normal md:h-12",
+  bodyRow: "text-[#2C2C2C] font-inter text-sm font-normal md:h-12 bg-white",
   cell: "border border-border px-4 text-center",
 };
 interface AllStudentProfileTable {
