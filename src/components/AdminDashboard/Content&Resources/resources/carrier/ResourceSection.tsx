@@ -1,5 +1,7 @@
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
+import Spinner from "@/common/button/Spinner";
 import Pagination from "@/common/custom/Pagination";
+import { useDebounce } from "@/common/custom/useDebounce";
 import CommonSpace from "@/common/space/CommonSpace";
 import DashboardSearch from "@/components/AdminDashboard/reuseable/DashboardSearch";
 import { useGetResourceCarrierQuery } from "@/store/features/adminDashboard/ContentResources/resourceCariier/resourceCarrierApi";
@@ -10,11 +12,15 @@ import ResourceCard from "./ResourceCard";
 
 const ResourceSection = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 5;
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const [viewAll, setViewAll] = useState(false);
+  const [viewAllPage, setViewAllPage] = useState<number>(5);
 
-  const { data } = useGetResourceCarrierQuery({
+  const { data, isLoading } = useGetResourceCarrierQuery({
     page: currentPage,
-    limit,
+    limit: viewAllPage,
+    searchTerm: debouncedSearchTerm,
   });
 
   const cardLists = data?.data ?? [];
@@ -23,11 +29,21 @@ const ResourceSection = () => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+  const handleViewAll = () => {
+    setViewAll(true);
+    setViewAllPage(data?.meta.total ?? 0);
+    setCurrentPage(1);
+  };
   return (
     <div>
       <CommonSpace>
         <div className="flex justify-between items-center ">
-          <DashboardSearch className=" !rounded-none !max-w-[734px] " />
+          <DashboardSearch
+            value={searchTerm}
+            onChange={setSearchTerm}
+            className=" !rounded-none !max-w-[734px] "
+          />
           <ButtonWithIcon
             icon={FaPlus}
             className="w-full md:w-auto flex justify-center  flex-shrink-0 "
@@ -37,8 +53,17 @@ const ResourceSection = () => {
         </div>
       </CommonSpace>
 
-      <ResourceCard data={cardLists} />
-      {cardLists.length > 0 && (
+      <div className={viewAll ? "mb-10" : ""}>
+        {isLoading ? (
+          <Spinner />
+        ) : cardLists.length === 0 ? (
+          <p className="flex justify-center">No Data Found</p>
+        ) : (
+          <ResourceCard data={cardLists} handleViewAll={handleViewAll} />
+        )}
+      </div>
+
+      {cardLists.length > 0 && !viewAll && (
         <div className="py-10">
           <Pagination
             totalPages={totalPages}
