@@ -10,7 +10,8 @@ import StudentProfile from "@/components/AdminDashboard/userManagement/profile/S
 import AdminLayout from "@/Layout/dashboard/AdminLayout";
 import PlatformPerformance from "@/pages/AdminDashboard/analyticAndReport/PlatformPerformance";
 import CreateEvents from "@/pages/AdminDashboard/communityAndEvents/CreateEvents";
-import ResourceManagement from "@/pages/AdminDashboard/contentAndResourse/content_and_resource_page/ResourceManagement";
+import ResourceManagement from "@/pages/AdminDashboard/contentAndResourse/ResourceManagement";
+
 import ContentManagement from "@/pages/AdminDashboard/contentAndResourse/ContentManagement";
 import AdminDashboard from "@/pages/AdminDashboard/dashboard/AdminDashboard";
 import Faq from "@/pages/AdminDashboard/faq/Faq";
