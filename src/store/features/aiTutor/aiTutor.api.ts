@@ -13,6 +13,7 @@ export interface IHistoryItem {
 
 export interface ISendQuestionPayload {
   question: string;
+  thread_id?: string;
 }
 
 export interface ISendQuestionResponse {
@@ -28,18 +29,28 @@ export const aiTutorAPI = baseAPI.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      transformResponse: (response: { data: ISendQuestionResponse }) => response.data,
       invalidatesTags: ["AITutor"],
     }),
 
-    getHistory: build.query<IHistoryItem[], void>({
-      query: () => ({
-        url: "/ai_part/ai-tutor/history",
+    getHistory: build.query<IHistoryItem[], string>({
+      query: (thread_id) => ({
+        url: `/ai_part/ai-tutor/history?thread_id=${thread_id}`,
         method: "GET",
       }),
       transformResponse: (response: { data: IHistoryItem[] }) => response.data,
       providesTags: ["AITutor"],
     }),
+
+    getThreadTitles: build.query<{ thread_id: string; session_title: string }[], void>({
+      query: () => ({
+        url: "/ai_part/ai-tutor/thread-title",
+        method: "GET",
+      }),
+      transformResponse: (response: { data: { threads: { thread_id: string; session_title: string }[] } }) => response.data.threads,
+      providesTags: ["AITutor"],
+    }),
   }),
 });
 
-export const { useSendQuestionMutation, useGetHistoryQuery } = aiTutorAPI;
+export const { useSendQuestionMutation, useGetHistoryQuery, useGetThreadTitlesQuery } = aiTutorAPI;
