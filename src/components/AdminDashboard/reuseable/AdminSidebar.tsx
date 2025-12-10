@@ -121,7 +121,7 @@ const sidebarItems: SidebarItem[] = [
   //settings
   {
     icon: Settings,
-    label: "Settings",
+    label: "White Level",
     path: "/admin/settings",
     section: "Settings",
   },
