@@ -79,10 +79,10 @@ const TreeNode: React.FC<TreeNodeProps> = ({
 
   const handleActionClick = (action: "add" | "rename" | "delete") => {
     setSelectedAction(action);
-    setModalOpen(true); // open modal
+    setModalOpen(true);
   };
 
-  const handleModalConfirm = async (newTitle?: string) => {
+  const handleModalConfirm = async () => {
     if (!selectedAction || !item._id) return;
 
     updateStudyModeTree({ data: treeData, treeId: treeId });
@@ -90,7 +90,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
   };
 
   return (
-    <div className="ml-[2px] font-arial">
+    <div className="ml-[2px] font-arial ">
       <div
         className={`flex items-center justify-between py-1.5 cursor-pointer rounded-md hover:bg-gray-50  ${
           depth > 0 ? "ml-4" : ""

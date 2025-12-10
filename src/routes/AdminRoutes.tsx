@@ -1,13 +1,17 @@
 import CreateContent from "@/components/AdminDashboard/Content&Resources/content/medical/createContent/CreateContent";
 import ParentComponent from "@/components/AdminDashboard/Content&Resources/content/ParentComponent";
 import StudentsCard from "@/components/AdminDashboard/Content&Resources/content/students/StudentsCard";
+import BookUploadForm from "@/components/AdminDashboard/Content&Resources/resources/book/BookUploadForm";
+import UploadResourceForm from "@/components/AdminDashboard/Content&Resources/resources/carrier/UploadResourceForm";
+import ResourcesTab from "@/components/AdminDashboard/Content&Resources/resources/ResourcesTab";
 import MentorProfile from "@/components/AdminDashboard/userManagement/profile/MentorProfile";
 import ProfessionalProfile from "@/components/AdminDashboard/userManagement/profile/ProfessionalProfile";
 import StudentProfile from "@/components/AdminDashboard/userManagement/profile/StudentProfile";
 import AdminLayout from "@/Layout/dashboard/AdminLayout";
 import PlatformPerformance from "@/pages/AdminDashboard/analyticAndReport/PlatformPerformance";
 import CreateEvents from "@/pages/AdminDashboard/communityAndEvents/CreateEvents";
-import ResourceManagement from "@/pages/AdminDashboard/contentAndResourse/content_and_resource_page/ResourceManagement";
+import ResourceManagement from "@/pages/AdminDashboard/contentAndResourse/ResourceManagement";
+
 import ContentManagement from "@/pages/AdminDashboard/contentAndResourse/ContentManagement";
 import AdminDashboard from "@/pages/AdminDashboard/dashboard/AdminDashboard";
 import Faq from "@/pages/AdminDashboard/faq/Faq";
@@ -82,6 +86,21 @@ const adminRoutes = {
     {
       path: "resource-management",
       element: <ResourceManagement />,
+
+      children: [
+        {
+          path: "",
+          element: <ResourcesTab />,
+        },
+        {
+          path: "create-carrier",
+          element: <UploadResourceForm />,
+        },
+        {
+          path: "upload-books",
+          element: <BookUploadForm />,
+        },
+      ],
     },
 
     {

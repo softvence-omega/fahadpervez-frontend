@@ -1,19 +1,19 @@
+import Pagination from "@/common/custom/Pagination";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
+import { useGetSingleUserNotesQuery } from "@/store/features/note/NoteAPI";
 import { Filter, Plus, Search } from "lucide-react";
 import { useState } from "react";
-import RecentDownloadsTab from "./RecentDownloadsTab";
 import { Link } from "react-router-dom";
+import FlashCardFilterModal from "../flashcard/FlashCardFilterModal";
 import AllNotesTab from "./AllNotesTab";
 import GeneratedNotes from "./GeneratedNotes";
-import { useGetSingleUserNotesQuery } from "@/store/features/note/NoteAPI";
-import FlashCardFilterModal from "../flashcard/FlashCardFilterModal";
-import Pagination from "@/components/AdminDashboard/Content & Resource_Component/Pagination";
+import RecentDownloadsTab from "./RecentDownloadsTab";
 
 export default function DownloadNotes() {
   const [activeTab, setActiveTab] = useState("allNotes");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  
+
   // Search and Filter states for each tab
   const [searchTerm, setSearchTerm] = useState("");
   const [tempSearchTerm, setTempSearchTerm] = useState(""); // For input field
@@ -120,7 +120,7 @@ export default function DownloadNotes() {
             )}
           </button>
         </div>
-        
+
         <Link to={"/dashboard/create-note"}>
           <PrimaryButton
             bgType="solid"

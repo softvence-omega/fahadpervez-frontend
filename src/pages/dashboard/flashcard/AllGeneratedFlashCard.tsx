@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import Pagination from "@/components/AdminDashboard/Content & Resource_Component/Pagination";
-import FlashCard from "./FlashCard";
+import Pagination from "@/common/custom/Pagination";
 import { IFlashcardBank } from "@/types";
+import FlashCard from "./FlashCard";
 
 export default function AllGeneratedFlashCard({
   flashcardBanks,

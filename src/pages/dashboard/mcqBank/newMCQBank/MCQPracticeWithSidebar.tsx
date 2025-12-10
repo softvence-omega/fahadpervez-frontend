@@ -561,9 +561,8 @@
 // export default MCQPracticeWithSidebar;
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo, useState } from "react";
-import { MCQBankSidebar } from "./MCQBankSidebar";
-import { Menu, ArrowLeft, CircleAlert, Plus } from "lucide-react";
+import GlobalLoader2 from "@/common/GlobalLoader2";
+import Pagination from "@/common/custom/Pagination";
 import {
   Breadcrumb,
   DifficultyFilter,
@@ -573,15 +572,18 @@ import {
   SortOption,
   TreeNode,
 } from "@/components/Test";
-import { useGetMCQBankTreeQuery } from "@/store/features/MCQBank/MCQBank.api";
-import { useGetMcqBySubtopicQuery } from "@/store/features/MCQBank/MCQBank.api";
-import { useGetSingleMCQQuery } from "@/store/features/MCQBank/MCQBank.api";
-import Pagination from "@/components/AdminDashboard/Content & Resource_Component/Pagination";
+import PrimaryButton from "@/components/reusable/PrimaryButton";
+import {
+  useGetMCQBankTreeQuery,
+  useGetMcqBySubtopicQuery,
+  useGetSingleMCQQuery,
+} from "@/store/features/MCQBank/MCQBank.api";
+import { ArrowLeft, CircleAlert, Menu, Plus } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import QuizReportModal from "../../quizGenerator/QuizReportModal";
 import MCQBankCard from "./MCQBankCard";
-import PrimaryButton from "@/components/reusable/PrimaryButton";
-import { Link } from "react-router-dom";
-import GlobalLoader2 from "@/common/GlobalLoader2";
+import { MCQBankSidebar } from "./MCQBankSidebar";
 
 // Helper: map backend data into frontend tree format
 const mapBackendToTreeData = (backendData: any[]): TreeNode[] => {
@@ -739,7 +741,7 @@ const MCQPracticeWithSidebar: React.FC = () => {
 
   // --- Filter MCQs ---
   let filteredQuestions = [...questions];
-console.log(filteredQuestions[8])
+  console.log(filteredQuestions[8]);
   if (viewMode === "mcqs") {
     if (searchQuery) {
       filteredQuestions = filteredQuestions.filter((q: any) =>

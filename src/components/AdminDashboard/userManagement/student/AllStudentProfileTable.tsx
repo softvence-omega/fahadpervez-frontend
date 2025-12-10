@@ -1,28 +1,28 @@
-import { useState } from "react";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import CommonDropdown from "@/common/custom/CommonDropdown";
 import CommonHeader from "@/common/header/CommonHeader";
+import { useState } from "react";
 import { IoChevronDownSharp } from "react-icons/io5";
 
+import DeleteButton from "@/common/button/DeleteButton";
+import LoadingStatus from "@/common/custom/LoadingStatus";
+import Pagination from "@/common/custom/Pagination";
 import {
   Table,
-  TableHeader,
-  TableRow,
-  TableHead,
   TableBody,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
-import { LuEye } from "react-icons/lu";
-import Pagination from "@/common/custom/Pagination";
-import { Link } from "react-router-dom";
 import { slugify } from "@/help/help";
 import {
   useDeleteSingleStudentMutation,
   useGetStudentsDataQuery,
 } from "@/store/features/adminDashboard/UserManagement/studentsManagementApi";
+import { LuEye } from "react-icons/lu";
+import { Link } from "react-router-dom";
 import DashboardSearch from "../../reuseable/DashboardSearch";
-import LoadingStatus from "@/common/custom/LoadingStatus";
-import DeleteButton from "@/common/button/DeleteButton";
 
 const dropdownItems = [
   { label: "All", value: "" },
@@ -45,7 +45,7 @@ const tableDesign = {
   header:
     "text-lg font-geist text-[#2C2C2C] font-medium bg-[#EFF6FF] hover:bg-[#EFF6FF] md:h-12",
   cellHeader: "border border-border px-4 ",
-  bodyRow: "text-[#2C2C2C] font-inter text-sm font-normal md:h-12",
+  bodyRow: "text-[#2C2C2C] font-inter text-sm font-normal md:h-12 bg-white",
   cell: "border border-border px-4 text-center",
 };
 
