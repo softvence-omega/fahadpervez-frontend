@@ -10,6 +10,14 @@ export const flashCardAPI = baseAPI.injectEndpoints({
       }),
     }),
 
+    generateAiFlashCard: build.mutation({
+      query: (data) => ({
+        url: "/ai_part/generate-flashcard",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
     getAllFlashCard: build.query({
       query: () => ({
         url: "/flash-card",
@@ -67,6 +75,7 @@ export const flashCardAPI = baseAPI.injectEndpoints({
 
 export const {
   useCreateFlashCardMutation,
+  useGenerateAiFlashCardMutation,
   useGetAllFlashCardQuery,
   useGetSingleFlashCardQuery,
   useUpdateFlashCardMutation,

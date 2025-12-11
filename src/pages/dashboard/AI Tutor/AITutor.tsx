@@ -45,12 +45,20 @@ const AITutor = () => {
 
   return (
     <ChatContext.Provider value={value}>
-        <Breadcrumb breadcrumbs={breadcrumbs} />
-      <div className="flex h-screen bg-gray-100">
-        <AiTutorSidebar />
-        <main className="flex-1 flex flex-col">
-          <ChatWindow />
-        </main>
+      <div className="flex flex-col bg-gray-100 pt-5"
+      style={{
+        height: `calc(100vh - 110px)`,
+      }}
+      >
+      <Breadcrumb breadcrumbs={breadcrumbs} />
+        <div className="shrink-0">
+        </div>
+        <div className="flex flex-1 overflow-hidden">
+          <AiTutorSidebar />
+          <main className="flex-1 flex flex-col overflow-hidden">
+            <ChatWindow />
+          </main>
+        </div>
       </div>
     </ChatContext.Provider>
   );

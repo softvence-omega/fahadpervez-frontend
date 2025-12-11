@@ -21,6 +21,7 @@ export default function ChatWindow() {
     
     const lastMessageRef = useRef<HTMLLIElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const scrollBehaviorRef = useRef<ScrollBehavior>('auto');
 
     const [sendQuestion] = useSendQuestionMutation();
     
@@ -37,6 +38,8 @@ export default function ChatWindow() {
             setDisplayMessages([]); // Clear messages for new chat prompt
             setInputValue('');
         }
+        // Force instant scroll when switching sessions
+        scrollBehaviorRef.current = 'auto';
     }, [currentChatId]);
 
     // Handle History Data
@@ -62,7 +65,7 @@ export default function ChatWindow() {
 
     // Auto-scroll logic
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        messagesEndRef.current?.scrollIntoView({ behavior: scrollBehaviorRef.current });
     };
 
     useEffect(() => {
@@ -76,6 +79,9 @@ export default function ChatWindow() {
         const questionText = inputValue;
         setInputValue('');
         
+        // Use smooth scroll for new user interactions
+        scrollBehaviorRef.current = 'smooth';
+
         // Optimistic Update: Show user message immediately
         const optimisticMsg: Message = { role: 'user', content: questionText };
         setDisplayMessages(prev => [...prev, optimisticMsg]);

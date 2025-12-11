@@ -1,6 +1,5 @@
 // components/ChatMessages.tsx
 import { Message } from "./AITutor";
-import NewChatPrompt from "./NewChatPrompt";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 

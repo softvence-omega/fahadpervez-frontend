@@ -31,6 +31,7 @@ export const aiTutorAPI = baseAPI.injectEndpoints({
       }),
       transformResponse: (response: { data: ISendQuestionResponse }) => response.data,
       invalidatesTags: ["AITutor"],
+      extraOptions: { silent: true },
     }),
 
     getHistory: build.query<IHistoryItem[], string>({
