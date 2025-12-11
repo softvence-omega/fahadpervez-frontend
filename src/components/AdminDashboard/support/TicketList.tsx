@@ -82,10 +82,14 @@ const TicketList: React.FC<TicketListProps> = ({
         {tickets.map((ticket, i) => (
           <TableRow
             key={ticket._id}
-            onClick={() => handleSelectTicket(ticket)}
             className={`${tableDesign.bodyRow} cursor-pointer`}
           >
-            <TableCell className={tableDesign.cell}>#{i + 1}</TableCell>
+            <TableCell
+              onClick={() => handleSelectTicket(ticket)}
+              className={tableDesign.cell}
+            >
+              #{i + 1}
+            </TableCell>
 
             <TableCell className={tableDesign.cell}>
               {ticket.report.text}
@@ -105,10 +109,7 @@ const TicketList: React.FC<TicketListProps> = ({
                   ticket.status
                 )}`}
               >
-                {ticket.status === "in-progress"
-                  ? "In Progress"
-                  : ticket.status.charAt(0).toUpperCase() +
-                    ticket.status.slice(1)}
+                {ticket.status}
               </span>
             </TableCell>
 
@@ -118,7 +119,11 @@ const TicketList: React.FC<TicketListProps> = ({
 
             <TableCell className={tableDesign.cell}>
               <div className="flex justify-center gap-3">
-                <LuEye size={22} className="text-[#1D4ED8] cursor-pointer" />
+                <LuEye
+                  onClick={() => handleSelectTicket(ticket)}
+                  size={22}
+                  className="text-[#1D4ED8] cursor-pointer"
+                />
                 <AlertDialogBox
                   action={() => handleDelete(ticket._id)}
                   isLoading={isLoading}

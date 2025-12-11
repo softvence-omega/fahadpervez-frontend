@@ -9,6 +9,7 @@ export type ReportItem = {
     text: string;
   };
   status: "IN_REVIEW" | "RESOLVED" | "REJECTED" | string;
+  note: string;
   createdAt: string;
   updatedAt: string;
 };

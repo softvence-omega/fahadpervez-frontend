@@ -1,6 +1,7 @@
 import demo from "@/assets/signUp/Upload Photo.png";
 import ButtonWithLoading from "@/common/button/ButtonWithLoading";
 import CommonSelect from "@/common/custom/CommonSelect";
+import { useGetSettingsQuery } from "@/store/features/adminDashboard/settings/settingApi";
 import { useUpdateReportForAdminMutation } from "@/store/features/adminDashboard/support/support";
 import {
   ReportItem,
@@ -33,11 +34,13 @@ const statusOptions = [
 interface TicketDetailProps {
   ticket: ReportItem;
   selectedIndex: number;
+  setSelectedTicket: (ticket: ReportItem | null) => void;
 }
 
 const TicketDetail: React.FC<TicketDetailProps> = ({
   ticket,
   selectedIndex,
+  setSelectedTicket,
 }) => {
   const [selectedStatus, setSelectedStatus] = useState<ReportStatus>(
     (ticket.status as ReportStatus) || "IN_REVIEW"
@@ -67,7 +70,10 @@ const TicketDetail: React.FC<TicketDetailProps> = ({
     };
 
     await updateReport(payload);
+    setSelectedTicket(null);
+    setComment("");
   };
+  const { data: settings } = useGetSettingsQuery();
 
   return (
     <div className="flex h-full flex-col rounded-lg border border-border bg-card">
@@ -98,7 +104,8 @@ const TicketDetail: React.FC<TicketDetailProps> = ({
         </div>
       </div>
 
-      <div className="overflow-y-auto flex-1 m-4">
+      <div className="overflow-y-auto flex-1 m-4 space-y-6  ">
+        {/* User */}
         <div className="flex items-baseline-last gap-2">
           <div className="w-full bg-black text-white rounded-lg p-4">
             <p className="text-xs font-medium">
@@ -117,12 +124,27 @@ const TicketDetail: React.FC<TicketDetailProps> = ({
             />
           </div>
         </div>
+        {/* Admin */}
+        <div className="flex items-baseline-last gap-2">
+          <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+            <img
+              className="w-full h-full object-cover"
+              src={settings?.data?.platformLogo || "/logo.svg"}
+              alt=""
+            />
+          </div>
+          <div className="w-full bg-[#F0FAFF] text-[#404040] rounded-lg p-4">
+            <p className="text-xs font-medium">Admin: {ticket.note ?? ""}</p>
+            <p className="mt-2 whitespace-pre-wrap text-xs leading-relaxed">
+              {ticket.report.text}
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="w-40 m-4">
         <p className="text-xs font-medium text-muted-foreground mb-2">Status</p>
 
-        {/* FIXED SELECT */}
         <CommonSelect
           item={statusOptions}
           onValueChange={(val) => setSelectedStatus(val as ReportStatus)}
