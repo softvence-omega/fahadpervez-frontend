@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { Search, Bell, Globe, ChevronDown, Menu } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAppDispatch } from "@/store/hook";
+import { useGetSettingsQuery } from "@/store/features/adminDashboard/settings/settingApi";
 import { logout, selectUser } from "@/store/features/auth/auth.slice";
+import { useAppDispatch } from "@/store/hook";
 import Cookies from "js-cookie";
+import { Bell, ChevronDown, Globe, Menu, Search } from "lucide-react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 
 interface StudentDashboardHeaderProps {
   onMenuClick: () => void;
@@ -21,7 +22,7 @@ const StudentDashboardHeader: React.FC<StudentDashboardHeaderProps> = ({
 
   const handleLogout = () => {
     Cookies.remove("accessToken");
-    dispatch(logout()); 
+    dispatch(logout());
     navigate("/login");
   };
 
@@ -32,6 +33,7 @@ const StudentDashboardHeader: React.FC<StudentDashboardHeaderProps> = ({
     { label: "Logout", onClick: handleLogout, danger: true },
   ];
 
+  const { data: settings } = useGetSettingsQuery();
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200">
       <div className="flex items-center justify-between px-4 py-3 lg:px-6">
@@ -45,7 +47,11 @@ const StudentDashboardHeader: React.FC<StudentDashboardHeaderProps> = ({
           </button>
 
           <Link to="/dashboard" className="flex-shrink-0">
-            <img src="/logo.svg" alt="Logo" className="h-12 lg:h-14" />
+            <img
+              src={settings?.data?.platformLogo || "/logo.svg"}
+              alt="Logo"
+              className="h-12 lg:h-14"
+            />
           </Link>
         </div>
 
@@ -90,7 +96,7 @@ const StudentDashboardHeader: React.FC<StudentDashboardHeaderProps> = ({
                       alt="Profile"
                       className="w-9 h-9 rounded-full object-cover"
                     />
-                  ): (
+                  ) : (
                     user?.profile?.firstName.slice(0, 2)
                   )}
                 </span>
