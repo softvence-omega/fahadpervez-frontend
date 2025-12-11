@@ -99,10 +99,9 @@ const TableContentForStudy: React.FC<TableContentProps> = ({
     : [];
 
   const treeData = allStudyModeData?.data.map((item) => item.systems) ?? [];
-  const alltreeData = allStudyModeData?.data ?? [];
 
   console.log("treeData", treeData);
-  console.log("alltreeData", alltreeData);
+
   return (
     <div className="w-[400px] min-h-[400px] bg-white rounded-2xl shadow p-4 ">
       {/* Header */}

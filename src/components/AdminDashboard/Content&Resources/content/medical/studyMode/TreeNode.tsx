@@ -43,8 +43,6 @@ const TreeNode: React.FC<TreeNodeProps> = ({
   const { treeId } = useAppSelector((state: RootState) => state.staticContent);
   const dispatch = useAppDispatch();
 
-  console.log("treeId", treeId);
-
   const hasChildren = item.children && item.children.length > 0;
 
   const handleClick = () => {
