@@ -2,20 +2,21 @@
 import { useContext, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, MessageSquare, Loader2 } from "lucide-react";
 import { ChatContext, ChatContextType } from "./AITutor";
+import { useGetThreadTitlesQuery } from "@/store/features/aiTutor/aiTutor.api";
 
 export default function AiTutorSidebar() {
   const {
     addNewChat,
     searchQuery,
     setSearchQuery,
-    filteredChats,
     setCurrentChatId,
     currentChatId,
   } = useContext(ChatContext) as ChatContextType;
 
   const [isHistoryOpen, setIsHistoryOpen] = useState(true);
+  const { data: threadTitles, isLoading } = useGetThreadTitlesQuery();
 
   // Auto open history when searching
   useEffect(() => {
@@ -23,6 +24,11 @@ export default function AiTutorSidebar() {
       setIsHistoryOpen(true);
     }
   }, [searchQuery]);
+
+  // Filter threads based on search
+  const filteredThreads = threadTitles?.filter(thread => 
+    thread.session_title.toLowerCase().includes(searchQuery.toLowerCase())
+  ) || [];
 
   // Highlight matched letters
   const highlightMatch = (text: string, query: string) => {
@@ -43,7 +49,7 @@ export default function AiTutorSidebar() {
   };
 
   return (
-    <aside className="w-64 bg-white p-4 border-r border-gray-200">
+    <aside className="w-64 bg-white p-4 border-r border-gray-200 flex flex-col h-full">
       <div className="flex flex-col items-center justify-start mb-6">
         <h1 className="text-xl font-semibold text-start text-[#0A0A0A]">
           Medical AI
@@ -51,7 +57,7 @@ export default function AiTutorSidebar() {
         <p className="text-sm text-[#4A5565] font-normal">Your Personalized Learning Companion</p>
       </div>
 
-      <nav className="space-y-4">
+      <nav className="space-y-4 flex-1 flex flex-col min-h-0">
         {/* New Chat */}
         <Button
           onClick={addNewChat}
@@ -72,10 +78,10 @@ export default function AiTutorSidebar() {
         </div>
 
         {/* History Section */}
-        <div className=" rounded-md bg-gray-50">
+        <div className="flex-1 flex flex-col min-h-0 rounded-md bg-gray-50">
           <button
             onClick={() => setIsHistoryOpen((prev) => !prev)}
-            className="w-full flex justify-between items-center px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 rounded-t-md"
+            className="w-full flex justify-between items-center px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 rounded-t-md transition-colors"
           >
             History
             {isHistoryOpen ? (
@@ -86,23 +92,30 @@ export default function AiTutorSidebar() {
           </button>
 
           {isHistoryOpen && (
-            <div className="max-h-60 overflow-y-auto border-t border-gray-200">
-              {filteredChats.length > 0 ? (
-                filteredChats.map((chat) => (
+            <div className="flex-1 overflow-y-auto border-t border-gray-200 custom-scrollbar">
+              {isLoading ? (
+                <div className="flex justify-center p-4">
+                    <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+                </div>
+              ) : filteredThreads.length > 0 ? (
+                filteredThreads.map((thread) => (
                   <div
-                    key={chat.id}
-                    onClick={() => setCurrentChatId(chat.id)}
-                    className={`cursor-pointer px-3 py-2 text-sm transition-colors ${
-                      currentChatId === chat.id
+                    key={thread.thread_id}
+                    onClick={() => setCurrentChatId(thread.thread_id)}
+                    className={`cursor-pointer px-3 py-2 text-sm transition-colors flex items-center gap-2 ${
+                      currentChatId === thread.thread_id
                         ? "bg-blue-100 text-blue-800 font-medium"
                         : "text-gray-700 hover:bg-blue-50"
                     }`}
                   >
-                    {highlightMatch(chat.title, searchQuery)}
+                    <MessageSquare className="w-4 h-4 shrink-0" />
+                    <span className="truncate">
+                        {highlightMatch(thread.session_title, searchQuery)}
+                    </span>
                   </div>
                 ))
               ) : (
-                <div className="px-3 py-2 text-sm text-gray-400">
+                <div className="px-3 py-2 text-sm text-gray-400 text-center">
                   No chats found
                 </div>
               )}
