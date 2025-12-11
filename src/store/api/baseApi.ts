@@ -79,6 +79,8 @@ export const baseAPI = createApi({
     "Event",
     "ResourceCarrier",
     "ResourceBooks",
+    "WebSetting",
+    "ReportResponse",
   ],
   endpoints: () => ({}),
 });
