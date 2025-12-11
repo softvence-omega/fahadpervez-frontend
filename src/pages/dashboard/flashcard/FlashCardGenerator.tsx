@@ -5,13 +5,20 @@ import FileUploader from "@/components/reusable/FileUploader";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { Progress } from "@/components/ui/progress";
 import { Atom, Crown, Upload } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FlashCardGeneratorDialog } from "./FlashCardGeneratorDialog";
+import { useGenerateAiFlashCardMutation } from "@/store/features/flashCard/flashCard.api";
 
 const FlashCardGenerator = () => {
+  const navigate = useNavigate();
   const [files, setFiles] = useState<File[]>([]);
   const [note, setNote] = useState("");
   const [openModal, setOpenModal] = useState(false);
+  // const [generatedFlashCard, setGeneratedFlashCard] = useState(null);
+  // console.log("Generated FlashCard State:", generatedFlashCard);
+
+  // const [generateAiFlashCard, { isLoading }] = useGenerateAiFlashCardMutation();
+  const [generateAiFlashCard, { isLoading }] = useGenerateAiFlashCardMutation();
 
   const handleRemoveFile = (index: number) => {
     setFiles(files.filter((_, i) => i !== index));
@@ -19,17 +26,70 @@ const FlashCardGenerator = () => {
 
   // called after modal submit
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleFinalSubmit = (modalData: any) => {
+  const handleFinalSubmit = async (modalData: any) => {
     const combinedData = {
       files,
       note,
-      ...modalData, // modal fields (quizName, subject, difficulty, etc.)
+      ...modalData,
     };
 
-    console.log("Final Payload:", combinedData);
+    const payload = new FormData();
+    payload.append("files", combinedData.files[0]);
+    payload.append(
+      "data",
+      JSON.stringify({
+        quiz_name: combinedData.quiz_name,
+        subject: combinedData.subject,
+        system: combinedData.system,
+        topic: combinedData.topic,
+        sub_topic: combinedData.sub_topic,
+        question_type: combinedData.question_type,
+        question_count: combinedData.question_count,
+        difficulty_level: combinedData.difficulty_level,
+        user_prompt: combinedData.note,
+      })
+    );
 
-    // ✅ Call API here
-    // await fetch("/api/generate-quiz", { method: "POST", body: JSON.stringify(combinedData) })
+    try {
+      const res = await generateAiFlashCard(payload).unwrap();
+      console.log("Generated AI Response:", res);
+
+      // Extract the actual data - handle potential nesting variations
+      let flashCardData = res.data || res; 
+
+      if (!flashCardData) {
+        console.error("No data found in response");
+        return;
+      }
+
+      // 🔥 If it's just an array, wrap it in a proper object structure
+      if (Array.isArray(flashCardData)) {
+        flashCardData = {
+          _id: "temp-id-" + Date.now(),
+          title: combinedData.quiz_name || "Generated Flashcards",
+          subject: combinedData.subject || "General",
+          system: combinedData.system,
+          topic: combinedData.topic,
+          subtopic: combinedData.sub_topic,
+          flashCards: flashCardData, // The array of cards
+          totalFlashCards: flashCardData.length,
+          createdAt: new Date().toISOString(),
+          uploadedBy: "AI Generator",
+        };
+      }
+
+      // ⬇️ SEND DATA TO NEXT PAGE
+      // Use the ID from our possibly-wrapped object
+      const targetId = flashCardData._id || "temp-id";
+      
+      navigate(`/dashboard/solve-flash-card/${targetId}`, {
+        state: {
+          flashCardData: flashCardData, // send full flashcard object (now guaranteed to have structure)
+        },
+      });
+    } catch (error) {
+      console.error("API Error:", error);
+    }
   };
 
   return (
@@ -113,8 +173,11 @@ const FlashCardGenerator = () => {
 
             {/* Buttons */}
             <button
+              disabled={isLoading}
               type="submit"
-              className="w-full flex justify-center gap-4 bg-violet-700 text-white py-2 rounded-lg hover:bg-slate-700  cursor-pointer"
+              className={`w-full flex justify-center gap-4 bg-violet-700 text-white py-2 rounded-lg hover:bg-slate-700  cursor-pointer ${
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
               <Atom />
               Generate Flashcard
