@@ -15,7 +15,7 @@ const SupportCenter = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { data, isLoading } = useGetAllReportForAdminQuery({
     page: currentPage,
-    limit: 8,
+    limit: 10,
   });
 
   const totalPages = data?.meta.totalPages ?? 1;
@@ -89,6 +89,7 @@ const SupportCenter = () => {
               <TicketDetail
                 ticket={selectedTicket}
                 selectedIndex={selectedIndex ?? 0}
+                setSelectedTicket={setSelectedTicket}
               />
             </div>
           )}
