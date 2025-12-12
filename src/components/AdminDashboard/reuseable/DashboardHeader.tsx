@@ -10,6 +10,7 @@ import { Globe } from "lucide-react";
 // import logo from "@/assets/dashboard";
 import profile from "@/assets/home/mentor1.png";
 import CommonWrapper from "@/common/CommonWrapper";
+import { useGetSettingsQuery } from "@/store/features/adminDashboard/settings/settingApi";
 import { logout } from "@/store/features/auth/auth.slice";
 import { useAppDispatch } from "@/store/hook";
 import Cookies from "js-cookie";
@@ -26,6 +27,8 @@ interface DashboardHeaderProps {
 const DashboardHeader = ({ sidebarOpen }: DashboardHeaderProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { data: settings } = useGetSettingsQuery();
+
   const handleLogout = () => {
     dispatch(logout());
     Cookies.remove("accessToken");
@@ -36,7 +39,11 @@ const DashboardHeader = ({ sidebarOpen }: DashboardHeaderProps) => {
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-7.5">
           <Link to={"/admin"}>
-            <img className="w-[95px h-14" src="/logo.svg" alt="logo" />
+            <img
+              className="w-[95px h-14"
+              src={settings?.data?.platformLogo || "/logo.svg"}
+              alt="logo"
+            />
           </Link>
           <div className="hidden md:block">
             <DashboardSearch />

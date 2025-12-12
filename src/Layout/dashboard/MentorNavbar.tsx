@@ -1,18 +1,19 @@
-import { useState } from "react";
+import CommonWrapper from "@/common/CommonWrapper";
+import { useGetSettingsQuery } from "@/store/features/adminDashboard/settings/settingApi";
 import {
+  Bell,
+  ChevronDown,
+  Globe,
+  HelpCircle,
+  LogOut,
+  Menu,
   Search,
   Settings,
   User,
-  HelpCircle,
-  LogOut,
-  ChevronDown,
-  Menu,
   X,
-  Bell,
-  Globe,
 } from "lucide-react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import CommonWrapper from "@/common/CommonWrapper";
 
 const MentorNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -49,7 +50,7 @@ const MentorNavbar = () => {
   };
 
   // Function to check if any route in "more" items is active
-
+  const { data: settings } = useGetSettingsQuery();
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 py-2 md:py-0">
       <CommonWrapper>
@@ -57,7 +58,11 @@ const MentorNavbar = () => {
           {/* Logo */}
           <div className="flex items-center gap-4 md:gap-6">
             <Link to="/dashboard">
-              <img src="/logo.svg" alt="Logo" className="w-40 h-16 lg:h-20 " />
+              <img
+                src={settings?.data?.platformLogo || "/logo.svg"}
+                alt="Logo"
+                className="w-40 h-16 lg:h-20 "
+              />
             </Link>
 
             {/* Search Bar */}

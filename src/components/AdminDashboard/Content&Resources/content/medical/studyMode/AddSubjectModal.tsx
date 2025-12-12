@@ -5,13 +5,17 @@ import CommonButton from "@/common/button/CommonButton";
 import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
 import FormHeader from "@/components/AdminDashboard/reuseable/FormHeader";
 import ModalCloseButton from "@/components/AdminDashboard/reuseable/ModalCloseButton";
-import { usePostStudyModeTreeMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import {
+  usePostStudyModeTreeMutation,
+  useUpdateStudyModeTreeMutation,
+} from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import { useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
 import { Trash2 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GoPlus } from "react-icons/go";
 import { z } from "zod";
+import { TOCItem } from "./TableContentForStudy";
 
 // Backend expected types
 type SubTopic = string;
@@ -49,9 +53,13 @@ const postStudyModeTreeSchema = z.object({
 
 interface AddSubjectModalProps {
   onClose: () => void;
+  initialContent: TOCItem | null;
 }
 
-const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
+const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
+  onClose,
+  initialContent,
+}) => {
   const [subjectName, setSubjectName] = useState("");
   const [systems, setSystems] = useState<System[]>([]);
   const [errors, setErrors] = useState<any>({});
@@ -163,6 +171,33 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
 
   const [postStudyModeTree, { isLoading: isPostStudyModeTreeLoading }] =
     usePostStudyModeTreeMutation();
+  const [updateStudyModeTree, { isLoading: isUpdating }] =
+    useUpdateStudyModeTreeMutation();
+
+  useEffect(() => {
+    if (initialContent) {
+      // For the new TOCItem, the root title is the subject
+      setSubjectName(initialContent.title);
+
+      // Convert children → systems
+      const mappedSystems: System[] = (initialContent.children ?? []).map(
+        (systemItem) => ({
+          name: systemItem.title,
+          topics: (systemItem.children ?? []).map((topicItem) => ({
+            topicName: topicItem.title,
+            subTopics: (topicItem.children ?? []).map(
+              (subItem) => subItem.title
+            ),
+          })),
+        })
+      );
+
+      setSystems(mappedSystems);
+    } else {
+      setSubjectName("");
+      setSystems([]);
+    }
+  }, [initialContent]);
   const handleSave = async () => {
     const payload: PostStudyModeTree = {
       subjectName,
@@ -179,8 +214,16 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
     setErrors({});
 
     try {
-      await postStudyModeTree(payload);
-      onClose();
+      if (initialContent && initialContent._id) {
+        await updateStudyModeTree({
+          treeId: initialContent._id,
+          data: payload,
+        });
+        onClose();
+      } else {
+        await postStudyModeTree(payload);
+        onClose();
+      }
     } catch (error) {
       console.error("Network error:", error);
     }
@@ -195,16 +238,20 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 ">
-      <CommonBorderWrapper className="w-full max-w-lg relative max-h-[95vh] overflow-y-auto ">
+      <CommonBorderWrapper className="w-full max-w-2xl relative max-h-[95vh] overflow-y-auto ">
         <div className="space-y-5">
           <ModalCloseButton onClick={onClose} />
           <FormHeader
-            title="Add New Subject"
-            subtitle=" Create a hierarchical table of contents for your subject."
+            title={initialContent ? "Update Subject" : "Add New Subject"}
+            subtitle={
+              initialContent
+                ? "Edit the hierarchical table of contents for your subject."
+                : "Create a hierarchical table of contents for your subject."
+            }
           />
 
           <div>
-            <label className={inputClass.label}>Subject Name</label>
+            <label className={inputClass.label}>System Name</label>
             <input
               type="text"
               value={subjectName}
@@ -355,11 +402,15 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ onClose }) => {
             <CommonButton
               onClick={handleSave}
               type="submit"
-              disabled={isPostStudyModeTreeLoading}
+              disabled={isPostStudyModeTreeLoading || isUpdating}
               className="!bg-blue-500 !text-white"
             >
-              {isPostStudyModeTreeLoading ? (
-                <ButtonWithLoading title="Saving..." />
+              {isPostStudyModeTreeLoading || isUpdating ? (
+                <ButtonWithLoading
+                  title={initialContent ? "Updating..." : "Saving..."}
+                />
+              ) : initialContent ? (
+                "Update Subject"
               ) : (
                 "Save Subject"
               )}
