@@ -8,7 +8,7 @@ import { SelectedNode } from "./StudyMode";
 import TreeNode from "./TreeNode";
 
 // TOC type
-type TOCItem = {
+export type TOCItem = {
   _id?: string;
   title: string;
   count?: number;
@@ -78,13 +78,17 @@ const mapBackendToTOC = (data: Subject[]): TOCItem[] => {
 };
 
 interface TableContentProps {
-  iconAction: () => void;
+  openModal: () => void;
   setSelectedNode: React.Dispatch<React.SetStateAction<SelectedNode>>;
+  initialContent: TOCItem | null;
+  setInitialContent: React.Dispatch<React.SetStateAction<TOCItem | null>>;
 }
 
 const TableContentForStudy: React.FC<TableContentProps> = ({
-  iconAction,
+  openModal,
   setSelectedNode,
+  initialContent,
+  setInitialContent,
 }) => {
   const { studentType } = useAppSelector(
     (state: RootState) => state.staticContent
@@ -98,10 +102,6 @@ const TableContentForStudy: React.FC<TableContentProps> = ({
     ? mapBackendToTOC(allStudyModeData.data as Subject[])
     : [];
 
-  const treeData = allStudyModeData?.data.map((item) => item.systems) ?? [];
-
-  console.log("treeData", treeData);
-
   return (
     <div className="w-[400px] min-h-[400px] bg-white rounded-2xl shadow p-4 ">
       {/* Header */}
@@ -113,7 +113,7 @@ const TableContentForStudy: React.FC<TableContentProps> = ({
           </CommonHeader>
         </div>
         <button
-          onClick={iconAction}
+          onClick={openModal}
           className="bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded-lg cursor-pointer"
         >
           <Plus className="w-4 h-4" />
@@ -128,7 +128,9 @@ const TableContentForStudy: React.FC<TableContentProps> = ({
             depth={0}
             onSelect={setSelectedNode}
             parentNames={{}}
-            treeData={treeData}
+            initialContent={initialContent}
+            setInitialContent={setInitialContent}
+            openModal={openModal}
           />
         ))}
       </div>

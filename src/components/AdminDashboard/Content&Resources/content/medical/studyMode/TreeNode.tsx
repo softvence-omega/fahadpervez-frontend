@@ -1,12 +1,8 @@
-import TreeTableAction from "@/common/TreeTableAction";
-import { useUpdateStudyModeTreeMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
-import { setTreeId } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
-import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { RootState } from "@/store/store";
+import { useDeleteStudyModeTreeMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import { ChevronRight, FileText } from "lucide-react";
 import { useState } from "react";
 import { SelectedNode } from "./StudyMode";
-import UpdateTreeTableAction from "./UpdateTreeTableAction";
+import TreeAction from "./TreeAction";
 
 type TOCItem = {
   _id?: string;
@@ -20,34 +16,24 @@ interface TreeNodeProps {
   depth: number;
   onSelect: (value: SelectedNode) => void;
   parentNames: { subject?: string; system?: string; topic?: string };
-
-  treeData: any;
+  initialContent: TOCItem | null;
+  setInitialContent: React.Dispatch<React.SetStateAction<TOCItem | null>>;
+  openModal: () => void;
 }
 const TreeNode: React.FC<TreeNodeProps> = ({
   item,
   depth,
   onSelect,
   parentNames,
-
-  treeData,
+  initialContent,
+  setInitialContent,
+  openModal,
 }) => {
   const [open, setOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedAction, setSelectedAction] = useState<
-    "add" | "rename" | "delete" | null
-  >(null);
-
-  const [updateStudyModeTree, { isLoading: isUpdating }] =
-    useUpdateStudyModeTreeMutation();
-
-  const { treeId } = useAppSelector((state: RootState) => state.staticContent);
-  const dispatch = useAppDispatch();
 
   const hasChildren = item.children && item.children.length > 0;
 
   const handleClick = () => {
-    dispatch(setTreeId(item._id || ""));
-
     setOpen(!open);
     // Update selected node
     if (depth === 0)
@@ -75,16 +61,21 @@ const TreeNode: React.FC<TreeNodeProps> = ({
       });
   };
 
-  const handleActionClick = (action: "add" | "rename" | "delete") => {
-    setSelectedAction(action);
-    setModalOpen(true);
+  const handleEdit = (data: TOCItem) => {
+    openModal();
+    if (data) {
+      setInitialContent(data);
+    }
   };
 
-  const handleModalConfirm = async () => {
-    if (!selectedAction || !item._id) return;
+  // delete logic
+  const [deleteStudyMode, { isLoading: isDeleting }] =
+    useDeleteStudyModeTreeMutation();
 
-    updateStudyModeTree({ data: treeData, treeId: treeId });
-    setModalOpen(false);
+  const handleDelete = async (id: string) => {
+    if (id) {
+      await deleteStudyMode(id);
+    }
   };
 
   return (
@@ -97,7 +88,13 @@ const TreeNode: React.FC<TreeNodeProps> = ({
       >
         <div className="flex items-center gap-1.5 cursor-pointer">
           {hasChildren ? (
-            <button className="text-gray-500 hover:text-gray-700">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpen(!open);
+              }}
+              className="text-gray-500 hover:text-gray-700"
+            >
               <ChevronRight
                 className={`w-4 h-4 transition-transform ${
                   open ? "rotate-90" : ""
@@ -105,9 +102,10 @@ const TreeNode: React.FC<TreeNodeProps> = ({
               />
             </button>
           ) : (
-            <span className="w-4" />
+            <span className="w-4 " />
           )}
           <FileText className="w-4 h-4 text-gray-500" />
+
           <span
             className={`text-sm ${
               depth >= 2 ? "text-gray-500" : "text-gray-800 font-medium"
@@ -123,7 +121,14 @@ const TreeNode: React.FC<TreeNodeProps> = ({
               {item.count}
             </span>
           )}
-          <TreeTableAction depth={depth} onAction={handleActionClick} />
+
+          {depth === 0 && (
+            <TreeAction
+              handleDelete={() => handleDelete(item._id!)}
+              isDeleting={isDeleting}
+              handleEdit={() => handleEdit(item)}
+            />
+          )}
         </div>
       </div>
 
@@ -140,20 +145,12 @@ const TreeNode: React.FC<TreeNodeProps> = ({
                 system: depth === 1 ? item.title : parentNames.system,
                 topic: depth === 2 ? item.title : parentNames.topic,
               }}
-              treeData={treeData}
+              initialContent={initialContent}
+              setInitialContent={setInitialContent}
+              openModal={openModal}
             />
           ))}
         </div>
-      )}
-
-      {modalOpen && selectedAction && (
-        <UpdateTreeTableAction
-          action={selectedAction}
-          currentTitle={item.title}
-          onClose={() => setModalOpen(false)}
-          onConfirm={handleModalConfirm}
-          isUpdating={isUpdating}
-        />
       )}
     </div>
   );

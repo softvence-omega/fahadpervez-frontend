@@ -1,6 +1,8 @@
 import Spinner from "@/common/button/Spinner";
 import Pagination from "@/common/custom/Pagination";
-import TableContent from "@/components/AdminDashboard/Content&Resources/content/medical/studyMode/TableContentForStudy";
+import TableContent, {
+  TOCItem,
+} from "@/components/AdminDashboard/Content&Resources/content/medical/studyMode/TableContentForStudy";
 import Tabs from "@/components/AdminDashboard/reuseable/Tabs";
 import { useGetStudyModeAllContentQuery } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import {
@@ -76,15 +78,22 @@ const StudyMode = () => {
   const [bankId, setBankId] = useState<string>("");
   const totalPages = mcqBank?.meta?.totalPages || 1;
 
+  // handle update table of content
+  const [initialContent, setInitialContent] = useState<TOCItem | null>(null);
+
+  console.log("initialContent", initialContent);
+
   return (
     <div>
       <div className="w-full  flex  items-start gap-6 pb-6">
         <TableContent
-          iconAction={() => setIsSubjectModalOpen(true)}
+          openModal={() => setIsSubjectModalOpen(true)}
           setSelectedNode={(node) => {
             setSelectedNode(node);
             setBankId("");
           }}
+          initialContent={initialContent}
+          setInitialContent={setInitialContent}
         />
 
         <div className="w-full flex flex-col gap-6">
@@ -145,7 +154,10 @@ const StudyMode = () => {
       </div>
 
       {isSubjectModalOpen && (
-        <AddSubjectModal onClose={() => setIsSubjectModalOpen(false)} />
+        <AddSubjectModal
+          onClose={() => setIsSubjectModalOpen(false)}
+          initialContent={initialContent}
+        />
       )}
 
       {totalPages > 1 && mcqBank?.data.length !== 0 && (
