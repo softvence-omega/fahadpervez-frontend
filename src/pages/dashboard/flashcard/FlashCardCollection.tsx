@@ -28,7 +28,7 @@ export default function FlashCardCollection() {
       page,
       limit: 10,
     });
-    
+
   const flashcardBank = flashcardData?.data;
   const meta = flashcardData?.meta;
 
@@ -88,7 +88,9 @@ export default function FlashCardCollection() {
               setPage={setPage}
             />
           )}
-          {activeTab === "generated" && <GeneratedFlashCard />}
+          {activeTab === "generated" && (
+            <GeneratedFlashCard searchTerm={searchTerm} filters={filters} />
+          )}
         </div>
       </div>
 
