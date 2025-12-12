@@ -159,9 +159,9 @@ export const mcqApi = baseAPI.injectEndpoints({
     }),
     updateStudyModeTree: build.mutation<
       void,
-      { data: PostStudyModeTree; treeId: string }
+      { treeId: string; data: PostStudyModeTree }
     >({
-      query: ({ data, treeId }) => ({
+      query: ({ treeId, data }) => ({
         url: `/study_mode_tree/update/${treeId}`,
         method: "PATCH",
         body: data,
