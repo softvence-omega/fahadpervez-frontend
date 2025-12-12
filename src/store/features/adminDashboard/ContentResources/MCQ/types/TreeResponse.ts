@@ -1,5 +1,3 @@
-// get all tree for MCQ and FlashCard
-
 export type SubjectData = {
   _id: string;
   subjectName: string;
