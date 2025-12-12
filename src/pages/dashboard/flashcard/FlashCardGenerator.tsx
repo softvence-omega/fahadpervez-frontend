@@ -34,7 +34,7 @@ const FlashCardGenerator = () => {
     };
 
     const payload = new FormData();
-    payload.append("files", combinedData.files[0]);
+    payload.append("file", combinedData.files[0]);
     payload.append(
       "data",
       JSON.stringify({
@@ -55,7 +55,7 @@ const FlashCardGenerator = () => {
       console.log("Generated AI Response:", res);
 
       // Extract the actual data - handle potential nesting variations
-      let flashCardData = res.data || res; 
+      let flashCardData = res.data || res;
 
       if (!flashCardData) {
         console.error("No data found in response");
@@ -81,7 +81,7 @@ const FlashCardGenerator = () => {
       // ⬇️ SEND DATA TO NEXT PAGE
       // Use the ID from our possibly-wrapped object
       const targetId = flashCardData._id || "temp-id";
-      
+
       navigate(`/dashboard/solve-flash-card/${targetId}`, {
         state: {
           flashCardData: flashCardData, // send full flashcard object (now guaranteed to have structure)
@@ -175,12 +175,12 @@ const FlashCardGenerator = () => {
             <button
               disabled={isLoading}
               type="submit"
-              className={`w-full flex justify-center gap-4 bg-violet-700 text-white py-2 rounded-lg hover:bg-slate-700  cursor-pointer ${
+              className={` w-full flex items-center justify-center gap-4 bg-violet-700 text-white py-2 rounded-lg hover:bg-slate-700  cursor-pointer ${
                 isLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              <Atom />
-              Generate Flashcard
+              <Atom className={isLoading ? "animate-spin" : ""} />
+              {isLoading ? "Generating..." : "Generate Flashcards"}
             </button>
           </div>
         </form>
