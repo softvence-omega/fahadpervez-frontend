@@ -81,6 +81,8 @@ export const baseAPI = createApi({
     "ResourceCarrier",
     "ResourceBooks",
     "StudyPlan",
+    "WebSetting",
+    "ReportResponse",
   ],
   endpoints: () => ({}),
 });

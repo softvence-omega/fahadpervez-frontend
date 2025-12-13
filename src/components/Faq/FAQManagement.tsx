@@ -1,3 +1,4 @@
+import Spinner from "@/common/button/Spinner";
 import CommonSelect, { SelectOption } from "@/common/custom/CommonSelect";
 import CommonHeader from "@/common/header/CommonHeader";
 import CommonSpace from "@/common/space/CommonSpace";
@@ -29,7 +30,7 @@ const FAQManagement = () => {
   const [isFaqModalOpen, setIsFaqModalOpen] = useState(false);
   const [editFaq, setEditFaq] = useState<PostFaq | null>(null);
 
-  const { data: faqData } = useGetFaqQuery();
+  const { data: faqData, isLoading } = useGetFaqQuery();
   const faqs = faqData?.data || [];
 
   const categories = useMemo(() => {
@@ -73,7 +74,6 @@ const FAQManagement = () => {
 
       <CommonSpace>
         <div>
-          {/* Header + Search + Filter */}
           <div className="p-6 border border-border bg-white rounded-md">
             <CommonHeader className="pb-2 !text-2xl">Faq's</CommonHeader>
 
@@ -92,81 +92,84 @@ const FAQManagement = () => {
             </div>
           </div>
 
-          {/* FAQ Groups */}
-          <div className="space-y-6 mt-6">
-            {categories.map((category) => (
-              <div
-                key={category.id}
-                className="space-y-2 p-6 border border-border bg-white rounded-md"
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <h3 className="text-lg font-semibold text-gray-900 capitalize">
-                    {category.name}
-                  </h3>
-                  <span className="px-2 py-0.5 bg-gray-200 text-gray-700 rounded-full text-xs font-medium">
-                    {category.count}
-                  </span>
-                </div>
+          {isLoading ? (
+            <Spinner />
+          ) : (
+            <div className="space-y-6 mt-6">
+              {categories.map((category) => (
+                <div
+                  key={category.id}
+                  className="space-y-2 p-6 border border-border bg-white rounded-md"
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <h3 className="text-lg font-semibold text-gray-900 capitalize">
+                      {category.name}
+                    </h3>
+                    <span className="px-2 py-0.5 bg-gray-200 text-gray-700 rounded-full text-xs font-medium">
+                      {category.count}
+                    </span>
+                  </div>
 
-                {filteredFaqs
-                  .filter((faq) => faq.category === category.id)
-                  .map((faq) => (
-                    <div
-                      key={faq._id}
-                      className="border border-gray-200 rounded-lg overflow-hidden"
-                    >
-                      <button
-                        onClick={() => toggleItem(faq._id)}
-                        className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors cursor-pointer"
+                  {filteredFaqs
+                    .filter((faq) => faq.category === category.id)
+                    .map((faq) => (
+                      <div
+                        key={faq._id}
+                        className="border border-gray-200 rounded-lg overflow-hidden"
                       >
-                        <span className="text-sm font-medium text-gray-900 text-left">
-                          {faq.question}
-                        </span>
-                        <ChevronRight
-                          className={`text-gray-400 transition-transform ${
-                            expandedItems[faq._id] ? "rotate-90" : ""
-                          }`}
-                          size={18}
-                        />
-                      </button>
+                        <button
+                          onClick={() => toggleItem(faq._id)}
+                          className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors cursor-pointer"
+                        >
+                          <span className="text-sm font-medium text-gray-900 text-left">
+                            {faq.question}
+                          </span>
+                          <ChevronRight
+                            className={`text-gray-400 transition-transform ${
+                              expandedItems[faq._id] ? "rotate-90" : ""
+                            }`}
+                            size={18}
+                          />
+                        </button>
 
-                      {expandedItems[faq._id] && (
-                        <div className="px-4 pb-4 border-t border-gray-200">
-                          <p className="text-sm text-gray-600 mt-4 mb-3">
-                            {faq.answer}
-                          </p>
+                        {expandedItems[faq._id] && (
+                          <div className="px-4 pb-4 border-t border-gray-200">
+                            <p className="text-sm text-gray-600 mt-4 mb-3">
+                              {faq.answer}
+                            </p>
 
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs text-gray-500">
-                              Created: {faq.createdAt?.slice(0, 10)}
-                            </span>
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs text-gray-500">
+                                Created: {faq.createdAt?.slice(0, 10)}
+                              </span>
 
-                            <div className="flex items-center gap-2">
-                              <button
-                                onClick={() => {
-                                  setEditFaq(faq);
-                                  setIsFaqModalOpen(true);
-                                }}
-                                className="flex items-center gap-1 px-3 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded cursor-pointer"
-                              >
-                                <Edit2 size={14} /> Edit
-                              </button>
+                              <div className="flex items-center gap-2">
+                                <button
+                                  onClick={() => {
+                                    setEditFaq(faq);
+                                    setIsFaqModalOpen(true);
+                                  }}
+                                  className="flex items-center gap-1 px-3 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded cursor-pointer"
+                                >
+                                  <Edit2 size={14} /> Edit
+                                </button>
 
-                              <button
-                                onClick={() => handleDelete(faq._id)}
-                                className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded cursor-pointer"
-                              >
-                                <Trash2 size={14} /> Delete
-                              </button>
+                                <button
+                                  onClick={() => handleDelete(faq._id)}
+                                  className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded cursor-pointer"
+                                >
+                                  <Trash2 size={14} /> Delete
+                                </button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-              </div>
-            ))}
-          </div>
+                        )}
+                      </div>
+                    ))}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </CommonSpace>
 
