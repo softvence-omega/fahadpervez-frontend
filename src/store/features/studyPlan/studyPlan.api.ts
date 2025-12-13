@@ -13,7 +13,15 @@ const studyPlanAPI = baseAPI.injectEndpoints({
 
     getStudyPlan: build.query({
       query: () => ({
-        url: "",
+        url: "/study_planner/all",
+        method: "GET",
+      }),
+      providesTags: ["StudyPlan"],
+    }),
+
+    getSingleStudyPlan: build.query({
+      query: (id: string) => ({
+        url: `/study_planner/${id}`,
         method: "GET",
       }),
       providesTags: ["StudyPlan"],
@@ -23,5 +31,8 @@ const studyPlanAPI = baseAPI.injectEndpoints({
   }),
 });
 
-export const { useCreateStudyPlanMutation, useGetStudyPlanQuery } =
-  studyPlanAPI;
+export const {
+  useCreateStudyPlanMutation,
+  useGetStudyPlanQuery,
+  useGetSingleStudyPlanQuery,
+} = studyPlanAPI;

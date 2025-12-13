@@ -334,6 +334,7 @@ export default function CreateStudyPlan() {
           </div>
 
           <button
+            disabled={isLoading}
             type="submit"
             className="w-full flex justify-center gap-4 bg-blue-main text-white py-2 rounded-lg hover:bg-blue-main/70 cursor-pointer"
           >
