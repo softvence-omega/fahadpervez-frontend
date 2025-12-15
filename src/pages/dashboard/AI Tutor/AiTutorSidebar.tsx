@@ -49,7 +49,7 @@ export default function AiTutorSidebar() {
   };
 
   return (
-    <aside className="w-64 bg-white p-4 border-r border-gray-200 flex flex-col h-full">
+    <aside className="w-64 bg-white p-2 rounded border-gray-200 flex flex-col h-full">
       <div className="flex flex-col items-center justify-start mb-6">
         <h1 className="text-xl font-semibold text-start text-[#0A0A0A]">
           Medical AI
