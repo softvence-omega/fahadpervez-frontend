@@ -16,7 +16,7 @@ export default function InputField({ value, onChange, onSend, disabled = false }
     };
 
     return (
-        <div className="flex items-center space-x-2 p-4 border-t border-gray-200">
+        <div className="flex items-center space-x-2 pt-1 border-gray-200 bgwhite">
             <Input
                 type="text"
                 value={value}
@@ -26,7 +26,7 @@ export default function InputField({ value, onChange, onSend, disabled = false }
                 className="flex-1 h-20"
                 disabled={disabled}
             />
-            <Button onClick={onSend} className="bg-blue-500 text-white" disabled={disabled}>Send</Button>
+            <Button onClick={onSend} className="bg-blue-500 hover:bg-blue-600 text-white cursor-pointer" disabled={disabled}>Send</Button>
         </div>
     );
 }

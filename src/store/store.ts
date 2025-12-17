@@ -30,9 +30,12 @@ const persistedStaticContentReducer = persistReducer(
   staticContentSlice
 );
 
+import { bioDigitalExternalAPI } from "./features/bioDigital/bioDigitalExternal.api";
+
 export const store = configureStore({
   reducer: {
     [baseAPI.reducerPath]: baseAPI.reducer,
+    [bioDigitalExternalAPI.reducerPath]: bioDigitalExternalAPI.reducer,
     auth: persistedReducer,
     staticContent: persistedStaticContentReducer,
   },
@@ -41,7 +44,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(baseAPI.middleware),
+    }).concat(baseAPI.middleware).concat(bioDigitalExternalAPI.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -116,12 +116,12 @@ export default function ChatWindow() {
     };
 
     return (
-        <section className="flex-1 flex flex-col p-6 h-full overflow-hidden">
-            <header className="border-b border-gray-200 pb-4 mb-4 shrink-0">
+        <section className="flex-1 flex flex-col pl-6 mb-1 scrollbar-hide h-full overflow-hidden">
+            {/* <header className="border-b border-gray-200 pb-4 mb-4 shrink-0">
                 <h2 className="text-xl font-semibold">AI Tutor</h2>
-            </header>
+            </header> */}
             
-            <div className="flex-1 overflow-y-auto mb-4 custom-scrollbar flex flex-col">
+            <div className="flex-1 overflow-y-auto mb-4 pr-2 custom-scrollbar flex flex-col">
                 {!currentChatId && displayMessages.length === 0 ? (
                     <NewChatPrompt />
                 ) : (
@@ -138,7 +138,7 @@ export default function ChatWindow() {
                                 
                                 {isWaitingForResponse && (
                                     <div className="flex items-start gap-3 mb-4 animate-fadeIn">
-                                        <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold shrink-0">
+                                        <div className="w-8 h-8 rounded-full bg-blue- flex items-center justify-center text-white font-semibold shrink-0">
                                             AI
                                         </div>
                                         <div className="bg-gray-100 p-4 rounded-lg rounded-tl-none">

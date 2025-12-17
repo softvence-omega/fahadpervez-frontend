@@ -83,6 +83,7 @@ export const baseAPI = createApi({
     "StudyPlan",
     "WebSetting",
     "ReportResponse",
+    "BioDigital",
   ],
   endpoints: () => ({}),
 });

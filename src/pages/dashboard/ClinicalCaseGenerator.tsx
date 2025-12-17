@@ -3,11 +3,15 @@ import ClinicalLeaderboard from "@/components/dashboard/clinical-case/ClinicalLe
 import ClinicalProgress from "@/components/dashboard/clinical-case/ClinicalProgress";
 import ClinicalRecommendation from "@/components/dashboard/clinical-case/ClinicalRecommendation";
 import ClinicalWeekPlan from "@/components/dashboard/clinical-case/ClinicalWeekPlan";
+import CreateClinicalCaseModal from "@/components/dashboard/clinical-case/CreateClinicalCaseModal";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { Plus } from "lucide-react";
+import { useState } from "react";
 
 const ClinicalCaseGenerator = () => {
+  const [openModal, setOpenModal] = useState(false);
+
   return (
     <div className="my-10">
       {/* heading */}
@@ -22,7 +26,11 @@ const ClinicalCaseGenerator = () => {
             descFont="text-sm"
           />
         </div>
-        <PrimaryButton icon={<Plus className="w-4 h-4" />} iconPosition="left">
+        <PrimaryButton
+          icon={<Plus className="w-4 h-4" />}
+          iconPosition="left"
+          onClick={() => setOpenModal(true)}
+        >
           Create Clinical Case
         </PrimaryButton>
       </div>
@@ -63,6 +71,10 @@ const ClinicalCaseGenerator = () => {
         {/* cards + pagination */}
         <div></div>
       </div>
+      <CreateClinicalCaseModal
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+      />
     </div>
   );
 };
