@@ -150,7 +150,7 @@ export default function SolveFlashCard() {
             {questions.length} Flashcards • {flashCardData?.subject}
           </p>
 
-          {questions.map((q: any, index: number) => (
+          {/* {questions.map((q: any, index: number) => (
             <div
               key={q?.id}
               className={`p-2 mb-2 rounded cursor-pointer ${
@@ -165,7 +165,7 @@ export default function SolveFlashCard() {
             >
               Card {index + 1}
             </div>
-          ))}
+          ))} */}
         </div>
 
         {/* Flashcard Box */}

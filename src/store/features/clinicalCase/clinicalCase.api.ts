@@ -16,9 +16,36 @@ export const clinicalCaseAPI = baseAPI.injectEndpoints({
       }),
     }),
 
+    generateClinicalCase: build.mutation({
+      query: (caseData: any) => ({
+        url: "/ai_part/create_clinical_case",
+        method: "POST",
+        body: caseData,
+      }),
+    }),
+
+    getAllGeneratedClinicalCases: build.query({
+      query: () => ({
+        url: "/my_content/clinical-case",
+        method: "GET",
+      }),
+    }),
+
+    getSingleGeneratedClinicalCase: build.query({
+      query: (id: string) => ({
+        url: `/my_content/clinical-case/${id}`,
+        method: "GET",
+      }),
+    }),
+    
     // end
   }),
 });
 
-export const { useGetAllClinicalCaseQuery, useGetSingleClinicalCaseQuery } =
-  clinicalCaseAPI;
+export const {
+  useGetAllClinicalCaseQuery,
+  useGetSingleClinicalCaseQuery,
+  useGenerateClinicalCaseMutation,
+  useGetAllGeneratedClinicalCasesQuery,
+  useGetSingleGeneratedClinicalCaseQuery,
+} = clinicalCaseAPI;
