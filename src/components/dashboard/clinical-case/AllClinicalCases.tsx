@@ -9,19 +9,9 @@ import {
 } from "lucide-react";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { useNavigate } from "react-router-dom";
-import { useGetAllClinicalCaseQuery } from "@/store/features/clinicalCase/clinicalCase.api";
+import { useGetAllClinicalCaseQuery, useGetAllGeneratedClinicalCasesQuery } from "@/store/features/clinicalCase/clinicalCase.api";
 import GlobalLoader2 from "@/common/GlobalLoader2";
 import { ClinicalCaseData } from "@/types/clinicalCase";
-
-// interface ClinicalCase {
-//   _id: string;
-//   caseName: string;
-//   caseHistory: string;
-//   topic: string;
-//   isAIGenerated: boolean;
-//   profile_type: string;
-//   status?: "completed" | "available"; // optional fallback
-// }
 
 type TabType = "All Cases" | "AI Generated" | "Complete Cases";
 type FilterOption = string;
@@ -37,11 +27,27 @@ const AllClinicalCases: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const navigate = useNavigate();
-  const { data, isLoading } = useGetAllClinicalCaseQuery(undefined);
 
-  // Extract clinical cases
-  const clinicalCases: ClinicalCaseData[] = useMemo(() => data?.data || [], [data]);
-console.log(clinicalCases)
+  // Fetch Standard Cases
+  const { data: standardData, isLoading: isLoadingStandard } = useGetAllClinicalCaseQuery(undefined, {
+    skip: activeTab === "AI Generated" // Optimization: Skip if on AI Generated tab (optional)
+  });
+
+  // Fetch AI Generated Cases
+  const { data: generatedData, isLoading: isLoadingGenerated } = useGetAllGeneratedClinicalCasesQuery(undefined, {
+    skip: activeTab !== "AI Generated"
+  });
+
+  // Determine which data to display
+  const clinicalCases: ClinicalCaseData[] = useMemo(() => {
+    if (activeTab === "AI Generated") {
+      return generatedData?.data || [];
+    }
+    return standardData?.data || [];
+  }, [activeTab, standardData, generatedData]);
+
+  const isLoading = activeTab === "AI Generated" ? isLoadingGenerated : isLoadingStandard;
+  
   const casesPerPage = 6;
 
   const bodySystemOptions: FilterOption[] = [
@@ -75,13 +81,13 @@ console.log(clinicalCases)
       // filtered = filtered.filter((c) => c.status === "completed");
     }
 
-    // if (searchTerm) {
-    //   filtered = filtered.filter(
-    //     (c) =>
-    //       c.caseName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //       c.caseHistory.toLowerCase().includes(searchTerm.toLowerCase())
-    //   );
-    // }
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (c) =>
+          c.caseTitle?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          c.patientPresentation?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
 
     if (selectedBodySystem !== "All") {
       filtered = filtered.filter((c) => c.topic === selectedBodySystem);
@@ -148,7 +154,9 @@ console.log(clinicalCases)
 
   const CaseCard = ({ caseData }: { caseData: ClinicalCaseData }) => {
     const handleStartCase = () => {
-      navigate(`/dashboard/clinical-case/${caseData._id}`);
+        // Appends ?type=generated if we are in the generated tab
+        const query = activeTab === "AI Generated" ? "?type=generated" : "";
+        navigate(`/dashboard/clinical-case/${caseData._id}${query}`);
     };
 
     return (
