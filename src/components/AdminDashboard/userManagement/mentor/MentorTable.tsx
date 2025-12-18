@@ -1,5 +1,3 @@
-import image from "@/assets/home/image.svg";
-import pdf from "@/assets/home/pdf.png";
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import CommonDropdown from "@/common/custom/CommonDropdown";
 import Pagination from "@/common/custom/Pagination";
@@ -13,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { slugify } from "@/help/help";
+import { useGetMentorsDataQuery } from "@/store/features/adminDashboard/UserManagement/mentorManagementApi";
 import { FC } from "react";
 import { BiSolidEdit } from "react-icons/bi";
 import { IoChevronDownSharp } from "react-icons/io5";
@@ -30,8 +29,8 @@ const tableHeaders = [
   { label: "Name", align: "text-center" },
   { label: "Medical Specialty", align: "text-center xl:table-cell hidden" },
   { label: "Experience", align: "text-center xl:table-cell hidden" },
-  { label: "Documents(Govt id)", align: "text-center lg:table-cell hidden" },
-  { label: "Bank Account", align: "text-center sm:table-cell hidden" },
+  { label: "Institution", align: "text-center lg:table-cell hidden" },
+  { label: "Designation", align: "text-center sm:table-cell hidden" },
   { label: "Action", align: "text-center" },
 ];
 interface AllStudentProfileTable {
@@ -46,7 +45,11 @@ const tableDesign = {
   cell: "border border-border px-4 text-center",
 };
 
-const MentorTable: FC<AllStudentProfileTable> = ({ mentor }) => {
+const MentorTable: FC<AllStudentProfileTable> = () => {
+  const { data } = useGetMentorsDataQuery({});
+
+  const mentors = data?.data?.data ?? [];
+
   return (
     <div>
       <div className="flex items-center justify-between pb-5">
@@ -79,37 +82,38 @@ const MentorTable: FC<AllStudentProfileTable> = ({ mentor }) => {
         </TableHeader>
 
         <TableBody>
-          {mentor.map((p) => (
-            <TableRow key={p.id} className={tableDesign.bodyRow}>
+          {mentors.map((p, i) => (
+            <TableRow key={p._id} className={tableDesign.bodyRow}>
               <TableCell className={`sm:table-cell hidden ${tableDesign.cell}`}>
-                <div>{p.id}</div>
+                <div>{i + 1}</div>
               </TableCell>
               <TableCell className={`${tableDesign.cell}`}>
-                <div>{p.name}</div>
+                <div>
+                  {p.firstName} {p.lastName}
+                </div>
               </TableCell>
               <TableCell
                 className={`xl:table-cell hidden  ${tableDesign.cell}`}
               >
-                <div>{p.Specialty}</div>
+                <div>{p.specialty}</div>
               </TableCell>
               <TableCell className={`xl:table-cell hidden ${tableDesign.cell}`}>
-                <div>{p.experience}</div>
+                <div>{p.professionalExperience}</div>
               </TableCell>
               <TableCell className={`lg:table-cell hidden ${tableDesign.cell}`}>
-                <div className="flex justify-center gap-1">
-                  <img src={pdf} alt="" />
-                  <img src={image} alt="" />
-                </div>
+                <div>{p.hospitalOrInstitute}</div>
               </TableCell>
               <TableCell
                 className={` sm:table-cell hidden ${tableDesign.cell}`}
               >
-                <div>{p.bankAccount}</div>
+                <div>{p.currentRole}</div>
               </TableCell>
               <TableCell className={`${tableDesign.cell}`}>
                 <div className="flex justify-center gap-3  ">
                   <Link
-                    to={`/admin/mentor-profile/${p.id}/${slugify(p.name)}`}
+                    to={`/admin/mentor-profile/${p._id}/${slugify(
+                      p.firstName
+                    )}`}
                     className="text-[#1D4ED8] cursor-pointer"
                   >
                     <LuEye size={24} />
