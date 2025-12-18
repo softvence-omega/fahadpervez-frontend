@@ -27,7 +27,7 @@ const CreateContent = () => {
     (state: RootState) => state.staticContent.contentType
   );
   const studentTypeName = useSelector(
-    (state: RootState) => state.staticContent.studentType
+    (state: RootState) => state.staticContent.profileType
   );
   const dispatch = useAppDispatch();
 

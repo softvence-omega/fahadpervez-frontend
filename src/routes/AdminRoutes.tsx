@@ -8,14 +8,12 @@ import MentorProfile from "@/components/AdminDashboard/userManagement/profile/Me
 import ProfessionalProfile from "@/components/AdminDashboard/userManagement/profile/ProfessionalProfile";
 import StudentProfile from "@/components/AdminDashboard/userManagement/profile/StudentProfile";
 import AdminLayout from "@/Layout/dashboard/AdminLayout";
-import PlatformPerformance from "@/pages/AdminDashboard/analyticAndReport/PlatformPerformance";
 import CreateEvents from "@/pages/AdminDashboard/communityAndEvents/CreateEvents";
 import ResourceManagement from "@/pages/AdminDashboard/contentAndResourse/ResourceManagement";
 
 import ContentManagement from "@/pages/AdminDashboard/contentAndResourse/ContentManagement";
 import AdminDashboard from "@/pages/AdminDashboard/dashboard/AdminDashboard";
 import Faq from "@/pages/AdminDashboard/faq/Faq";
-import MentorsOverview from "@/pages/AdminDashboard/mentorshipManagement/MentorsOverview";
 import Transaction from "@/pages/AdminDashboard/mentorshipManagement/Transaction";
 import CreatePlan from "@/pages/AdminDashboard/planManagement/CreatePlan";
 import Setting from "@/pages/AdminDashboard/settings/Setting";
@@ -104,10 +102,6 @@ const adminRoutes = {
     },
 
     {
-      path: "mentors-overview",
-      element: <MentorsOverview />,
-    },
-    {
       path: "transaction",
       element: <Transaction />,
     },
@@ -127,10 +121,7 @@ const adminRoutes = {
       path: "faq",
       element: <Faq />,
     },
-    {
-      path: "platform-performance",
-      element: <PlatformPerformance />,
-    },
+
     {
       path: "settings",
       element: <Setting />,

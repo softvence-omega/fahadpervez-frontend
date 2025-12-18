@@ -6,7 +6,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Globe } from "lucide-react";
 // import logo from "@/assets/dashboard";
 import profile from "@/assets/home/mentor1.png";
 import CommonWrapper from "@/common/CommonWrapper";
@@ -18,7 +17,6 @@ import { FaRegBell } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 import DashboardSearch from "./DashboardSearch";
 import NotificationIcon from "./NotificationIcon";
-import { languages } from "./data";
 
 interface DashboardHeaderProps {
   sidebarOpen: boolean;
@@ -51,7 +49,7 @@ const DashboardHeader = ({ sidebarOpen }: DashboardHeaderProps) => {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="hidden lg:block">
+          {/* <div className="hidden lg:block">
             <DropdownMenu>
               <DropdownMenuTrigger asChild className="cursor-pointer">
                 <Button variant="ghost" size="sm" className="gap-2">
@@ -71,7 +69,7 @@ const DashboardHeader = ({ sidebarOpen }: DashboardHeaderProps) => {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
+          </div> */}
 
           <NotificationIcon
             className="hidden md:flex"

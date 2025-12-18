@@ -27,6 +27,7 @@ interface StudentTypeModalProps {
   onSubmit: (data: FormData) => void;
   initialData?: FormData;
   isLoading?: boolean;
+  title: string;
 }
 
 const StudentTypeModal: FC<StudentTypeModalProps> = ({
@@ -35,6 +36,7 @@ const StudentTypeModal: FC<StudentTypeModalProps> = ({
   onSubmit,
   initialData,
   isLoading,
+  title,
 }) => {
   const {
     register,
@@ -81,7 +83,7 @@ const StudentTypeModal: FC<StudentTypeModalProps> = ({
       <div className="bg-white rounded-2xl shadow-lg w-full max-w-lg mx-4 p-6 relative">
         <ModalCloseButton onClick={onClose} />
         <FormHeader
-          title={initialData ? "Edit Student Type" : "Add New Student Type"}
+          title={initialData ? `Edit ${title}` : `Add New ${title}`}
           subtitle="Create or update a category of students."
         />
 

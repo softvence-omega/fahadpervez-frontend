@@ -5,7 +5,7 @@ const StudentTop = () => {
     <div>
       <DashboardTopSection
         title="Students Management"
-        description="Manage student and mentor profiles, track activity, and handle mentor-mentee matching."
+        description="Manage student  profiles, track activity, and handle mentor-mentee matching."
       />
     </div>
   );

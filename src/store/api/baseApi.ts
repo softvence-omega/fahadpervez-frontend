@@ -60,6 +60,7 @@ export const baseAPI = createApi({
   tagTypes: [
     "Student",
     "Professional",
+    "professionalsProfile",
     "Mentor",
     "Forum",
     "Questions",
@@ -81,6 +82,7 @@ export const baseAPI = createApi({
     "ResourceBooks",
     "WebSetting",
     "ReportResponse",
+    "professionalType",
   ],
   endpoints: () => ({}),
 });
