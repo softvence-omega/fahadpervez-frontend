@@ -1,8 +1,8 @@
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
-import DashboardSearch from "../../reuseable/DashboardSearch";
-import { MdOutlineFileDownload } from "react-icons/md";
 import CommonDropdown from "@/common/custom/CommonDropdown";
 import { IoChevronDownSharp } from "react-icons/io5";
+import { MdOutlineFileDownload } from "react-icons/md";
+import DashboardSearch from "../../reuseable/DashboardSearch";
 
 const dropdownItems = [
   { label: "Edit" },
@@ -12,7 +12,9 @@ const dropdownItems = [
 const TransactionSearch = () => {
   return (
     <div className="flex flex-col xl:flex-row items-start  lg:items-center justify-between">
-      <DashboardSearch className=" !rounded-none my-5" />
+      <div className=" w-[734px]">
+        <DashboardSearch className=" !rounded-none my-5" />
+      </div>
 
       <div className="flex gap-2">
         <CommonDropdown

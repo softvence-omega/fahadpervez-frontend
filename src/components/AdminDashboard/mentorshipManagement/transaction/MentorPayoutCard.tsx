@@ -10,7 +10,6 @@ interface MentorPayoutProps {
   memberSince: string;
   totalEarnings: number;
   sessions: number;
-  pendingAmount: number;
   lastPayoutDate: string;
   payoutMethod: string;
 }
@@ -22,12 +21,9 @@ const MentorPayoutCard: React.FC<MentorPayoutProps> = ({
   memberSince,
   totalEarnings,
   sessions,
-  pendingAmount,
   lastPayoutDate,
   payoutMethod,
 }) => {
-  const progressPercent = Math.min((pendingAmount / totalEarnings) * 100, 100);
-
   return (
     <div className="w-full border border-border rounded-xl p-4 bg-white space-y-6">
       {/* Top section */}
@@ -74,24 +70,6 @@ const MentorPayoutCard: React.FC<MentorPayoutProps> = ({
           <CommonHeader className="!font-semibold text-[#0A0A0A]">
             {sessions}
           </CommonHeader>
-        </div>
-      </div>
-
-      {/* Pending Progress */}
-      <div>
-        <div className="flex justify-between pb-2">
-          <CommonHeader className="!text-[#717182] !font-normal">
-            Pending
-          </CommonHeader>
-          <CommonHeader className="text-right !text-[#F54900] mt-1">
-            ${pendingAmount.toFixed(2)}
-          </CommonHeader>
-        </div>
-        <div className="relative w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-green-600"
-            style={{ width: `${progressPercent}%` }}
-          />
         </div>
       </div>
 

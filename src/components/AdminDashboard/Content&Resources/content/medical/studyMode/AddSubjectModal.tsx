@@ -9,6 +9,7 @@ import {
   usePostStudyModeTreeMutation,
   useUpdateStudyModeTreeMutation,
 } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import { ContentFor } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
 import { useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
 import { Trash2 } from "lucide-react";
@@ -30,7 +31,8 @@ type System = {
 export type PostStudyModeTree = {
   subjectName: string;
   systems: System[];
-  studentType: string;
+  profileType: string;
+  contentFor: ContentFor;
 };
 
 // Zod validation schema
@@ -63,7 +65,7 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
   const [subjectName, setSubjectName] = useState("");
   const [systems, setSystems] = useState<System[]>([]);
   const [errors, setErrors] = useState<any>({});
-  const { studentType } = useAppSelector(
+  const { profileType, contentFor } = useAppSelector(
     (state: RootState) => state.staticContent
   );
 
@@ -176,10 +178,8 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
 
   useEffect(() => {
     if (initialContent) {
-      // For the new TOCItem, the root title is the subject
       setSubjectName(initialContent.title);
 
-      // Convert children → systems
       const mappedSystems: System[] = (initialContent.children ?? []).map(
         (systemItem) => ({
           name: systemItem.title,
@@ -202,7 +202,8 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
     const payload: PostStudyModeTree = {
       subjectName,
       systems,
-      studentType,
+      profileType,
+      contentFor,
     };
     const validation = postStudyModeTreeSchema.safeParse(payload);
 
@@ -232,7 +233,7 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
   const inputClass = {
     label: "block text-sm font-normal text-[#020617] font-inter mb-2",
     input:
-      "w-full border border-[#CBD5E1] rounded-md p-3 outline-none text-[#94A3B8] text-xs ",
+      "w-full border border-[#CBD5E1] rounded-md p-3 outline-none text-[#94A3B8] text-xs !bg-[#EFF6FF] ",
     error: "text-red-500 text-xs mt-1",
   };
 
@@ -250,8 +251,8 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
             }
           />
 
-          <div>
-            <label className={inputClass.label}>System Name</label>
+          <div className="">
+            <label className={inputClass.label}>Subject Name</label>
             <input
               type="text"
               value={subjectName}

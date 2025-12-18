@@ -1,5 +1,7 @@
 // post study mode tree
 
+import { ContentFor } from "../../../staticContent/staticContentSlice";
+
 type SubTopic = string;
 
 type Topic = {
@@ -15,7 +17,8 @@ type System = {
 export type PostStudyModeTree = {
   subjectName: string;
   systems: System[];
-  studentType: string;
+  profileType: string;
+  contentFor: ContentFor;
 };
 
 // post exam mode tree

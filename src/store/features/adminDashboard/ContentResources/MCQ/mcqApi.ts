@@ -1,5 +1,6 @@
 import { baseAPI } from "@/store/api/baseApi";
 import { DifficultyFilter } from "@/types";
+import { ContentFor } from "../../staticContent/staticContentSlice";
 import {
   AllContentMCQList,
   ClinicalCaseTreeResponse,
@@ -12,7 +13,7 @@ import { SingleMcqData, SingleMCQUpdatePayload } from "./types/singleMcq";
 import { SingleMCQResponse } from "./types/singleMcqBank";
 import { CreateProfileTypePayload, ProfileTypeResponse } from "./types/student";
 import { GetExamsResponse, PostExam, PostStudyModeTree } from "./types/tree";
-import { GetStudyModeTree } from "./types/TreeResponse";
+import { GetStudyModeTree, GetStudyModeTreeParams } from "./types/TreeResponse";
 
 export const mcqApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
@@ -169,11 +170,11 @@ export const mcqApi = baseAPI.injectEndpoints({
       invalidatesTags: ["StudyModeTree"],
     }),
 
-    getStudyModeTree: build.query<GetStudyModeTree, { studentType: string }>({
-      query: ({ studentType }) => ({
+    getStudyModeTree: build.query<GetStudyModeTree, GetStudyModeTreeParams>({
+      query: (params) => ({
         url: `/study_mode_tree/all`,
         method: "GET",
-        params: { studentType },
+        params,
       }),
       providesTags: ["StudyModeTree"],
     }),
@@ -185,8 +186,9 @@ export const mcqApi = baseAPI.injectEndpoints({
       | NotesTreeResponse,
       {
         key: string;
+        contentFor: ContentFor;
+        profileType?: string;
         subject: string;
-        studentType: string;
         system?: string;
         topic?: string;
         subtopic?: string;

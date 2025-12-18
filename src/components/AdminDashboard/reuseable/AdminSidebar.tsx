@@ -2,13 +2,11 @@ import profile from "@/assets/home/mentor1.png";
 import CommonHeader from "@/common/header/CommonHeader";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  BarChart2,
   Calendar,
   CreditCard,
   LayoutDashboard,
   Receipt,
   Settings,
-  UserCheck,
   Users,
 } from "lucide-react";
 import { BiBookAlt } from "react-icons/bi";
@@ -71,12 +69,7 @@ const sidebarItems: SidebarItem[] = [
     section: "Content & Resources",
   },
   // Mentorship
-  {
-    icon: UserCheck,
-    label: "Mentors Overview",
-    path: "/admin/mentors-overview",
-    section: "Mentorship Management",
-  },
+
   {
     icon: Receipt,
     label: "Transaction",
@@ -111,13 +104,7 @@ const sidebarItems: SidebarItem[] = [
     path: "/admin/faq",
     section: "Support System",
   },
-  // Reports
-  {
-    icon: BarChart2,
-    label: "Platform Performance",
-    path: "/admin/platform-performance",
-    section: "Analytics & Report",
-  },
+
   //settings
   {
     icon: Settings,

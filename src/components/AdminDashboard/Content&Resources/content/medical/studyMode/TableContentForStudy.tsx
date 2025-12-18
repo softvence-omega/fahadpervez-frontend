@@ -82,6 +82,7 @@ interface TableContentProps {
   setSelectedNode: React.Dispatch<React.SetStateAction<SelectedNode>>;
   initialContent: TOCItem | null;
   setInitialContent: React.Dispatch<React.SetStateAction<TOCItem | null>>;
+  selectedNode: SelectedNode;
 }
 
 const TableContentForStudy: React.FC<TableContentProps> = ({
@@ -89,12 +90,13 @@ const TableContentForStudy: React.FC<TableContentProps> = ({
   setSelectedNode,
   initialContent,
   setInitialContent,
+  selectedNode,
 }) => {
-  const { studentType } = useAppSelector(
+  const { profileType, contentFor } = useAppSelector(
     (state: RootState) => state.staticContent
   );
   const { data: allStudyModeData } = useGetStudyModeTreeQuery(
-    { studentType },
+    { profileType, contentFor },
     { refetchOnMountOrArgChange: true }
   );
 
@@ -109,7 +111,7 @@ const TableContentForStudy: React.FC<TableContentProps> = ({
         <div className="flex items-center gap-2">
           <img src={preview} className="w-5 h-5" alt="alt" />
           <CommonHeader className="text-[#0A0A0A] !font-arial">
-            Table of Contents
+            Subject for {profileType}
           </CommonHeader>
         </div>
         <button
@@ -128,6 +130,7 @@ const TableContentForStudy: React.FC<TableContentProps> = ({
             depth={0}
             onSelect={setSelectedNode}
             parentNames={{}}
+            selectedNode={selectedNode}
             initialContent={initialContent}
             setInitialContent={setInitialContent}
             openModal={openModal}

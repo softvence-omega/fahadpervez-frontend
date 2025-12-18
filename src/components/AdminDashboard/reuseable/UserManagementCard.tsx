@@ -1,57 +1,146 @@
+import ButtonWithIcon from "@/common/button/ButtonWithIcon";
+import AlertDialogBox from "@/common/custom/AlertDialogBox";
 import CommonHeader from "@/common/header/CommonHeader";
-import { MoreVertical } from "lucide-react";
-import { FC } from "react";
-
-interface StudentType {
-  id: string;
-  name: string;
-  totalYears: number;
-  students: number;
-}
-
-const studentTypes: StudentType[] = [
-  { id: "1", name: "Medical", totalYears: 6, students: 1547 },
-  { id: "2", name: "Nursing", totalYears: 4, students: 892 },
-  { id: "3", name: "Dental", totalYears: 5, students: 408 },
-];
+import {
+  useCreateStudentTypeApiMutation,
+  useDeleteStudentTypeApiMutation,
+  useGetStudentTypeApiQuery,
+  useUpdateStudentTypeApiMutation,
+} from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import { FC, useState } from "react";
+import { FaPlus } from "react-icons/fa";
+import { RiDeleteBinLine } from "react-icons/ri";
+import { TbEdit } from "react-icons/tb";
+import StudentTypeModal from "../userManagement/student/studentProfile/StudentTypeModal";
 
 const UserManagementCard: FC = () => {
+  const { data: studentTypeData } = useGetStudentTypeApiQuery();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [studentType, setStudentType] = useState<{
+    typeName: string;
+    _id?: string;
+  } | null>(null);
+
+  const [createStudentTypeApi, { isLoading: isCreating }] =
+    useCreateStudentTypeApiMutation();
+  const [updateStudentTypeApi, { isLoading: isUpdating }] =
+    useUpdateStudentTypeApiMutation();
+  const [deleteStudentTypeApi] = useDeleteStudentTypeApiMutation();
+
+  // Open modal for editing
+  const handleEdit = (data: { typeName: string; _id: string }) => {
+    setStudentType(data);
+    setIsModalOpen(true);
+  };
+
+  // Open modal for creating
+  const handleCreate = () => {
+    setStudentType(null);
+    setIsModalOpen(true);
+  };
+
+  // Create or Update submit
+  const handleSubmit = async (data: { typeName: string }) => {
+    const { typeName } = data;
+    try {
+      if (studentType?._id) {
+        await updateStudentTypeApi({ _id: studentType._id, typeName }).unwrap();
+      } else {
+        await createStudentTypeApi({ typeName }).unwrap();
+      }
+
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error("Error creating/updating student type:", err);
+    }
+  };
+
+  // loading
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const handleDelete = async (_id: string) => {
+    try {
+      setDeletingId(_id);
+      await deleteStudentTypeApi(_id).unwrap();
+      setDeletingId(null);
+    } catch (err) {
+      console.error("Error deleting student type:", err);
+      setDeletingId(null);
+    }
+  };
   return (
     <div className="">
       <div className="flex justify-between items-center mb-6">
         <CommonHeader>Student Types</CommonHeader>
+        <ButtonWithIcon
+          onClick={handleCreate}
+          icon={FaPlus}
+          className="w-full md:w-auto flex justify-center  flex-shrink-0 "
+        >
+          Add Student
+        </ButtonWithIcon>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {studentTypes.map((type) => (
+        {studentTypeData?.data?.map((student) => (
           <div
-            key={type.id}
+            key={student._id}
             className="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-all"
           >
             <div className="flex justify-between items-start mb-6">
-              <CommonHeader className="">{type.name}</CommonHeader>
-              <button className="text-gray-500 hover:text-gray-700">
-                <MoreVertical className="w-5 h-5" />
-              </button>
+              <CommonHeader className="">{student.typeName}</CommonHeader>
+
+              <div className="flex  gap-2">
+                <span
+                  className="cursor-pointer"
+                  onClick={() => handleEdit(student)}
+                >
+                  <TbEdit size={20} className="text-[#030213]" />
+                </span>
+                <AlertDialogBox
+                  trigger={
+                    <RiDeleteBinLine
+                      size={20}
+                      className="text-[#030213] hover:text-red-600 transition-colors duration-200 cursor-pointer"
+                    />
+                  }
+                  action={async () => handleDelete(student._id)}
+                  title="Delete Student Type"
+                  description="Are you sure you want to delete this student type?"
+                  isLoading={deletingId === student._id || false}
+                />
+              </div>
             </div>
 
             <div className="space-y-3 text-sm">
               <div className="flex justify-between text-gray-600">
-                <span>Total Years:</span>
+                <span>Total users:</span>
                 <span className="text-gray-900 font-medium">
-                  {type.totalYears} years
+                  {student.totalStudent}
                 </span>
               </div>
               <div className="flex justify-between text-gray-600">
-                <span>Students:</span>
+                <span> Content Items:</span>
                 <span className="text-gray-900 font-medium">
-                  {type.students}
+                  {student.totalContent}
                 </span>
               </div>
             </div>
           </div>
         ))}
       </div>
+
+      {isModalOpen && (
+        <StudentTypeModal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          initialData={studentType ?? undefined}
+          onSubmit={handleSubmit}
+          isLoading={isCreating || isUpdating}
+          title={"Student Type"}
+        />
+      )}
     </div>
   );
 };
