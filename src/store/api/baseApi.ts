@@ -62,6 +62,7 @@ export const baseAPI = createApi({
     "Professional",
     "professionalsProfile",
     "Mentor",
+    "mentorsProfile",
     "Forum",
     "Questions",
     "SocialPost",

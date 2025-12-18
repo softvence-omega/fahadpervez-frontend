@@ -1,37 +1,34 @@
 import { baseAPI } from "@/store/api/baseApi";
-import {
-  GetStudentsParams,
-  GetStudentsResponse,
-  StudentItem,
-} from "./type/student/Students";
+import { GetMentorsResponse } from "./type/mentor/mentor";
+import { GetStudentsParams } from "./type/student/Students";
 
 export const mentorManagementApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
-    getProfessionalsData: build.query<GetStudentsResponse, GetStudentsParams>({
+    getMentorsData: build.query<GetMentorsResponse, GetStudentsParams>({
       query: (params) => ({
-        url: `/admin/professionals`,
+        url: `/admin/mentors`,
         method: "GET",
         params,
       }),
-      providesTags: ["Professional"],
+      providesTags: ["mentorsProfile"],
     }),
 
-    getSingleProfessionals: build.query<StudentItem, string>({
+    getSingleMentor: build.query<any, string>({
       query: (id) => ({
-        url: `/admin/student/${id}`,
+        url: `/admin/mentor/${id}`,
         method: "GET",
       }),
       transformResponse: (response: {
         success: boolean;
         message: string;
-        data: StudentItem;
+        data: any;
       }) => response.data,
-      providesTags: ["Professional"],
+      providesTags: ["mentorsProfile"],
     }),
 
-    deleteSingleProfessional: build.mutation<void, string>({
+    deleteSingleMentor: build.mutation<void, string>({
       query: (id) => ({
-        url: `/admin/student/${id}`,
+        url: `/admin/mentor/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Professional"],
@@ -42,7 +39,7 @@ export const mentorManagementApi = baseAPI.injectEndpoints({
 });
 
 export const {
-  useGetProfessionalsDataQuery,
-  useGetSingleProfessionalsQuery,
-  useDeleteSingleProfessionalMutation,
+  useGetMentorsDataQuery,
+  useGetSingleMentorQuery,
+  useDeleteSingleMentorMutation,
 } = mentorManagementApi;

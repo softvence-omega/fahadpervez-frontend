@@ -3,12 +3,12 @@ import { baseAPI } from "@/store/api/baseApi";
 import {
   GetStudentsParams,
   GetStudentsResponse,
-  StudentItem,
 } from "./type/student/Students";
+import { DashboardResponse } from "./type/student/overview";
 
 export const studentsManagementApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
-    getDashboardData: build.query<any, void>({
+    getDashboardData: build.query<DashboardResponse, void>({
       query: () => ({
         url: "/admin/overview",
         method: "GET",
@@ -24,7 +24,7 @@ export const studentsManagementApi = baseAPI.injectEndpoints({
       providesTags: ["Student"],
     }),
 
-    getSingleStudents: build.query<StudentItem, string>({
+    getSingleStudents: build.query<any, string>({
       query: (id) => ({
         url: `/admin/student/${id}`,
         method: "GET",
@@ -32,7 +32,7 @@ export const studentsManagementApi = baseAPI.injectEndpoints({
       transformResponse: (response: {
         success: boolean;
         message: string;
-        data: StudentItem;
+        data: any;
       }) => response.data,
       providesTags: ["Student"],
     }),
