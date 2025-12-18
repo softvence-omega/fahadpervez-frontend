@@ -62,16 +62,7 @@ const AllStudentProfileTable = () => {
     search,
   });
 
-  const students =
-    data?.data.map((item, idx) => ({
-      id: idx + 1 + (page - 1) * limit,
-      _id: item._id,
-      name: item.profile_id.firstName,
-      university: item.profile_id.university || "-",
-      year: item.profile_id.year_of_study || "-",
-      prepping: item.profile_id.preparingFor || "-",
-      subject: item.profile_id.preference?.subject || "-",
-    })) || [];
+  const students = data?.data || [];
 
   const [deleteSingleStudent, { isLoading: isDeleting }] =
     useDeleteSingleStudentMutation();
@@ -130,40 +121,40 @@ const AllStudentProfileTable = () => {
           </TableHeader>
 
           <TableBody>
-            {students.map((p) => (
-              <TableRow key={p.id} className={tableDesign.bodyRow}>
+            {students.map((p, i) => (
+              <TableRow key={p._id} className={tableDesign.bodyRow}>
                 <TableCell
                   className={`${tableDesign.cell} lg:table-cell hidden`}
                 >
-                  <div>{p.id}</div>
+                  <div>{i + 1}</div>
                 </TableCell>
                 <TableCell className={`${tableDesign.cell}`}>
-                  <div>{p.name}</div>
+                  <div>{p.profile_id.firstName}</div>
                 </TableCell>
                 <TableCell
                   className={`${tableDesign.cell} md:table-cell hidden`}
                 >
-                  <div>{p.university}</div>
+                  <div>{p.profile_id.university}</div>
                 </TableCell>
                 <TableCell
                   className={`xl:table-cell hidden ${tableDesign.cell}`}
                 >
-                  <div>{p.year}</div>
+                  <div>{p.profile_id.year_of_study}</div>
                 </TableCell>
                 <TableCell
                   className={`${tableDesign.cell} lg:table-cell hidden`}
                 >
-                  <div>{p.prepping}</div>
+                  <div>{p.accountStatus}</div>
                 </TableCell>
                 <TableCell
                   className={`xl:table-cell hidden ${tableDesign.cell}`}
                 >
-                  <div>{p.subject}</div>
+                  <div>{p.email}</div>
                 </TableCell>
                 <TableCell className={`${tableDesign.cell}`}>
                   <div className="flex justify-center gap-3">
                     <Link
-                      to={`/admin/student-profile/${p._id}/${slugify(p.name)}`}
+                      to={`/admin/student-profile/${p._id}/${slugify(p.email)}`}
                       className="text-[#1D4ED8] cursor-pointer"
                     >
                       <LuEye size={24} />

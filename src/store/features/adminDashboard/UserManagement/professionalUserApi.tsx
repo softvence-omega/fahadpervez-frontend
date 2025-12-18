@@ -2,7 +2,6 @@ import { baseAPI } from "@/store/api/baseApi";
 import {
   GetStudentsParams,
   GetStudentsResponse,
-  StudentItem,
 } from "./type/student/Students";
 
 export const professionalUserApi = baseAPI.injectEndpoints({
@@ -16,7 +15,7 @@ export const professionalUserApi = baseAPI.injectEndpoints({
       providesTags: ["professionalsProfile"],
     }),
 
-    getSingleProfessional: build.query<StudentItem, string>({
+    getSingleProfessional: build.query<any, string>({
       query: (id) => ({
         url: `/admin/professional/${id}`,
         method: "GET",
@@ -24,7 +23,7 @@ export const professionalUserApi = baseAPI.injectEndpoints({
       transformResponse: (response: {
         success: boolean;
         message: string;
-        data: StudentItem;
+        data: any;
       }) => response.data,
       providesTags: ["professionalsProfile"],
     }),
