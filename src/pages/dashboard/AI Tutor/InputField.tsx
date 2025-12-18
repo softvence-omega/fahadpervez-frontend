@@ -7,15 +7,16 @@ interface InputFieldProps {
     value: string;
     onChange: (value: string) => void;
     onSend: () => void;
+    disabled?: boolean;
 }
 
-export default function InputField({ value, onChange, onSend }: InputFieldProps) {
+export default function InputField({ value, onChange, onSend, disabled = false }: InputFieldProps) {
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') onSend();
     };
 
     return (
-        <div className="flex items-center space-x-2 p-4 border-t border-gray-200">
+        <div className="flex items-center space-x-2 pt-1 border-gray-200 bgwhite">
             <Input
                 type="text"
                 value={value}
@@ -23,8 +24,9 @@ export default function InputField({ value, onChange, onSend }: InputFieldProps)
                 onKeyPress={handleKeyPress}
                 placeholder="Type your message..."
                 className="flex-1 h-20"
+                disabled={disabled}
             />
-            <Button onClick={onSend} className="bg-blue-500 text-white">Send</Button>
+            <Button onClick={onSend} className="bg-blue-500 hover:bg-blue-600 text-white cursor-pointer" disabled={disabled}>Send</Button>
         </div>
     );
 }

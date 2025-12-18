@@ -27,8 +27,10 @@ export const GoalModal: React.FC<ModalProps> = ({
         className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
-          <h2 className="text-xl font-semibold">{isEditMode ? "Update Your Goal" : "Create Your Goal"}</h2>
+        <div className="sticky top-0 bg-white px-6 py-4 flex justify-between items-center">
+          <h2 className="text-xl font-semibold">
+            {isEditMode ? "Update Your Preference" : "Create Your Preference"}
+          </h2>
 
           <button
             onClick={onClose}
@@ -66,7 +68,9 @@ export const Step1: React.FC<Step1Props> = ({
       <h3 className="text-lg font-semibold mb-4">Setup Duration</h3>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-2">Goal name</label>
+        <label className="block text-sm font-medium mb-2">
+          Preference name
+        </label>
         <input
           type="text"
           placeholder="e.g., Final Year MBBS Preparation"
@@ -398,7 +402,7 @@ export const Step3: React.FC<Step3Props> = ({
           onClick={onCreate}
           className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
         >
-          {isEditMode ? "Update Goal" : "Create Goal"}
+          {isEditMode ? "Update Preference" : "Create Preference"}
         </button>
       </div>
     </div>

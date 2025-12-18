@@ -10,6 +10,21 @@ export const flashCardAPI = baseAPI.injectEndpoints({
       }),
     }),
 
+    generateAiFlashCard: build.mutation({
+      query: (data) => ({
+        url: "/ai_part/generate-flashcard",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    getGeneratedFlashCard: build.query({
+      query: () => ({
+        url: "/my_content/flashcard",
+        method: "GET",
+      }),
+    }),
+
     getAllFlashCard: build.query({
       query: () => ({
         url: "/flash-card",
@@ -20,6 +35,13 @@ export const flashCardAPI = baseAPI.injectEndpoints({
     getSingleFlashCard: build.query({
       query: (id: string) => ({
         url: `/flash-card/single/${id}`,
+        method: "GET",
+      }),
+    }),
+
+    getSingleGeneratedFlashCard: build.query({
+      query: (id: string) => ({
+        url: `/my_content/flashcard/${id}`,
         method: "GET",
       }),
     }),
@@ -67,9 +89,12 @@ export const flashCardAPI = baseAPI.injectEndpoints({
 
 export const {
   useCreateFlashCardMutation,
+  useGenerateAiFlashCardMutation,
+  useGetGeneratedFlashCardQuery,
   useGetAllFlashCardQuery,
   useGetSingleFlashCardQuery,
   useUpdateFlashCardMutation,
   useDeleteFlashCardMutation,
   useGetFlashCardBankQuery,
+  useGetSingleGeneratedFlashCardQuery,
 } = flashCardAPI;

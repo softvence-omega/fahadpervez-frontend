@@ -19,7 +19,7 @@ const baseQueryAPI = fetchBaseQuery({
 const baseQueryWithToasts: typeof baseQueryAPI = async (
   args,
   api,
-  extraOptions
+  extraOptions: any
 ) => {
   const result = await baseQueryAPI(args, api, extraOptions);
 
@@ -33,7 +33,7 @@ const baseQueryWithToasts: typeof baseQueryAPI = async (
       "message" in result.data
     ) {
       const message = (result.data as { message?: string }).message;
-      if (message) {
+      if (message && !extraOptions?.silent) {
         if (method === "DELETE") {
           toast.warning(message);
         } else {
@@ -76,13 +76,16 @@ export const baseAPI = createApi({
     "OSCE",
     "PricePlan",
     "Goal",
+    "AITutor",
     "Faq",
     "Event",
     "ResourceCarrier",
     "ResourceBooks",
+    "StudyPlan",
     "WebSetting",
     "ReportResponse",
     "professionalType",
+    "BioDigital",
   ],
   endpoints: () => ({}),
 });

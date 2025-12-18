@@ -4,7 +4,7 @@ import ClinicalCaseGenerator from "@/pages/dashboard/ClinicalCaseGenerator";
 import Courses from "@/pages/dashboard/Courses";
 import CreateNotes from "@/pages/dashboard/downloadNotes/CreateNotes";
 import DashboardHome from "@/pages/dashboard/DashboardHome";
-import DiagramExplorer from "@/pages/dashboard/DiagramExplorer";
+// import DiagramExplorer from "@/pages/dashboard/DiagramExplorer";
 import DownloadNotes from "@/pages/dashboard/downloadNotes/DownloadNotes";
 import FlashcardPage from "@/pages/dashboard/flashcard/FlashcardPage";
 import GamifiedLearning from "@/pages/dashboard/gamifiedLearning/GamifiedLearning";
@@ -30,7 +30,7 @@ import WeeklyPlan from "@/pages/dashboard/study plan/WeeklyPlan";
 import EditStudentProfile from "@/pages/dashboard/student profile/EditStudentProfile";
 import DailyChallenge from "@/pages/dashboard/gamifiedLearning/DailyChallenge";
 import PracticeMCQ from "@/pages/dashboard/mcqBank/PracticeMCQ";
-import DiagramDetails from "@/components/dashboard/diagram/DiagramDetails";
+// import DiagramDetails from "@/components/dashboard/diagram/DiagramDetails";
 import OSCE from "@/pages/dashboard/OSCE";
 import DrugCard from "@/pages/dashboard/DrugCard";
 import YourDrugCard from "@/components/dashboard/drug card/YourDrugCard";
@@ -57,6 +57,8 @@ import StudentProfile from "@/pages/dashboard/student profile/StudentProfile";
 import PrivateRoute from "./PrivateRoute";
 // import MCQPracticeWithSidebar from "@/pages/dashboard/mcqBank/newMCQBank/MCQPracticeWithSidebar";
 // import MCQPracticeWithSidebar from "@/components/Test";
+import BioDigitalExplorer from "@/pages/dashboard/bio-digital/Explorer";
+import BioDigitalDetailView from "@/pages/dashboard/bio-digital/DetailView";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -165,11 +167,19 @@ const dashboardRoutes = {
     },
     {
       path: "diagram-explorer",
-      element: <DiagramExplorer />,
+      element: <BioDigitalExplorer />,
     },
     {
-      path: "diagram-details",
-      element: <DiagramDetails />,
+      path: "bio-digital", // Alias for easier access if they want
+      element: <BioDigitalExplorer />,
+    },
+    {
+      path: "bio-digital/details",
+      element: <BioDigitalDetailView />,
+    },
+    {
+      path: "diagram-details", // Maintained for backward compatibility link
+      element: <BioDigitalDetailView />,
     },
     {
       path: "courses",

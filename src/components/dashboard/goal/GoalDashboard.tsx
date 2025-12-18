@@ -15,7 +15,7 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
           className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center gap-2 cursor-pointer"
         >
           <PencilLine className="w-4 h-4" />
-          Change Goal
+          Change Your Preference
         </button>
       </div>
 
@@ -37,7 +37,8 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
           <div>
             <div className="text-sm text-gray-600">Time Left</div>
             <div className="font-semibold">
-              {goal.daysLeft} days remaining ({goal.remainingHours} hrs)
+              {goal.daysLeft} {goal.daysLeft === 1 ? "day" : "days"} (
+              {goal.remainingHours} hrs) remaining
             </div>
           </div>
         </div>
@@ -48,9 +49,7 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
           {/* </div> */}
           <div>
             <div className="text-sm text-gray-600">Daily Target</div>
-            <div className="font-semibold">
-              {goal.studyHoursPerDay} hrs/ 5 hrs
-            </div>
+            <div className="font-semibold">{goal.studyHoursPerDay} hrs</div>
           </div>
         </div>
       </div>
@@ -77,7 +76,9 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
             ></div>
             <div
               className="bg-blue-300 h-full"
-              style={{ width: `${goal.progressPercentage - (goal.accuracy || 0)}%` }}
+              style={{
+                width: `${goal.progressPercentage - (goal.accuracy || 0)}%`,
+              }}
             ></div>
           </div>
         </div>

@@ -4,7 +4,6 @@ import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import mcqBankImg from "@/assets/dashboard/MCQ Bank img.png";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
-import { Link } from "react-router-dom";
 import { Clock10, Cog, FileText, Plus, Search, Target } from "lucide-react";
 import TestOverviewCard from "@/components/reusable/TestOverviewCard";
 import { useGllMCQBankQuery } from "@/store/features/MCQBank/MCQBank.api";
@@ -203,16 +202,16 @@ const McqBank = () => {
                         {/* ))} */}
                       </div>
                     </div>
-                    <p className="text-sm text-slate-700 mt-2">
+                    {/* <p className="text-sm text-slate-700 mt-2">
                       Uploaded By: {mcq.uploadedBy}
-                    </p>
+                    </p> */}
                   </div>
                 </div>
-                <Link to={`/dashboard/practice-mcq/${mcq?._id}`}>
+                {/* <Link to={`/dashboard/practice-mcq/${mcq?._id}`}>
                   <button className="text-blue-main font-medium hover:underline cursor-pointer">
                     Start Now
                   </button>
-                </Link>
+                </Link> */}
               </div>
             </div>
           ))}

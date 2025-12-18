@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, BadgeHelp } from "lucide-react";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types";
-import { Link, useParams } from "react-router-dom";
-import { useGetSingleFlashCardQuery } from "@/store/features/flashCard/flashCard.api";
-import { IFlashcardBank } from "@/types";
+import { Link, useLocation, useParams } from "react-router-dom";
+import {
+  useGetSingleFlashCardQuery,
+  useGetSingleGeneratedFlashCardQuery,
+} from "@/store/features/flashCard/flashCard.api";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import GlobalLoader2 from "@/common/GlobalLoader2";
 
@@ -16,15 +18,52 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function SolveFlashCard() {
   const { id } = useParams();
-  const { data, isLoading } = useGetSingleFlashCardQuery(id as string);
-
+  const location = useLocation();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
 
-  if (isLoading) return <GlobalLoader2 />;
+  // 🔥 Get flashcard data from navigate() state
+  const stateFlashcardData = location.state?.flashCardData;
+  const source = location.state?.source || "all";
 
-  const flashCardData: IFlashcardBank = data?.data;
+  // console.log("SolveFlashCard State Data:", stateFlashcardData);
+  // console.log("SolveFlashCard ID:", id);
+  // console.log("SolveFlashCard Source:", source);
+
+  // 🔥 Do NOT call API if we already have state data
+  // Call standard API if source is 'all' (and no pre-loaded data)
+  const { data: standardData, isLoading: isStandardLoading } =
+    useGetSingleFlashCardQuery(id as string, {
+      skip: !!stateFlashcardData || source === "generated",
+    });
+
+  // Call generated API if source is 'generated' (and no pre-loaded data)
+  const { data: generatedData, isLoading: isGeneratedLoading } =
+    useGetSingleGeneratedFlashCardQuery(id as string, {
+      skip: !!stateFlashcardData || source !== "generated",
+    });
+
+  const isLoading = isStandardLoading || isGeneratedLoading;
+
+  // 🔥 Final data from either source
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let flashCardData: any =
+    stateFlashcardData ||
+    (source === "generated" ? generatedData?.data : standardData?.data);
+
+  // Handle case where it's a direct array (fallback for legacy/direct data)
+  if (Array.isArray(flashCardData)) {
+    flashCardData = {
+      flashCards: flashCardData,
+      title: "Generated Session",
+      subject: "AI Generated",
+    };
+  }
+
+  // console.log("Final FlashCard Data to Render:", flashCardData);
+
+  if (!flashCardData && isLoading) return <GlobalLoader2 />;
 
   if (
     !flashCardData ||
@@ -34,7 +73,8 @@ export default function SolveFlashCard() {
     return <p>No flashcards found.</p>;
   }
 
-  const questions = flashCardData.flashCards.map((fc) => ({
+  // Convert API/state data into usable format
+  const questions = flashCardData.flashCards.map((fc: any) => ({
     id: fc?.flashCardId,
     tag: fc?.difficulty,
     text: fc?.frontText,
@@ -43,11 +83,7 @@ export default function SolveFlashCard() {
     image: fc?.image,
   }));
 
-  if (!questions || questions.length === 0) {
-    return <p>No flashcards available.</p>;
-  }
-
-  // Navigation
+  // Navigation functions
   const handlePrevious = () => {
     if (currentQuestion > 0) {
       setIsFlipped(false);
@@ -56,7 +92,7 @@ export default function SolveFlashCard() {
   };
 
   const handleNext = () => {
-    if (currentQuestion < questions?.length - 1) {
+    if (currentQuestion < questions.length - 1) {
       setIsFlipped(false);
       setCurrentQuestion((prev) => prev + 1);
     } else {
@@ -64,6 +100,7 @@ export default function SolveFlashCard() {
     }
   };
 
+  // Completion screen
   if (isCompleted) {
     return (
       <div className="min-h-screen flex flex-col justify-center items-center text-center p-6">
@@ -91,11 +128,6 @@ export default function SolveFlashCard() {
         <Breadcrumb breadcrumbs={breadcrumbs} />
       </div>
 
-      {/* <h1 className="text-xl font-bold mb-1">{flashCardData?.title}</h1>
-      <p className="text-sm text-gray-600 mb-4">
-        Flip the card to check the correct answer.
-      </p> */}
-
       <div className="flex items-start gap-3 mb-4">
         <Link to={"/dashboard/flashcard-page"} className="mt-0.5">
           <ArrowLeft />
@@ -107,7 +139,6 @@ export default function SolveFlashCard() {
           description="Flip the card to check the correct answer."
           descColor="text-[#4A5565]"
           descSize="text-sm"
-          className=""
         />
       </div>
 
@@ -116,10 +147,10 @@ export default function SolveFlashCard() {
         <div className="w-full md:w-1/4 bg-white p-4 rounded-lg shadow">
           <h2 className="font-semibold mb-2">{flashCardData?.title}</h2>
           <p className="text-sm text-gray-600 mb-4">
-            {questions?.length} Flashcards • {flashCardData?.subject}
+            {questions.length} Flashcards • {flashCardData?.subject}
           </p>
 
-          {questions?.map((q, index) => (
+          {/* {questions.map((q: any, index: number) => (
             <div
               key={q?.id}
               className={`p-2 mb-2 rounded cursor-pointer ${
@@ -134,7 +165,7 @@ export default function SolveFlashCard() {
             >
               Card {index + 1}
             </div>
-          ))}
+          ))} */}
         </div>
 
         {/* Flashcard Box */}
@@ -159,7 +190,7 @@ export default function SolveFlashCard() {
             {/* Front */}
             <div className="absolute w-full h-full flex flex-col justify-center items-center p-6 backface-hidden">
               <span className="absolute top-3 left-3 text-xs font-semibold text-white bg-slate-600 py-1 px-2 rounded-r-3xl rounded-l-3xl">
-                {questions?.[currentQuestion]?.tag}
+                {questions[currentQuestion]?.tag}
               </span>
 
               <div className="text-center">
@@ -169,9 +200,17 @@ export default function SolveFlashCard() {
                 <p className="text-lg text-black font-medium mt-4 mb-3">
                   Question
                 </p>
-                <img src={questions?.[currentQuestion]?.image} alt="" className="w-[300px] h-[150px] mb-2 rounded object-cover"/>
+
+                {questions[currentQuestion]?.image && (
+                  <img
+                    src={questions[currentQuestion]?.image}
+                    alt=""
+                    className="w-[300px] h-[150px] mb-2 rounded object-cover mx-auto"
+                  />
+                )}
+
                 <p className="text-center">
-                  {questions?.[currentQuestion]?.text}
+                  {questions[currentQuestion]?.text}
                 </p>
               </div>
             </div>
@@ -179,9 +218,20 @@ export default function SolveFlashCard() {
             {/* Back */}
             <div className="absolute w-full h-full flex flex-col justify-center items-center p-6 bg-blue-50 rounded-xl rotate-y-180 backface-hidden">
               <h3 className="text-blue-600 font-semibold mb-2">Answer</h3>
-              <p className="text-center text-lg">
-                {questions?.[currentQuestion]?.answer}
+              <p className="text-center text-lg mb-6">
+                {questions[currentQuestion]?.answer}
               </p>
+
+              {questions[currentQuestion]?.explanation && (
+                <div className="w-full mt-2 pl-4 border-l-4 border-blue-200 text-left">
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">
+                    Explanation
+                  </p>
+                  <p className="text-sm text-slate-600 leading-relaxed italic">
+                    {questions[currentQuestion]?.explanation}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -195,7 +245,7 @@ export default function SolveFlashCard() {
               <div></div>
             )}
 
-            {currentQuestion < questions?.length - 1 ? (
+            {currentQuestion < questions.length - 1 ? (
               <Button onClick={handleNext}>Next</Button>
             ) : (
               <Button

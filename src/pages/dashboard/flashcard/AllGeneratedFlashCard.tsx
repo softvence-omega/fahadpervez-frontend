@@ -33,17 +33,19 @@ export default function AllGeneratedFlashCard({
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {flashcardBanks?.map((flashcard: IFlashcardBank, idx: number) => (
-                <FlashCard key={idx} {...flashcard} />
+                <FlashCard key={idx} {...flashcard} source="all" />
               ))}
             </div>
           )}
         </div>
         <div className="mt-6">
-          <Pagination
-            totalPages={totalPages}
-            currentPage={page}
-            onPageChange={handlePageChange}
-          />
+          {totalPages > 1 && (
+            <Pagination
+              totalPages={totalPages}
+              currentPage={page}
+              onPageChange={handlePageChange}
+            />
+          )}
         </div>
       </div>
     </div>

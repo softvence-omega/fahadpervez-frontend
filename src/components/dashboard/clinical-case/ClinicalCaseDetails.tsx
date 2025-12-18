@@ -13,8 +13,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useGetSingleClinicalCaseQuery } from "@/store/features/clinicalCase/clinicalCase.api";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useGetSingleClinicalCaseQuery, useGetSingleGeneratedClinicalCaseQuery } from "@/store/features/clinicalCase/clinicalCase.api";
 import GlobalLoader from "@/common/GlobalLoader";
 import { ClinicalCaseData } from "@/types/clinicalCase";
 // import { ClinicalCaseData } from "@/types/clinicalCase.types";
@@ -36,28 +36,35 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
 
   const [activeTab, setActiveTab] = useState("history");
 
-  // Refs for each section
-  const presentationRef = useRef<HTMLDivElement>(
-    null
-  ) as React.RefObject<HTMLDivElement>;
-  const historyRef = useRef<HTMLDivElement>(
-    null
-  ) as React.RefObject<HTMLDivElement>;
-  const vitalsRef = useRef<HTMLDivElement>(
-    null
-  ) as React.RefObject<HTMLDivElement>;
-  const labsRef = useRef<HTMLDivElement>(
-    null
-  ) as React.RefObject<HTMLDivElement>;
-  const imagingRef = useRef<HTMLDivElement>(
-    null
-  ) as React.RefObject<HTMLDivElement>;
+  // ... (refs remain same, omitting for brevity in diff but will be preserved)
+  const presentationRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
+  const historyRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
+  const vitalsRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
+  const labsRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
+  const imagingRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
+
 
   const { id } = useParams();
-  const { data, isLoading, error } = useGetSingleClinicalCaseQuery(
-    id as string
+  const [searchParams] = useSearchParams();
+  const caseType = searchParams.get("type"); // "generated" or null/undefined
+  
+  const isGenerated = caseType === "generated";
+
+  // Standard Query
+  const { data: standardData, isLoading: isLoadingStandard, error: errorStandard } = useGetSingleClinicalCaseQuery(
+    id as string, { skip: isGenerated }
   );
-  const clinicalCase = data?.data as ClinicalCaseData;
+
+  // Generated Query
+  const { data: generatedData, isLoading: isLoadingGenerated, error: errorGenerated } = useGetSingleGeneratedClinicalCaseQuery(
+     id as string, { skip: !isGenerated }
+  );
+
+  const isLoading = isGenerated ? isLoadingGenerated : isLoadingStandard;
+  const error = isGenerated ? errorGenerated : errorStandard;
+  
+  // Combine data source
+  const clinicalCase = (isGenerated ? generatedData?.data : standardData?.data) as ClinicalCaseData;
 
   const navigate = useNavigate();
 
@@ -80,7 +87,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
 
   const handleMakeDecision = (): void => {
     console.log("Make Your Decision clicked");
-    navigate(`/dashboard/clinical-case/${id}/make-decision`);
+    navigate(`/dashboard/clinical-case/${id}/make-decision${isGenerated ? "?type=generated" : ""}`);
   };
 
   const handleQuickAction = (action: string): void => {
