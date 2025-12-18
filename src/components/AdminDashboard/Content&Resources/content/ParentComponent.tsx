@@ -1,25 +1,28 @@
 import CommonSpace from "@/common/space/CommonSpace";
 import DashboardTopSection from "@/components/AdminDashboard/reuseable/DashboardTopSection";
 import Tabs from "@/components/AdminDashboard/reuseable/Tabs";
+import {
+  ContentModeType,
+  setContentModeType,
+} from "@/store/features/adminDashboard/staticContent/staticContentSlice";
 import { useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
-import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import ExamMode from "./medical/examMode/ExamMode";
 import StudyMode from "./medical/studyMode/StudyMode";
-
+export const tabs = [
+  { label: "Study Mode", value: "study" },
+  { label: "Exam Mode", value: "exam" },
+];
 const ParentComponent = () => {
-  const [selectMode, setSelectMode] = useState("study");
-  const tabs = [
-    { label: "Study Mode", value: "study" },
-    { label: "Exam Mode", value: "exam" },
-  ];
   const navigate = useNavigate();
 
   const { pathname } = useLocation();
-  const studentTypeName = useAppSelector(
-    (state: RootState) => state.staticContent.studentType
+  const { profileType, type } = useAppSelector(
+    (state: RootState) => state.staticContent
   );
+  const dispatch = useDispatch();
 
   const outletVisible = pathname.includes("create-content");
   return (
@@ -30,9 +33,9 @@ const ParentComponent = () => {
         <div>
           <div>
             <DashboardTopSection
-              title={`${studentTypeName ?? ""} Content Inventory`}
+              title={`${profileType ?? ""} Content Inventory`}
               description={`Manage and organize content for ${
-                studentTypeName ?? ""
+                profileType ?? ""
               }`}
               buttonText="Add Content"
               action={() => {
@@ -41,11 +44,17 @@ const ParentComponent = () => {
             />
           </div>
           <CommonSpace>
-            <Tabs tabs={tabs} active={selectMode} onChange={setSelectMode} />
+            <Tabs
+              tabs={tabs}
+              active={type}
+              onChange={(value) =>
+                dispatch(setContentModeType(value as ContentModeType))
+              }
+            />
           </CommonSpace>
 
-          <div>{selectMode === "study" && <StudyMode />}</div>
-          <div>{selectMode === "exam" && <ExamMode />}</div>
+          <div>{type === "study" && <StudyMode />}</div>
+          <div>{type === "exam" && <ExamMode />}</div>
         </div>
       )}
     </>

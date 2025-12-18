@@ -26,3 +26,8 @@ export type GetStudyModeTree = {
   data: SubjectData[];
   meta: null;
 };
+
+export type GetStudyModeTreeParams = {
+  contentFor: string;
+  profileType?: string;
+};

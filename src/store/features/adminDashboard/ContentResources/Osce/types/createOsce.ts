@@ -1,3 +1,5 @@
+import { ContentFor } from "../../../staticContent/staticContentSlice";
+
 export interface OsceTask {
   taskName: string;
   checklistItem: string[];
@@ -22,6 +24,7 @@ export interface CreateOsceContentResponse {
   system: string;
   topic: string;
   subtopic?: string;
-  studentType: string;
+  profileType: string;
+  contentFor: ContentFor;
   type: "study" | "exam";
 }
