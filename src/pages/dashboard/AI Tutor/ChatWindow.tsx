@@ -138,7 +138,7 @@ export default function ChatWindow() {
                                 
                                 {isWaitingForResponse && (
                                     <div className="flex items-start gap-3 mb-4 animate-fadeIn">
-                                        <div className="w-8 h-8 rounded-full bg-blue- flex items-center justify-center text-white font-semibold shrink-0">
+                                        <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center font-semibold shrink-0">
                                             AI
                                         </div>
                                         <div className="bg-gray-100 p-4 rounded-lg rounded-tl-none">

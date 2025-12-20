@@ -13,6 +13,7 @@ interface Props {
 const CreateClinicalCaseModal = ({ open, onClose }: Props) => {
   const [prompt, setPrompt] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const [generateClinicalCase, { isLoading }] =
@@ -39,12 +40,26 @@ const CreateClinicalCaseModal = ({ open, onClose }: Props) => {
       setFile(null);
       if (result.success) {
         // Navigate to the newly created clinical case detail page with type=generated
-        navigate(`/dashboard/clinical-case/${result?.data?._id}?type=generated`);
+        navigate(
+          `/dashboard/clinical-case/${result?.data?._id}?type=generated`
+        );
       }
     } catch (error) {
       console.error("Failed to generate clinical case", error);
     }
   };
+
+  // const handleFileChange = (file: File | null) => {
+  //   if (!file) return;
+
+  //   setFile(file);
+  //   setPreviewUrl(URL.createObjectURL(file));
+  // };
+
+  // const handleRemoveFile = () => {
+  //   setFile(null);
+  //   setPreviewUrl(null);
+  // };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -52,7 +67,7 @@ const CreateClinicalCaseModal = ({ open, onClose }: Props) => {
         {/* header */}
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-semibold">Create Clinical Case</h2>
-          <button onClick={onClose}>
+          <button onClick={onClose} className="text-gray-600 hover:text-gray-800 cursor-pointer hover:bg-slate-200 rounded-full p-1 transition">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -70,18 +85,57 @@ const CreateClinicalCaseModal = ({ open, onClose }: Props) => {
         </div>
 
         {/* file upload */}
-        <div>
+        {/* <div>
           <label className="text-sm font-medium">Upload File (optional)</label>
-          <input
-            type="file"
-            onChange={(e) => setFile(e.target.files?.[0] || null)}
-            className="w-full mt-1 text-sm"
-          />
-        </div>
+
+          {!previewUrl ? (
+            <label className="mt-2 flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-primary transition">
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+              />
+
+              <div className="flex flex-col items-center gap-2 text-sm text-slate-500">
+                <svg
+                  className="w-8 h-8 text-slate-400"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3 16.5V6a2 2 0 012-2h14a2 2 0 012 2v10.5M3 16.5l4.5-4.5a2.121 2.121 0 013 0L15 16.5M3 16.5h18"
+                  />
+                </svg>
+                <span>Click to upload image</span>
+              </div>
+            </label>
+          ) : (
+            <div className="relative mt-2 w-32 h-32 rounded-lg overflow-hidden border">
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="w-full h-full object-cover"
+              />
+
+              <button
+                type="button"
+                onClick={handleRemoveFile}
+                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          )}
+        </div> */}
 
         {/* actions */}
         <div className="flex justify-end gap-3 pt-4">
-          <button onClick={onClose} className="text-sm text-gray-600">
+          <button onClick={onClose} className="text-sm text-gray-600 cursor-pointer hover:underline">
             Cancel
           </button>
           <PrimaryButton onClick={handleSubmit} disabled={isLoading}>

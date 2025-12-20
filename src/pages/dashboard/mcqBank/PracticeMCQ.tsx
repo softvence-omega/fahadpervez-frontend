@@ -4,10 +4,9 @@ import GlobalLoader from "@/common/GlobalLoader";
 import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
-import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { useGetSingleMCQQuery } from "@/store/features/MCQBank/MCQBank.api";
 import { McqQuestion } from "@/types";
-import { ArrowLeft, CircleAlert, Copy, Plus } from "lucide-react";
+import { ArrowLeft, CircleAlert, Copy } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import QuizReportModal from "../quizGenerator/QuizReportModal";
@@ -29,7 +28,7 @@ export default function PracticeMCQ() {
   });
 
   const meta = data?.meta;
-  
+
   const [selected, setSelected] = useState<{ [key: string]: number | null }>(
     {}
   );
@@ -82,15 +81,17 @@ export default function PracticeMCQ() {
               <DashboardHeading
                 title={mcqData?.title}
                 titleSize="text-xl"
-                description={`${meta?.total || 0} Questions | Uploaded By: ${
-                  mcqData?.uploadedBy
-                }`}
+                description={`${meta?.total || 0} Questions 
+                `}
                 className="space-y-1"
               />
             </div>
 
             {/* Right Section */}
-            <Link to={"/dashboard/quiz-collection"} className="w-full sm:w-auto">
+            {/* <Link
+              to={"/dashboard/quiz-collection"}
+              className="w-full sm:w-auto"
+            >
               <PrimaryButton
                 bgType="solid"
                 bgColor="bg-blue-btn-1"
@@ -100,7 +101,7 @@ export default function PracticeMCQ() {
               >
                 Start Quiz
               </PrimaryButton>
-            </Link>
+            </Link> */}
           </div>
 
           {/* Render questions */}
@@ -130,12 +131,16 @@ export default function PracticeMCQ() {
                     <p className="text-slate-700 text-sm font-normal">
                       Question {globalQuestionNumber} of {meta?.total || 0}
                     </p>
-                    <p className="bg-[#D97706] text-xs font-normal px-3 py-1 text-white rounded-full">
-                      {mcqData?.subtopic}
-                    </p>
-                    <p className="text-xs font-normal px-3 py-1 bg-white rounded-full border border-slate-200">
-                      {q.difficulty}
-                    </p>
+                    {mcqData?.subtopic && (
+                      <p className="bg-[#D97706] text-xs font-normal px-3 py-1 text-white rounded-full">
+                        {mcqData?.subtopic}
+                      </p>
+                    )}
+                    {q.difficulty && (
+                      <p className="text-xs font-normal px-3 py-1 bg-white rounded-full border border-slate-200">
+                        {q.difficulty}
+                      </p>
+                    )}
                   </div>
                   <div
                     className="flex items-center gap-1.5 text-[#F61F1F] cursor-pointer"
