@@ -245,7 +245,7 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
   const inputClass = {
     label: "block text-sm font-normal text-[#020617] font-inter mb-2",
     input:
-      "w-full border border-[#CBD5E1] rounded-md p-3 outline-none text-[#94A3B8] text-xs !bg-[#EFF6FF] ",
+      "w-full border border-[#CBD5E1] rounded-md p-3 outline-none text-[#94A3B8] text-xs  ",
     error: "text-red-500 text-xs mt-1",
   };
 
@@ -270,7 +270,7 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
               value={subjectName}
               onChange={(e) => setSubjectName(e.target.value)}
               placeholder="e.g., Anatomy"
-              className={inputClass.input}
+              className={`${inputClass.input} bg-blue-600! text-white!`}
             />
             {errors?.subjectName?._errors && (
               <p className={inputClass.error}>
@@ -288,7 +288,7 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
             {systems.map((system, sIdx) => (
               <div
                 key={sIdx}
-                className="border border-black/10 rounded-lg p-3 mb-3 bg-gray-50"
+                className="border border-black/10 rounded-lg p-3 mb-3 "
               >
                 <div className="flex items-center gap-2 mb-2">
                   <input
@@ -296,7 +296,7 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
                     value={system.name}
                     onChange={(e) => updateSystemName(sIdx, e.target.value)}
                     placeholder="System name (e.g., Cardiovascular System)"
-                    className={`!bg-[#EFF6FF] ${inputClass.input}`}
+                    className={`${inputClass.input} !bg-[#0f0f0f] !text-white`}
                   />
                   <button
                     onClick={() => removeSystem(sIdx)}
@@ -335,7 +335,9 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
                             updateTopicName(sIdx, tIdx, e.target.value)
                           }
                           placeholder="Topic name (e.g., Heart)"
-                          className={inputClass.input}
+                          className={`
+                            ${inputClass.input} bg-[#6794c9]! text-white!
+                          `}
                         />
                         <button
                           onClick={() => removeTopic(sIdx, tIdx)}
@@ -382,7 +384,7 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
                                 )
                               }
                               placeholder="Subtopic name (e.g., Heart)"
-                              className={inputClass.input}
+                              className={`${inputClass.input} bg-[#baadc9]! text-white! `}
                             />
                             <button
                               onClick={() => removeSubtopic(sIdx, tIdx, subIdx)}
