@@ -45,7 +45,7 @@ interface PlanFormProps {
 }
 
 const PlanForm: React.FC<PlanFormProps> = ({ handleCancel }) => {
-  const { data } = useGetStudentTypeApiQuery();
+  const { data } = useGetStudentTypeApiQuery({});
   const userTypes = data?.data.map((item) => item.typeName) ?? [];
   const userTypeOptions = createOptions(userTypes);
 

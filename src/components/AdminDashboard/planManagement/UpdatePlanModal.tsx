@@ -26,7 +26,7 @@ const UpdatePlanModal: React.FC<UpdatePlanModalProps> = ({
   onClose,
   selectedPlanId,
 }) => {
-  const { data } = useGetStudentTypeApiQuery();
+  const { data } = useGetStudentTypeApiQuery({});
   const userTypes = data?.data.map((item) => item.typeName) ?? [];
   const userTypeOptions = createOptions(userTypes);
 

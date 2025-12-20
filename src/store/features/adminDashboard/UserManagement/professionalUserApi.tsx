@@ -1,12 +1,16 @@
 import { baseAPI } from "@/store/api/baseApi";
 import {
-  GetStudentsParams,
-  GetStudentsResponse,
-} from "./type/student/Students";
+  GetProfessionalsParams,
+  ProfessionalResponse,
+  SingleProfessionalResponse,
+} from "./type/professional/professional";
 
 export const professionalUserApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
-    getProfessionalData: build.query<GetStudentsResponse, GetStudentsParams>({
+    getProfessionalData: build.query<
+      ProfessionalResponse,
+      GetProfessionalsParams
+    >({
       query: (params) => ({
         url: `/admin/professionals`,
         method: "GET",
@@ -15,16 +19,12 @@ export const professionalUserApi = baseAPI.injectEndpoints({
       providesTags: ["professionalsProfile"],
     }),
 
-    getSingleProfessional: build.query<any, string>({
+    getSingleProfessional: build.query<SingleProfessionalResponse, string>({
       query: (id) => ({
         url: `/admin/professional/${id}`,
         method: "GET",
       }),
-      transformResponse: (response: {
-        success: boolean;
-        message: string;
-        data: any;
-      }) => response.data,
+
       providesTags: ["professionalsProfile"],
     }),
 

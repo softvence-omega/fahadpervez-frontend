@@ -1,5 +1,6 @@
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import AlertDialogBox from "@/common/custom/AlertDialogBox";
+import Pagination from "@/common/custom/Pagination";
 import CommonHeader from "@/common/header/CommonHeader";
 import {
   useCreateStudentTypeApiMutation,
@@ -14,7 +15,12 @@ import { TbEdit } from "react-icons/tb";
 import StudentTypeModal from "../userManagement/student/studentProfile/StudentTypeModal";
 
 const UserManagementCard: FC = () => {
-  const { data: studentTypeData } = useGetStudentTypeApiQuery();
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 9;
+  const { data: studentTypeData } = useGetStudentTypeApiQuery({
+    page: currentPage,
+    limit,
+  });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [studentType, setStudentType] = useState<{
@@ -140,6 +146,16 @@ const UserManagementCard: FC = () => {
           isLoading={isCreating || isUpdating}
           title={"Student Type"}
         />
+      )}
+
+      {studentTypeData && studentTypeData.data.length > 0 && (
+        <div className="my-10">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={studentTypeData?.meta?.totalPages ?? 1}
+            onPageChange={(p) => setCurrentPage(p)}
+          />
+        </div>
       )}
     </div>
   );

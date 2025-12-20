@@ -11,7 +11,11 @@ import { ManualMCQBank, UploadImageResponse } from "./types/manual";
 import { GetAllMcqResponse, McqBankParams } from "./types/mcq";
 import { SingleMcqData, SingleMCQUpdatePayload } from "./types/singleMcq";
 import { SingleMCQResponse } from "./types/singleMcqBank";
-import { CreateProfileTypePayload, ProfileTypeResponse } from "./types/student";
+import {
+  CreateProfileTypePayload,
+  ProfileParams,
+  ProfileTypeResponse,
+} from "./types/student";
 import { GetExamsResponse, PostExam, PostStudyModeTree } from "./types/tree";
 import { GetStudyModeTree, GetStudyModeTreeParams } from "./types/TreeResponse";
 
@@ -113,10 +117,11 @@ export const mcqApi = baseAPI.injectEndpoints({
 
     //student type get and post
 
-    getStudentTypeApi: build.query<ProfileTypeResponse, void>({
-      query: () => ({
+    getStudentTypeApi: build.query<ProfileTypeResponse, ProfileParams>({
+      query: (params) => ({
         url: "/profile_type_const/all",
         method: "GET",
+        params,
       }),
       providesTags: ["studentType"],
     }),

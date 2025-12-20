@@ -1,10 +1,9 @@
 import { baseAPI } from "@/store/api/baseApi";
-import { GetMentorsResponse } from "./type/mentor/mentor";
-import { GetStudentsParams } from "./type/student/Students";
+import { GetMentorsParams, GetMentorsResponse } from "./type/mentor/mentor";
 
 export const mentorManagementApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
-    getMentorsData: build.query<GetMentorsResponse, GetStudentsParams>({
+    getMentorsData: build.query<GetMentorsResponse, GetMentorsParams>({
       query: (params) => ({
         url: `/admin/mentors`,
         method: "GET",
@@ -18,11 +17,7 @@ export const mentorManagementApi = baseAPI.injectEndpoints({
         url: `/admin/mentor/${id}`,
         method: "GET",
       }),
-      transformResponse: (response: {
-        success: boolean;
-        message: string;
-        data: any;
-      }) => response.data,
+
       providesTags: ["mentorsProfile"],
     }),
 

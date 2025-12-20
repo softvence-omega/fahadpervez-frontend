@@ -1,5 +1,6 @@
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import AlertDialogBox from "@/common/custom/AlertDialogBox";
+import Pagination from "@/common/custom/Pagination";
 import CommonHeader from "@/common/header/CommonHeader";
 import {
   useCreateProfessionalTypeApiMutation,
@@ -14,7 +15,12 @@ import { TbEdit } from "react-icons/tb";
 import StudentTypeModal from "../student/studentProfile/StudentTypeModal";
 
 const ProfessionalManagementCard: FC = () => {
-  const { data: studentTypeData } = useGetProfessionalTypeApiQuery();
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 9;
+  const { data: studentTypeData } = useGetProfessionalTypeApiQuery({
+    page: currentPage,
+    limit,
+  });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [studentType, setStudentType] = useState<{
@@ -72,7 +78,7 @@ const ProfessionalManagementCard: FC = () => {
   return (
     <div className="">
       <div className="flex justify-between items-center mb-6">
-        <CommonHeader>Student Types</CommonHeader>
+        <CommonHeader>Professional Types</CommonHeader>
         <ButtonWithIcon
           onClick={handleCreate}
           icon={FaPlus}
@@ -82,7 +88,7 @@ const ProfessionalManagementCard: FC = () => {
         </ButtonWithIcon>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-6">
         {studentTypeData?.data?.map((student) => (
           <div
             key={student._id}
@@ -140,6 +146,15 @@ const ProfessionalManagementCard: FC = () => {
           isLoading={isCreating || isUpdating}
           title={"Professional Type"}
         />
+      )}
+      {studentTypeData && studentTypeData.data.length > 0 && (
+        <div className="">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={studentTypeData?.meta?.totalPages ?? 1}
+            onPageChange={(p) => setCurrentPage(p)}
+          />
+        </div>
       )}
     </div>
   );

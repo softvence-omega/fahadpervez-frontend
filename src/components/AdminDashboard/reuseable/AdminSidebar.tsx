@@ -9,7 +9,7 @@ import {
   Settings,
   Users,
 } from "lucide-react";
-import { BiBookAlt } from "react-icons/bi";
+import { BiBookAlt, BiSolidCopy } from "react-icons/bi";
 import { LuBookOpenText, LuShieldQuestion } from "react-icons/lu";
 
 import { type FC } from "react";
@@ -110,6 +110,12 @@ const sidebarItems: SidebarItem[] = [
     icon: Settings,
     label: "White Level",
     path: "/admin/settings",
+    section: "Settings",
+  },
+  {
+    icon: BiSolidCopy,
+    label: "Copy URL",
+    path: "/admin/url-copy",
     section: "Settings",
   },
 ];
