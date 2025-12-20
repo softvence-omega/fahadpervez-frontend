@@ -70,17 +70,29 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
   );
 
   const addSystem = () => setSystems([...systems, { name: "", topics: [] }]);
+  // const addTopic = (sIdx: number) =>
+  //   setSystems((prev) =>
+  //     prev.map((sys, idx) =>
+  //       idx === sIdx
+  //         ? {
+  //             ...sys,
+  //             topics: [...sys.topics, { topicName: "", subTopics: [""] }],
+  //           }
+  //         : sys
+  //     )
+  //   );
   const addTopic = (sIdx: number) =>
     setSystems((prev) =>
       prev.map((sys, idx) =>
         idx === sIdx
           ? {
               ...sys,
-              topics: [...sys.topics, { topicName: "", subTopics: [""] }],
+              topics: [...sys.topics, { topicName: "", subTopics: [] }],
             }
           : sys
       )
     );
+
   const addSubtopic = (sIdx: number, tIdx: number) =>
     setSystems((prev) =>
       prev.map((sys, sysIdx) =>

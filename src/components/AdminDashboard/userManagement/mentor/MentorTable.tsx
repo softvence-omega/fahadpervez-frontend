@@ -1,5 +1,6 @@
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import CommonDropdown from "@/common/custom/CommonDropdown";
+import LoadingStatus from "@/common/custom/LoadingStatus";
 import Pagination from "@/common/custom/Pagination";
 import CommonHeader from "@/common/header/CommonHeader";
 import {
@@ -12,16 +13,16 @@ import {
 } from "@/components/ui/table";
 import { slugify } from "@/help/help";
 import { useGetMentorsDataQuery } from "@/store/features/adminDashboard/UserManagement/mentorManagementApi";
-import { FC } from "react";
+import { useState } from "react";
 import { BiSolidEdit } from "react-icons/bi";
 import { IoChevronDownSharp } from "react-icons/io5";
 import { LuEye } from "react-icons/lu";
 import { Link } from "react-router-dom";
-import { Mentor } from "./data";
+import DashboardSearch from "../../reuseable/DashboardSearch";
 const dropdownItems = [
-  { label: "Edit" },
-  { label: "Delete" },
-  { label: "Share" },
+  { label: "Pending", value: "PENDING" },
+  { label: "Approved", value: "APPROVED" },
+  { label: "Rejected", value: "REJECTED" },
 ];
 
 const tableHeaders = [
@@ -31,11 +32,10 @@ const tableHeaders = [
   { label: "Experience", align: "text-center xl:table-cell hidden" },
   { label: "Institution", align: "text-center lg:table-cell hidden" },
   { label: "Designation", align: "text-center sm:table-cell hidden" },
+  { label: "Status", align: "text-center sm:table-cell hidden" },
+
   { label: "Action", align: "text-center" },
 ];
-interface AllStudentProfileTable {
-  mentor: Mentor[];
-}
 
 const tableDesign = {
   header:
@@ -45,92 +45,133 @@ const tableDesign = {
   cell: "border border-border px-4 text-center",
 };
 
-const MentorTable: FC<AllStudentProfileTable> = () => {
-  const { data } = useGetMentorsDataQuery({});
+const MentorTable = () => {
+  const [page, setPage] = useState(1);
+  const [status, setStatus] = useState("");
+  const [search, setSearch] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("Filter");
+  const { data, isLoading } = useGetMentorsDataQuery({
+    page,
+    status,
+    searchTerm: search,
+  });
 
-  const mentors = data?.data?.data ?? [];
+  const mentors = data?.data || [];
 
+  console.log("mentors", mentors);
   return (
     <div>
+      <div className="py-5">
+        <DashboardSearch
+          onChange={(val) => setSearch(val)}
+          className=" !rounded-none my-5"
+        />
+      </div>
+
       <div className="flex items-center justify-between pb-5">
         <CommonHeader>Mentor Profile</CommonHeader>
         <CommonDropdown
-          items={dropdownItems}
+          items={dropdownItems.map((item) => ({
+            label: item.label,
+            onClick: () => {
+              setStatus(item.value);
+              setSelectedStatus(item.label);
+              setPage(1);
+            },
+          }))}
           trigger={
             <ButtonWithIcon
               className="  bg-[#fff] !text-[#09090B] flex !flex-row-reverse"
               icon={IoChevronDownSharp}
             >
-              Filter
+              {selectedStatus}
             </ButtonWithIcon>
           }
         />
       </div>
-
-      <Table>
-        <TableHeader>
-          <TableRow className={tableDesign.header}>
-            {tableHeaders.map((header) => (
-              <TableHead
-                key={header.label}
-                className={`${tableDesign.cellHeader} ${header.align} `}
-              >
-                {header.label}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {mentors.map((p, i) => (
-            <TableRow key={p._id} className={tableDesign.bodyRow}>
-              <TableCell className={`sm:table-cell hidden ${tableDesign.cell}`}>
-                <div>{i + 1}</div>
-              </TableCell>
-              <TableCell className={`${tableDesign.cell}`}>
-                <div>
-                  {p.firstName} {p.lastName}
-                </div>
-              </TableCell>
-              <TableCell
-                className={`xl:table-cell hidden  ${tableDesign.cell}`}
-              >
-                <div>{p.specialty}</div>
-              </TableCell>
-              <TableCell className={`xl:table-cell hidden ${tableDesign.cell}`}>
-                <div>{p.professionalExperience}</div>
-              </TableCell>
-              <TableCell className={`lg:table-cell hidden ${tableDesign.cell}`}>
-                <div>{p.hospitalOrInstitute}</div>
-              </TableCell>
-              <TableCell
-                className={` sm:table-cell hidden ${tableDesign.cell}`}
-              >
-                <div>{p.currentRole}</div>
-              </TableCell>
-              <TableCell className={`${tableDesign.cell}`}>
-                <div className="flex justify-center gap-3  ">
-                  <Link
-                    to={`/admin/mentor-profile/${p._id}/${slugify(
-                      p.firstName
-                    )}`}
-                    className="text-[#1D4ED8] cursor-pointer"
-                  >
-                    <LuEye size={24} />
-                  </Link>
-                  <span className="text-[#B91C1C] cursor-pointer">
-                    <BiSolidEdit size={24} />
-                  </span>
-                </div>
-              </TableCell>
+      <LoadingStatus isLoading={isLoading} items={mentors} itemName="mentors" />
+      {!isLoading && mentors.length > 0 && (
+        <Table>
+          <TableHeader>
+            <TableRow className={tableDesign.header}>
+              {tableHeaders.map((header) => (
+                <TableHead
+                  key={header.label}
+                  className={`${tableDesign.cellHeader} ${header.align} `}
+                >
+                  {header.label}
+                </TableHead>
+              ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
 
-      <div className="my-10">
-        <Pagination currentPage={2} totalPages={5} onPageChange={() => {}} />
-      </div>
+          <TableBody>
+            {mentors.map((p, i) => (
+              <TableRow key={p._id} className={tableDesign.bodyRow}>
+                <TableCell
+                  className={`sm:table-cell hidden ${tableDesign.cell}`}
+                >
+                  <div>{i + 1}</div>
+                </TableCell>
+                <TableCell className={`${tableDesign.cell}`}>
+                  <div>
+                    {p.firstName} {p.lastName}
+                  </div>
+                </TableCell>
+                <TableCell
+                  className={`xl:table-cell hidden  ${tableDesign.cell}`}
+                >
+                  <div>{p.specialty}</div>
+                </TableCell>
+                <TableCell
+                  className={`xl:table-cell hidden ${tableDesign.cell}`}
+                >
+                  <div>{p.professionalExperience} years</div>
+                </TableCell>
+                <TableCell
+                  className={`lg:table-cell hidden ${tableDesign.cell}`}
+                >
+                  <div>{p.hospitalOrInstitute}</div>
+                </TableCell>
+                <TableCell
+                  className={` sm:table-cell hidden ${tableDesign.cell}`}
+                >
+                  <div>{p.currentRole}</div>
+                </TableCell>
+                <TableCell
+                  className={`sm:table-cell hidden ${tableDesign.cell}`}
+                >
+                  <div>{p.profileVerification}</div>
+                </TableCell>
+                <TableCell className={`${tableDesign.cell}`}>
+                  <div className="flex justify-center gap-3  ">
+                    <Link
+                      to={`/admin/mentor-profile/${p._id}/${slugify(
+                        p.firstName
+                      )}`}
+                      className="text-[#1D4ED8] cursor-pointer"
+                    >
+                      <LuEye size={24} />
+                    </Link>
+                    <span className="text-[#B91C1C] cursor-pointer">
+                      <BiSolidEdit size={24} />
+                    </span>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
+      {mentors.length > 0 && (
+        <div className="my-10">
+          <Pagination
+            currentPage={page}
+            totalPages={data?.meta?.totalPages || 1}
+            onPageChange={(p) => setPage(p)}
+          />
+        </div>
+      )}
     </div>
   );
 };

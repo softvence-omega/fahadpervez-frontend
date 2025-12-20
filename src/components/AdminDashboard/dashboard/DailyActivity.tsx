@@ -1,25 +1,15 @@
+import CommonHeader from "@/common/header/CommonHeader";
+import { useGetDashboardActivityQuery } from "@/store/features/adminDashboard/UserManagement/studentsManagementApi";
 import {
+  CartesianGrid,
   Line,
   LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
 } from "recharts";
 import CommonBorderWrapper from "../reuseable/CommonBorderWrapper";
-import CommonHeader from "@/common/header/CommonHeader";
-
-// Activity data matching the chart in the image
-const activityData = [
-  { day: "Sat", quizzes: 570, flashcards: 240, users: 35 },
-  { day: "Sun", quizzes: 920, flashcards: 220, users: 50 },
-  { day: "Mon", quizzes: 750, flashcards: 460, users: 40 },
-  { day: "Tue", quizzes: 420, flashcards: 620, users: 30 },
-  { day: "Wed", quizzes: 260, flashcards: 450, users: 18 },
-  { day: "Thu", quizzes: 680, flashcards: 320, users: 42 },
-  { day: "Fri", quizzes: 650, flashcards: 520, users: 38 },
-];
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -51,14 +41,22 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 };
 
 export default function DailyActivity() {
+  const { data: activityData } = useGetDashboardActivityQuery();
+  const chartData =
+    activityData?.data?.map((item: any) => ({
+      day: `Day ${item.day}`,
+      quizzes: item.mcqbank,
+      flashcards: item.flashcard,
+      users: item.user,
+    })) ?? [];
   return (
     <CommonBorderWrapper>
-      <CommonHeader className="!text-lg mb-7.5">Daily Activity</CommonHeader>
+      <CommonHeader className="text-lg! mb-7.5">Daily Activity</CommonHeader>
 
       <div>
         <ResponsiveContainer width="100%" height={500}>
           <LineChart
-            data={activityData}
+            data={chartData}
             margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
           >
             <CartesianGrid strokeDasharray="0" stroke="#e5e7eb" />
@@ -68,7 +66,6 @@ export default function DailyActivity() {
               tick={{ fill: "#000", fontSize: 20, fontWeight: 500 }}
               axisLine={false}
               tickLine={false}
-              padding={{ left: 0, right: 0 }}
             />
 
             <YAxis
@@ -77,13 +74,12 @@ export default function DailyActivity() {
               tick={{ fill: "#000", fontSize: 20, fontWeight: 500 }}
               axisLine={false}
               tickLine={false}
-              padding={{ top: 0, bottom: 0 }}
               width={50}
             />
 
             <Tooltip content={<CustomTooltip />} />
 
-            {/* Lines */}
+            {/* Lines (UNCHANGED) */}
             <Line
               type="monotone"
               dataKey="quizzes"
