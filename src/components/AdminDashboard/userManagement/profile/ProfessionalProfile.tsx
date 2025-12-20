@@ -15,9 +15,6 @@ const ProfessionalProfile = () => {
 
   const profile = professional?.data;
 
-  console.log("id", id);
-  console.log("profile", profile);
-
   return (
     <div>
       {isLoading ? (

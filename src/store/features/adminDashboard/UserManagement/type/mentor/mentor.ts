@@ -37,3 +37,45 @@ export interface GetMentorsParams {
   page?: number;
   limit?: number;
 }
+
+// single mentor
+
+export interface MentorProfile {
+  _id: string;
+  accountId: string;
+  firstName: string;
+  lastName: string;
+  currentRole: string;
+  hospitalOrInstitute: string;
+  specialty: string;
+  professionalExperience: number;
+  postgraduateDegree: string;
+  country: string;
+  isConditionAccepted: boolean;
+  profileVerification: ProfileVerificationStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MentorAccountData {
+  _id: string;
+  email: string;
+  isDeleted: boolean;
+  accountStatus: "ACTIVE" | "INACTIVE" | string;
+  role: "MENTOR" | string;
+  isVerified: boolean;
+  profile_type: string;
+  authType: "CUSTOM" | "GOOGLE" | string;
+  lastOTP: string;
+  isSubscribed: boolean;
+  createdAt: string;
+  updatedAt: string;
+  profile_id: MentorProfile;
+}
+
+export interface SingleMentorResponse {
+  success: boolean;
+  message: string;
+  data: MentorAccountData;
+  meta: null;
+}
