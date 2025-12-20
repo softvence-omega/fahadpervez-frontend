@@ -11,6 +11,7 @@ import GlobalLoader from "@/common/GlobalLoader";
 import { TMCQBank } from "@/types";
 import { QuizGeneratorDialog } from "../quizGenerator/QuizGenerateModal";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 
 const McqBank = () => {
@@ -207,11 +208,11 @@ const McqBank = () => {
                     </p> */}
                   </div>
                 </div>
-                {/* <Link to={`/dashboard/practice-mcq/${mcq?._id}`}>
+                <Link to={`/dashboard/practice-mcq/${mcq?._id}`}>
                   <button className="text-blue-main font-medium hover:underline cursor-pointer">
                     Start Now
                   </button>
-                </Link> */}
+                </Link>
               </div>
             </div>
           ))}

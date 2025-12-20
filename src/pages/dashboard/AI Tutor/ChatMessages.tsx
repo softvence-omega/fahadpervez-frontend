@@ -122,6 +122,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useState } from "react";
 import { Copy, Check } from "lucide-react";
+import CopyableCodeBlock from "@/utils/CopyableCodeBlock";
 
 interface ChatMessagesProps {
   messages: Message[];
@@ -187,7 +188,39 @@ export default function ChatMessages({
             {/* Message Content */}
             {msg.role === "ai" ? (
               <div className="prose prose-sm max-w-none prose-p:text-gray-800 prose-headings:text-gray-900 prose-strong:text-gray-900 prose-ul:list-disc prose-ol:list-decimal prose-a:text-blue-600 mt-4">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    code({
+                      inline,
+                      className,
+                      children,
+                    }: {
+                      inline?: boolean;
+                      className?: string;
+                      children?: React.ReactNode;
+                    }) {
+                      const text = String(children);
+
+                      // 🔹 FORCE inline code if no language is provided
+                      if (inline || !className) {
+                        return (
+                          <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono">
+                            {text}
+                          </code>
+                        );
+                      }
+
+                      // 🔹 Real code block (```js, ```ts etc.)
+                      const match = /language-(\w+)/.exec(className);
+                      const code = text.replace(/\n$/, "");
+
+                      return (
+                        <CopyableCodeBlock code={code} language={match?.[1]} />
+                      );
+                    },
+                  }}
+                >
                   {msg.content}
                 </ReactMarkdown>
               </div>
