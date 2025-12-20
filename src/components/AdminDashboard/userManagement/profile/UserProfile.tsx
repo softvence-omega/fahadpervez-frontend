@@ -1,12 +1,13 @@
+import bannerDefault from "@/assets/home/banner.jpg";
+import camera from "@/assets/home/camera.png";
+import image from "@/assets/home/mentor1.png";
+import CommonButton from "@/common/button/CommonButton";
+import CommonHeader from "@/common/header/CommonHeader";
+import MediumHeader from "@/common/header/MediumHeader";
 import React, { useRef, useState } from "react";
 import { FaUser } from "react-icons/fa";
-import bannerDefault from "@/assets/home/banner.jpg";
-import CommonButton from "@/common/button/CommonButton";
-import MediumHeader from "@/common/header/MediumHeader";
-import CommonHeader from "@/common/header/CommonHeader";
-import camera from "@/assets/home/camera.png";
-import { Link } from "react-router-dom";
-import image from "@/assets/home/mentor1.png";
+import { Link, useLocation } from "react-router-dom";
+import ConvertPath from "./ConvertPath";
 
 interface UserProfileProps {
   fullName: string;
@@ -64,13 +65,14 @@ const UserProfile: React.FC<UserProfileProps> = ({
     }
   };
 
+  const { pathname } = useLocation();
+
+  console.log("pathname", pathname);
+
   return (
     <div className="">
       <div className="mb-6">
-        <p className="text-sm text-gray-500">
-          Dashboard &gt;{" "}
-          <span className="text-gray-800 font-medium">AI Tutor</span>
-        </p>
+        <ConvertPath />
       </div>
 
       <div className="relative h-[215px]">

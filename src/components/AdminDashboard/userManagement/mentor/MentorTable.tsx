@@ -146,7 +146,7 @@ const MentorTable = () => {
                 <TableCell className={`${tableDesign.cell}`}>
                   <div className="flex justify-center gap-3  ">
                     <Link
-                      to={`/admin/mentor-profile/${p._id}/${slugify(
+                      to={`/admin/mentor-profile/${p.accountId}/${slugify(
                         p.firstName
                       )}`}
                       className="text-[#1D4ED8] cursor-pointer"
