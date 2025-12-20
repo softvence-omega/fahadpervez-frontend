@@ -1,15 +1,17 @@
 import { baseAPI } from "@/store/api/baseApi";
 import {
   CreateProfileTypePayload,
+  ProfileParams,
   ProfileTypeResponse,
 } from "../MCQ/types/student";
 
 export const professionalTypeApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
-    getProfessionalTypeApi: build.query<ProfileTypeResponse, void>({
-      query: () => ({
+    getProfessionalTypeApi: build.query<ProfileTypeResponse, ProfileParams>({
+      query: (params) => ({
         url: "/profile_type_const/professional/all",
         method: "GET",
+        params,
       }),
       providesTags: ["professionalType"],
     }),

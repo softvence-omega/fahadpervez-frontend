@@ -4,7 +4,7 @@ import DashboardTopSection from "@/components/AdminDashboard/reuseable/Dashboard
 import { useGetStudentTypeApiQuery } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 
 const StudentsCard = () => {
-  const { data: studentTypeData } = useGetStudentTypeApiQuery();
+  const { data: studentTypeData } = useGetStudentTypeApiQuery({});
 
   return (
     <div>

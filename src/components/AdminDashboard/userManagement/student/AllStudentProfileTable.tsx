@@ -4,7 +4,6 @@ import CommonHeader from "@/common/header/CommonHeader";
 import { useState } from "react";
 import { IoChevronDownSharp } from "react-icons/io5";
 
-import DeleteButton from "@/common/button/DeleteButton";
 import LoadingStatus from "@/common/custom/LoadingStatus";
 import Pagination from "@/common/custom/Pagination";
 import {
@@ -16,10 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { slugify } from "@/help/help";
-import {
-  useDeleteSingleStudentMutation,
-  useGetStudentsDataQuery,
-} from "@/store/features/adminDashboard/UserManagement/studentsManagementApi";
+import { useGetStudentsDataQuery } from "@/store/features/adminDashboard/UserManagement/studentsManagementApi";
 import { LuEye } from "react-icons/lu";
 import { Link } from "react-router-dom";
 import DashboardSearch from "../../reuseable/DashboardSearch";
@@ -37,7 +33,7 @@ const tableHeaders = [
   { label: "University", align: "text-center md:table-cell hidden" },
   { label: "Year", align: "text-center xl:table-cell hidden" },
   { label: "Prepping For", align: "text-center lg:table-cell hidden" },
-  { label: "Subject Preferred", align: "text-center xl:table-cell hidden" },
+  { label: "Email", align: "text-center xl:table-cell hidden" },
   { label: "Action", align: "text-center" },
 ];
 
@@ -52,6 +48,7 @@ const tableDesign = {
 const AllStudentProfileTable = () => {
   const [page, setPage] = useState(1);
   const [preparingFor, setPreparingFor] = useState("");
+  const [selectedPreparingFor, setSelectedPreparingFor] = useState("Filter");
   const [search, setSearch] = useState("");
 
   const limit = 10;
@@ -64,15 +61,6 @@ const AllStudentProfileTable = () => {
 
   const students = data?.data || [];
 
-  const [deleteSingleStudent, { isLoading: isDeleting }] =
-    useDeleteSingleStudentMutation();
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteSingleStudent(id).unwrap();
-    } catch (error) {
-      console.error("Failed to delete student:", error);
-    }
-  };
   return (
     <div>
       <DashboardSearch
@@ -86,6 +74,7 @@ const AllStudentProfileTable = () => {
             label: item.label,
             onClick: () => {
               setPreparingFor(item.value);
+              setSelectedPreparingFor(item.label);
               setPage(1);
             },
           }))}
@@ -94,7 +83,7 @@ const AllStudentProfileTable = () => {
               className="bg-[#fff] !text-[#09090B] flex !flex-row-reverse"
               icon={IoChevronDownSharp}
             >
-              Filter
+              {selectedPreparingFor}
             </ButtonWithIcon>
           }
         />
@@ -144,7 +133,11 @@ const AllStudentProfileTable = () => {
                 <TableCell
                   className={`${tableDesign.cell} lg:table-cell hidden`}
                 >
-                  <div>{p.accountStatus}</div>
+                  <div>
+                    {p.profile_id.preparingFor
+                      .map((p) => p.examName)
+                      .join(", ")}
+                  </div>
                 </TableCell>
                 <TableCell
                   className={`xl:table-cell hidden ${tableDesign.cell}`}
@@ -154,16 +147,13 @@ const AllStudentProfileTable = () => {
                 <TableCell className={`${tableDesign.cell}`}>
                   <div className="flex justify-center gap-3">
                     <Link
-                      to={`/admin/student-profile/${p._id}/${slugify(p.email)}`}
+                      to={`/admin/student-profile/${p._id}/${slugify(
+                        p.profile_id.firstName
+                      )}`}
                       className="text-[#1D4ED8] cursor-pointer"
                     >
                       <LuEye size={24} />
                     </Link>
-
-                    <DeleteButton
-                      isLoading={isDeleting}
-                      onDelete={() => handleDelete(p._id)}
-                    />
                   </div>
                 </TableCell>
               </TableRow>
@@ -171,14 +161,15 @@ const AllStudentProfileTable = () => {
           </TableBody>
         </Table>
       )}
-
-      <div className="my-10">
-        <Pagination
-          currentPage={page}
-          totalPages={data?.meta.totalPages || 1}
-          onPageChange={(p) => setPage(p)}
-        />
-      </div>
+      {students.length > 0 && (
+        <div className="my-10">
+          <Pagination
+            currentPage={page}
+            totalPages={data?.meta.totalPages || 1}
+            onPageChange={(p) => setPage(p)}
+          />
+        </div>
+      )}
     </div>
   );
 };

@@ -1,4 +1,6 @@
-export interface Mentor {
+type ProfileVerificationStatus = "PENDING" | "APPROVED" | "REJECTED" | string;
+
+interface ProfessionalData {
   _id: string;
   accountId: string;
   firstName: string;
@@ -10,12 +12,12 @@ export interface Mentor {
   postgraduateDegree: string;
   country: string;
   isConditionAccepted: boolean;
-  profileVerification: "PENDING" | "APPROVED" | "REJECTED";
+  profileVerification: ProfileVerificationStatus;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface Meta {
+interface Meta {
   page: number;
   limit: number;
   total: number;
@@ -25,9 +27,13 @@ export interface Meta {
 export interface GetMentorsResponse {
   success: boolean;
   message: string;
-  data: {
-    meta: Meta;
-    data: Mentor[];
-  };
-  meta: null;
+  data: ProfessionalData[];
+  meta: Meta;
+}
+
+export interface GetMentorsParams {
+  searchTerm?: string;
+  status?: string;
+  page?: number;
+  limit?: number;
 }

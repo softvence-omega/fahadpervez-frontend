@@ -18,6 +18,7 @@ import Transaction from "@/pages/AdminDashboard/mentorshipManagement/Transaction
 import CreatePlan from "@/pages/AdminDashboard/planManagement/CreatePlan";
 import Setting from "@/pages/AdminDashboard/settings/Setting";
 import Support from "@/pages/AdminDashboard/support/Support";
+import CopyUrl from "@/pages/AdminDashboard/url/CopyUrl";
 import Mentor from "@/pages/AdminDashboard/userManagement/Mentor";
 import Professional from "@/pages/AdminDashboard/userManagement/Professional";
 import Student from "@/pages/AdminDashboard/userManagement/Student";
@@ -125,6 +126,10 @@ const adminRoutes = {
     {
       path: "settings",
       element: <Setting />,
+    },
+    {
+      path: "url-copy",
+      element: <CopyUrl />,
     },
   ],
 };
