@@ -1,4 +1,5 @@
 import AlertDialogBox from "@/common/custom/AlertDialogBox";
+import LoadingStatus from "@/common/custom/LoadingStatus";
 import {
   Table,
   TableBody,
@@ -40,7 +41,7 @@ const PlanOverviewTable = () => {
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
 
-  const { data } = useGetAllPricePlanQuery();
+  const { data, isLoading } = useGetAllPricePlanQuery();
 
   const allPricePlan = data?.data ?? [];
 
@@ -60,66 +61,78 @@ const PlanOverviewTable = () => {
   };
   return (
     <>
-      <Table>
-        <TableHeader>
-          <TableRow className={tableDesign.header}>
-            {tableHeaders.map((header) => (
-              <TableHead
-                key={header.label}
-                className={`${tableDesign.cellHeader} ${header.align} `}
-              >
-                {header.label}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
+      <LoadingStatus
+        isLoading={isLoading}
+        items={allPricePlan}
+        itemName="plans"
+      />
 
-        <TableBody>
-          {allPricePlan.map((p) => (
-            <TableRow key={p._id} className={tableDesign.bodyRow}>
-              <TableCell className={`!text-left ${tableDesign.cell}`}>
-                <div>{p.planName}</div>
-              </TableCell>
-              <TableCell
-                className={`hidden sm:table-cell   ${tableDesign.cell}`}
-              >
-                <div>{p.price}</div>
-              </TableCell>
-              <TableCell
-                className={` hidden lg:table-cell ${tableDesign.cell}`}
-              >
-                <div>{p.billingCycle}</div>
-              </TableCell>
-              <TableCell className={`hidden md:table-cell ${tableDesign.cell}`}>
-                <div>{p.userType}</div>
-              </TableCell>
-              <TableCell className={`hidden md:table-cell ${tableDesign.cell}`}>
-                <div>{toBerhanTime(p.updatedAt)}</div>
-              </TableCell>
-
-              <TableCell className={tableDesign.cell}>
-                <div className="flex justify-center gap-3 text-[#B91C1C]">
-                  <span
-                    onClick={() => handleEdit(p)}
-                    className="text-blue-500 cursor-pointer"
-                  >
-                    <BiSolidEdit size={24} />
-                  </span>
-                  <AlertDialogBox
-                    trigger={
-                      <button className="hover:text-red-800 cursor-pointer">
-                        <RiDeleteBinLine size={24} />
-                      </button>
-                    }
-                    isLoading={isDeleting}
-                    action={() => handleDelete(p._id)}
-                  />
-                </div>
-              </TableCell>
+      {!isLoading && allPricePlan.length > 0 && (
+        <Table>
+          <TableHeader>
+            <TableRow className={tableDesign.header}>
+              {tableHeaders.map((header) => (
+                <TableHead
+                  key={header.label}
+                  className={`${tableDesign.cellHeader} ${header.align} `}
+                >
+                  {header.label}
+                </TableHead>
+              ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+
+          <TableBody>
+            {allPricePlan.map((p) => (
+              <TableRow key={p._id} className={tableDesign.bodyRow}>
+                <TableCell className={`!text-left ${tableDesign.cell}`}>
+                  <div>{p.planName}</div>
+                </TableCell>
+                <TableCell
+                  className={`hidden sm:table-cell   ${tableDesign.cell}`}
+                >
+                  <div>{p.price}</div>
+                </TableCell>
+                <TableCell
+                  className={` hidden lg:table-cell ${tableDesign.cell}`}
+                >
+                  <div>{p.billingCycle}</div>
+                </TableCell>
+                <TableCell
+                  className={`hidden md:table-cell ${tableDesign.cell}`}
+                >
+                  <div>{p.userType}</div>
+                </TableCell>
+                <TableCell
+                  className={`hidden md:table-cell ${tableDesign.cell}`}
+                >
+                  <div>{toBerhanTime(p.updatedAt)}</div>
+                </TableCell>
+
+                <TableCell className={tableDesign.cell}>
+                  <div className="flex justify-center gap-3 text-[#B91C1C]">
+                    <span
+                      onClick={() => handleEdit(p)}
+                      className="text-blue-500 cursor-pointer"
+                    >
+                      <BiSolidEdit size={24} />
+                    </span>
+                    <AlertDialogBox
+                      trigger={
+                        <button className="hover:text-red-800 cursor-pointer">
+                          <RiDeleteBinLine size={24} />
+                        </button>
+                      }
+                      isLoading={isDeleting}
+                      action={() => handleDelete(p._id)}
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
 
       {isModelOpen && selectedPlan && (
         <UpdatePlanModal
