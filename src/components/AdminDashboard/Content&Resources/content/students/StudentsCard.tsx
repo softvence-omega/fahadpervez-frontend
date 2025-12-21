@@ -1,3 +1,4 @@
+import Spinner from "@/common/button/Spinner";
 import Pagination from "@/common/custom/Pagination";
 import CommonSpace from "@/common/space/CommonSpace";
 import StudentTypeCard from "@/components/AdminDashboard/Content&Resources/content/StudentTypeCard";
@@ -20,14 +21,19 @@ const StudentsCard = () => {
   );
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 9;
-  const { data: studentTypeData } = useGetStudentTypeApiQuery({
-    page: currentPage,
-    limit,
-  });
-  const { data: professionalTypeData } = useGetProfessionalTypeApiQuery({
-    page: currentPage,
-    limit,
-  });
+  const { data: studentTypeData, isLoading: loadingForStudent } =
+    useGetStudentTypeApiQuery({
+      page: currentPage,
+      limit,
+    });
+  const { data: professionalTypeData, isLoading: loadingForProfession } =
+    useGetProfessionalTypeApiQuery({
+      page: currentPage,
+      limit,
+    });
+
+  const isLoading =
+    contentFor === "student" ? loadingForStudent : loadingForProfession;
 
   const dataToRender =
     contentFor === "student"
@@ -66,13 +72,19 @@ const StudentsCard = () => {
           onChange={(value) => handleContentFor(value as ContentFor)}
         />
       </div>
-      <CommonSpace>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {dataToRender?.map((student, i) => (
-            <StudentTypeCard key={student._id} index={i} data={student} />
-          ))}
-        </div>
-      </CommonSpace>
+      {isLoading ? (
+        <Spinner />
+      ) : dataToRender?.length === 0 ? (
+        <h1>No Data Found</h1>
+      ) : (
+        <CommonSpace>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {dataToRender?.map((student, i) => (
+              <StudentTypeCard key={student._id} index={i} data={student} />
+            ))}
+          </div>
+        </CommonSpace>
+      )}
 
       {dataToRender && dataToRender.length > 0 && (
         <div className="">
