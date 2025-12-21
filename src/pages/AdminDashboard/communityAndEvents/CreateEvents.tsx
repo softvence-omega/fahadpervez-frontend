@@ -1,3 +1,4 @@
+import Spinner from "@/common/button/Spinner";
 import EventForm from "@/components/AdminDashboard/communityAndEvents/EventForm";
 import EventTable from "@/components/AdminDashboard/communityAndEvents/EventTable";
 import EventTop from "@/components/AdminDashboard/communityAndEvents/EventTop";
@@ -20,7 +21,7 @@ const CreateEvents = () => {
   };
 
   // Pass currentPage and limit to the query
-  const { data } = useGetEventQuery({
+  const { data, isLoading } = useGetEventQuery({
     page: currentPage,
     limit,
   });
@@ -52,18 +53,26 @@ const CreateEvents = () => {
           </div>
         ) : (
           <div>
-            <EventTop
-              handleCreateEvent={handleCreateEvent}
-              overview={overview as EventsOverview}
-            />
-            <EventTable
-              eventData={eventData}
-              overview={overview as EventsOverview}
-              totalPages={totalPages}
-              currentPage={currentPage}
-              handlePageChange={handlePageChange}
-              handleEditClick={handleEditClick}
-            />
+            {isLoading ? (
+              <Spinner />
+            ) : eventData.length === 0 ? (
+              <p>No events found</p>
+            ) : (
+              <div>
+                <EventTop
+                  handleCreateEvent={handleCreateEvent}
+                  overview={overview as EventsOverview}
+                />
+                <EventTable
+                  eventData={eventData}
+                  overview={overview as EventsOverview}
+                  totalPages={totalPages}
+                  currentPage={currentPage}
+                  handlePageChange={handlePageChange}
+                  handleEditClick={handleEditClick}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
