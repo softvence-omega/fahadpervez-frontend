@@ -106,6 +106,8 @@ const TreeNode: React.FC<TreeNodeProps> = ({
     }
   };
 
+  const displayCount = item.count ?? item.children?.length;
+
   return (
     <div className="ml-[2px] font-arial ">
       <div
@@ -144,9 +146,9 @@ const TreeNode: React.FC<TreeNodeProps> = ({
         </div>
 
         <div className="flex items-center gap-2">
-          {item.count !== undefined && (
+          {displayCount !== undefined && (
             <span className="text-xs bg-gray-100 text-gray-600 rounded-md px-2 py-[1px]">
-              {item.count}
+              {displayCount}
             </span>
           )}
 
@@ -168,7 +170,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
               item={child}
               depth={depth + 1}
               onSelect={onSelect}
-              selectedNode={selectedNode} // ✅ pass the same active node
+              selectedNode={selectedNode}
               parentNames={{
                 subject: depth === 0 ? item.title : parentNames.subject || "",
                 system: depth === 1 ? item.title : parentNames.system,
