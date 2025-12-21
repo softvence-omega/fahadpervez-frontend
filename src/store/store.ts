@@ -22,7 +22,13 @@ const persistConfig = {
 const staticContentPersistConfig = {
   key: "staticContent",
   storage,
-  whitelist: ["studentType"],
+  whitelist: [
+    "studentType",
+    "profileType",
+    "contentType",
+    "contentFor",
+    "type",
+  ],
 };
 const persistedReducer = persistReducer(persistConfig, authReducer);
 const persistedStaticContentReducer = persistReducer(
@@ -44,7 +50,9 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(baseAPI.middleware).concat(bioDigitalExternalAPI.middleware),
+    })
+      .concat(baseAPI.middleware)
+      .concat(bioDigitalExternalAPI.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
