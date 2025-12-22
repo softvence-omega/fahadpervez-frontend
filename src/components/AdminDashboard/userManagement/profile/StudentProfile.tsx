@@ -36,16 +36,12 @@ const StudentProfile = () => {
                 ?.map((p) => p.examName)
                 .join(", ") ?? "Not provided"
             }
-            bio={
-              profile.profile_id.studentType?.replace("_", " ").toLowerCase() ??
-              ""
-            }
-            profileImage={image}
-            yearOfStudy={profile.profile_id.year_of_study ?? ""}
-            profession={
-              profile.profile_type?.replace("_", " ").toLowerCase() ?? ""
-            }
+            bio={profile.profile_id.bio ?? "Not provided"}
+            profileImage={profile?.profile_id?.profile_photo ?? image}
+            yearOfStudy={profile?.profile_id?.year_of_study ?? ""}
+            profession={profile.role}
             backLink="/admin/students"
+            role={profile?.role}
           />
         )
       )}

@@ -21,6 +21,7 @@ export interface Profile {
   badges: any[];
   connectedMentor: any[];
   createdAt: string;
+
   updatedAt: string;
 }
 
@@ -104,6 +105,8 @@ export type SingleStudentResponse = {
       connectedMentor: any[];
       createdAt: string;
       updatedAt: string;
+      profile_photo: string;
+      bio: string;
     };
   };
   meta: null;

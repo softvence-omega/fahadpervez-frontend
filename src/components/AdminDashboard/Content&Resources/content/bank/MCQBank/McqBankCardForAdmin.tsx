@@ -29,10 +29,10 @@ const tableDesign = {
 
 const tableHeaders = [
   { label: "Bank", align: "text-left" },
-  { label: "Subject", align: "text-center hidden sm:table-cell" },
-  { label: "System", align: "text-center hidden md:table-cell" },
-  { label: "Topic", align: "text-center hidden lg:table-cell" },
-  { label: "Subtopic", align: "text-center hidden xl:table-cell" },
+  { label: "Subject", align: "text-center hidden xl:table-cell" },
+  { label: "System", align: "text-center hidden 2xl:table-cell" },
+  { label: "Topic", align: "text-center hidden 2xl:table-cell" },
+  { label: "Subtopic", align: "text-center hidden 2xl:table-cell" },
   { label: "Actions", align: "text-center" },
 ];
 
@@ -87,16 +87,24 @@ const McqBankCardForAdmin: FC<Props> = ({ data, setMcqBankId }) => {
               <TableRow key={data._id} className={tableDesign.bodyRow}>
                 <TableCell className={tableDesign.cell}>{data.title}</TableCell>
 
-                <TableCell className={tableDesign.cell}>
+                <TableCell
+                  className={`hidden xl:table-cell ${tableDesign.cell}`}
+                >
                   {data.subject}
                 </TableCell>
-                <TableCell className={tableDesign.cell}>
+                <TableCell
+                  className={`hidden 2xl:table-cell ${tableDesign.cell}`}
+                >
                   {data.system}
                 </TableCell>
-                <TableCell className={tableDesign.cell}>
+                <TableCell
+                  className={`hidden 2xl:table-cell ${tableDesign.cell}`}
+                >
                   {data.topic || "-"}
                 </TableCell>
-                <TableCell className={tableDesign.cell}>
+                <TableCell
+                  className={`hidden 2xl:table-cell ${tableDesign.cell}`}
+                >
                   {data.subtopic || "-"}
                 </TableCell>
 

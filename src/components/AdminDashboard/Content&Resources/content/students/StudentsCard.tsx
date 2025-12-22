@@ -60,7 +60,7 @@ const StudentsCard = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-start">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:gap-10">
         <DashboardTopSection
           title="Content Management"
           description="Manage students and professionals."
@@ -78,7 +78,7 @@ const StudentsCard = () => {
         <h1>No Data Found</h1>
       ) : (
         <CommonSpace>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {dataToRender?.map((student, i) => (
               <StudentTypeCard key={student._id} index={i} data={student} />
             ))}
@@ -87,7 +87,7 @@ const StudentsCard = () => {
       )}
 
       {dataToRender && dataToRender.length > 0 && (
-        <div className="">
+        <div className="mb-10">
           <Pagination
             currentPage={currentPage}
             totalPages={totalPage ?? 1}

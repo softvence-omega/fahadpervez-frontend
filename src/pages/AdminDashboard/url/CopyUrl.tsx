@@ -43,7 +43,7 @@ const CopyUrl = () => {
       <div
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
-        className={`mt-4 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 cursor-pointer hover:border-blue-400 transition-colors`}
+        className={`mt-10 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 cursor-pointer hover:border-blue-400 transition-colors`}
         onClick={() => document.getElementById("fileInput")?.click()}
       >
         {!imageUrl ? (

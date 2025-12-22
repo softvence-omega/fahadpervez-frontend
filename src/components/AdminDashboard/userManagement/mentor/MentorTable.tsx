@@ -28,10 +28,10 @@ const dropdownItems = [
 const tableHeaders = [
   { label: "SL", align: "text-left sm:table-cell hidden" },
   { label: "Name", align: "text-center" },
-  { label: "Medical Specialty", align: "text-center xl:table-cell hidden" },
-  { label: "Experience", align: "text-center xl:table-cell hidden" },
-  { label: "Institution", align: "text-center lg:table-cell hidden" },
-  { label: "Designation", align: "text-center sm:table-cell hidden" },
+  { label: "Medical Specialty", align: "text-center lg:table-cell hidden" },
+  { label: "Experience", align: "text-center lg:table-cell hidden" },
+  { label: "Institution", align: "text-center xl:table-cell hidden" },
+  { label: "Designation", align: "text-center xl:table-cell hidden" },
   { label: "Status", align: "text-center sm:table-cell hidden" },
 
   { label: "Action", align: "text-center" },
@@ -58,13 +58,12 @@ const MentorTable = () => {
 
   const mentors = data?.data || [];
 
-  console.log("mentors", mentors);
   return (
     <div>
       <div className="py-5">
         <DashboardSearch
           onChange={(val) => setSearch(val)}
-          className=" !rounded-none my-5"
+          className=" rounded-none! my-5"
         />
       </div>
 
@@ -81,7 +80,7 @@ const MentorTable = () => {
           }))}
           trigger={
             <ButtonWithIcon
-              className="  bg-[#fff] !text-[#09090B] flex !flex-row-reverse"
+              className="  bg-white text-[#09090B]! flex flex-row-reverse!"
               icon={IoChevronDownSharp}
             >
               {selectedStatus}
@@ -119,29 +118,39 @@ const MentorTable = () => {
                   </div>
                 </TableCell>
                 <TableCell
-                  className={`xl:table-cell hidden  ${tableDesign.cell}`}
+                  className={`lg:table-cell hidden  ${tableDesign.cell}`}
                 >
                   <div>{p.specialty}</div>
                 </TableCell>
                 <TableCell
-                  className={`xl:table-cell hidden ${tableDesign.cell}`}
+                  className={`lg:table-cell hidden ${tableDesign.cell}`}
                 >
                   <div>{p.professionalExperience} years</div>
                 </TableCell>
                 <TableCell
-                  className={`lg:table-cell hidden ${tableDesign.cell}`}
+                  className={`xl:table-cell hidden ${tableDesign.cell}`}
                 >
                   <div>{p.hospitalOrInstitute}</div>
                 </TableCell>
                 <TableCell
-                  className={` sm:table-cell hidden ${tableDesign.cell}`}
+                  className={` xl:table-cell hidden ${tableDesign.cell}`}
                 >
                   <div>{p.currentRole}</div>
                 </TableCell>
                 <TableCell
                   className={`sm:table-cell hidden ${tableDesign.cell}`}
                 >
-                  <div>{p.profileVerification}</div>
+                  <div
+                    className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium
+    ${
+      p.profileVerification === "APPROVED"
+        ? "bg-blue-100 text-blue-700"
+        : "bg-red-100 text-red-700"
+    }
+  `}
+                  >
+                    {p.profileVerification}
+                  </div>
                 </TableCell>
                 <TableCell className={`${tableDesign.cell}`}>
                   <div className="flex justify-center gap-3  ">

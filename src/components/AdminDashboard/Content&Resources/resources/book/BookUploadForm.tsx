@@ -141,7 +141,7 @@ const BookUploadForm: React.FC<BookUploadFormProps> = ({
   };
 
   return (
-    <div>
+    <div className=" mx-4">
       <DashboardTopSection
         title={isEditMode ? "Update Book" : "Upload Book"}
         description="Upload and manage books for AI model training"

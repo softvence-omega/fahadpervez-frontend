@@ -477,12 +477,12 @@ const Setting: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 pt-4 border-t border-gray-200">
+                <div className="flex flex-col sm:flex-row items-center gap-3 pt-4 border-t border-gray-200">
                   <CommonButton
                     type="submit"
                     onClick={handleSubmit(onSubmit)}
                     disabled={isPosting}
-                    className=" !bg-blue-600 !text-white flex items-center gap-1"
+                    className="w-full sm:w-auto !bg-blue-600 !text-white flex items-center justify-center gap-1"
                   >
                     <Save className="w-4 h-4" />
 
@@ -493,7 +493,10 @@ const Setting: React.FC = () => {
                     )}
                   </CommonButton>
 
-                  <CommonButton onClick={handleResetToDefault}>
+                  <CommonButton
+                    onClick={handleResetToDefault}
+                    className="w-full sm:w-auto"
+                  >
                     Reset to Default
                   </CommonButton>
                 </div>
