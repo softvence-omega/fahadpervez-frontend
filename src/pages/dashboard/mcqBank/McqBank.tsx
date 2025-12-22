@@ -13,7 +13,6 @@ import { QuizGeneratorDialog } from "../quizGenerator/QuizGenerateModal";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-
 const McqBank = () => {
   const breadcrumbs: BreadcrumbItem[] = [
     { name: "Dashboard", link: "/dashboard" },
@@ -187,9 +186,12 @@ const McqBank = () => {
 
                   {/* Content */}
                   <div className="space-y-2">
-                    <h4 className="text-lg text-slate-900 font-medium">
-                      {mcq?.title}
-                    </h4>
+                    <Link to={`/dashboard/practice-mcq/${mcq?._id}`}>
+                      <h4 className="text-lg text-slate-900 font-medium hover:underline hover:text-blue-600 transition duration-75">
+                        {mcq?.title}
+                      </h4>
+                    </Link>
+
                     <div className="flex flex-wrap items-center gap-4">
                       <p className="text-slate-600">{mcq?.totalMcq}</p>
                       <div className="flex flex-wrap items-center gap-2">
@@ -210,7 +212,7 @@ const McqBank = () => {
                 </div>
                 <Link to={`/dashboard/practice-mcq/${mcq?._id}`}>
                   <button className="text-blue-main font-medium hover:underline cursor-pointer">
-                    Start Now
+                    Open
                   </button>
                 </Link>
               </div>

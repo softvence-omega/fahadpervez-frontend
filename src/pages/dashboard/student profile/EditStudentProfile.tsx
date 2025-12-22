@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import profileBg from "@/assets/dashboard/profileBg.png";
 import { Button } from "@/components/ui/button";
 import EditStudentProfileModal from "./EditStudentProfileModal";
@@ -36,7 +37,7 @@ export default function EditStudentProfile() {
       formDataToSend.append("data", JSON.stringify({}));
 
       const res = await updateProfile(formDataToSend).unwrap();
-      console.log(res);
+
       if (res.success) {
         const meRes = await getMe(undefined).unwrap();
 
@@ -47,7 +48,7 @@ export default function EditStudentProfile() {
           })
         );
 
-        toast.success("Profile image updated successfully!");
+        // toast.success("Profile image updated successfully!");
 
         // reset states
         setSelectedImage(null);
@@ -73,7 +74,8 @@ export default function EditStudentProfile() {
   };
 
   const user = useSelector(selectUser);
-  console.log(user);
+  // console.log(user);
+
   return (
     <div className="my-8 md:my-10">
       {/* Background Image */}
@@ -163,7 +165,11 @@ export default function EditStudentProfile() {
               </p>
               <p>
                 <span className="font-medium">Preparing For:</span>{" "}
-                {user?.profile?.preparingFor}
+                {user?.profile?.preparingFor?.length
+                  ? user.profile.preparingFor
+                      .map((item) => item.examName)
+                      .join(", ")
+                  : "N/A"}
               </p>
             </div>
           </div>
@@ -194,9 +200,15 @@ export default function EditStudentProfile() {
                 { label: "University", value: `${user?.profile?.university}` },
                 {
                   label: "Preparing For",
-                  value: `${user?.profile?.preparingFor}`,
+                  value: `${
+                    user?.profile?.preparingFor?.length
+                      ? user.profile.preparingFor
+                          .map((item) => item.examName)
+                          .join(", ")
+                      : "N/A"
+                  }`,
                 },
-                { label: "Bio", value: `${user?.profile?.bio}` },
+                { label: "Bio", value: `${user?.profile?.bio || "N/A"}` },
               ].map((item, idx) => (
                 <div
                   key={idx}

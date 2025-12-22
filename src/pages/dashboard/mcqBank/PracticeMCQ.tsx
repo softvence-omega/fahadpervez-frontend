@@ -6,13 +6,23 @@ import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import { useGetSingleMCQQuery } from "@/store/features/MCQBank/MCQBank.api";
 import { McqQuestion } from "@/types";
-import { ArrowLeft, CircleAlert, Copy } from "lucide-react";
+import { ArrowLeft, CircleAlert, Copy, Plus } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import QuizReportModal from "../quizGenerator/QuizReportModal";
 import { toast } from "sonner";
+import PrimaryButton from "@/components/reusable/PrimaryButton";
+import { PracticeQuizModal } from "./PracticeQuizModal";
 
 export default function PracticeMCQ() {
+  const [openQuizModal, setOpenQuizModal] = useState(false);
+
+  // const handleQuizSubmit = (data: any) => {
+  //   console.log("Quiz Data:", data);
+  //   // TODO: Redux API call integration
+  //   setOpenQuizModal(false);
+  // };
+
   const breadcrumbs: BreadcrumbItem[] = [
     { name: "Dashboard", link: "/dashboard" },
     { name: "Practice MCQ", link: "/dashboard/practice-mcq" },
@@ -91,17 +101,22 @@ export default function PracticeMCQ() {
             {/* <Link
               to={"/dashboard/quiz-collection"}
               className="w-full sm:w-auto"
+            > */}
+            <PrimaryButton
+              style={{
+                background:
+                  "linear-gradient(103deg, #0076F5 6.94%, #0058B8 99.01%)",
+              }}
+              bgType="solid"
+              // bgColor="bg-blue-btn-1"
+              iconPosition="left"
+              icon={<Plus />}
+              className="h-10 w-full sm:w-auto hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer"
+              onClick={() => setOpenQuizModal(true)}
             >
-              <PrimaryButton
-                bgType="solid"
-                bgColor="bg-blue-btn-1"
-                iconPosition="left"
-                icon={<Plus />}
-                className="h-12 w-full sm:w-auto hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer"
-              >
-                Start Quiz
-              </PrimaryButton>
-            </Link> */}
+              Start Quiz
+            </PrimaryButton>
+            {/* </Link> */}
           </div>
 
           {/* Render questions */}
@@ -280,6 +295,14 @@ export default function PracticeMCQ() {
           Next
         </button>
       </div>
+
+      <PracticeQuizModal
+        open={openQuizModal}
+        setOpen={setOpenQuizModal}
+        // onSubmit={handleQuizSubmit}
+        mcqBankId={mcqData?._id || ""}
+        mcqBankTitle={mcqData?.title || ""}
+      />
     </>
   );
 }
