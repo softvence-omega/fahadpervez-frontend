@@ -21,7 +21,7 @@ const SingleFlashCardCard: React.FC<FlashCardProps> = ({ bankId }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [difficulty, setDifficulty] = useState<DifficultyFilter>("All");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const limit = 10;
+  const limit = 6;
 
   const singleMcqQueryArg = bankId
     ? {
@@ -69,8 +69,10 @@ const SingleFlashCardCard: React.FC<FlashCardProps> = ({ bankId }) => {
     setIsModalOpen(true);
   };
 
+  console.log("flashCardId", flashCardId);
+  console.log("selectedCard", selectedCard);
   const handleUpdate = async (values: EditFlashCardInput) => {
-    if (!flashCardId) return;
+    if (!flashCardId || !bankId || !values) return;
 
     await updateSingleFlashCard({
       flashBankId: bankId,
@@ -98,7 +100,7 @@ const SingleFlashCardCard: React.FC<FlashCardProps> = ({ bankId }) => {
               No data found
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-6 ">
+            <div className="grid grid-cols-1 gap-6 p-4  2xl:grid-cols-3 ">
               {singleFlashBankData.map((flashCard) => (
                 <div className="border border-border rounded-xl shadow p-5  bg-white">
                   <div className="flex justify-between items-center mb-3">

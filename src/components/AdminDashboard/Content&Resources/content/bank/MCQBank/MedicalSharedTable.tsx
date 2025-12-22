@@ -28,10 +28,10 @@ import UpdateMcqModal, {
 } from "../../medical/studyMode/UpdateMcqModal";
 
 const tableHeaders = [
-  { label: "ID", align: "text-center hidden sm:table-cell" },
+  { label: "ID", align: "text-center hidden xl:table-cell" },
   { label: "Question", align: "text-center" },
-  { label: "Difficulty", align: "text-center hidden xl:table-cell" },
-  { label: "Correct Answer", align: "text-center hidden xl:table-cell" },
+  { label: "Difficulty", align: "text-center hidden 2xl:table-cell" },
+  { label: "Correct Answer", align: "text-center hidden 2xl:table-cell" },
   { label: "Action", align: "text-center" },
 ];
 
@@ -165,7 +165,7 @@ const MedicalSharedTable: React.FC<MedicalSharedTableProps> = ({
                   {data.map((item) => (
                     <TableRow key={item.mcqId} className={tableDesign.bodyRow}>
                       <TableCell
-                        className={`${tableDesign.cell} hidden sm:table-cell`}
+                        className={`${tableDesign.cell} hidden xl:table-cell`}
                       >
                         {item.mcqId}
                       </TableCell>
@@ -175,12 +175,12 @@ const MedicalSharedTable: React.FC<MedicalSharedTableProps> = ({
                         {item.question}
                       </TableCell>
                       <TableCell
-                        className={`${tableDesign.cell} hidden xl:table-cell`}
+                        className={`${tableDesign.cell} hidden 2xl:table-cell`}
                       >
                         {item.difficulty}
                       </TableCell>
                       <TableCell
-                        className={`${tableDesign.cell} hidden xl:table-cell`}
+                        className={`${tableDesign.cell} hidden 2xl:table-cell`}
                       >
                         {item.correctOption}
                       </TableCell>

@@ -28,6 +28,8 @@ const staticContentPersistConfig = {
     "contentType",
     "contentFor",
     "type",
+
+    "bankId",
   ],
 };
 const persistedReducer = persistReducer(persistConfig, authReducer);

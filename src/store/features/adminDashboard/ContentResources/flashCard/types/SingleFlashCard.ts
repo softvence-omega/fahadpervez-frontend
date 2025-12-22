@@ -43,5 +43,5 @@ export type FlashCardInput = {
   backText: string;
   explanation: string;
   difficulty: string;
-  image: string;
+  image?: string;
 };

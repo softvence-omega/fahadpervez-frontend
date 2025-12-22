@@ -38,15 +38,15 @@ const ResourceSection = () => {
   return (
     <div>
       <CommonSpace>
-        <div className="flex justify-between items-center ">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-6 sm:gap-10 ">
           <DashboardSearch
             value={searchTerm}
             onChange={setSearchTerm}
-            className=" !rounded-none !max-w-[734px] "
+            className=" rounded-none! w-full  md:max-w-[734px]! "
           />
           <ButtonWithIcon
             icon={FaPlus}
-            className="w-full md:w-auto flex justify-center  flex-shrink-0 "
+            className="w-full sm:w-auto flex justify-center  shrink-0 "
           >
             <Link to="create-carrier">Add Resource</Link>
           </ButtonWithIcon>

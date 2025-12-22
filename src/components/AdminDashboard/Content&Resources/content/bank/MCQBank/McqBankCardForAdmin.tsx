@@ -14,10 +14,14 @@ import ModalCloseButton from "@/components/AdminDashboard/reuseable/ModalCloseBu
 import { useDeleteFlashCardBankMutation } from "@/store/features/adminDashboard/ContentResources/flashCard/flashCardSlice";
 import { useDeleteMcqBankApiMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import { SingleMcqBank } from "@/store/features/adminDashboard/ContentResources/MCQ/types/allContent";
-import { setUploadIntoBank } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
+import {
+  setBankId,
+  setUploadIntoBank,
+} from "@/store/features/adminDashboard/staticContent/staticContentSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
 import { FC } from "react";
+import FlashCardUpload from "../../FlashCard/FlashCardUpload";
 import MCQUpload from "../../MCQ/MCQUpload";
 const tableDesign = {
   header:
@@ -29,10 +33,10 @@ const tableDesign = {
 
 const tableHeaders = [
   { label: "Bank", align: "text-left" },
-  { label: "Subject", align: "text-center hidden sm:table-cell" },
-  { label: "System", align: "text-center hidden md:table-cell" },
-  { label: "Topic", align: "text-center hidden lg:table-cell" },
-  { label: "Subtopic", align: "text-center hidden xl:table-cell" },
+  { label: "Subject", align: "text-center hidden xl:table-cell" },
+  { label: "System", align: "text-center hidden 2xl:table-cell" },
+  { label: "Topic", align: "text-center hidden 2xl:table-cell" },
+  { label: "Subtopic", align: "text-center hidden 2xl:table-cell" },
   { label: "Actions", align: "text-center" },
 ];
 
@@ -57,8 +61,9 @@ const McqBankCardForAdmin: FC<Props> = ({ data, setMcqBankId }) => {
     if (contentType === "Flashcard") await deleteFlashCardBank(id);
   };
 
-  const handleAddMore = () => {
+  const handleAddMore = (bankId: string) => {
     dispatch(setUploadIntoBank(true));
+    dispatch(setBankId(bankId));
   };
 
   const handleModalClose = () => {
@@ -87,22 +92,30 @@ const McqBankCardForAdmin: FC<Props> = ({ data, setMcqBankId }) => {
               <TableRow key={data._id} className={tableDesign.bodyRow}>
                 <TableCell className={tableDesign.cell}>{data.title}</TableCell>
 
-                <TableCell className={tableDesign.cell}>
+                <TableCell
+                  className={`hidden xl:table-cell ${tableDesign.cell}`}
+                >
                   {data.subject}
                 </TableCell>
-                <TableCell className={tableDesign.cell}>
+                <TableCell
+                  className={`hidden 2xl:table-cell ${tableDesign.cell}`}
+                >
                   {data.system}
                 </TableCell>
-                <TableCell className={tableDesign.cell}>
+                <TableCell
+                  className={`hidden 2xl:table-cell ${tableDesign.cell}`}
+                >
                   {data.topic || "-"}
                 </TableCell>
-                <TableCell className={tableDesign.cell}>
+                <TableCell
+                  className={`hidden 2xl:table-cell ${tableDesign.cell}`}
+                >
                   {data.subtopic || "-"}
                 </TableCell>
 
                 <TableCell className={tableDesign.cell}>
                   <CommonButton
-                    onClick={handleAddMore}
+                    onClick={() => handleAddMore(data._id)}
                     className="bg-blue-500 !text-white hover:bg-blue-600"
                   >
                     Add more
@@ -126,20 +139,24 @@ const McqBankCardForAdmin: FC<Props> = ({ data, setMcqBankId }) => {
         </Table>
       </div>
 
-      {uploadIntoBank && (
+      {uploadIntoBank && contentType === "MCQ" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="bg-white w-full max-w-3xl p-6 rounded-lg shadow-lg overflow-y-auto max-h-[90vh] relative">
             <ModalCloseButton onClick={handleModalClose} />
 
-            <FormHeader
-              title={
-                contentType === "MCQ"
-                  ? "Upload MCQs to the Question Bank"
-                  : "Upload Flashcards to the Flashcard Bank"
-              }
-            />
+            <FormHeader title={"Upload MCQs to the Question Bank"} />
 
             <MCQUpload />
+          </div>
+        </div>
+      )}
+      {uploadIntoBank && contentType === "Flashcard" && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white w-full max-w-3xl p-6 rounded-lg shadow-lg overflow-y-auto max-h-[90vh] relative">
+            <ModalCloseButton onClick={handleModalClose} />
+            <FormHeader title={"Upload Flashcards to the Flashcard Bank"} />
+
+            <FlashCardUpload />
           </div>
         </div>
       )}
