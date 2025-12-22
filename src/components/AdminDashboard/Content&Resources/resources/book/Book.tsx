@@ -2,7 +2,6 @@ import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import Spinner from "@/common/button/Spinner";
 import Pagination from "@/common/custom/Pagination";
 import { useDebounce } from "@/common/custom/useDebounce";
-import CommonSpace from "@/common/space/CommonSpace";
 import DashboardSearch from "@/components/AdminDashboard/reuseable/DashboardSearch";
 import { useGetResourceBooksQuery } from "@/store/features/adminDashboard/ContentResources/resourceLibery/resourceLibery";
 import { BookType } from "@/store/features/adminDashboard/ContentResources/resourceLibery/types/books";
@@ -54,7 +53,7 @@ const Book = () => {
     <div>
       {isEditModalOpen && editBook ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white w-full max-w-3xl p-6 rounded-lg shadow-lg overflow-y-auto max-h-[90vh] relative">
+          <div className="bg-white w-full max-w-3xl p-6 rounded-lg shadow-lg overflow-y-auto max-h-[90vh] relative mx-4 sm:mx-0">
             <BookUploadForm
               initialData={editBook}
               handleCloseModal={handleCloseModal}
@@ -63,21 +62,19 @@ const Book = () => {
         </div>
       ) : (
         <div>
-          <CommonSpace>
-            <div className="flex justify-between items-center ">
-              <DashboardSearch
-                value={searchTerm}
-                onChange={setSearchTerm}
-                className=" !rounded-none !max-w-[734px] "
-              />
-              <ButtonWithIcon
-                icon={FaPlus}
-                className="w-full md:w-auto flex justify-center  flex-shrink-0 "
-              >
-                <Link to="upload-books">Upload Books</Link>
-              </ButtonWithIcon>
-            </div>
-          </CommonSpace>
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-6 sm:gap-10 pb-10 ">
+            <DashboardSearch
+              value={searchTerm}
+              onChange={setSearchTerm}
+              className=" rounded-none! w-full  md:max-w-[734px]! "
+            />
+            <ButtonWithIcon
+              icon={FaPlus}
+              className="w-full sm:w-auto flex justify-center  shrink-0  "
+            >
+              <Link to="upload-books">Upload Books</Link>
+            </ButtonWithIcon>
+          </div>
 
           <div className={viewAll ? "mb-10" : ""}>
             {isLoading ? (

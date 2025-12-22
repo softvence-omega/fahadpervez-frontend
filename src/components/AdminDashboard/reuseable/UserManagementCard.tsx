@@ -82,7 +82,7 @@ const UserManagementCard: FC = () => {
         <ButtonWithIcon
           onClick={handleCreate}
           icon={FaPlus}
-          className="w-full md:w-auto flex justify-center  flex-shrink-0 "
+          className="sm:w-auto flex justify-center  shrink-0 "
         >
           Add Student
         </ButtonWithIcon>

@@ -1,8 +1,12 @@
 import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
-import { useUploadBulkMcqApiMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import {
+  useAddMoreMcqToMcqBankMutation,
+  useUploadBulkMcqApiMutation,
+} from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import { setUploadIntoBank } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
 import { RootState } from "@/store/store";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ActionButtons from "../ActionButtons";
 import RequiredColumnsList from "../medical/studyMode/RequiredColumsList";
@@ -35,16 +39,21 @@ const columns = [
 const AddBulkMCQ = () => {
   const [detectedCount, setDetectedCount] = useState(0);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const dispatch = useDispatch();
 
-  const selectFormData = useSelector(
-    (state: RootState) => state.staticContent.formData
-  );
-  const contentType = useSelector(
-    (state: RootState) => state.staticContent.contentType
-  );
+  const {
+    contentType,
+    formData: selectFormData,
+    bankId,
+    uploadIntoBank,
+  } = useSelector((state: RootState) => state.staticContent);
 
   const [uploadBulkMcqApi, { isLoading: isUploading }] =
     useUploadBulkMcqApiMutation();
+
+  const [addMoreMcqToMcqBank, { isLoading: isAdding }] =
+    useAddMoreMcqToMcqBankMutation();
+
   const handleFileSelect = (file: File, detectedCount: number) => {
     setSelectedFile(file);
     setDetectedCount(detectedCount);
@@ -59,15 +68,24 @@ const AddBulkMCQ = () => {
 
     try {
       const formData = new FormData();
-
       formData.append("file", selectedFile);
-      if (selectFormData) {
-        formData.append("data", JSON.stringify(selectFormData));
+
+      if (uploadIntoBank && bankId) {
+        addMoreMcqToMcqBank({
+          mcqBankId: bankId,
+          data: formData,
+          key: "bulk",
+        });
+        dispatch(setUploadIntoBank(false));
+      } else {
+        if (selectFormData) {
+          formData.append("data", JSON.stringify(selectFormData));
+        }
+        if (formData) {
+          await uploadBulkMcqApi(formData);
+        }
       }
-      if (formData) {
-        await uploadBulkMcqApi(formData);
-        navigate(`/admin/content-management/dashboard/${contentType}`);
-      }
+      navigate(`/admin/content-management/dashboard/${contentType}`);
     } catch (error) {
       console.error("Upload error:", error);
     }
@@ -102,7 +120,7 @@ const AddBulkMCQ = () => {
       <div className="mb-6">
         <ActionButtons
           onSavePublish={handleImport}
-          isLoading={isUploading}
+          isLoading={isUploading || isAdding}
           onCancel={handleBack}
         />
       </div>

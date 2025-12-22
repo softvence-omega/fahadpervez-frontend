@@ -1,7 +1,6 @@
 import CommonHeader from "@/common/header/CommonHeader";
 import { toBerhanTime } from "@/help/help";
 import React from "react";
-import { BsDot } from "react-icons/bs";
 import { HiOutlineVideoCamera } from "react-icons/hi";
 import { RegistrationType, UpcomingEventType } from "./UpcomingEvent";
 
@@ -44,12 +43,12 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
               <CommonHeader className="!font-normal">
                 {toBerhanTime(event.dateTime)}
               </CommonHeader>
-              <span>
+              {/* <span>
                 <BsDot size={20} />
-              </span>
-              <CommonHeader className="!font-normal">
+              </span> */}
+              {/* <CommonHeader className="!font-normal">
                 {toBerhanTime(event.dateTime)}
-              </CommonHeader>
+              </CommonHeader> */}
             </div>
           )}
         </div>

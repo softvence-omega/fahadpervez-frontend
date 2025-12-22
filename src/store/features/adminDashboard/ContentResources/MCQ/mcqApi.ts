@@ -1,6 +1,7 @@
 import { baseAPI } from "@/store/api/baseApi";
 import { DifficultyFilter } from "@/types";
 import { ContentFor } from "../../staticContent/staticContentSlice";
+import { UploadMode } from "./types/addMoreMcq";
 import {
   AllContentMCQList,
   ClinicalCaseTreeResponse,
@@ -115,6 +116,20 @@ export const mcqApi = baseAPI.injectEndpoints({
       invalidatesTags: ["SingleMcq", "Mcq", "StudyModeTree", "Exams"],
     }),
 
+    // /mcq-bank/add-more-mcq
+
+    addMoreMcqToMcqBank: build.mutation<
+      void,
+      { mcqBankId: string; data: FormData } & UploadMode
+    >({
+      query: ({ data, mcqBankId, key }) => ({
+        url: `/mcq-bank/add-more-mcq/${mcqBankId}`,
+        method: "PUT",
+        body: data,
+        params: { key },
+      }),
+      invalidatesTags: ["SingleMcq", "Mcq", "StudyModeTree"],
+    }),
     //student type get and post
 
     getStudentTypeApi: build.query<ProfileTypeResponse, ProfileParams>({
@@ -309,4 +324,5 @@ export const {
   useDeleteMcqBankApiMutation,
   useUpdatedSingleMcqApiMutation,
   useGetSingleUserReportQuery,
+  useAddMoreMcqToMcqBankMutation,
 } = mcqApi;

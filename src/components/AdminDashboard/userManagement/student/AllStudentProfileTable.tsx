@@ -65,7 +65,7 @@ const AllStudentProfileTable = () => {
     <div>
       <DashboardSearch
         onChange={(val) => setSearch(val)}
-        className=" !rounded-none my-5"
+        className=" rounded-none! my-5"
       />
       <div className="flex items-center justify-between pb-5">
         <CommonHeader>Student Profile</CommonHeader>

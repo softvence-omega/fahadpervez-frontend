@@ -32,13 +32,14 @@ const MentorProfile = () => {
             email={profile?.email ?? "sarah.johnson@email.com"}
             phone="+1 (555) 123-4567"
             preparingFor={profile?.profile_id.specialty ?? "Not provided"}
-            bio={profile?.profile_id.postgraduateDegree ?? "Not provided"}
+            bio={`${profile?.profile_id.postgraduateDegree} ${profile?.profile_id.hospitalOrInstitute} ${profile?.profile_id.country}`}
             profileImage={image}
             yearOfStudy={
               profile?.profile_id.postgraduateDegree ?? "Not provided"
             }
-            profession={profile?.profile_id.specialty ?? "Not provided"}
+            profession={profile?.role ?? "Not provided"}
             backLink="/admin/mentor"
+            role={profile?.role}
           />
         )
       )}

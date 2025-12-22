@@ -77,7 +77,7 @@ const FAQManagement = () => {
           <div className="p-6 border border-border bg-white rounded-md">
             <CommonHeader className="pb-2 !text-2xl">Faq's</CommonHeader>
 
-            <div className="flex items-center gap-4 w-full">
+            <div className="flex flex-col lg:flex-row items-center gap-4 w-full">
               <div className="w-full">
                 <DashboardSearch className="!rounded-none" />
               </div>
@@ -87,7 +87,7 @@ const FAQManagement = () => {
                 item={categoriesOptions}
                 onValueChange={setSelected}
                 placeholder="Select a category"
-                className="!w-[80px]"
+                className="w-full! lg:w-20!"
               />
             </div>
           </div>

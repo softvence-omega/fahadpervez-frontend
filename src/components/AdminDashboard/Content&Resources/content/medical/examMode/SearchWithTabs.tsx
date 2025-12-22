@@ -18,8 +18,8 @@ const SearchWithTabs: React.FC<SearchWithTabsProps> = ({
 }) => {
   return (
     <CommonBorderWrapper className="space-y-4 w-full">
-      <div className="flex items-center gap-6">
-        <div className="flex items-center gap-2 flex-1 bg-[#EFF6FF] border border-[#fff] rounded-md p-3">
+      <div className="flex flex-col xl:flex-row items-center gap-6">
+        <div className="flex items-center gap-2 flex-1 bg-[#EFF6FF] border border-[#fff] rounded-md p-3 w-full xl:w-auto">
           <IoSearchOutline className="w-5 h-5" />
           <input
             value={searchTerm}
@@ -33,7 +33,7 @@ const SearchWithTabs: React.FC<SearchWithTabsProps> = ({
           item={difficultyOptions}
           value={difficulty}
           onValueChange={(val) => setDifficulty(val as DifficultyFilter)}
-          className="!w-[150px]"
+          className="w-full! xl:!w-[150px]"
         />
       </div>
     </CommonBorderWrapper>

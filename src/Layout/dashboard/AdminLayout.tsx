@@ -20,14 +20,14 @@ const AdminLayout: React.FC = () => {
     <div className="w-full min-h-screen bg-slate">
       <div className="w-full flex items-center justify-between bg-white">
         <DashboardHeader sidebarOpen={sidebarOpen} />
-        <div className="md:hidden pr-4">
+        <div className="lg:hidden pr-4">
           <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
             <SheetTrigger className="cursor-pointer" asChild>
               <button className="p-2 rounded-md border border-slate-200">
                 <Menu className="h-6 w-6 cursor-pointer" />
               </button>
             </SheetTrigger>
-            <SheetContent side="left" className="p-0 w-[280px]">
+            <SheetContent side="left" className="p-0 w-70">
               <AdminSidebar
                 sidebarOpen={true}
                 onLinkClick={() => setSidebarOpen(false)}
@@ -39,7 +39,7 @@ const AdminLayout: React.FC = () => {
 
       <div className="flex items-start px-4.5 pt-6 gap-6">
         {!hideSidebar && (
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <AdminSidebar sidebarOpen={true} />
           </div>
         )}

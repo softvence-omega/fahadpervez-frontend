@@ -30,7 +30,7 @@ const StudentTypeCard: FC<CardProps> = ({ data, className, index }) => {
                 <FaUserDoctor size={24} className="text-[#030213]" />
               )}
             </div>
-            <CommonHeader className="">{data.typeName}</CommonHeader>
+            <CommonHeader className=" ">{data.typeName}</CommonHeader>
           </div>
         </div>
 

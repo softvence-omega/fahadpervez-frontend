@@ -29,16 +29,17 @@ const ProfessionalProfile = () => {
                   profile?.profile_id.lastName
               ) ?? "John Doe"
             }
-            email="sarah.johnson@email.com"
+            email={profile?.email ?? "sarah.johnson@email.com"}
             phone="+1 (555) 123-4567"
             country={profile?.profile_id.country ?? "Not provided"}
-            bio={profile?.profile_id.institution ?? "Not provided"}
+            bio={`${profile.profile_id.post_graduate} ,  ${profile.profile_id.institution}`}
             university={profile?.profile_id.institution ?? "Not provided"}
             preparingFor={profile?.profile_id.professionName ?? "Not provided"}
             profileImage={image}
             yearOfStudy={profile?.role}
-            profession={profile.profile_type}
+            profession={profile.role}
             backLink="/admin/professional"
+            role={profile.role}
           />
         )
       )}
