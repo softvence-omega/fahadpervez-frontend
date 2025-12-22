@@ -1,8 +1,12 @@
 import CommonButton from "@/common/button/CommonButton";
 import CommonSelect from "@/common/custom/CommonSelect";
 import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
-import { useManualUploadFlashCardMutation } from "@/store/features/adminDashboard/ContentResources/flashCard/flashCardSlice";
+import {
+  useAddMoreFlashcardToFlashcardBankMutation,
+  useManualUploadFlashCardMutation,
+} from "@/store/features/adminDashboard/ContentResources/flashCard/flashCardSlice";
 import { useUploadSingleImageMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import { setUploadIntoBank } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
 import { useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
 import { difficultyOptions } from "@/types";
@@ -10,6 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Upload } from "lucide-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { RiDeleteBinLine } from "react-icons/ri";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import ActionButtons from "../ActionButtons";
@@ -36,6 +41,13 @@ const inputClass = {
 };
 
 const ManualFlashUpload = () => {
+  const { uploadIntoBank, bankId } = useAppSelector(
+    (state: RootState) => state.staticContent
+  );
+
+  const [addMoreFlashcardToFlashcardBank, { isLoading: addMoreLoading }] =
+    useAddMoreFlashcardToFlashcardBankMutation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
     register,
@@ -87,7 +99,6 @@ const ManualFlashUpload = () => {
       const result = await uploadSingleImage(formDataImg).unwrap();
       const imageUrl = result.data.fileUrl;
 
-      // Set image in RHF
       setValue(`flashCards.${index}.image`, imageUrl);
     } catch (err) {
       console.error("Image upload failed:", err);
@@ -100,13 +111,26 @@ const ManualFlashUpload = () => {
 
   const onSubmit = async (data: FlashCardsFormValues) => {
     try {
-      if (formData) {
-        const formattedPayload = { ...formData, flashCards: data.flashCards };
-        await manualUploadFlashCard(formattedPayload);
-        navigate(`/admin/content-management/dashboard/${contentType}`);
+      if (uploadIntoBank && bankId) {
+        const fd = new FormData();
+        fd.append("data", JSON.stringify(data.flashCards));
 
-        reset();
+        await addMoreFlashcardToFlashcardBank({
+          flashCardBankId: bankId,
+          data: fd,
+          key: "manual",
+        }).unwrap();
+        dispatch(setUploadIntoBank(false));
+      } else {
+        if (formData) {
+          const formattedPayload = { ...formData, flashCards: data.flashCards };
+          await manualUploadFlashCard(formattedPayload);
+
+          reset();
+        }
       }
+
+      navigate(`/admin/content-management/dashboard/${contentType}`);
     } catch (error) {
       console.error("API Error:", error);
     }
@@ -249,7 +273,7 @@ const ManualFlashUpload = () => {
           importLabel="Save & Publish Flashcards"
           onSavePublish={handleSubmit(onSubmit)}
           onCancel={handleCancel}
-          isLoading={isLoading}
+          isLoading={isLoading || addMoreLoading}
         />
       </div>
     </form>

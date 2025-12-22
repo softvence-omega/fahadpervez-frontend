@@ -2,15 +2,18 @@ import CommonButton from "@/common/button/CommonButton";
 import CommonSelect from "@/common/custom/CommonSelect";
 import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
 import {
+  useAddMoreMcqToMcqBankMutation,
   useUploadManualMcqMutation,
   useUploadSingleImageMutation,
 } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import { setUploadIntoBank } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
 import { useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
 import { correctAnswerOptions, difficultyOptions } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import ActionButtons from "../ActionButtons";
@@ -43,11 +46,14 @@ const inputClass = {
 };
 
 const AddMCQForm = () => {
-  const { formData, contentType } = useAppSelector(
+  const { formData, contentType, uploadIntoBank, bankId } = useAppSelector(
     (state: RootState) => state.staticContent
   );
   const [uploadManualMcq, { isLoading: isUploading }] =
     useUploadManualMcqMutation();
+
+  const [addMoreMcqToMcqBank, { isLoading: isAdding }] =
+    useAddMoreMcqToMcqBankMutation();
 
   const defaultOptions = [
     { option: "A", optionText: "", explanation: "" },
@@ -107,24 +113,36 @@ const AddMCQForm = () => {
     }
   };
 
+  const dispatch = useDispatch();
   const onSubmit = async (data: MCQFormValues) => {
-    if (formData) {
-      const formattedPayload = {
-        ...formData,
-        mcqs: data.mcqs,
-      };
+    try {
+      if (uploadIntoBank && bankId) {
+        const fd = new FormData();
+        fd.append("data", JSON.stringify(data.mcqs));
 
-      try {
-        await uploadManualMcq(formattedPayload).unwrap();
-        navigate(`/admin/content-management/dashboard/${contentType}`);
-      } catch (error) {
-        console.error("API Error:", error);
+        await addMoreMcqToMcqBank({
+          mcqBankId: bankId,
+          data: fd,
+          key: "manual",
+        }).unwrap();
+        dispatch(setUploadIntoBank(false));
+      } else {
+        if (formData) {
+          const formattedPayload = {
+            ...formData,
+            mcqs: data.mcqs,
+          };
+          await uploadManualMcq(formattedPayload).unwrap();
+        }
       }
+      navigate(`/admin/content-management/dashboard/${contentType}`);
+    } catch (error) {
+      console.error("API Error:", error);
     }
   };
 
-  const handleSavePublish = () => {
-    handleSubmit(onSubmit)();
+  const handleSavePublish = async () => {
+    await handleSubmit(onSubmit)();
     setImagePreviews({});
     reset();
   };
@@ -303,7 +321,7 @@ const AddMCQForm = () => {
         </CommonButton>
 
         <ActionButtons
-          isLoading={isUploading}
+          isLoading={isUploading || isAdding}
           onSavePublish={handleSavePublish}
           onCancel={handleCancel}
         />

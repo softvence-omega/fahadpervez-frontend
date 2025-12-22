@@ -25,6 +25,7 @@ interface StudentState {
   contentType: ContentType;
   contentFor: ContentFor;
   uploadIntoBank: boolean;
+  bankId?: string;
   type: ContentModeType;
 }
 
@@ -35,6 +36,7 @@ const initialState: StudentState = {
   contentFor: "student",
   type: "study",
   uploadIntoBank: false,
+  bankId: "",
 };
 
 const staticContentSlice = createSlice({
@@ -62,6 +64,9 @@ const staticContentSlice = createSlice({
     setUploadIntoBank: (state, action: PayloadAction<boolean>) => {
       state.uploadIntoBank = action.payload;
     },
+    setBankId: (state, action: PayloadAction<string>) => {
+      state.bankId = action.payload;
+    },
   },
 });
 
@@ -73,6 +78,7 @@ export const {
   setContentType,
   setContentModeType,
   setUploadIntoBank,
+  setBankId,
 } = staticContentSlice.actions;
 
 export default staticContentSlice.reducer;
