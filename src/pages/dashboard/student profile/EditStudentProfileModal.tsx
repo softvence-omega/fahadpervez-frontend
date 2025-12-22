@@ -170,7 +170,13 @@ export default function EditStudentProfileModal({ open, setOpen, user }: any) {
           <div className="grid gap-2">
             <Label>Preparing For</Label>
             <Input
-              value={preparingFor}
+              value={
+                preparingFor?.length
+                  ? user.profile.preparingFor
+                      .map((item: { examName: string; description: string }) => item.examName)
+                      .join(", ")
+                  : "N/A"
+              }
               onChange={(e) => setPreparingFor(e.target.value)}
               placeholder={preparingFor}
             />

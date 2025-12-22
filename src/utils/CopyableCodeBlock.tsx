@@ -23,7 +23,7 @@ export default function CopyableCodeBlock({ code, language }: Props) {
       {/* Copy button */}
       <button
         onClick={handleCopy}
-        className="absolute top-2 right-2 z-10 p-1 rounded-md bg-gray-800 text-gray-300 hover:text-white"
+        className="absolute top-2 right-2 z-10 p-1 rounded-md bg-gray-800 text-gray-300 hover:text-white cursor-pointer transition duration-300"
         title="Copy code"
       >
         {copied ? <Check size={16} /> : <Copy size={16} />}
