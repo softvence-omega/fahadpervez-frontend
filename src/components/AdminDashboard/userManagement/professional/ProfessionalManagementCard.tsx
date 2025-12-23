@@ -1,4 +1,5 @@
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
+import Spinner from "@/common/button/Spinner";
 import AlertDialogBox from "@/common/custom/AlertDialogBox";
 import Pagination from "@/common/custom/Pagination";
 import CommonHeader from "@/common/header/CommonHeader";
@@ -17,7 +18,7 @@ import StudentTypeModal from "../student/studentProfile/StudentTypeModal";
 const ProfessionalManagementCard: FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 9;
-  const { data: studentTypeData } = useGetProfessionalTypeApiQuery({
+  const { data: studentTypeData, isLoading } = useGetProfessionalTypeApiQuery({
     page: currentPage,
     limit,
   });
@@ -88,54 +89,60 @@ const ProfessionalManagementCard: FC = () => {
         </ButtonWithIcon>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-6">
-        {studentTypeData?.data?.map((student) => (
-          <div
-            key={student._id}
-            className="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-all"
-          >
-            <div className="flex justify-between items-start mb-6">
-              <CommonHeader className="">{student.typeName}</CommonHeader>
+      {isLoading ? (
+        <Spinner />
+      ) : studentTypeData?.data?.length === 0 ? (
+        <p className="text-sm text-gray-500">No Professional Types Found</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-6">
+          {studentTypeData?.data?.map((student) => (
+            <div
+              key={student._id}
+              className="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-all"
+            >
+              <div className="flex justify-between items-start mb-6">
+                <CommonHeader className="">{student.typeName}</CommonHeader>
 
-              <div className="flex  gap-2">
-                <span
-                  className="cursor-pointer"
-                  onClick={() => handleEdit(student)}
-                >
-                  <TbEdit size={20} className="text-[#030213]" />
-                </span>
-                <AlertDialogBox
-                  trigger={
-                    <RiDeleteBinLine
-                      size={20}
-                      className="text-[#030213] hover:text-red-600 transition-colors duration-200 cursor-pointer"
-                    />
-                  }
-                  action={async () => handleDelete(student._id)}
-                  title="Delete Student Type"
-                  description="Are you sure you want to delete this student type?"
-                  isLoading={deletingId === student._id || false}
-                />
+                <div className="flex  gap-2">
+                  <span
+                    className="cursor-pointer"
+                    onClick={() => handleEdit(student)}
+                  >
+                    <TbEdit size={20} className="text-[#030213]" />
+                  </span>
+                  <AlertDialogBox
+                    trigger={
+                      <RiDeleteBinLine
+                        size={20}
+                        className="text-[#030213] hover:text-red-600 transition-colors duration-200 cursor-pointer"
+                      />
+                    }
+                    action={async () => handleDelete(student._id)}
+                    title="Delete Student Type"
+                    description="Are you sure you want to delete this student type?"
+                    isLoading={deletingId === student._id || false}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between text-gray-600">
+                  <span>Total users:</span>
+                  <span className="text-gray-900 font-medium">
+                    {student.totalStudent}
+                  </span>
+                </div>
+                <div className="flex justify-between text-gray-600">
+                  <span> Content Items:</span>
+                  <span className="text-gray-900 font-medium">
+                    {student.totalContent}
+                  </span>
+                </div>
               </div>
             </div>
-
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between text-gray-600">
-                <span>Total users:</span>
-                <span className="text-gray-900 font-medium">
-                  {student.totalStudent}
-                </span>
-              </div>
-              <div className="flex justify-between text-gray-600">
-                <span> Content Items:</span>
-                <span className="text-gray-900 font-medium">
-                  {student.totalContent}
-                </span>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {isModalOpen && (
         <StudentTypeModal
