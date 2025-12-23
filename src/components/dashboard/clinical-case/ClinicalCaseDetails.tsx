@@ -290,7 +290,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
               <button
                 key={key}
                 onClick={() => scrollToSection(ref, key)}
-                className={`flex items-center gap-2 pb-3 border-b-2 transition-colors px-4 ${
+                className={`flex items-center gap-2 pb-3 border-b-2 transition-colors px-4 cursor-pointer ${
                   activeTab === key
                     ? "border-blue-main text-blue-main"
                     : "border-transparent text-gray-500 hover:text-black"
