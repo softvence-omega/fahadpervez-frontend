@@ -24,7 +24,7 @@ const McqBank = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const { data, isLoading } = useGllMCQBankQuery({
-    searchTerm,
+    // searchTerm,
   });
   const MCQBank = data?.data;
   // console.log(MCQBank);
@@ -39,20 +39,25 @@ const McqBank = () => {
     console.log("Final Payload:", combinedData);
   };
 
+  const normalize = (value?: string) =>
+    value?.toString().toLowerCase().trim() || "";
+
   const filteredMCQBank = searchTerm
     ? MCQBank?.filter((mcq: TMCQBank) => {
-        const keyword = searchTerm.toLowerCase();
-        console.log(mcq);
+        const keyword = searchTerm.toLowerCase().trim();
+
         return (
-          mcq?.title?.toLowerCase().includes(keyword) ||
-          mcq?.subject?.toLowerCase().includes(keyword) ||
-          mcq?.system?.toLowerCase().includes(keyword) ||
-          mcq?.topic?.toLowerCase().includes(keyword) ||
-          mcq?.subtopic?.toLowerCase().includes(keyword) ||
-          mcq?.uploadedBy?.toLowerCase().includes(keyword)
+          normalize(mcq.title).includes(keyword) ||
+          normalize(mcq.subject).includes(keyword) ||
+          normalize(mcq.system).includes(keyword) ||
+          normalize(mcq.topic).includes(keyword) ||
+          normalize(mcq.subtopic).includes(keyword)
         );
       })
     : MCQBank;
+
+  console.log(MCQBank);
+  // console.log("filter :", filteredMCQBank, "search :", searchTerm);
 
   return (
     <div className="my-6 md:my-10">

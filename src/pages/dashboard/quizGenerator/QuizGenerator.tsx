@@ -6,7 +6,7 @@ import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { Progress } from "@/components/ui/progress";
 import { Atom, Crown, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
-import { QuizGeneratorDialog } from "./QuizGenerateModal";
+import { GenerateMcqWithFileModal } from "./GenerateMcqWithFileModal";
 
 const QuizGenerator = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -15,20 +15,6 @@ const QuizGenerator = () => {
 
   const handleRemoveFile = (index: number) => {
     setFiles(files.filter((_, i) => i !== index));
-  };
-
-  // called after modal submit
-  const handleFinalSubmit = (modalData: any) => {
-    const combinedData = {
-      files,
-      note,
-      ...modalData, // modal fields (quizName, subject, difficulty, etc.)
-    };
-
-    console.log("Final Payload:", combinedData);
-
-    // ✅ Call API here
-    // await fetch("/api/generate-quiz", { method: "POST", body: JSON.stringify(combinedData) })
   };
 
   return (
@@ -123,13 +109,19 @@ const QuizGenerator = () => {
       </div>
 
       {/* Modal for quiz details */}
-      <QuizGeneratorDialog
+      {/* <QuizGeneratorDialog
         onclick={() => {
           setOpenModal(!openModal);
         }}
         open={openModal}
         setOpen={setOpenModal}
         onFinalSubmit={handleFinalSubmit}
+      /> */}
+      <GenerateMcqWithFileModal
+        open={openModal}
+        setOpen={setOpenModal}
+        files={files}
+        note={note}
       />
     </div>
   );

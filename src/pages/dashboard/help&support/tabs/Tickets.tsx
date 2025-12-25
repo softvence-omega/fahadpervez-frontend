@@ -21,6 +21,8 @@ export default function Tickets() {
     }
   }, [reportresponse]);
 
+  console.log(tickets)
+
   const handleCreateTicket = (formData: any) => {
     // Prepare data for API
     const data = new FormData();

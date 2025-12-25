@@ -51,10 +51,16 @@ export default function GeneratedFlashCard({
           </Link> */}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 ">
-          {allGeneratedFlashcard?.map(
-            (flashcard: IFlashcardBank, idx: number) => (
-              <FlashCard key={idx} {...flashcard} source="generated" />
+          {allGeneratedFlashcard?.length > 0 ? (
+            allGeneratedFlashcard.map(
+              (flashcard: IFlashcardBank, idx: number) => (
+                <FlashCard key={idx} {...flashcard} />
+              )
             )
+          ) : (
+            <p className="text-center text-gray-500 col-span-full">
+              No flashcards found.
+            </p>
           )}
         </div>
         <div className="mt-6">

@@ -83,8 +83,8 @@ export default function TicketsList({
         const statusColor =
           ticket.status === "IN_REVIEW"
             ? "bg-yellow-100 text-yellow-800"
-            : ticket.status === "APPROVED"
-            ? "bg-green-100 text-green-700"
+            : ticket.status === "RESOLVED"
+            ? "bg-green-300 text-green-800"
             : ticket.status === "REJECTED"
             ? "bg-red-100 text-red-700"
             : "bg-gray-100 text-gray-700";
