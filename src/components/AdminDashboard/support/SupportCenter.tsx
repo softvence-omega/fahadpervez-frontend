@@ -15,7 +15,7 @@ const SupportCenter = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { data, isLoading } = useGetAllReportForAdminQuery({
     page: currentPage,
-    limit: 10,
+    limit: 20,
   });
 
   const totalPages = data?.meta.totalPages ?? 1;
@@ -78,14 +78,14 @@ const SupportCenter = () => {
           <p className="text-gray-500">No tickets found</p>
         </div>
       ) : (
-        <div className="flex flex-col  justify-center items-start gap-10">
+        <div className="flex flex-col 2xl:flex-row   justify-center items-start gap-2">
           <TicketList
             tickets={filteredTickets}
             setSelectedTicket={setSelectedTicket}
             setSelectedIndex={setSelectedIndex}
           />
           {selectedTicket && (
-            <div className=" w-full  shrink-0 overflow-hidden">
+            <div className=" w-full 2xl:w-185  shrink-0 overflow-hidden">
               <TicketDetail
                 ticket={selectedTicket}
                 selectedIndex={selectedIndex ?? 0}
