@@ -31,6 +31,7 @@ const persistedStaticContentReducer = persistReducer(
 );
 
 import { bioDigitalExternalAPI } from "./features/bioDigital/bioDigitalExternal.api";
+import quizReducer from "./features/MCQBank/quizSlice";
 
 export const store = configureStore({
   reducer: {
@@ -38,13 +39,16 @@ export const store = configureStore({
     [bioDigitalExternalAPI.reducerPath]: bioDigitalExternalAPI.reducer,
     auth: persistedReducer,
     staticContent: persistedStaticContentReducer,
+    quiz: quizReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(baseAPI.middleware).concat(bioDigitalExternalAPI.middleware),
+    })
+      .concat(baseAPI.middleware)
+      .concat(bioDigitalExternalAPI.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

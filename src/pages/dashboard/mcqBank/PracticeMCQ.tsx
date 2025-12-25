@@ -302,6 +302,10 @@ export default function PracticeMCQ() {
         // onSubmit={handleQuizSubmit}
         mcqBankId={mcqData?._id || ""}
         mcqBankTitle={mcqData?.title || ""}
+        subject={mcqData?.subject || ""}
+        system={mcqData?.system || ""}
+        topic={mcqData?.topic || ""}
+        subTopic={mcqData?.subtopic || ""}
       />
     </>
   );

@@ -58,6 +58,28 @@ export const mcqBankAPI = baseAPI.injectEndpoints({
       }),
     }),
 
+    getAllGeneratedMCQ: build.query({
+      query: () => ({
+        url: `/my_content/mcqs`,
+        method: "GET",
+      }),
+    }),
+
+    getGeneratedMCQ: build.query({
+      query: (id: string) => ({
+        url: `/my_content/mcqs/${id}`,
+        method: "GET",
+      }),
+    }),
+
+    generateMCQ: build.mutation({
+      query: (data: any) => ({
+        url: "ai_part/generate-mcq",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
     // end
   }),
 });
@@ -68,4 +90,7 @@ export const {
   useGetMCQBankTreeQuery,
   useGetMcqBySubtopicQuery,
   useGenerateMCQWithFileMutation,
+  useGetAllGeneratedMCQQuery,
+  useGetGeneratedMCQQuery,
+  useGenerateMCQMutation,
 } = mcqBankAPI;
