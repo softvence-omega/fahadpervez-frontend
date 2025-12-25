@@ -1,6 +1,8 @@
 import demo from "@/assets/signUp/Upload Photo.png";
 import ButtonWithLoading from "@/common/button/ButtonWithLoading";
 import CommonSelect from "@/common/custom/CommonSelect";
+import { useGetSingleMcqApiForSupportQuery } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+
 import { useGetSettingsQuery } from "@/store/features/adminDashboard/settings/settingApi";
 import { useUpdateReportForAdminMutation } from "@/store/features/adminDashboard/support/support";
 import {
@@ -74,6 +76,19 @@ const TicketDetail: React.FC<TicketDetailProps> = ({
     setComment("");
   };
   const { data: settings } = useGetSettingsQuery();
+  const mcqBankId = ticket.report.questionBankId;
+  const mcqId = ticket.report.mcqId;
+  const { data: singleMcqData } = useGetSingleMcqApiForSupportQuery(
+    {
+      mcqBankId,
+      mcqId,
+    },
+    {
+      skip: !mcqBankId || !mcqId,
+    }
+  );
+
+  console.log("singleMcqData", singleMcqData);
 
   return (
     <div className="flex h-full flex-col rounded-lg border border-border bg-card">
@@ -103,16 +118,90 @@ const TicketDetail: React.FC<TicketDetailProps> = ({
           </div>
         </div>
       </div>
+      <div>
+        <div className="px-4">
+          {singleMcqData?.data.mcqs.map((mcq) => (
+            <div
+              key={mcq.mcqId}
+              className="w-full  rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
+            >
+              {/* Header */}
+              <div className="mb-4 flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-500">
+                  BankId: {ticket.report.questionBankId} <br />
+                  MCQ ID: {mcq.mcqId}
+                </span>
+                <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                  {mcq.difficulty}
+                </span>
+              </div>
+
+              {/* Question */}
+              <h2 className="mb-5 text-lg font-semibold text-gray-800 whitespace-pre-line">
+                {mcq.question.split("•")[0].trim()}
+              </h2>
+
+              {/* Options */}
+              <div className="space-y-3">
+                {mcq.options.map((opt) => {
+                  const isCorrect = opt.option === mcq.correctOption;
+
+                  return (
+                    <div
+                      key={opt.option}
+                      className={`flex items-center gap-3 rounded-lg border p-3 transition
+                ${
+                  isCorrect
+                    ? "border-green-500 bg-green-50"
+                    : "border-gray-200 hover:bg-gray-50"
+                }
+              `}
+                    >
+                      <span
+                        className={`flex min-h-8 min-w-8 items-center justify-center rounded-full text-sm font-bold
+                  ${
+                    isCorrect
+                      ? "bg-green-600 text-white"
+                      : "bg-gray-100 text-gray-700"
+                  }
+                `}
+                      >
+                        {opt.option}
+                      </span>
+
+                      <div>
+                        <p className="text-sm font-medium text-gray-800">
+                          {opt.optionText}
+                        </p>
+
+                        {isCorrect && (
+                          <p className="mt-1 text-xs text-green-700">
+                            {opt.explanation}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Footer */}
+              <div className="mt-5 rounded-lg bg-gray-50 p-4">
+                <p className="text-sm font-semibold text-gray-700">
+                  Correct Answer:{" "}
+                  <span className="text-green-600">{mcq.correctOption}</span>
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
       <div className="overflow-y-auto flex-1 m-4 space-y-6  ">
-        {/* User */}
-        <div className="flex items-baseline-last gap-2">
+        <div className="flex items-center gap-2">
           <div className="w-full bg-black text-white rounded-lg p-4">
-            <p className="text-xs font-medium">
-              Question ID: {ticket.report.mcqId}
-            </p>
             <p className="mt-2 whitespace-pre-wrap text-xs leading-relaxed">
-              {ticket.report.text}
+              Report: {ticket.report.text}
             </p>
           </div>
 
@@ -125,7 +214,7 @@ const TicketDetail: React.FC<TicketDetailProps> = ({
           </div>
         </div>
         {/* Admin */}
-        <div className="flex items-baseline-last gap-2">
+        <div className="flex items-start gap-2">
           <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
             <img
               className="w-full h-full object-cover"
@@ -135,9 +224,6 @@ const TicketDetail: React.FC<TicketDetailProps> = ({
           </div>
           <div className="w-full bg-[#F0FAFF] text-[#404040] rounded-lg p-4">
             <p className="text-xs font-medium">Admin: {ticket.note ?? ""}</p>
-            <p className="mt-2 whitespace-pre-wrap text-xs leading-relaxed">
-              {ticket.report.text}
-            </p>
           </div>
         </div>
       </div>
