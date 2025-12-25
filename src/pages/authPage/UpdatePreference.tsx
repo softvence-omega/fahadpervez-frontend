@@ -6,12 +6,14 @@ import { UpdatePreferenceData, updatePreferenceSchema } from "./schemas";
 interface Props {
   onNext: (data: UpdatePreferenceData) => void;
   onBack: () => void;
+  onSkip?: () => void;
   defaultValues?: Partial<UpdatePreferenceData>;
 }
 
 export default function UpdatePreference({
   onNext,
   onBack,
+  onSkip,
   defaultValues,
 }: Props) {
   const {
@@ -29,7 +31,7 @@ export default function UpdatePreference({
       languages: defaultValues?.languages || [""],
       hourlyRate: defaultValues?.hourlyRate || 0,
       currency: defaultValues?.currency || "Dollar", // ✅ fine, matches schema
-      availability: defaultValues?.availability ||{
+      availability: defaultValues?.availability || {
         Monday: { enabled: false, startTime: "", endTime: "" },
         Tuesday: { enabled: false, startTime: "", endTime: "" },
         Wednesday: { enabled: false, startTime: "", endTime: "" },
@@ -85,7 +87,18 @@ export default function UpdatePreference({
   });
   return (
     <div className="w-full max-w-3xl mx-auto p-6">
-      <h2 className="text-3xl font-semibold mb-2">Complete Your Profile</h2>
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="text-3xl font-semibold">Complete Your Profile</h2>
+        {onSkip && (
+          <button
+            type="button"
+            onClick={onSkip}
+            className="text-blue-500 underline hover:text-blue-600 font-medium"
+          >
+            Skip
+          </button>
+        )}
+      </div>
       <p className="text-gray-600 mb-6">
         Upload your professional documents to complete verification.
       </p>
@@ -280,16 +293,17 @@ export default function UpdatePreference({
           >
             Back
           </button>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            {isSubmitting ? "Saving..." : "Save & Continue"}
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              {isSubmitting ? "Saving..." : "Save & Continue"}
+            </button>
+          </div>
         </div>
       </form>
     </div>
   );
 }
-

@@ -10,7 +10,6 @@ import {
   Bookmark,
   Printer,
   Share2,
-  Sparkles,
 } from "lucide-react";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -239,12 +238,12 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
                 <span className="ml-2 font-medium">Clinical Case</span>
               </button>
             </div>
-            <div className="flex items-center gap-2  px-4 py-2 border border-gray-300 rounded-lg">
+            {/* <div className="flex items-center gap-2  px-4 py-2 border border-gray-300 rounded-lg">
               <Sparkles className="text-blue-600" size={16} />
               <span className="text-sm text-blue-600 font-medium">
                 AI Tutor
               </span>
-            </div>
+            </div> */}
           </div>
 
           <div className="mt-4">

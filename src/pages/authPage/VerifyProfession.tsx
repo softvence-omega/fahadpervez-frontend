@@ -3,26 +3,25 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  VerifyProfessionData,
-  verifyProfessionSchema,
-} from "./schemas";
+import { VerifyProfessionData, verifyProfessionSchema } from "./schemas";
 
 interface Props {
   onNext: (data: VerifyProfessionData) => void;
   onBack: () => void;
+  onSkip?: () => void;
   defaultValues?: Partial<VerifyProfessionData>;
 }
 
 export default function VerifyProfession({
   onNext,
   onBack,
+  onSkip,
   defaultValues,
 }: Props) {
   const {
     handleSubmit,
     reset,
-  formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting },
     setValue,
   } = useForm<VerifyProfessionData>({
     resolver: zodResolver(verifyProfessionSchema),
@@ -113,7 +112,18 @@ export default function VerifyProfession({
       onSubmit={handleSubmit(onSubmit)}
       className="w-full max-w-7xl mx-auto"
     >
-      <h2 className="text-3xl font-semibold mb-2">Verify Profession</h2>
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="text-3xl font-semibold">Verify Profession</h2>
+        {onSkip && (
+          <button
+            type="button"
+            onClick={onSkip}
+            className="text-blue-500 underline hover:text-blue-600 font-medium"
+          >
+            Skip
+          </button>
+        )}
+      </div>
       <p className="text-gray-600 mb-6">
         To maintain a trusted and safe community for medical students, we
         require all mentors to complete a one-time verification.
@@ -132,8 +142,14 @@ export default function VerifyProfession({
       <div className="grid md:grid-cols-2 gap-12">
         {renderUploadBox("photo", "Upload Your Photo *")}
         {renderUploadBox("degree", "Upload Your Degree *")}
-        {renderUploadBox("identity", "Upload Your NID/Passport/Driving License *")}
-        {renderUploadBox("certificate", "Upload Your Professional Certificate *")}
+        {renderUploadBox(
+          "identity",
+          "Upload Your NID/Passport/Driving License *"
+        )}
+        {renderUploadBox(
+          "certificate",
+          "Upload Your Professional Certificate *"
+        )}
       </div>
 
       <div className="flex justify-between mt-6">
@@ -144,13 +160,15 @@ export default function VerifyProfession({
         >
           Back
         </button>
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          {isSubmitting ? "Saving..." : "Save & Continue"}
-        </button>
+        <div className="flex items-center gap-4">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            {isSubmitting ? "Saving..." : "Save & Continue"}
+          </button>
+        </div>
       </div>
     </form>
   );

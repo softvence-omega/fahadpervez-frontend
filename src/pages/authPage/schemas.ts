@@ -31,7 +31,11 @@ const mentorSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().optional(),
   country: z.string().min(1, "Country is required"),
-  mentorField: z.string().min(1, "Field of expertise is required"),
+  currentRole: z.string().min(1, "Current role is required"),
+  hospitalOrInstitute: z.string().min(1, "Hospital/Institute is required"),
+  specialty: z.string().min(1, "Medical specialty is required"),
+  experience: z.string().min(1, "Professional experience is required"),
+  postgraduateDegree: z.string().min(1, "Postgraduate degree is required"),
 });
 
 export const profileSetupSchema = z.discriminatedUnion("role", [
