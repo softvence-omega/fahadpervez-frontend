@@ -118,8 +118,9 @@ const UserManagementCard: FC = () => {
                       />
                     }
                     action={async () => handleDelete(student._id)}
-                    title="Delete Student Type"
-                    description="Are you sure you want to delete this student type?"
+                    title=" Are you sure you want to delete this student type?"
+                    description="This action cannot be undone, and all associated data will be
+                    permanently lost"
                     isLoading={deletingId === student._id || false}
                   />
                 </div>

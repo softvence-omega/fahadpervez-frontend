@@ -8,6 +8,7 @@ import {
   NotesTreeResponse,
   OsceTreeResponse,
 } from "./types/allContent";
+import { GetSingleMcqData } from "./types/getMcqData";
 import { ManualMCQBank, UploadImageResponse } from "./types/manual";
 import { GetAllMcqResponse, McqBankParams } from "./types/mcq";
 import { SingleMcqData, SingleMCQUpdatePayload } from "./types/singleMcq";
@@ -114,6 +115,16 @@ export const mcqApi = baseAPI.injectEndpoints({
         body: data,
       }),
       invalidatesTags: ["SingleMcq", "Mcq", "StudyModeTree", "Exams"],
+    }),
+    getSingleMcqApiForSupport: build.query<
+      GetSingleMcqData,
+      { mcqBankId: string; mcqId: string }
+    >({
+      query: ({ mcqBankId, mcqId }) => ({
+        url: `/mcq-bank/single/${mcqBankId}/${mcqId}`,
+        method: "GET",
+      }),
+      providesTags: ["SingleMcq", "Mcq"],
     }),
 
     // /mcq-bank/add-more-mcq
@@ -325,4 +336,5 @@ export const {
   useUpdatedSingleMcqApiMutation,
   useGetSingleUserReportQuery,
   useAddMoreMcqToMcqBankMutation,
+  useGetSingleMcqApiForSupportQuery,
 } = mcqApi;
