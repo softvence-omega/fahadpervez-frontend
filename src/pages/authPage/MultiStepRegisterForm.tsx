@@ -11,6 +11,7 @@ import UpdatePreference from "./UpdatePreference";
 import PlatformTraining from "./PlatformTraining";
 import PayoutSetup from "./PayoutSetup";
 import { MultiStepFormData } from "./schemas";
+import { examOptions } from "./constants";
 import { useUpdateInitialProfileMutation } from "@/store/features/auth/auth.api";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -18,12 +19,16 @@ import { useNavigate } from "react-router-dom";
 export default function MultiStepRegisterForm() {
   const [step, setStep] = useState<number>(0);
   const [formData, setFormData] = useState<Partial<MultiStepFormData>>({});
+  const [selectedRole, setSelectedRole] = useState<string | "">("");
   const navigate = useNavigate();
 
   const [updateInitialProfile] = useUpdateInitialProfileMutation();
 
   // Determine steps based on role
-  const isMentor = formData.profile?.role === "mentor";
+  const role = selectedRole || formData.profile?.role;
+  const isMentor = role === "mentor";
+  const isProfessional = role === "professional";
+
   const steps = isMentor
     ? [
         "AboutYourSelfTab",
@@ -33,12 +38,13 @@ export default function MultiStepRegisterForm() {
         "PayoutSetup",
         "UploadProfile",
       ]
-    : ["AboutYourSelfTab", "PreparingFor", "Preferences", "UploadProfile"];
+    : isProfessional
+    ? ["AboutYourSelfTab", "UploadProfile"] // Skip PreparingFor for Professional
+    : ["AboutYourSelfTab", "PreparingFor", "UploadProfile"]; // Default Student flow
   const stepCount = steps.length;
   const progressValue = ((step + 1) / stepCount) * 100;
 
   const handleNext = (partial: Partial<MultiStepFormData>) => {
-    
     setFormData((prev: any) => ({ ...prev, ...partial }));
     setStep((s) => Math.min(s + 1, stepCount - 1));
   };
@@ -53,15 +59,13 @@ export default function MultiStepRegisterForm() {
   const handleFinalSubmit = async (partial: Partial<MultiStepFormData>) => {
     const merged = { ...formData, ...partial } as MultiStepFormData;
 
-    console.log(merged);
+    console.log("Full collected form data:", merged);
 
-    if (
-      merged.profile.role === "student" &&
-      "preferences" in merged &&
-      merged.preferences
-    ) {
-      // Prepare the JS payload
-      const studentData = {
+    const currentRole = merged.profile.role;
+    let payload: any = {};
+
+    if (currentRole === "student") {
+      payload = {
         role: "STUDENT",
         student: {
           firstName: merged.profile.firstName,
@@ -70,90 +74,93 @@ export default function MultiStepRegisterForm() {
           country: merged.profile.country,
           year_of_study: merged.profile.academicYear,
           studentType: merged.profile.subRole,
-          preparingFor: merged.preparing?.exams?.join(", ") || "",
+          preparingFor: (
+            ("preparing" in merged ? (merged.preparing as any)?.exams : []) ||
+            []
+          )
+            .map((id: any) => {
+              const option = examOptions.find((opt: any) => opt.id === id);
+              return option
+                ? {
+                    examName: option.examName,
+                    description: option.description,
+                  }
+                : null;
+            })
+            .filter((item: any) => item !== null),
         },
         preference: {
-          subject: merged.preferences.subjectPreference,
-          systemPreference: merged.preferences.systemPreference,
-          topic: merged.preferences.topic,
-          subTopic: merged.preferences.subTopic,
+          subject:
+            ("preferences" in merged &&
+              merged.preferences?.subjectPreference) ||
+            "",
+          systemPreference:
+            ("preferences" in merged && merged.preferences?.systemPreference) ||
+            "",
+          topic: ("preferences" in merged && merged.preferences?.topic) || "",
+          subTopic:
+            ("preferences" in merged && merged.preferences?.subTopic) || "",
         },
         bio: merged.upload?.bio || "",
       };
-
-      // Validate payload
-      if (!studentData.student || !studentData.preference) {
-        console.error("Data is incomplete!");
-        toast.error("Please fill all required fields");
-        return;
-      }
-
-      // Create FormData
-      const formDataToSend = new FormData();
-
-      // Append image (if available)
-      if (merged.upload?.photo) {
-        formDataToSend.append("image", merged.upload.photo);
-      }
-
-      // Append the rest of data as JSON string under "data"
-      formDataToSend.append("data", JSON.stringify(studentData));
-
-      // Call the RTK Query mutation
-      try {
-        if (!studentData || !studentData.student || !studentData.preference) {
-          console.error("Data is incomplete!");
-        }
-
-        const res = await updateInitialProfile(formDataToSend).unwrap();
-
-        console.log("response ", res);
-        // console.log(res.data);
-
-        if (res.success === true) {
-          toast.success(res.message);
-          navigate("/login");
-        }
-
-        // fetch("/api/register", {
-        //   method: "POST",
-        //   headers: { "Content-Type": "application/json" },
-        //   body: JSON.stringify(studentData),
-        // });
-
-        // if (!res.data.success) throw new Error("Failed to submit");
-        // alert("Form submitted ✅");
-      } catch (err) {
-        console.error("Error:", err);
-        alert("Submission failed. See console for details.");
-      }
+    } else if (currentRole === "professional") {
+      payload = {
+        role: "PROFESSIONAL",
+        professional: {
+          firstName: merged.profile.firstName,
+          lastName: merged.profile.lastName,
+          professionName: merged.profile.subRole,
+          institution: merged.profile.hospital,
+          country: merged.profile.country,
+          post_graduate: merged.profile.postgraduateYear,
+          experience: merged.profile.experience,
+          bio: merged.upload?.bio || "",
+          // profile_photo: "will be handled by backend from image field"
+        },
+      };
+    } else if (currentRole === "mentor") {
+      payload = {
+        role: "MENTOR",
+        mentor: {
+          firstName: merged.profile.firstName,
+          lastName: merged.profile.lastName,
+          country: merged.profile.country,
+          currentRole: (merged.profile as any).currentRole || "",
+          hospitalOrInstitute:
+            (merged.profile as any).hospitalOrInstitute || "",
+          specialty: (merged.profile as any).specialty || "",
+          professionalExperience: (merged.profile as any).experience || "",
+          postgraduateDegree: (merged.profile as any).postgraduateDegree || "",
+          isConditionAccepted: true,
+          bio: merged.upload?.bio || "",
+        },
+      };
     }
 
-    // Validate final merged object
-    // const check = multiStepSchema.safeParse({
-    //   ...merged,
-    //   role: formData.profile?.role,
-    // });
-    // if (!check.success) {
-    //   // alert("Validation failed");
-    //   return;
-    // }
-
-    // Uncomment for actual API submission
-    /*
-    try {
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(merged),
-      });
-      if (!res.ok) throw new Error("Failed to submit");
-      alert("Form submitted ✅");
-    } catch (err) {
-      console.error(err);
-      alert("Submission failed. See console for details.");
-    }
+    // Console log the full data for backend reference
+    console.log("Backend payload structure:", payload);
+    /* 
+      Full collected data for future use:
+      ${JSON.stringify(merged, null, 2)}
     */
+
+    const formDataToSend = new FormData();
+    if (merged.upload?.photo) {
+      formDataToSend.append("image", merged.upload.photo);
+    }
+    formDataToSend.append("data", JSON.stringify(payload));
+
+    try {
+      const res = await updateInitialProfile(formDataToSend).unwrap();
+      console.log("API response:", res);
+      if (res.success === true) {
+        toast.success(res.message);
+        navigate("/login");
+      }
+    } catch (err) {
+      console.error("Submission error:", err);
+      alert("Submission failed. Check console for details.");
+    }
   };
 
   return (
@@ -183,11 +190,11 @@ export default function MultiStepRegisterForm() {
             {steps[step] === "AboutYourSelfTab" && (
               <AboutYourSelfTab
                 defaultValues={formData.profile ?? undefined}
-                
+                onRoleChange={(role: any) => setSelectedRole(role)}
                 onNext={(profile) => handleNext({ profile } as any)}
               />
             )}
-            {steps[step] === "PreparingFor" && !isMentor && (
+            {steps[step] === "PreparingFor" && (
               <PreparingFor
                 defaultValues={
                   "preparing" in formData ? formData.preparing : undefined
@@ -197,7 +204,7 @@ export default function MultiStepRegisterForm() {
               />
             )}
 
-            {steps[step] === "Preferences" && !isMentor && (
+            {steps[step] === "Preferences" && (
               <Preferences
                 defaultValues={
                   "preferences" in formData ? formData.preferences : undefined
@@ -215,7 +222,7 @@ export default function MultiStepRegisterForm() {
               />
             )}
 
-            {steps[step] === "VerifyProfession" && isMentor && (
+            {steps[step] === "VerifyProfession" && (
               <VerifyProfession
                 defaultValues={
                   "verifyProfession" in formData
@@ -224,10 +231,11 @@ export default function MultiStepRegisterForm() {
                 }
                 onBack={handleBack}
                 onNext={(verifyProfession) => handleNext({ verifyProfession })}
+                onSkip={() => handleSkip("verifyProfession" as any)}
               />
             )}
 
-            {steps[step] === "UpdatePreference" && isMentor && (
+            {steps[step] === "UpdatePreference" && (
               <UpdatePreference
                 defaultValues={
                   "updatePreference" in formData
@@ -236,10 +244,11 @@ export default function MultiStepRegisterForm() {
                 }
                 onBack={handleBack}
                 onNext={(updatePreference) => handleNext({ updatePreference })}
+                onSkip={() => handleSkip("updatePreference" as any)}
               />
             )}
 
-            {steps[step] === "PlatformTraining" && isMentor && (
+            {steps[step] === "PlatformTraining" && (
               <PlatformTraining
                 defaultValues={
                   "platformTraining" in formData
@@ -248,16 +257,22 @@ export default function MultiStepRegisterForm() {
                 }
                 onBack={handleBack}
                 onNext={(platformTraining) => handleNext({ platformTraining })}
+                onSkip={() =>
+                  handleSkip("platformTraining" as any, {
+                    trainingCompleted: true,
+                  })
+                }
               />
             )}
 
-            {steps[step] === "PayoutSetup" && isMentor && (
+            {steps[step] === "PayoutSetup" && (
               <PayoutSetup
                 defaultValues={
                   "payoutSetup" in formData ? formData.payoutSetup : undefined
                 }
                 onBack={handleBack}
                 onNext={(payoutSetup) => handleNext({ payoutSetup })}
+                onSkip={() => handleSkip("payoutSetup" as any)}
               />
             )}
             {steps[step] === "UploadProfile" && (
@@ -266,7 +281,7 @@ export default function MultiStepRegisterForm() {
                 onBack={handleBack}
                 onNext={(upload) => handleFinalSubmit({ upload })}
                 onSkip={() =>
-                  handleSkip("upload", { photo: undefined, bio: "" })
+                  handleFinalSubmit({ upload: { photo: null, bio: "" } })
                 }
               />
             )}

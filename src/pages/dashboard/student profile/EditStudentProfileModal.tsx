@@ -20,6 +20,7 @@ import {
 import { useAppDispatch } from "@/hooks/useRedux";
 import { setUser } from "@/store/features/auth/auth.slice";
 import Cookies from "js-cookie";
+import { examOptions } from "@/pages/authPage/constants";
 
 export default function EditStudentProfileModal({ open, setOpen, user }: any) {
   const dispatch = useAppDispatch();
@@ -50,7 +51,22 @@ export default function EditStudentProfileModal({ open, setOpen, user }: any) {
         country,
         year_of_study: yearOfStudy,
         studentType,
-        preparingFor,
+        preparingFor: Array.isArray(preparingFor)
+          ? preparingFor
+          : (preparingFor || "")
+              .split(",")
+              .map((s: string) => s.trim())
+              .filter(Boolean)
+              .map((name: string) => {
+                const option = examOptions.find(
+                  (opt: any) =>
+                    opt.examName.toLowerCase() === name.toLowerCase()
+                );
+                return {
+                  examName: option?.examName || name,
+                  description: option?.description || name,
+                };
+              }),
         bio,
         // },
 
@@ -171,14 +187,17 @@ export default function EditStudentProfileModal({ open, setOpen, user }: any) {
             <Label>Preparing For</Label>
             <Input
               value={
-                preparingFor?.length
-                  ? user.profile.preparingFor
-                      .map((item: { examName: string; description: string }) => item.examName)
+                Array.isArray(preparingFor)
+                  ? preparingFor
+                      .map(
+                        (item: { examName: string; description: string }) =>
+                          item.examName
+                      )
                       .join(", ")
-                  : "N/A"
+                  : preparingFor || ""
               }
               onChange={(e) => setPreparingFor(e.target.value)}
-              placeholder={preparingFor}
+              placeholder="e.g. USMLE Step 1, NCLEX"
             />
           </div>
 

@@ -6,6 +6,7 @@ import { useGetAllStudentTypeQuery } from "@/store/features/auth/auth.api";
 
 interface Props {
   onNext: (data: ProfileSetupData) => void;
+  onRoleChange?: (role: Role) => void;
   defaultValues?: Partial<ProfileSetupData>;
 }
 
@@ -23,9 +24,17 @@ type FormValues = {
   postgraduateYear?: string;
   experience?: string;
   mentorField?: string;
+  currentRole?: string;
+  hospitalOrInstitute?: string;
+  specialty?: string;
+  postgraduateDegree?: string;
 };
 
-export default function ProfileSetupTab({ onNext, defaultValues }: Props) {
+export default function ProfileSetupTab({
+  onNext,
+  onRoleChange,
+  defaultValues,
+}: Props) {
   const {
     register,
     handleSubmit,
@@ -34,20 +43,10 @@ export default function ProfileSetupTab({ onNext, defaultValues }: Props) {
     setValue,
     formState: { errors },
   } = useForm<FormValues>();
-  //   {
-  //   resolver: zodResolver(profileSetupSchema),
-  //   defaultValues: {
-  //     role: "",
-  //     firstName: "",
-  //     country: "",
-  //     ...defaultValues,
-  //   },
-  // }
 
   const role = watch("role");
 
   const { data: studentType } = useGetAllStudentTypeQuery({});
-  console.log(studentType?.data);
   const studentTypes = studentType?.data;
 
   // reset fields when defaultValues change (e.g., user navigates back)
@@ -57,6 +56,11 @@ export default function ProfileSetupTab({ onNext, defaultValues }: Props) {
     }
   }, [defaultValues, reset]);
 
+  // Notify parent of role change for real-time step updates
+  useEffect(() => {
+    if (onRoleChange) onRoleChange(role);
+  }, [role, onRoleChange]);
+
   // clear role-specific fields whenever role changes
   useEffect(() => {
     if (role === "student") {
@@ -64,16 +68,24 @@ export default function ProfileSetupTab({ onNext, defaultValues }: Props) {
       setValue("postgraduateYear", undefined);
       setValue("experience", undefined);
       setValue("mentorField", undefined);
+      setValue("currentRole", undefined);
+      setValue("hospitalOrInstitute", undefined);
+      setValue("specialty", undefined);
+      setValue("postgraduateDegree", undefined);
     } else if (role === "professional") {
       setValue("university", undefined);
       setValue("academicYear", undefined);
       setValue("mentorField", undefined);
+      setValue("currentRole", undefined);
+      setValue("hospitalOrInstitute", undefined);
+      setValue("specialty", undefined);
+      setValue("postgraduateDegree", undefined);
     } else if (role === "mentor") {
       setValue("university", undefined);
       setValue("academicYear", undefined);
       setValue("hospital", undefined);
       setValue("postgraduateYear", undefined);
-      setValue("experience", undefined);
+      // specialty, experience, postgraduateDegree, currentRole, hospitalOrInstitute are kept for mentor
       setValue("subRole", undefined);
     }
   }, [role, setValue]);
@@ -313,21 +325,83 @@ export default function ProfileSetupTab({ onNext, defaultValues }: Props) {
 
           {/* Mentor */}
           {role === "mentor" && (
-            <div>
-              <label className="mb-2 block text-slate-950">
-                Field of Expertise
-              </label>
-              <input
-                {...register("mentorField")}
-                placeholder="Field of expertise"
-                className="w-full p-3 border border-slate-300 rounded-md"
-              />
-              {errors.mentorField && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.mentorField.message}
-                </p>
-              )}
-            </div>
+            <>
+              <div>
+                <label className="mb-2 block text-slate-950">
+                  Current Role
+                </label>
+                <input
+                  {...register("currentRole")}
+                  placeholder="Current role (e.g., Senior Medical Mentor)"
+                  className="w-full p-3 border border-slate-300 rounded-md"
+                />
+                {errors.currentRole && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.currentRole.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="mb-2 block text-slate-950">
+                  Hospital/Institute
+                </label>
+                <input
+                  {...register("hospitalOrInstitute")}
+                  placeholder="Hospital/Institute"
+                  className="w-full p-3 border border-slate-300 rounded-md"
+                />
+                {errors.hospitalOrInstitute && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.hospitalOrInstitute.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="mb-2 block text-slate-950">
+                  Medical Specialty
+                </label>
+                <input
+                  {...register("specialty")}
+                  placeholder="Medical specialty (e.g., Internal Medicine)"
+                  className="w-full p-3 border border-slate-300 rounded-md"
+                />
+                {errors.specialty && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.specialty.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="mb-2 block text-slate-950">
+                  Professional Experience (Years)
+                </label>
+                <input
+                  {...register("experience")}
+                  placeholder="Years of experience"
+                  className="w-full p-3 border border-slate-300 rounded-md"
+                />
+                {errors.experience && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.experience.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="mb-2 block text-slate-950">
+                  Postgraduate Degree
+                </label>
+                <input
+                  {...register("postgraduateDegree")}
+                  placeholder="Postgraduate degree (e.g., MD, Internal Medicine)"
+                  className="w-full p-3 border border-slate-300 rounded-md"
+                />
+                {errors.postgraduateDegree && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.postgraduateDegree.message}
+                  </p>
+                )}
+              </div>
+            </>
           )}
 
           <div className="flex gap-3 mt-3">

@@ -1,8 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { FilePlus2 } from "lucide-react";
+// import { Button } from "@/components/ui/button";
+// import { FilePlus2 } from "lucide-react";
 import ClinicalCaseFlow from "./ClinicalCaseFlow";
-import { useParams, Link, useSearchParams } from "react-router-dom";
-import { useGetSingleClinicalCaseQuery, useGetSingleGeneratedClinicalCaseQuery } from "@/store/features/clinicalCase/clinicalCase.api";
+import { useParams, useSearchParams } from "react-router-dom";
+import {
+  useGetSingleClinicalCaseQuery,
+  useGetSingleGeneratedClinicalCaseQuery,
+} from "@/store/features/clinicalCase/clinicalCase.api";
 import GlobalLoader from "@/common/GlobalLoader";
 import { ClinicalCaseData } from "@/types/clinicalCase";
 // import { ClinicalCaseData } from "@/types/clinicalCase.types";
@@ -14,18 +17,26 @@ const MakeDecision = () => {
   const isGenerated = caseType === "generated";
 
   // Standard Query
-  const { data: standardData, isLoading: isLoadingStandard, error: errorStandard } = useGetSingleClinicalCaseQuery(
-    id as string, { skip: isGenerated }
-  );
+  const {
+    data: standardData,
+    isLoading: isLoadingStandard,
+    error: errorStandard,
+  } = useGetSingleClinicalCaseQuery(id as string, { skip: isGenerated });
 
   // Generated Query
-  const { data: generatedData, isLoading: isLoadingGenerated, error: errorGenerated } = useGetSingleGeneratedClinicalCaseQuery(
-     id as string, { skip: !isGenerated }
-  );
+  const {
+    data: generatedData,
+    isLoading: isLoadingGenerated,
+    error: errorGenerated,
+  } = useGetSingleGeneratedClinicalCaseQuery(id as string, {
+    skip: !isGenerated,
+  });
 
   const isLoading = isGenerated ? isLoadingGenerated : isLoadingStandard;
   const error = isGenerated ? errorGenerated : errorStandard;
-  const clinicalCase = (isGenerated ? generatedData?.data : standardData?.data) as ClinicalCaseData;
+  const clinicalCase = (
+    isGenerated ? generatedData?.data : standardData?.data
+  ) as ClinicalCaseData;
 
   if (isLoading) {
     return <GlobalLoader />;
@@ -51,12 +62,12 @@ const MakeDecision = () => {
               {clinicalCase?.difficultyLevel}
             </p>
           </div>
-          <Link to={`/dashboard/clinical-case/${id}${isGenerated ? "?type=generated" : ""}`}>
+          {/* <Link to={`/dashboard/clinical-case/${id}${isGenerated ? "?type=generated" : ""}`}>
             <Button className="px-3 h-10 border border-indigo-500 bg-white text-indigo-500 hover:bg-indigo-50">
               <FilePlus2 />
               Review Case Details
             </Button>
-          </Link>
+          </Link> */}
         </div>
         <h2 className="text-3xl font-semibold mt-5">
           {clinicalCase?.caseTitle}

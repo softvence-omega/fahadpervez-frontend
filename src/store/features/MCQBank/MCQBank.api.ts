@@ -50,6 +50,14 @@ export const mcqBankAPI = baseAPI.injectEndpoints({
       }),
     }),
 
+    generateMCQWithFile: build.mutation({
+      query: (formData: FormData) => ({
+        url: "/ai_part/mcq_generator_with_file",
+        method: "POST",
+        body: formData,
+      }),
+    }),
+
     // end
   }),
 });
@@ -59,4 +67,5 @@ export const {
   useGetSingleMCQQuery,
   useGetMCQBankTreeQuery,
   useGetMcqBySubtopicQuery,
+  useGenerateMCQWithFileMutation,
 } = mcqBankAPI;

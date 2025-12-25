@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import { BreadcrumbItem } from "../gamified-learning/types";
 import EventPage from "./EventPage";
-import SocialFeedPage from "./SocialFeedPage";
-import ForumsPage from "./ForumsPage";
+// import SocialFeedPage from "./SocialFeedPage";
+// import ForumsPage from "./ForumsPage";
 import MessagesPage from "./messages/MessagesPage";
 import MentorCommunityTabs from "@/components/mentorCommunity/MentorCommunityTabs";
+import SocialFeed from "@/components/mentorCommunity/SocialFeed";
+// import Forums from "@/components/mentorCommunity/Forums";
+import ForumsPage from "./ForumsPage";
 
 interface Event {
   id: string;
@@ -144,7 +147,8 @@ const MedicalEventsDashboard: React.FC = () => {
 
       {/* ✅ Render content based on activeTab (same logic, no functionality change) */}
       <div className="mt-6 space-y-6">
-        {activeTab === "Social Feed" && <SocialFeedPage />}
+        {/* {activeTab === "Social Feed" && <SocialFeedPage />} */}
+        {activeTab === "Social Feed" && <SocialFeed />}
 
         {activeTab === "Events" && (
           <EventPage
@@ -162,6 +166,7 @@ const MedicalEventsDashboard: React.FC = () => {
         )} */}
 
         {activeTab === "Forums" && <ForumsPage />}
+        {/* {activeTab === "Forums" && <Forums />} */}
 
         {activeTab === "Messages" && <MessagesPage />}
       </div>
