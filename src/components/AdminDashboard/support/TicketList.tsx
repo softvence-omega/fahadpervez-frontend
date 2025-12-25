@@ -7,7 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatDate } from "@/help/help";
 import { useDeleteReportForAdminMutation } from "@/store/features/adminDashboard/support/support";
 import { ReportItem } from "@/store/features/adminDashboard/support/types/support";
 import { LuEye } from "react-icons/lu";
@@ -17,9 +16,7 @@ const tableHeaders = [
   { label: "Ticket #", align: "text-center lg:table-cell hidden" },
   { label: "Subject", align: "text-center" },
   { label: "User", align: "text-center xl:table-cell hidden" },
-  { label: "Type", align: "text-center xl:table-cell hidden" },
   { label: "Status", align: "text-center lg:table-cell hidden" },
-  { label: "Created", align: "text-center xl:table-cell hidden" },
   { label: "Action", align: "text-center" },
 ];
 
@@ -99,12 +96,6 @@ const TicketList: React.FC<TicketListProps> = ({
               {ticket.name}
             </TableCell>
 
-            <TableCell
-              className={`xl:table-cell hidden ${tableDesign.cell} capitalize`}
-            >
-              {ticket.name}
-            </TableCell>
-
             <TableCell className={`lg:table-cell hidden ${tableDesign.cell}`}>
               <span
                 className={`px-2 py-1 rounded-md text-xs font-medium  ${getStatusBadgeClass(
@@ -113,10 +104,6 @@ const TicketList: React.FC<TicketListProps> = ({
               >
                 {ticket.status}
               </span>
-            </TableCell>
-
-            <TableCell className={`xl:table-cell hidden ${tableDesign.cell}`}>
-              {formatDate(ticket.createdAt)}
             </TableCell>
 
             <TableCell className={tableDesign.cell}>
