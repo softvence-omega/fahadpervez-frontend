@@ -1,3 +1,5 @@
+import { DifficultyLevel } from "@/types";
+
 export interface MCQOption {
   option: string;
   optionText: string;
@@ -6,7 +8,7 @@ export interface MCQOption {
 
 export interface MCQ {
   mcqId: string;
-  difficulty: string;
+  difficulty: DifficultyLevel;
   question: string;
   imageDescription: string;
   options: MCQOption[];
