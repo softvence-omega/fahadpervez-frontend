@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Dialog,
   DialogContent,
@@ -47,13 +48,15 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
   const navigate = useNavigate();
   const [generateMCQ, { isLoading: isGenerating }] = useGenerateMCQMutation();
   const { data: treeData } = useGetMCQBankTreeQuery({});
-  const { data: bankData } = useGllMCQBankQuery({});
+  const [quizName, setQuizName] = useState("");
+  const [quizMode, setQuizMode] = useState("study");
+
+  const { data: bankData } = useGllMCQBankQuery({
+    type: quizMode === "exam" ? "exam" : undefined,
+  });
 
   const subjects: SubjectTree[] = treeData?.data || [];
   const allBanks = bankData?.data || [];
-
-  const [quizName, setQuizName] = useState("");
-  const [quizMode, setQuizMode] = useState("study");
   const [examName, setExamName] = useState("");
   const [questionBank, setQuestionBank] = useState("");
   const [questionType, setQuestionType] = useState("hybrid");
@@ -106,12 +109,19 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
     }
   }, [topic, quizMode]);
 
+  // Sync question count and duration for Exam Mode
   useEffect(() => {
-    if (quizMode === "exam") {
+    if (quizMode === "exam" && examName) {
+      const selectedBank = allBanks.find((b: any) => b._id === examName);
+      if (selectedBank) {
+        setQuestionCount(selectedBank.totalMcq || 50);
+        setDuration(selectedBank.totalMcq || 60); // Assuming 1 min per question for exam
+      }
+    } else if (quizMode === "exam") {
       setQuestionCount(50);
       setDuration(60);
     }
-  }, [quizMode]);
+  }, [examName, quizMode, allBanks]);
 
   const handleSubmit = async () => {
     // if (!quizName) {
@@ -119,8 +129,8 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
     //   return;
     // }
 
-    if (quizMode === "study" && !subject) {
-      toast.error("Please select at least a subject for study mode");
+    if (quizMode === "study" && !subject && !questionBank) {
+      toast.error("Please select a subject or a question bank for study mode");
       return;
     }
 
@@ -138,7 +148,7 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
       question_type: questionType,
       question_count: questionCount,
       difficulty_level: difficulty,
-      mcq_bank_id: questionBank || undefined,
+      mcq_bank_id: quizMode === "exam" ? examName : questionBank || undefined,
     };
 
     try {
@@ -196,12 +206,20 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                 <Label>Exam Name</Label>
                 <Select value={examName} onValueChange={setExamName}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select Exam" />
+                    <SelectValue placeholder="Select Question Bank" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Block Exam">Block Exam</SelectItem>
-                    <SelectItem value="Clinical">Clinical</SelectItem>
-                    <SelectItem value="Advanced">Advanced</SelectItem>
+                    {allBanks.length > 0 ? (
+                      allBanks.map((bank: any) => (
+                        <SelectItem key={bank._id} value={bank._id}>
+                          {bank.title}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="none" disabled>
+                        No Question Banks found
+                      </SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
               </div>
@@ -309,11 +327,17 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                     <SelectValue placeholder="Select Question Bank" />
                   </SelectTrigger>
                   <SelectContent>
-                    {filteredBanks.map((bank: any) => (
-                      <SelectItem key={bank._id} value={bank._id}>
-                        {bank.title}
+                    {filteredBanks.length > 0 ? (
+                      filteredBanks.map((bank: any) => (
+                        <SelectItem key={bank._id} value={bank._id}>
+                          {bank.title}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="none" disabled>
+                        No Question Banks found
                       </SelectItem>
-                    ))}
+                    )}
                   </SelectContent>
                 </Select>
               </div>

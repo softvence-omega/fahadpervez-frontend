@@ -165,10 +165,10 @@ const dashboardRoutes = {
       path: "clinical-case/:id/make-decision",
       element: <MakeDecesion />,
     },
-    {
-      path: "diagram-explorer",
-      element: <BioDigitalExplorer />,
-    },
+    // {
+    //   path: "diagram-explorer",
+    //   element: <BioDigitalExplorer />,
+    // },
     {
       path: "bio-digital", // Alias for easier access if they want
       element: <BioDigitalExplorer />,

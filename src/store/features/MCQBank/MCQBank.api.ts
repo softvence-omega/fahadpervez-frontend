@@ -4,13 +4,14 @@ import { baseAPI } from "@/store/api/baseApi";
 export const mcqBankAPI = baseAPI.injectEndpoints({
   endpoints: (build) => ({
     gllMCQBank: build.query({
-      query: ({ searchTerm, subject, system, topic, page, limit }) => {
+      query: ({ searchTerm, subject, system, topic, type, page, limit }) => {
         const params: any = { page, limit };
 
         if (searchTerm) params.searchTerm = searchTerm;
         if (subject) params.subject = subject;
         if (system) params.system = system;
         if (topic) params.topic = topic;
+        if (type) params.type = type;
 
         return {
           url: "/mcq-bank",
