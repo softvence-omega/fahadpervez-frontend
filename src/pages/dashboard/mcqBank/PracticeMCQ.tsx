@@ -73,15 +73,15 @@ export default function PracticeMCQ() {
 
   const handleJump = () => {
     if (!jumpQuestion.trim()) {
-      toast.error("Please enter a question number");
+      toast.warning("Please enter a question number");
       return;
     }
     const questionNum = parseInt(jumpQuestion);
     const total = meta?.total || 0;
     if (isNaN(questionNum) || questionNum < 1) {
-      toast.error("Please enter a valid question number");
+      toast.warning("Please enter a valid question number");
     } else if (questionNum > total) {
-      toast.error(`Question number exceeds total questions (${total})`);
+      toast.warning(`Question number exceeds total questions (${total})`);
     } else {
       setSkip(questionNum - 1); // skip is 0-indexed question offset
       setCurrentPage(Math.ceil(questionNum / limit)); // Sync page if needed (though API uses skip)

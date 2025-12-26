@@ -163,7 +163,7 @@ const sidebarItems: SidebarItem[] = [
   {
     icon: Microscope,
     label: "Diagram",
-    path: "/dashboard/diagram-explorer",
+    path: "/dashboard/bio-digital",
     section: "Study Materials",
     iconColor: "text-cyan-600",
     iconBgColor: "bg-cyan-50",
