@@ -22,9 +22,7 @@ import { z } from "zod";
 import { useEffect } from "react";
 import { Zap } from "lucide-react";
 import { useGenerateMCQWithFileMutation } from "@/store/features/MCQBank/MCQBank.api";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setQuiz } from "@/store/features/MCQBank/quizSlice";
 
 // =======================
 // Zod Schema
@@ -54,7 +52,7 @@ export function GenerateMcqWithFileModal({
   note,
 }: GenerateMcqWithFileModalProps) {
   const [generateMCQWithFile, { isLoading }] = useGenerateMCQWithFileMutation();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const {
@@ -112,40 +110,41 @@ export function GenerateMcqWithFileModal({
 
       // Assume res.data contains the questions array or is the array itself
       // If the backend returns something like { data: [...] }
-      const questionsArray = res.data || res;
+      // const questionsArray = res.data || res;
 
-      if (Array.isArray(questionsArray)) {
-        dispatch(
-          setQuiz({
-            id: "generated-quiz-" + Date.now(),
-            title: "Generated Quiz",
-            description: `${data.questionCount} Questions. ${data.difficulty}.`,
-            questions: questionsArray.map((q: any, index: number) => ({
-              id: (index + 1).toString(),
-              text: q.question || q.text || "",
-              options:
-                q.options?.map((opt: any, i: number) => {
-                  // Handle both string and object options
-                  const label =
-                    typeof opt === "object" ? opt.optionText || opt.text : opt;
-                  const value =
-                    typeof opt === "object"
-                      ? opt.option || String.fromCharCode(65 + i)
-                      : String.fromCharCode(65 + i);
-                  const optionExplanation =
-                    typeof opt === "object" ? opt.explanation : "";
+      // if (Array.isArray(questionsArray)) {
+      if (res.success) {
+        // dispatch(
+        //   setQuiz({
+        //     id: "generated-quiz-" + Date.now(),
+        //     title: "Generated Quiz",
+        //     description: `${data.questionCount} Questions. ${data.difficulty}.`,
+        //     questions: questionsArray.map((q: any, index: number) => ({
+        //       id: (index + 1).toString(),
+        //       text: q.question || q.text || "",
+        //       options:
+        //         q.options?.map((opt: any, i: number) => {
+        //           // Handle both string and object options
+        //           const label =
+        //             typeof opt === "object" ? opt.optionText || opt.text : opt;
+        //           const value =
+        //             typeof opt === "object"
+        //               ? opt.option || String.fromCharCode(65 + i)
+        //               : String.fromCharCode(65 + i);
+        //           const optionExplanation =
+        //             typeof opt === "object" ? opt.explanation : "";
 
-                  return {
-                    value,
-                    label,
-                    explanation: optionExplanation,
-                  };
-                }) || [],
-              correctAnswer: q.answer || q.correctAnswer || "",
-              explanation: q.explanation || "",
-            })),
-          })
-        );
+        //           return {
+        //             value,
+        //             label,
+        //             explanation: optionExplanation,
+        //           };
+        //         }) || [],
+        //       correctAnswer: q.answer || q.correctAnswer || "",
+        //       explanation: q.explanation || "",
+        //     })),
+        //   })
+        // );
 
         const quizId = res.data?.id || res.id || "3";
         console.log(

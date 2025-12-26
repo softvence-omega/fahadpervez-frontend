@@ -34,7 +34,7 @@ export default function AllGeneratedFlashCard({
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {flashcardBanks?.length > 0 ? (
                 flashcardBanks.map((flashcard: IFlashcardBank, idx: number) => (
-                  <FlashCard key={idx} {...flashcard} />
+                  <FlashCard key={idx} source="all" {...flashcard} />
                 ))
               ) : (
                 <p className="text-center text-gray-500 col-span-full">

@@ -25,14 +25,21 @@ export const mcqBankAPI = baseAPI.injectEndpoints({
         id,
         page = 1,
         limit = 10,
+        skip,
       }: {
         id: string;
         page?: number;
         limit?: number;
-      }) => ({
-        url: `/mcq-bank/${id}?page=${page}&limit=${limit}`,
-        method: "GET",
-      }),
+        skip?: number;
+      }) => {
+        const params: any = { page, limit };
+        if (skip !== undefined) params.skip = skip;
+        return {
+          url: `/mcq-bank/${id}`,
+          method: "GET",
+          params,
+        };
+      },
     }),
 
     getMCQBankTree: build.query({

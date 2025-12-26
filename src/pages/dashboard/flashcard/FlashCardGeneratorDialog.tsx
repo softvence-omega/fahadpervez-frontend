@@ -146,10 +146,10 @@ export function FlashCardGeneratorDialog({
   onFinalSubmit,
 }: any) {
   const [quizName, setQuizName] = useState("");
-  const [subject, setSubject] = useState("");
-  const [system, setSystem] = useState("");
-  const [topic, setTopic] = useState("");
-  const [subTopic, setSubTopic] = useState("");
+  // const [subject, setSubject] = useState("");
+  // const [system, setSystem] = useState("");
+  // const [topic, setTopic] = useState("");
+  // const [subTopic, setSubTopic] = useState("");
   const [questionType, setQuestionType] = useState("");
   const [questionCount, setQuestionCount] = useState(5);
   const [difficultyLevel, setDifficultyLevel] = useState("");
@@ -157,10 +157,10 @@ export function FlashCardGeneratorDialog({
   const handleSubmit = () => {
     onFinalSubmit({
       quiz_name: quizName,
-      subject,
-      system,
-      topic,
-      sub_topic: subTopic,
+      // subject,
+      // system,
+      // topic,
+      // sub_topic: subTopic,
       question_type: questionType,
       question_count: questionCount,
       difficulty_level: difficultyLevel,
@@ -180,55 +180,55 @@ export function FlashCardGeneratorDialog({
         </DialogHeader>
 
         <div className="grid grid-cols-1 gap-6 py-4">
-          {/* Quiz Name */}
+          {/* Flashcard Name */}
           <div className="grid gap-2">
-            <Label>Quiz Name</Label>
+            <Label>Flashcard Name</Label>
             <Input
               value={quizName}
               onChange={(e) => setQuizName(e.target.value)}
-              placeholder="Sample Quiz"
+              placeholder="Sample Flashcard"
             />
           </div>
 
           {/* Subject */}
-          <div className="grid gap-2">
+          {/* <div className="grid gap-2">
             <Label>Subject</Label>
             <Input
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="anatomy"
             />
-          </div>
+          </div> */}
 
           {/* System */}
-          <div className="grid gap-2">
+          {/* <div className="grid gap-2">
             <Label>System</Label>
             <Input
               value={system}
               onChange={(e) => setSystem(e.target.value)}
               placeholder="cardiovascular"
             />
-          </div>
+          </div> */}
 
           {/* Topic */}
-          <div className="grid gap-2">
+          {/* <div className="grid gap-2">
             <Label>Topic</Label>
             <Input
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               placeholder="hypertension"
             />
-          </div>
+          </div> */}
 
           {/* Sub-topic */}
-          <div className="grid gap-2">
+          {/* <div className="grid gap-2">
             <Label>Sub Topic</Label>
             <Input
               value={subTopic}
               onChange={(e) => setSubTopic(e.target.value)}
               placeholder="risk factor"
             />
-          </div>
+          </div> */}
 
           {/* Question Type */}
           <div className="grid gap-2">

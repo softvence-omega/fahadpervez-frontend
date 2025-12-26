@@ -30,11 +30,16 @@ export default function PracticeMCQ() {
 
   const { id } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
+  const [skip, setSkip] = useState<number | undefined>(undefined);
+  const [jumpQuestion, setJumpQuestion] = useState("");
+
   const limit = 1;
+
   const { data, isLoading } = useGetSingleMCQQuery({
     id: id as string,
     page: currentPage,
     limit,
+    skip,
   });
 
   const meta = data?.meta;
@@ -62,6 +67,24 @@ export default function PracticeMCQ() {
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
+      setSkip(undefined); // Reset skip when using standard pagination
+    }
+  };
+
+  const handleJump = () => {
+    if (!jumpQuestion.trim()) {
+      toast.error("Please enter a question number");
+      return;
+    }
+    const questionNum = parseInt(jumpQuestion);
+    const total = meta?.total || 0;
+    if (isNaN(questionNum) || questionNum < 1) {
+      toast.error("Please enter a valid question number");
+    } else if (questionNum > total) {
+      toast.error(`Question number exceeds total questions (${total})`);
+    } else {
+      setSkip(questionNum - 1); // skip is 0-indexed question offset
+      setCurrentPage(Math.ceil(questionNum / limit)); // Sync page if needed (though API uses skip)
     }
   };
 
@@ -294,6 +317,29 @@ export default function PracticeMCQ() {
         >
           Next
         </button>
+
+        <div className="flex items-center gap-2 ml-4">
+          <input
+            type="number"
+            min="1"
+            max={meta?.total || 1}
+            value={jumpQuestion}
+            onChange={(e) => setJumpQuestion(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleJump();
+              }
+            }}
+            placeholder="Go to question"
+            className="w-32 px-3 py-2 border rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-main"
+          />
+          <button
+            onClick={handleJump}
+            className="px-4 py-2 bg-blue-main text-white rounded text-sm font-medium hover:bg-blue-main/90 cursor-pointer"
+          >
+            Jump
+          </button>
+        </div>
       </div>
 
       <PracticeQuizModal
