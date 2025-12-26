@@ -1,4 +1,3 @@
-
 import {
   Dialog,
   DialogContent,
@@ -23,6 +22,7 @@ import { z } from "zod";
 import { useEffect } from "react";
 import { Zap } from "lucide-react";
 import { useGenerateMCQWithFileMutation } from "@/store/features/MCQBank/MCQBank.api";
+import { useNavigate } from "react-router-dom";
 
 // =======================
 // Zod Schema
@@ -52,6 +52,8 @@ export function GenerateMcqWithFileModal({
   note,
 }: GenerateMcqWithFileModalProps) {
   const [generateMCQWithFile, { isLoading }] = useGenerateMCQWithFileMutation();
+  // const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     control,
@@ -84,14 +86,16 @@ export function GenerateMcqWithFileModal({
   // =======================
   const onFormSubmit: SubmitHandler<QuizFormValues> = async (data) => {
     try {
-      if (!files || files.length === 0) {
-        console.error("No file provided");
+      if ((!files || files.length === 0) && !note.trim()) {
+        console.error("No file or note provided");
         return;
       }
 
       const formData = new FormData();
-      // Appending the first file as per API requirement
-      formData.append("file", files[0]);
+      if (files && files.length > 0) {
+        // Appending the first file as per API requirement
+        formData.append("file", files[0]);
+      }
 
       const jsonData = {
         prompt: note || "Generate Clinical case", // Use note as prompt
@@ -102,10 +106,58 @@ export function GenerateMcqWithFileModal({
       formData.append("data", JSON.stringify(jsonData));
 
       const res = await generateMCQWithFile(formData).unwrap();
-      console.log(res)
+      console.log("Response from AI:", res);
 
-      console.log("Quiz Generated Successfully");
-      setOpen(false);
+      // Assume res.data contains the questions array or is the array itself
+      // If the backend returns something like { data: [...] }
+      // const questionsArray = res.data || res;
+
+      // if (Array.isArray(questionsArray)) {
+      if (res.success) {
+        // dispatch(
+        //   setQuiz({
+        //     id: "generated-quiz-" + Date.now(),
+        //     title: "Generated Quiz",
+        //     description: `${data.questionCount} Questions. ${data.difficulty}.`,
+        //     questions: questionsArray.map((q: any, index: number) => ({
+        //       id: (index + 1).toString(),
+        //       text: q.question || q.text || "",
+        //       options:
+        //         q.options?.map((opt: any, i: number) => {
+        //           // Handle both string and object options
+        //           const label =
+        //             typeof opt === "object" ? opt.optionText || opt.text : opt;
+        //           const value =
+        //             typeof opt === "object"
+        //               ? opt.option || String.fromCharCode(65 + i)
+        //               : String.fromCharCode(65 + i);
+        //           const optionExplanation =
+        //             typeof opt === "object" ? opt.explanation : "";
+
+        //           return {
+        //             value,
+        //             label,
+        //             explanation: optionExplanation,
+        //           };
+        //         }) || [],
+        //       correctAnswer: q.answer || q.correctAnswer || "",
+        //       explanation: q.explanation || "",
+        //     })),
+        //   })
+        // );
+
+        const quizId = res.data?.id || res.id || "3";
+        console.log(
+          "Quiz Generated and stored in Redux. Redirecting to ID:",
+          quizId
+        );
+        setOpen(false);
+        navigate(`/dashboard/quiz/${quizId}`); // Redirect dynamically
+      } else {
+        console.error(
+          "Invalid response format: expected an array of questions"
+        );
+      }
     } catch (error) {
       console.error("Quiz generation failed", error);
     }

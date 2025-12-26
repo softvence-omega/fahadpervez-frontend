@@ -1,57 +1,45 @@
-// import DashboardHeading from "@/components/reusable/DashboardHeading";
-// import { ArrowLeft } from "lucide-react";
-// import { Link } from "react-router-dom";
+import { useGetAllGeneratedMCQQuery } from "@/store/features/MCQBank/MCQBank.api";
 import QuizCard from "./QuizCard";
-// import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types";
-// import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
-// import QuizCard from "./QuizCard";
-
-
-// const breadcrumbs: BreadcrumbItem[] = [
-//   { name: "Dashboard", link: "/dashboard" },
-//   { name: "Quiz Collection", link: "/dashboard/quiz-collection" },
-// ];
+import GlobalLoader from "@/common/GlobalLoader";
 
 export default function QuizCollection() {
-    return (
-        <div className="md:my-6">
-            {/* <Breadcrumb breadcrumbs={breadcrumbs} />
-            <div className="flex items-center gap-3">
-                <Link to={'/dashboard/quiz-generator'} className="mb-7">
-                    <ArrowLeft /></Link>
-                <DashboardHeading
-                    title="Generated Quiz"
-                    titleSize="text-xl"
-                    description="Create custom quizzes from your images and videos using AI"
-                    className="mt-12 mb-12 space-y-1"
-                />
-            </div> */}
+  const { data: quizzesResponse, isLoading } = useGetAllGeneratedMCQQuery({});
 
-            {/* <div>
-                <h3 className="font-medium mb-6">Today's Quiz</h3>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white border border-slate-300 p-5 rounded-[8px]">
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
-                </div>
-            </div> */}
+  const quizzes = quizzesResponse?.data || quizzesResponse || [];
 
-            <div className="mt-12">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="font-medium">All  Quiz's</h3>
-                    {/* <Link to={"/dashboard/all-generated-quiz"} className="text-blue-main text-sm font-medium border border-slate-200 rounded-[6px] py-2 px-4">View all</Link> */}
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white border border-slate-300 p-5 rounded-[8px]">
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
-                    <QuizCard />
-                </div>
-            </div>
+  if (isLoading) return <GlobalLoader />;
+
+  return (
+    <div className="md:my-6">
+      <div className="mt-12">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="font-medium text-lg text-zinc-800">All Quiz's</h3>
         </div>
-    )
+
+        {quizzes.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 bg-white border border-slate-200 p-6 rounded-xl shadow-sm">
+            {quizzes.map((quiz: any) => (
+              <QuizCard
+                key={quiz.id || quiz._id}
+                id={quiz.id || quiz._id}
+                title={quiz.title || quiz.session || "Generated Quiz"}
+                questionCount={
+                  quiz.questions?.length ||
+                  quiz.mcqs?.length ||
+                  quiz.questionCount
+                }
+                sourceFile={quiz.sourceFile || quiz.fileName}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20 bg-white border border-dashed border-slate-300 rounded-xl">
+            <p className="text-slate-500">
+              No quizzes found. Generate one to get started!
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

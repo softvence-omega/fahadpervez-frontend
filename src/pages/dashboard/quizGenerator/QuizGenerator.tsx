@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Atom, Crown, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GenerateMcqWithFileModal } from "./GenerateMcqWithFileModal";
+import { toast } from "sonner";
 
 const QuizGenerator = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -15,6 +16,17 @@ const QuizGenerator = () => {
 
   const handleRemoveFile = (index: number) => {
     setFiles(files.filter((_, i) => i !== index));
+  };
+
+  const handleGenerateClick = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (files.length === 0 && !note.trim()) {
+      toast.error(
+        "Please upload a file or provide a note/prompt to generate a quiz."
+      );
+      return;
+    }
+    setOpenModal(true);
   };
 
   return (
@@ -59,10 +71,7 @@ const QuizGenerator = () => {
 
       <div className="w-full">
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            setOpenModal(true); // open modal on "Generate Quiz"
-          }}
+          onSubmit={handleGenerateClick}
           className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5x mx-auto p-6"
         >
           {/* Uploader */}

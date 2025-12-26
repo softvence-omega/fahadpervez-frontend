@@ -1,6 +1,6 @@
-import { Download, View } from "lucide-react";
+import { Download, View, Loader2 } from "lucide-react";
 import { FaFilePdf } from "react-icons/fa6";
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "../ui/button";
 
 interface NoteCardProps {
@@ -22,12 +22,75 @@ const NoteCard: React.FC<NoteCardProps> = ({
   title,
   description,
   // chapter,
-  pages,
+  // pages,
   downloads,
+  pdfUrl,
   showDownload = true,
   onViewNotes,
   onDownload,
 }) => {
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleViewClick = () => {
+    if (onViewNotes) {
+      onViewNotes();
+    } else if (pdfUrl) {
+      window.open(pdfUrl, "_blank");
+    }
+  };
+
+  const handleDownloadClick = async () => {
+    if (onDownload) {
+      onDownload();
+      return;
+    }
+
+    if (!pdfUrl) return;
+
+    // Detect file extension
+    const extension = pdfUrl.split(".").pop()?.toLowerCase() || "pdf";
+    const fileName = `${title.replace(/\s+/g, "_")}.${extension}`;
+
+    try {
+      setIsDownloading(true);
+      // Try fetching as blob (works if CORS is allowed)
+      const response = await fetch(pdfUrl);
+      if (!response.ok) throw new Error("Network response was not ok");
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error(
+        "Blob download failed, falling back to direct link:",
+        error
+      );
+
+      // Fallback: Use Cloudinary's attachment flag or direct link
+      // For cross-origin, the 'download' attribute is often ignored,
+      // but fl_attachment on Cloudinary forces the header on their side.
+      const downloadUrl = pdfUrl.includes("cloudinary.com")
+        ? pdfUrl.replace("/upload/", "/upload/fl_attachment/")
+        : pdfUrl;
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.setAttribute("download", fileName);
+      link.target = "_self"; // Same tab to avoid blank page
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col justify-between p-6 border border-gray-300 rounded-2xl">
       {/* Tag + PDF Icon */}
@@ -49,10 +112,10 @@ const NoteCard: React.FC<NoteCardProps> = ({
           <h3 className="text-base font-medium">Chapter</h3>
           <p className="text-base mt-1">{chapter}</p>
         </div> */}
-          <div>
+          {/* <div>
             <h3 className="text-base font-medium">Pages</h3>
             <p className="text-base mt-1">{pages}</p>
-          </div>
+          </div> */}
           {showDownload && (
             <div>
               <h3 className="text-base font-medium">Downloads</h3>
@@ -65,7 +128,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
       {/* Buttons */}
       <div className="grid md:grid-cols-2 mt-8 gap-4">
         <Button
-          onClick={onViewNotes}
+          onClick={handleViewClick}
           className="bg-yellow-900 hover:bg-yellow-800 text-white rounded-[6px] cursor-pointer py-2 h-auto flex items-center justify-center gap-2"
         >
           <View className="w-5 h-5" /> View Notes
@@ -73,10 +136,16 @@ const NoteCard: React.FC<NoteCardProps> = ({
 
         {showDownload && (
           <Button
-            onClick={onDownload}
+            onClick={handleDownloadClick}
+            disabled={isDownloading}
             className="bg-green-900 hover:bg-green-800 text-white rounded-[6px] cursor-pointer py-2 h-auto flex items-center justify-center gap-2"
           >
-            <Download className="w-5 h-5" /> Download PDF
+            {isDownloading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <Download className="w-5 h-5" />
+            )}
+            {isDownloading ? "Downloading..." : "Download PDF"}
           </Button>
         )}
       </div>

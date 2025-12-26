@@ -1,5 +1,5 @@
 import { IFlashcardBank } from "@/types";
-import { BrainCircuit, Play } from "lucide-react";
+import { Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function FlashCard({
@@ -17,7 +17,7 @@ export default function FlashCard({
     <div className="flex flex-col justify-between p-5 border border-slate-300 rounded-[12px]">
       <div className="mb-10">
         <div className="flex items-center gap-1">
-          <BrainCircuit className="text-zinc-950" />
+          {/* <BrainCircuit className="text-zinc-950" /> */}
           <h3 className="text-[#0A0A0A]">
             {flashcard?.title} - {flashcard?.subject}
           </h3>
