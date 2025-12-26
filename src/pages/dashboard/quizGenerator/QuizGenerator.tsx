@@ -4,7 +4,7 @@ import FilePreviewList from "@/components/reusable/FilePreview";
 import FileUploader from "@/components/reusable/FileUploader";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { Progress } from "@/components/ui/progress";
-import { Atom, Crown, Upload } from "lucide-react";
+import { Atom, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GenerateMcqWithFileModal } from "./GenerateMcqWithFileModal";
 import { toast } from "sonner";
@@ -56,9 +56,6 @@ const QuizGenerator = () => {
       <div className="bg-white py-5 px-7 mb-12">
         <div className="flex justify-between mb-6">
           <h3 className="text-sm text-[#0A0A0A]">Monthly Usage</h3>
-          <button className="flex items-center gap-2  cursor-pointer">
-            <Crown /> Free Plan
-          </button>
         </div>
         <div>
           <div className="flex justify-between items-center mb-3">

@@ -146,7 +146,7 @@ export function GenerateMcqWithFileModal({
         //   })
         // );
 
-        const quizId = res.data?.id || res.id || "3";
+        const quizId = res.data?._id || res._id;
         console.log(
           "Quiz Generated and stored in Redux. Redirecting to ID:",
           quizId
