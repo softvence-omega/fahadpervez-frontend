@@ -145,23 +145,23 @@ export function FlashCardGeneratorDialog({
   setOpen,
   onFinalSubmit,
 }: any) {
-  // const [quizName, setQuizName] = useState("");
+  const [quizName, setQuizName] = useState("");
   // const [subject, setSubject] = useState("");
   // const [system, setSystem] = useState("");
   // const [topic, setTopic] = useState("");
   // const [subTopic, setSubTopic] = useState("");
-  // const [questionType, setQuestionType] = useState("");
+  const [questionType, setQuestionType] = useState("");
   const [questionCount, setQuestionCount] = useState(5);
   const [difficultyLevel, setDifficultyLevel] = useState("");
 
   const handleSubmit = () => {
     onFinalSubmit({
-      // quiz_name: quizName,
+      quiz_name: quizName,
       // subject,
       // system,
       // topic,
       // sub_topic: subTopic,
-      // question_type: questionType,
+      question_type: questionType,
       question_count: questionCount,
       difficulty_level: difficultyLevel,
     });
@@ -180,15 +180,15 @@ export function FlashCardGeneratorDialog({
         </DialogHeader>
 
         <div className="grid grid-cols-1 gap-6 py-4">
-          {/* Quiz Name */}
-          {/* <div className="grid gap-2">
-            <Label>Quiz Name</Label>
+          {/* Flashcard Name */}
+          <div className="grid gap-2">
+            <Label>Flashcard Name</Label>
             <Input
               value={quizName}
               onChange={(e) => setQuizName(e.target.value)}
-              placeholder="Sample Quiz"
+              placeholder="Sample Flashcard"
             />
-          </div> */}
+          </div>
 
           {/* Subject */}
           {/* <div className="grid gap-2">
@@ -231,7 +231,7 @@ export function FlashCardGeneratorDialog({
           </div> */}
 
           {/* Question Type */}
-          {/* <div className="grid gap-2">
+          <div className="grid gap-2">
             <Label>Question Type</Label>
             <Select value={questionType} onValueChange={setQuestionType}>
               <SelectTrigger className="w-full">
@@ -242,7 +242,7 @@ export function FlashCardGeneratorDialog({
                 <SelectItem value="human">Human</SelectItem>
               </SelectContent>
             </Select>
-          </div> */}
+          </div>
 
           {/* Question Count */}
           <div className="grid gap-2">

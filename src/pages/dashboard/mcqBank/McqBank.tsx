@@ -29,16 +29,6 @@ const McqBank = () => {
   const MCQBank = data?.data;
   // console.log(MCQBank);
 
-  const handleFinalSubmit = (modalData: any) => {
-    const combinedData = {
-      // files,
-      // note,
-      ...modalData, // modal fields (quizName, subject, difficulty, etc.)
-    };
-
-    console.log("Final Payload:", combinedData);
-  };
-
   const normalize = (value?: string) =>
     value?.toString().toLowerCase().trim() || "";
 
@@ -225,11 +215,7 @@ const McqBank = () => {
           ))}
         </div>
       )}
-      <QuizGeneratorDialog
-        open={openModal}
-        setOpen={setOpenModal}
-        onFinalSubmit={handleFinalSubmit}
-      />
+      <QuizGeneratorDialog open={openModal} setOpen={setOpenModal} />
     </div>
   );
 };

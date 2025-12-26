@@ -27,7 +27,7 @@ export default function DownloadNotes() {
 
   const tabs = [
     { id: "allNotes", label: "All Notes" },
-    { id: "generatedNotes", label: "Generated Notes" },
+    // { id: "generatedNotes", label: "Generated Notes" },
     { id: "recentDownloads", label: "Recent Downloads" },
   ];
 

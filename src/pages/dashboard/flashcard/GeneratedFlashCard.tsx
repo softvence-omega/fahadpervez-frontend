@@ -54,7 +54,7 @@ export default function GeneratedFlashCard({
           {allGeneratedFlashcard?.length > 0 ? (
             allGeneratedFlashcard.map(
               (flashcard: IFlashcardBank, idx: number) => (
-                <FlashCard key={idx} {...flashcard} />
+                <FlashCard key={idx} source="generated" {...flashcard} />
               )
             )
           ) : (

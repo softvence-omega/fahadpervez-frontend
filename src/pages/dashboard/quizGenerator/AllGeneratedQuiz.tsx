@@ -1,7 +1,6 @@
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
-import QuizCard from "./QuizCard";
 import { useState } from "react";
 import Pagination from "@/components/reusable/Pagination";
 
@@ -62,9 +61,9 @@ export default function AllGeneratedQuiz() {
                     <p className="text-sm text-[#717182] mt-1">Your AI-generated quizzes ready to use</p>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                        {Array.from({ length: 17 }).map(() => (
+                        {/* {Array.from({ length: 17 }).map(() => (
                             <QuizCard />
-                        ))}
+                        ))} */}
 
                     </div>
                 </div>
