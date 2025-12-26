@@ -17,11 +17,22 @@ const StatsRow: React.FC<StatsRowProps> = ({ stats }) => {
         <p className="text-sm text-gray-600">Correct</p>
       </div>
       <div className="bg-white p-4 rounded-lg shadow text-center">
-        <div className="flex justify-center items-center">
-          <Clock className="mr-1 text-blue-600" size={16} />
-          {stats.timePerQuestion}
-        </div>
-        <p className="text-sm text-gray-600">Time per question</p>
+        {stats.wrong || stats.incorrect ? (
+          <>
+            <p className="text-red-600 font-semibold">
+              {stats.wrong || stats.incorrect}
+            </p>
+            <p className="text-sm text-gray-600">Wrong</p>
+          </>
+        ) : (
+          <>
+            <div className="flex justify-center items-center">
+              <Clock className="mr-1 text-blue-600" size={16} />
+              {stats.timePerQuestion}
+            </div>
+            <p className="text-sm text-gray-600">Time per question</p>
+          </>
+        )}
       </div>
       <div className="bg-white p-4 rounded-lg shadow text-center">
         <div className="flex justify-center items-center">

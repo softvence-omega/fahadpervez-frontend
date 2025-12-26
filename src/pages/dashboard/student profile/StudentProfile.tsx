@@ -238,7 +238,11 @@ export default function StudentProfile() {
           </div>
 
           <div className="flex items-center justify-between">
-            <CircularProgress percentage={85} />
+            <CircularProgress
+              correctPercentage={85}
+              incorrectPercentage={15}
+              label="Diagnostic Accuracy"
+            />
 
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
