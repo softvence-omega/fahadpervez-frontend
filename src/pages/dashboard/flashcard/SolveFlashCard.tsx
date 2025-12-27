@@ -181,7 +181,7 @@ export default function SolveFlashCard() {
 
           {/* Flip Card */}
           <div
-            className={`relative w-full max-w-2xl h-64 md:h-80 bg-white rounded-xl shadow-lg cursor-pointer transition-transform duration-500 preserve-3d ${
+            className={`relative w-full max-w-2xl h-64 md:h-96 bg-white rounded-xl shadow-lg cursor-pointer transition-transform duration-500 preserve-3d ${
               isFlipped ? "rotate-y-180" : ""
             }`}
             onClick={() => setIsFlipped(!isFlipped)}
@@ -248,12 +248,12 @@ export default function SolveFlashCard() {
             {currentQuestion < questions.length - 1 ? (
               <Button onClick={handleNext}>Next</Button>
             ) : (
-              <Button
-                onClick={handleNext}
-                className="bg-blue-main hover:bg-blue-700"
-              >
-                Complete
-              </Button>
+                <Button
+                  onClick={handleNext}
+                  className="bg-blue-main hover:bg-blue-700"
+                >
+                  Complete
+                </Button>
             )}
           </div>
         </div>
