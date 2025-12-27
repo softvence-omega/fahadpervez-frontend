@@ -11,80 +11,80 @@ import { useGetGeneratedMCQQuery } from "@/store/features/MCQBank/MCQBank.api";
 import GlobalLoader from "@/common/GlobalLoader";
 
 // Sample JSON data for medical students (Neurology questions)
-const sampleQuizData = {
-  title: "Session 1",
-  description: "5 Question. Medium. Neurology.",
-  questions: [
-    {
-      id: "01",
-      text: "A 19-year-old female presents ... After the following recommendations should the physician prioritize to minimize mechanical irritation?",
-      options: [
-        { value: "A", label: "A. Increase dairy intake" },
-        { value: "B", label: "B. Use oil-based moisturizers" },
-        { value: "C", label: "C. Avoid touching the face frequently" },
-        { value: "D", label: "D. Apply heavy makeup daily" },
-        { value: "E", label: "E. Engage in prolonged sun exposure" },
-      ],
-      correctAnswer: "C",
-      explanation:
-        "Mechanical irritation should be minimized by avoiding frequent face touching.",
-    },
-    {
-      id: "02",
-      text: "A patient with migraine headaches is prescribed a triptan. What is the primary mechanism of action?",
-      options: [
-        { value: "A", label: "A. Beta-blocker" },
-        { value: "B", label: "B. Serotonin receptor agonist" },
-        { value: "C", label: "C. Calcium channel blocker" },
-        { value: "D", label: "D. Anticonvulsant" },
-        { value: "E", label: "E. Opioid agonist" },
-      ],
-      correctAnswer: "B",
-      explanation: "Triptans are serotonin (5-HT1B/1D) receptor agonists.",
-    },
-    {
-      id: "03",
-      text: "Which of the following is a common symptom of Parkinson's disease?",
-      options: [
-        { value: "A", label: "A. Hyperreflexia" },
-        { value: "B", label: "B. Tremor at rest" },
-        { value: "C", label: "C. Visual hallucinations" },
-        { value: "D", label: "D. Seizures" },
-        { value: "E", label: "E. Ataxia" },
-      ],
-      correctAnswer: "B",
-      explanation: "Resting tremor is a hallmark sign of Parkinson's.",
-    },
-    {
-      id: "04",
-      text: "A 45-year-old man presents with sudden onset of severe headache. CT scan shows subarachnoid hemorrhage. What is the most likely cause?",
-      options: [
-        { value: "A", label: "A. Hypertension" },
-        { value: "B", label: "B. Ruptured aneurysm" },
-        { value: "C", label: "C. Trauma" },
-        { value: "D", label: "D. Arteriovenous malformation" },
-        { value: "E", label: "E. Coagulopathy" },
-      ],
-      correctAnswer: "B",
-      explanation:
-        "Ruptured saccular (berry) aneurysm is the most common cause of non-traumatic SAH.",
-    },
-    {
-      id: "05",
-      text: "What is the first-line treatment for acute ischemic stroke?",
-      options: [
-        { value: "A", label: "A. Aspirin" },
-        { value: "B", label: "B. tPA (tissue plasminogen activator)" },
-        { value: "C", label: "C. Heparin" },
-        { value: "D", label: "D. Warfarin" },
-        { value: "E", label: "E. Clopidogrel" },
-      ],
-      correctAnswer: "B",
-      explanation:
-        "Intravenous alteplase (tPA) is the standard for acute ischemic stroke within 3-4.5 hours.",
-    },
-  ],
-};
+// const sampleQuizData = {
+//   title: "Session 1",
+//   description: "5 Question. Medium. Neurology.",
+//   questions: [
+//     {
+//       id: "01",
+//       text: "A 19-year-old female presents ... After the following recommendations should the physician prioritize to minimize mechanical irritation?",
+//       options: [
+//         { value: "A", label: "A. Increase dairy intake" },
+//         { value: "B", label: "B. Use oil-based moisturizers" },
+//         { value: "C", label: "C. Avoid touching the face frequently" },
+//         { value: "D", label: "D. Apply heavy makeup daily" },
+//         { value: "E", label: "E. Engage in prolonged sun exposure" },
+//       ],
+//       correctAnswer: "C",
+//       explanation:
+//         "Mechanical irritation should be minimized by avoiding frequent face touching.",
+//     },
+//     {
+//       id: "02",
+//       text: "A patient with migraine headaches is prescribed a triptan. What is the primary mechanism of action?",
+//       options: [
+//         { value: "A", label: "A. Beta-blocker" },
+//         { value: "B", label: "B. Serotonin receptor agonist" },
+//         { value: "C", label: "C. Calcium channel blocker" },
+//         { value: "D", label: "D. Anticonvulsant" },
+//         { value: "E", label: "E. Opioid agonist" },
+//       ],
+//       correctAnswer: "B",
+//       explanation: "Triptans are serotonin (5-HT1B/1D) receptor agonists.",
+//     },
+//     {
+//       id: "03",
+//       text: "Which of the following is a common symptom of Parkinson's disease?",
+//       options: [
+//         { value: "A", label: "A. Hyperreflexia" },
+//         { value: "B", label: "B. Tremor at rest" },
+//         { value: "C", label: "C. Visual hallucinations" },
+//         { value: "D", label: "D. Seizures" },
+//         { value: "E", label: "E. Ataxia" },
+//       ],
+//       correctAnswer: "B",
+//       explanation: "Resting tremor is a hallmark sign of Parkinson's.",
+//     },
+//     {
+//       id: "04",
+//       text: "A 45-year-old man presents with sudden onset of severe headache. CT scan shows subarachnoid hemorrhage. What is the most likely cause?",
+//       options: [
+//         { value: "A", label: "A. Hypertension" },
+//         { value: "B", label: "B. Ruptured aneurysm" },
+//         { value: "C", label: "C. Trauma" },
+//         { value: "D", label: "D. Arteriovenous malformation" },
+//         { value: "E", label: "E. Coagulopathy" },
+//       ],
+//       correctAnswer: "B",
+//       explanation:
+//         "Ruptured saccular (berry) aneurysm is the most common cause of non-traumatic SAH.",
+//     },
+//     {
+//       id: "05",
+//       text: "What is the first-line treatment for acute ischemic stroke?",
+//       options: [
+//         { value: "A", label: "A. Aspirin" },
+//         { value: "B", label: "B. tPA (tissue plasminogen activator)" },
+//         { value: "C", label: "C. Heparin" },
+//         { value: "D", label: "D. Warfarin" },
+//         { value: "E", label: "E. Clopidogrel" },
+//       ],
+//       correctAnswer: "B",
+//       explanation:
+//         "Intravenous alteplase (tPA) is the standard for acute ischemic stroke within 3-4.5 hours.",
+//     },
+//   ],
+// };
 
 const Quiz = () => {
   const { id } = useParams();
@@ -132,7 +132,7 @@ const Quiz = () => {
   };
 
   const normalizedFetchedQuiz = normalizeQuizData(fetchedQuiz);
-  const quizData = normalizedFetchedQuiz || reduxQuiz || sampleQuizData;
+  const quizData = normalizedFetchedQuiz || reduxQuiz; //|| sampleQuizData;
 
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -214,6 +214,7 @@ const Quiz = () => {
   // Submit answers
   const handleSubmit = () => {
     const totalQuestions = questions.length;
+    const answeredCount = Object.keys(answers).length;
     let correctCount = 0;
 
     questions.forEach((q: any, index: number) => {
@@ -239,9 +240,10 @@ const Quiz = () => {
       state: {
         activeTab: "myQuiz",
         quizId: id || "generated",
-        progress: (Object.keys(answers).length / totalQuestions) * 100,
+        progress: (answeredCount / totalQuestions) * 100,
+        answeredCount,
         correctCount,
-        incorrectCount: totalQuestions - correctCount,
+        incorrectCount: answeredCount - correctCount,
         totalQuestions,
         timeSpent: formatTime(timeElapsed),
         rawTimeSpent: timeElapsed,

@@ -239,7 +239,7 @@ export function FlashCardGeneratorDialog({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="hybrid">Hybrid</SelectItem>
-                <SelectItem value="human">Human</SelectItem>
+                <SelectItem value="ai_generated">AI Generated</SelectItem>
               </SelectContent>
             </Select>
           </div>
