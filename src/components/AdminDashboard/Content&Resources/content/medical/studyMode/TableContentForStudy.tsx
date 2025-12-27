@@ -1,5 +1,6 @@
 import preview from "@/assets/dashboard/tablePreview.svg";
 import CommonHeader from "@/common/header/CommonHeader";
+import { countLeafNodes, sortByTitleAZ } from "@/help/help";
 import { useGetStudyModeTreeQuery } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import { useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
@@ -42,39 +43,57 @@ interface Subject {
 }
 
 const mapBackendToTOC = (data: Subject[]): TOCItem[] => {
-  return data.map((subject) => ({
-    _id: subject._id,
-    title: subject.subjectName,
-    count: subject.systems.reduce(
-      (acc, sys) =>
-        acc +
-        sys.topics.reduce(
-          (tAcc, topic) =>
-            tAcc + (topic.subTopics ? topic.subTopics.length : 0),
-          0
-        ),
-      0
-    ),
-    children: subject.systems.map((sys) => ({
-      _id: sys._id,
-      title: sys.name,
-      count: sys.topics.reduce(
-        (tAcc, topic) => tAcc + (topic.subTopics ? topic.subTopics.length : 0),
-        0
-      ),
-      children: sys.topics.map((topic) => ({
-        _id: topic._id,
-        title: topic.topicName,
-        count: topic.subTopics ? topic.subTopics.length : 0,
-        children: topic.subTopics
-          ? topic.subTopics.map((sub) => ({
-              _id: typeof sub === "object" ? sub._id : undefined,
-              title: typeof sub === "string" ? sub : sub.subtopicName || "",
+  return sortByTitleAZ(
+    data.map((subject) => ({
+      _id: subject._id,
+      title: subject.subjectName,
+      count: countLeafNodes(subject),
+
+      // count: subject.systems.reduce(
+      //   (acc, sys) =>
+      //     acc +
+      //     sys.topics.reduce(
+      //       (tAcc, topic) =>
+      //         tAcc + (topic.subTopics ? topic.subTopics.length : 0),
+      //       0
+      //     ),
+      //   0
+      // ),
+
+      children: sortByTitleAZ(
+        subject.systems.map((sys) => ({
+          _id: sys._id,
+          title: sys.name,
+
+          // count: sys.topics.reduce(
+          //   (tAcc, topic) =>
+          //     tAcc + (topic.subTopics ? topic.subTopics.length : 0),
+          //   0
+          // ),
+          count: countLeafNodes(sys),
+
+          children: sortByTitleAZ(
+            sys.topics.map((topic) => ({
+              _id: topic._id,
+              title: topic.topicName,
+
+              count: countLeafNodes(topic),
+
+              children: topic.subTopics
+                ? sortByTitleAZ(
+                    topic.subTopics.map((sub) => ({
+                      _id: typeof sub === "object" ? sub._id : undefined,
+                      title:
+                        typeof sub === "string" ? sub : sub.subtopicName || "",
+                    }))
+                  )
+                : undefined,
             }))
-          : undefined,
-      })),
-    })),
-  }));
+          ),
+        }))
+      ),
+    }))
+  );
 };
 
 interface TableContentProps {
@@ -82,6 +101,7 @@ interface TableContentProps {
   setSelectedNode: React.Dispatch<React.SetStateAction<SelectedNode>>;
   initialContent: TOCItem | null;
   setInitialContent: React.Dispatch<React.SetStateAction<TOCItem | null>>;
+  selectedNode: SelectedNode;
 }
 
 const TableContentForStudy: React.FC<TableContentProps> = ({
@@ -89,12 +109,13 @@ const TableContentForStudy: React.FC<TableContentProps> = ({
   setSelectedNode,
   initialContent,
   setInitialContent,
+  selectedNode,
 }) => {
-  const { studentType } = useAppSelector(
+  const { profileType, contentFor } = useAppSelector(
     (state: RootState) => state.staticContent
   );
   const { data: allStudyModeData } = useGetStudyModeTreeQuery(
-    { studentType },
+    { profileType, contentFor },
     { refetchOnMountOrArgChange: true }
   );
 
@@ -108,8 +129,8 @@ const TableContentForStudy: React.FC<TableContentProps> = ({
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <img src={preview} className="w-5 h-5" alt="alt" />
-          <CommonHeader className="text-[#0A0A0A] !font-arial">
-            Table of Contents
+          <CommonHeader className="text-[#0A0A0A] font-arial!">
+            Subject for {profileType}
           </CommonHeader>
         </div>
         <button
@@ -128,6 +149,7 @@ const TableContentForStudy: React.FC<TableContentProps> = ({
             depth={0}
             onSelect={setSelectedNode}
             parentNames={{}}
+            selectedNode={selectedNode}
             initialContent={initialContent}
             setInitialContent={setInitialContent}
             openModal={openModal}

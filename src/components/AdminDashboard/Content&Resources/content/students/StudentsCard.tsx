@@ -1,106 +1,99 @@
+import Spinner from "@/common/button/Spinner";
+import Pagination from "@/common/custom/Pagination";
 import CommonSpace from "@/common/space/CommonSpace";
 import StudentTypeCard from "@/components/AdminDashboard/Content&Resources/content/StudentTypeCard";
 import DashboardTopSection from "@/components/AdminDashboard/reuseable/DashboardTopSection";
-
+import Tabs from "@/components/AdminDashboard/reuseable/Tabs";
+import { useGetStudentTypeApiQuery } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import { useGetProfessionalTypeApiQuery } from "@/store/features/adminDashboard/ContentResources/professionalType/professionalTypeApi";
 import {
-  useCreateStudentTypeApiMutation,
-  useDeleteStudentTypeApiMutation,
-  useGetStudentTypeApiQuery,
-  useUpdateStudentTypeApiMutation,
-} from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+  ContentFor,
+  setContentFor,
+} from "@/store/features/adminDashboard/staticContent/staticContentSlice";
+import { useAppSelector } from "@/store/hook";
+import { RootState } from "@/store/store";
 import { useState } from "react";
-import StudentTypeModal from "./StudentTypeModal";
+import { useDispatch } from "react-redux";
 
 const StudentsCard = () => {
-  const { data: studentTypeData } = useGetStudentTypeApiQuery();
+  const { contentFor } = useAppSelector(
+    (state: RootState) => state.staticContent
+  );
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 9;
+  const { data: studentTypeData, isLoading: loadingForStudent } =
+    useGetStudentTypeApiQuery({
+      page: currentPage,
+      limit,
+    });
+  const { data: professionalTypeData, isLoading: loadingForProfession } =
+    useGetProfessionalTypeApiQuery({
+      page: currentPage,
+      limit,
+    });
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [studentType, setStudentType] = useState<{
-    typeName: string;
-    _id?: string;
-  } | null>(null);
+  const isLoading =
+    contentFor === "student" ? loadingForStudent : loadingForProfession;
 
-  const [createStudentTypeApi, { isLoading: isCreating }] =
-    useCreateStudentTypeApiMutation();
-  const [updateStudentTypeApi, { isLoading: isUpdating }] =
-    useUpdateStudentTypeApiMutation();
-  const [deleteStudentTypeApi] = useDeleteStudentTypeApiMutation();
+  const dataToRender =
+    contentFor === "student"
+      ? studentTypeData?.data
+      : professionalTypeData?.data;
 
-  // Open modal for editing
-  const handleEdit = (data: { typeName: string; _id: string }) => {
-    setStudentType(data);
-    setIsModalOpen(true);
-  };
+  const totalPage =
+    contentFor === "student"
+      ? studentTypeData?.meta?.totalPages
+      : professionalTypeData?.meta?.totalPages;
 
-  // Open modal for creating
-  const handleCreate = () => {
-    setStudentType(null);
-    setIsModalOpen(true);
-  };
+  const dispatch = useDispatch();
+  const tabs = [
+    { label: "Student", value: "student" },
+    { label: "Professional", value: "professional" },
+  ];
 
-  // Create or Update submit
-  const handleSubmit = async (data: { typeName: string }) => {
-    const { typeName } = data;
-    try {
-      if (studentType?._id) {
-        await updateStudentTypeApi({ _id: studentType._id, typeName }).unwrap();
-      } else {
-        await createStudentTypeApi({ typeName }).unwrap();
-      }
+  // pagination
 
-      setIsModalOpen(false);
-    } catch (err) {
-      console.error("Error creating/updating student type:", err);
-    }
-  };
-
-  // loading
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-
-  const handleDelete = async (_id: string) => {
-    try {
-      setDeletingId(_id);
-      await deleteStudentTypeApi(_id).unwrap();
-      setDeletingId(null);
-    } catch (err) {
-      console.error("Error deleting student type:", err);
-      setDeletingId(null);
-    }
+  const handleContentFor = (value: ContentFor) => {
+    dispatch(setContentFor(value as ContentFor));
+    setCurrentPage(1);
   };
 
   return (
     <div>
-      <DashboardTopSection
-        title="Content Management"
-        description="Manage mentors and their mentees."
-        buttonText="Add Student Type"
-        action={handleCreate}
-      />
-
-      {/* Student cards */}
-      <CommonSpace>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {studentTypeData?.data?.map((student, i) => (
-            <StudentTypeCard
-              key={student._id}
-              index={i}
-              data={student}
-              handleEdit={() => handleEdit(student)}
-              handleDelete={() => handleDelete(student._id)}
-              isDeleting={deletingId === student._id}
-            />
-          ))}
-        </div>
-      </CommonSpace>
-
-      {isModalOpen && (
-        <StudentTypeModal
-          open={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          initialData={studentType ?? undefined}
-          onSubmit={handleSubmit}
-          isLoading={isCreating || isUpdating}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:gap-10">
+        <DashboardTopSection
+          title="Content Management"
+          description="Manage students and professionals."
         />
+
+        <Tabs
+          tabs={tabs}
+          active={contentFor}
+          onChange={(value) => handleContentFor(value as ContentFor)}
+        />
+      </div>
+      {isLoading ? (
+        <Spinner />
+      ) : dataToRender?.length === 0 ? (
+        <h1>No Data Found</h1>
+      ) : (
+        <CommonSpace>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {dataToRender?.map((student, i) => (
+              <StudentTypeCard key={student._id} index={i} data={student} />
+            ))}
+          </div>
+        </CommonSpace>
+      )}
+
+      {dataToRender && dataToRender.length > 0 && (
+        <div className="mb-10">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPage ?? 1}
+            onPageChange={(p) => setCurrentPage(p)}
+          />
+        </div>
       )}
     </div>
   );

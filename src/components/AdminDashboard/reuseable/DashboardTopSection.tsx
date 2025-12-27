@@ -22,7 +22,7 @@ const DashboardTopSection = ({
 }: ManagementHeaderProps) => {
   return (
     <div
-      className={`flex flex-col md:flex-row items-start md:items-end justify-between gap-6  ${className} `}
+      className={`flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6  ${className} `}
     >
       <div className="space-y-2 ">
         {title && <MediumHeader>{title}</MediumHeader>}
@@ -38,7 +38,7 @@ const DashboardTopSection = ({
         {buttonText && (
           <ButtonWithIcon
             icon={FaPlus}
-            className="w-full md:w-auto flex justify-center  flex-shrink-0 "
+            className="w-full lg:w-auto flex justify-center  shrink-0 "
           >
             <p onClick={action}>{buttonText}</p>
           </ButtonWithIcon>

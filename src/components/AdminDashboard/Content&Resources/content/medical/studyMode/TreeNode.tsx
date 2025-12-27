@@ -19,6 +19,7 @@ interface TreeNodeProps {
   initialContent: TOCItem | null;
   setInitialContent: React.Dispatch<React.SetStateAction<TOCItem | null>>;
   openModal: () => void;
+  selectedNode: SelectedNode;
 }
 const TreeNode: React.FC<TreeNodeProps> = ({
   item,
@@ -28,14 +29,41 @@ const TreeNode: React.FC<TreeNodeProps> = ({
   initialContent,
   setInitialContent,
   openModal,
+  selectedNode,
 }) => {
   const [open, setOpen] = useState(false);
 
   const hasChildren = item.children && item.children.length > 0;
 
+  const isActive = (() => {
+    if (!selectedNode) return false;
+    switch (depth) {
+      case 0:
+        return (
+          selectedNode.subject === item.title &&
+          !selectedNode.system &&
+          !selectedNode.topic &&
+          !selectedNode.subtopic
+        );
+      case 1:
+        return (
+          selectedNode.system === item.title &&
+          !selectedNode.topic &&
+          !selectedNode.subtopic
+        );
+      case 2:
+        return selectedNode.topic === item.title && !selectedNode.subtopic;
+      case 3:
+        return selectedNode.subtopic === item.title;
+      default:
+        return false;
+    }
+  })();
+
   const handleClick = () => {
     setOpen(!open);
     // Update selected node
+
     if (depth === 0)
       onSelect({ subject: item.title, system: "", topic: "", subtopic: "" });
     if (depth === 1)
@@ -78,12 +106,14 @@ const TreeNode: React.FC<TreeNodeProps> = ({
     }
   };
 
+  const displayCount = item.count ?? item.children?.length;
+
   return (
     <div className="ml-[2px] font-arial ">
       <div
-        className={`flex items-center justify-between py-1.5 cursor-pointer rounded-md hover:bg-gray-50  ${
-          depth > 0 ? "ml-4" : ""
-        }`}
+        className={`flex items-center justify-between py-1.5 cursor-pointer rounded-md ${
+          isActive ? "bg-gray-200" : ""
+        } ${depth > 0 ? "ml-4" : ""}`}
         onClick={handleClick}
       >
         <div className="flex items-center gap-1.5 cursor-pointer">
@@ -116,9 +146,9 @@ const TreeNode: React.FC<TreeNodeProps> = ({
         </div>
 
         <div className="flex items-center gap-2">
-          {item.count !== undefined && (
+          {displayCount !== undefined && (
             <span className="text-xs bg-gray-100 text-gray-600 rounded-md px-2 py-[1px]">
-              {item.count}
+              {displayCount}
             </span>
           )}
 
@@ -140,6 +170,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
               item={child}
               depth={depth + 1}
               onSelect={onSelect}
+              selectedNode={selectedNode}
               parentNames={{
                 subject: depth === 0 ? item.title : parentNames.subject || "",
                 system: depth === 1 ? item.title : parentNames.system,

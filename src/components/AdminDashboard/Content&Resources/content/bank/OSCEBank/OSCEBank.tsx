@@ -38,7 +38,7 @@ const OSCEBank: React.FC<Props> = ({ mcqBank, bankId, setBankId }) => {
   return (
     <div>
       {bankId === "" ? (
-        <div className="grid grid-cols-1 gap-6 p-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 p-4  2xl:grid-cols-3">
           {osceBank.map((content) => (
             <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
               {/* Header */}

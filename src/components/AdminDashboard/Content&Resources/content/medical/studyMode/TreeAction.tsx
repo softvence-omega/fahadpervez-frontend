@@ -38,8 +38,8 @@ const TreeAction: React.FC<TreeActionProps> = ({
                   Delete
                 </button>
               }
-              title="Confirm Delete"
-              description="This action cannot be undone."
+              title="Are you sure you want to delete this subject tree? "
+              description="This action cannot be undone, and all associated data will be permanently lost."
             />
           ),
         },

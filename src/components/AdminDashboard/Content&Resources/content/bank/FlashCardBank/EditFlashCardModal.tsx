@@ -10,7 +10,7 @@ export const editFlashCardSchema = z.object({
     ["Basic", "Intermediate", "Advance"],
     "Difficulty is required"
   ),
-  image: z.string().min(1, "Image is required"),
+  image: z.string().optional(),
 });
 
 const difficultyLevels = [

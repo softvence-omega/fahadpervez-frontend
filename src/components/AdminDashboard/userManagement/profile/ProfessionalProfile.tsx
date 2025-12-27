@@ -1,32 +1,48 @@
+import image from "@/assets/home/mentor1.png";
+import Spinner from "@/common/button/Spinner";
 import { originalTitle } from "@/help/help";
+import { useGetSingleProfessionalQuery } from "@/store/features/adminDashboard/UserManagement/professionalUserApi";
 import { useParams } from "react-router-dom";
 import UserProfile from "./UserProfile";
-import image from "@/assets/home/mentor1.png";
-import { professionalData } from "../professional/data";
 const ProfessionalProfile = () => {
-  const { name } = useParams();
-  const { id } = useParams();
-  const professionalId = parseInt(id ?? "", 10);
+  const { id } = useParams<{ id: string }>();
+  const { data: professional, isLoading } = useGetSingleProfessionalQuery(
+    id ?? "",
+    {
+      skip: !id,
+    }
+  );
 
-  const professional = professionalData.find((p) => p.id === professionalId);
-
-  if (!professional) {
-    return <div>Professional not found</div>;
-  }
+  const profile = professional?.data;
 
   return (
     <div>
-      <UserProfile
-        fullName={originalTitle(name as string) ?? "John Doe"}
-        email="sarah.johnson@email.com"
-        phone="+1 (555) 123-4567"
-        country={professional.country}
-        bio="I'm a homeowner who loves working with skilled professionals to improve my property. I value quality work and clear communication."
-        profileImage={image}
-        yearOfStudy={professional.graduateYear}
-        profession="Medical Student"
-        backLink="/admin/professional"
-      />
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        profile && (
+          <UserProfile
+            fullName={
+              originalTitle(
+                profile?.profile_id.firstName +
+                  " " +
+                  profile?.profile_id.lastName
+              ) ?? "John Doe"
+            }
+            email={profile?.email ?? "sarah.johnson@email.com"}
+            phone="+1 (555) 123-4567"
+            country={profile?.profile_id.country ?? "Not provided"}
+            bio={`${profile.profile_id.post_graduate} ,  ${profile.profile_id.institution}`}
+            university={profile?.profile_id.institution ?? "Not provided"}
+            preparingFor={profile?.profile_id.professionName ?? "Not provided"}
+            profileImage={image}
+            yearOfStudy={profile?.role}
+            profession={profile.role}
+            backLink="/admin/professional"
+            role={profile.role}
+          />
+        )
+      )}
     </div>
   );
 };

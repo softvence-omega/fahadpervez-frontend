@@ -3,14 +3,24 @@ import { baseAPI } from "@/store/api/baseApi";
 import {
   GetStudentsParams,
   GetStudentsResponse,
-  StudentItem,
+  SingleStudentResponse,
 } from "./type/student/Students";
+import {
+  ActivityStatsResponse,
+  DashboardResponse,
+} from "./type/student/overview";
 
 export const studentsManagementApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
-    getDashboardData: build.query<any, void>({
+    getDashboardData: build.query<DashboardResponse, void>({
       query: () => ({
         url: "/admin/overview",
+        method: "GET",
+      }),
+    }),
+    getDashboardActivity: build.query<ActivityStatsResponse, void>({
+      query: () => ({
+        url: "/admin/monthly-activities",
         method: "GET",
       }),
     }),
@@ -24,16 +34,12 @@ export const studentsManagementApi = baseAPI.injectEndpoints({
       providesTags: ["Student"],
     }),
 
-    getSingleStudents: build.query<StudentItem, string>({
+    getSingleStudents: build.query<SingleStudentResponse, string>({
       query: (id) => ({
         url: `/admin/student/${id}`,
         method: "GET",
       }),
-      transformResponse: (response: {
-        success: boolean;
-        message: string;
-        data: StudentItem;
-      }) => response.data,
+
       providesTags: ["Student"],
     }),
 
@@ -55,4 +61,5 @@ export const {
   useGetStudentsDataQuery,
   useGetSingleStudentsQuery,
   useDeleteSingleStudentMutation,
+  useGetDashboardActivityQuery,
 } = studentsManagementApi;

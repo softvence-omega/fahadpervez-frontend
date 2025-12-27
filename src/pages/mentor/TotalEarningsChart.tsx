@@ -1,12 +1,11 @@
 // TotalEarningsChart.tsx
 import {
+  CartesianGrid,
   Line,
   LineChart,
   ResponsiveContainer,
   XAxis,
   YAxis,
-  // Tooltip,
-  CartesianGrid,
 } from "recharts";
 
 export default function TotalEarningsChart() {

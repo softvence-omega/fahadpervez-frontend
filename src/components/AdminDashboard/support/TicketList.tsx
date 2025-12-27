@@ -7,19 +7,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatDate } from "@/help/help";
 import { useDeleteReportForAdminMutation } from "@/store/features/adminDashboard/support/support";
 import { ReportItem } from "@/store/features/adminDashboard/support/types/support";
 import { LuEye } from "react-icons/lu";
 import { RiDeleteBinLine } from "react-icons/ri";
 
 const tableHeaders = [
-  { label: "Ticket #", align: "text-center" },
+  { label: "Ticket #", align: "text-center lg:table-cell hidden" },
   { label: "Subject", align: "text-center" },
-  { label: "User", align: "text-center" },
-  { label: "Type", align: "text-center sm:table-cell hidden" },
-  { label: "Status", align: "text-center sm:table-cell hidden" },
-  { label: "Created", align: "text-center sm:table-cell hidden" },
+  { label: "User", align: "text-center xl:table-cell hidden" },
+  { label: "Status", align: "text-center lg:table-cell hidden" },
   { label: "Action", align: "text-center" },
 ];
 
@@ -86,7 +83,7 @@ const TicketList: React.FC<TicketListProps> = ({
           >
             <TableCell
               onClick={() => handleSelectTicket(ticket)}
-              className={tableDesign.cell}
+              className={` hidden lg:table-cell  ${tableDesign.cell}`}
             >
               #{i + 1}
             </TableCell>
@@ -95,26 +92,18 @@ const TicketList: React.FC<TicketListProps> = ({
               {ticket.report.text}
             </TableCell>
 
-            <TableCell className={tableDesign.cell}>{ticket.name}</TableCell>
-
-            <TableCell
-              className={`sm:table-cell hidden ${tableDesign.cell} capitalize`}
-            >
+            <TableCell className={`xl:table-cell hidden ${tableDesign.cell}`}>
               {ticket.name}
             </TableCell>
 
-            <TableCell className={`sm:table-cell hidden ${tableDesign.cell}`}>
+            <TableCell className={`lg:table-cell hidden ${tableDesign.cell}`}>
               <span
-                className={`px-2 py-1 rounded-md text-xs font-medium ${getStatusBadgeClass(
+                className={`px-2 py-1 rounded-md text-xs font-medium  ${getStatusBadgeClass(
                   ticket.status
                 )}`}
               >
                 {ticket.status}
               </span>
-            </TableCell>
-
-            <TableCell className={`sm:table-cell hidden ${tableDesign.cell}`}>
-              {formatDate(ticket.createdAt)}
             </TableCell>
 
             <TableCell className={tableDesign.cell}>

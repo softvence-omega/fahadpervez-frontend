@@ -1,6 +1,8 @@
 import CommonSpace from "@/common/space/CommonSpace";
 import DashboardTopSection from "@/components/AdminDashboard/reuseable/DashboardTopSection";
 import ToggleButtonGroup from "@/components/AdminDashboard/reuseable/ToggleButtonGroup";
+import { useAppSelector } from "@/store/hook";
+import { RootState } from "@/store/store";
 import { useState } from "react";
 import StepIndicator from "../medical/StepIndicator";
 import { steps } from "../medical/createContent/CreateContent";
@@ -8,24 +10,28 @@ import BulkUploadFlashCard from "./BulkUploadFlashCard";
 import ManualFlashUpload from "./ManualFlashUpload";
 
 interface CreateMCQStudyProps {
-  breadcrumb: string;
+  breadcrumb?: string;
 }
 
 const activeStep = 2;
 const FlashCardUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
   const [mode, setMode] = useState<"manual" | "bulk">("manual");
+  const { uploadIntoBank } = useAppSelector(
+    (state: RootState) => state.staticContent
+  );
   return (
     <div>
-      <DashboardTopSection
-        title="Add Flashcard Content"
-        description={breadcrumb}
-        descriptionClassName="!text-[#717182]"
-      />
+      {!uploadIntoBank && (
+        <DashboardTopSection
+          title="Add Flashcard Content"
+          description={breadcrumb}
+          descriptionClassName="!text-[#717182]"
+        />
+      )}
 
       <CommonSpace>
         <StepIndicator steps={steps} activeStep={activeStep} />
       </CommonSpace>
-
       <div>
         <div className="py-10">
           <ToggleButtonGroup

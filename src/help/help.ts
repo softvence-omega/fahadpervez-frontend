@@ -1,3 +1,8 @@
+import {
+  System,
+  Topic,
+} from "@/store/features/adminDashboard/ContentResources/MCQ/types/TreeResponse";
+
 export const formatDate = (isoDate: string): string => {
   if (!isoDate) return "";
   const dateObj = new Date(isoDate);
@@ -85,3 +90,30 @@ export const createOptions = (items: string[]) =>
     label: item,
     value: item,
   }));
+
+export const sortByTitleAZ = <T extends { title: string }>(arr: T[]) =>
+  [...arr].sort((a, b) => a.title.localeCompare(b.title));
+
+// Count leaf nodes (subtopics or topics without subtopics)
+export const countLeafNodes = (node: any): number => {
+  // For Subject
+  if (node.systems) {
+    return node.systems.reduce(
+      (acc: number, sys: System) => acc + countLeafNodes(sys),
+      0
+    );
+  }
+  // For System
+  if (node.topics) {
+    return node.topics.reduce(
+      (acc: number, topic: Topic) => acc + countLeafNodes(topic),
+      0
+    );
+  }
+  // For Topic
+  if (node.subTopics) {
+    return node.subTopics.length > 0 ? node.subTopics.length : 1;
+  }
+  // For SubTopic or leaf node
+  return 1;
+};

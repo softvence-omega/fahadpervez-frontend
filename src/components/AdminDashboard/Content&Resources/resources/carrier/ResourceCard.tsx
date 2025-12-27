@@ -1,8 +1,9 @@
 import AlertDialogBox from "@/common/custom/AlertDialogBox";
 import { useDeleteResourceCarrierMutation } from "@/store/features/adminDashboard/ContentResources/resourceCariier/resourceCarrierApi";
 import { CareerResource } from "@/store/features/adminDashboard/ContentResources/resourceCariier/types/resorce";
-import { DownloadIcon, FileText, StarIcon, Trash2Icon } from "lucide-react";
-import React from "react";
+import { FileText, StarIcon, Trash2Icon } from "lucide-react";
+import React, { useState } from "react";
+import PdfPreview from "./PdfPreview";
 
 interface Props {
   data: CareerResource[];
@@ -11,6 +12,8 @@ interface Props {
 
 const ResourceCard: React.FC<Props> = ({ data, handleViewAll }) => {
   const [deleteResource, { isLoading }] = useDeleteResourceCarrierMutation();
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
   const handleDelete = async (id: string) => {
     await deleteResource(id);
   };
@@ -28,7 +31,7 @@ const ResourceCard: React.FC<Props> = ({ data, handleViewAll }) => {
       </div>
 
       {/* Resource Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 ">
         {data.map((resource) => (
           <div
             key={resource._id}
@@ -67,17 +70,23 @@ const ResourceCard: React.FC<Props> = ({ data, handleViewAll }) => {
               ))}
             </div>
 
-            <div className="flex items-center text-sm text-gray-500 gap-2">
+            {/* <div className="flex items-center text-sm text-gray-500 gap-2">
               <DownloadIcon className="w-4 h-4 text-gray-400" />
               <span>0 downloads</span>
-            </div>
+            </div> */}
 
             <div className="flex items-center gap-2 mt-2">
               <button
+                onClick={() => setPreviewUrl(resource.mediaLink)}
                 className={`flex-1 py-2.5 rounded-md text-sm font-medium transition-colors cursor-pointer bg-blue-600 hover:bg-blue-700 text-white`}
               >
-                Publish Resource
+                Preview Resource
               </button>
+
+              <PdfPreview
+                previewUrl={previewUrl}
+                setPreviewUrl={setPreviewUrl}
+              />
 
               <AlertDialogBox
                 action={() => handleDelete(resource._id)}

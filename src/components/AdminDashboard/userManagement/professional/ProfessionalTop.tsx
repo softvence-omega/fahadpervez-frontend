@@ -4,8 +4,8 @@ const ProfessionalTop = () => {
   return (
     <div>
       <DashboardTopSection
-        title="User Management"
-        description="Manage student and mentor profiles, track activity, and handle mentor-mentee matching."
+        title="Professional Management"
+        description="Manage Professional profiles, track activity, and handle mentor-mentee matching."
       />
     </div>
   );
