@@ -151,7 +151,7 @@ export default function ChatMessages({
   };
 
   return (
-    <ul className="space-y-6 px-4 py-4">
+    <ul className="space-y-6 px-2 py-4">
       {messages.map((msg, index) => (
         <li
           key={index}
@@ -161,7 +161,7 @@ export default function ChatMessages({
           }`}
         >
           <div
-            className={`relative p-6 rounded-xl shadow-md ${
+            className={`relative p-4 rounded-xl shadow-md ${
               msg.role === "ai"
                 ? "bg-white max-w-3xl"
                 : "bg-[#007BFF1F] text-[#0F151A] max-w-md"

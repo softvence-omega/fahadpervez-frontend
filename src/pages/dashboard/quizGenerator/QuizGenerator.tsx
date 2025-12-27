@@ -4,7 +4,7 @@ import FilePreviewList from "@/components/reusable/FilePreview";
 import FileUploader from "@/components/reusable/FileUploader";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { Progress } from "@/components/ui/progress";
-import { Atom, Crown, Upload } from "lucide-react";
+import { ArrowLeft, Atom, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GenerateMcqWithFileModal } from "./GenerateMcqWithFileModal";
 import { toast } from "sonner";
@@ -32,15 +32,20 @@ const QuizGenerator = () => {
   return (
     <div>
       <div className="flex justify-between items-center">
-        <DashboardHeading
-          title="AI Quiz Generator"
-          titleSize="text-xl"
-          titleColor="text-[#0A0A0A]"
-          description="Create custom quizzes from your images and videos using AI"
-          descColor="text-[#4A5565]"
-          descFont="text-sm"
-          className="mt-12 mb-8"
-        />
+        <div className="flex items-center gap-1">
+          <Link to={"/dashboard/quiz-page"} className=" sm:mb-0">
+            <ArrowLeft className="mb-1" />
+          </Link>
+          <DashboardHeading
+            title="AI Quiz Generator"
+            titleSize="text-xl"
+            titleColor="text-[#0A0A0A]"
+            description="Create custom quizzes from your images and videos using AI"
+            descColor="text-[#4A5565]"
+            descFont="text-sm"
+            className="mt-12 mb-8"
+          />
+        </div>
         <Link to={"/dashboard/quiz-page"}>
           <PrimaryButton
             bgType="solid"
@@ -56,9 +61,6 @@ const QuizGenerator = () => {
       <div className="bg-white py-5 px-7 mb-12">
         <div className="flex justify-between mb-6">
           <h3 className="text-sm text-[#0A0A0A]">Monthly Usage</h3>
-          <button className="flex items-center gap-2  cursor-pointer">
-            <Crown /> Free Plan
-          </button>
         </div>
         <div>
           <div className="flex justify-between items-center mb-3">

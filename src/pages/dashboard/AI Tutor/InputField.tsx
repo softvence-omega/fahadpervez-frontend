@@ -16,14 +16,14 @@ export default function InputField({ value, onChange, onSend, disabled = false }
     };
 
     return (
-        <div className="flex items-center space-x-2 pt-1 border-gray-200 bgwhite">
+        <div className="flex items-center space-x-2 border-gray-200 bgwhite">
             <Input
                 type="text"
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Type your message..."
-                className="flex-1 h-20"
+                className="flex-1 h-11 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 disabled={disabled}
             />
             <Button onClick={onSend} className="bg-blue-500 hover:bg-blue-600 text-white cursor-pointer" disabled={disabled}>Send</Button>

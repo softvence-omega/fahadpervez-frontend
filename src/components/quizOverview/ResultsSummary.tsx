@@ -10,13 +10,13 @@ interface ResultsSummaryProps {
 }
 
 const ResultsSummary: React.FC<ResultsSummaryProps> = ({
-  completed,
-  total,
-  correct,
-  incorrect,
+  completed = 0,
+  total = 0,
+  correct = 0,
+  incorrect = 0,
   quizId = "3",
 }) => {
-  const correctPercentage = Math.round((correct / total) * 100);
+  const correctPercentage = total > 0 ? Math.round((correct / total) * 100) : 0;
 
   return (
     <div className="text-center mt-4">

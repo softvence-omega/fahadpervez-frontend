@@ -4,7 +4,7 @@ import FilePreviewList from "@/components/reusable/FilePreview";
 import FileUploader from "@/components/reusable/FileUploader";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { Progress } from "@/components/ui/progress";
-import { Atom, Crown, Upload } from "lucide-react";
+import { Atom, Upload } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { FlashCardGeneratorDialog } from "./FlashCardGeneratorDialog";
 import { useGenerateAiFlashCardMutation } from "@/store/features/flashCard/flashCard.api";
@@ -104,7 +104,7 @@ const FlashCardGenerator = () => {
           descFont="text-sm"
           className="mt-12 mb-8"
         />
-        <Link to={"/dashboard/flashcard-collection"}>
+        <Link to={"/dashboard/flashcard-page"}>
           <PrimaryButton
             bgType="solid"
             iconPosition="left"
@@ -119,9 +119,6 @@ const FlashCardGenerator = () => {
       <div className="bg-white py-5 px-7 mb-12">
         <div className="flex justify-between mb-6">
           <h3 className="text-sm text-[#0A0A0A]">Monthly Usage</h3>
-          <button className="flex items-center gap-2  cursor-pointer border border-slate-300 rounded-[6px] p-2">
-            <Crown /> Free Plan
-          </button>
         </div>
         <div>
           <div className="flex justify-between items-center mb-3">

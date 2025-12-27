@@ -60,9 +60,9 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
   const [examName, setExamName] = useState("");
   const [questionBank, setQuestionBank] = useState("");
   const [questionType, setQuestionType] = useState("hybrid");
-  const [difficulty, setDifficulty] = useState("medium");
-  const [questionCount, setQuestionCount] = useState(40);
-  const [duration, setDuration] = useState(40);
+  const [difficulty, setDifficulty] = useState("Intermediate");
+  const [questionCount, setQuestionCount] = useState(5);
+  const [duration, setDuration] = useState(10);
 
   const [subject, setSubject] = useState("");
   const [system, setSystem] = useState("");
@@ -350,8 +350,8 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                     <SelectValue placeholder="Select Type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="hybrid">Hybrid</SelectItem>
-                    <SelectItem value="humanoid">Humanoid</SelectItem>
+                    <SelectItem value="hybrid">HYBRID</SelectItem>
+                    <SelectItem value="ai_generated">AI Generated</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -364,9 +364,9 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                     <SelectValue placeholder="Select Difficulty" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="easy">Easy</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="hard">Hard</SelectItem>
+                    <SelectItem value="Basic">Basic</SelectItem>
+                    <SelectItem value="Intermediate">Intermediate</SelectItem>
+                    <SelectItem value="Advance">Advance</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -378,6 +378,7 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                   type="number"
                   min={1}
                   max={50}
+                  defaultValue={2}
                   value={questionCount}
                   onChange={(e) => setQuestionCount(Number(e.target.value))}
                 />
