@@ -24,6 +24,8 @@ export interface Session {
 export interface Stats {
   completed: string;
   correct: string;
-  timePerQuestion: string;
+  timePerQuestion?: string;
   totalTime: string;
+  incorrect?: string;
+  wrong?: string;
 }
