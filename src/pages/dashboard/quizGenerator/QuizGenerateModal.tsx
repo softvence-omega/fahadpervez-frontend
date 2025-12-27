@@ -114,12 +114,15 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
     if (quizMode === "exam" && examName) {
       const selectedBank = allBanks.find((b: any) => b._id === examName);
       if (selectedBank) {
-        setQuestionCount(selectedBank.totalMcq || 50);
-        setDuration(selectedBank.totalMcq || 60); // Assuming 1 min per question for exam
+        setQuestionCount(selectedBank.totalMcq || 5);
+        setDuration(selectedBank.totalMcq || 10); // Assuming 1 min per question for exam
       }
     } else if (quizMode === "exam") {
       setQuestionCount(50);
       setDuration(60);
+    } else if (quizMode === "study") {
+      setQuestionCount(5);
+      setDuration(10);
     }
   }, [examName, quizMode, allBanks]);
 

@@ -5,7 +5,7 @@ import {
   ResponsiveContainer,
   XAxis,
   YAxis,
-  Tooltip,
+  // Tooltip,
   CartesianGrid,
 } from "recharts";
 
@@ -39,9 +39,9 @@ export default function TotalEarningsChart() {
           <YAxis stroke="#374151" tick={{ fontSize: 12 }} />
 
           {/* Tooltip */}
-          <Tooltip
+          {/* <Tooltip
             formatter={(value: number) => [`$${value.toLocaleString()}`, "Earnings"]}
-          />
+          /> */}
 
           {/* Straight line (solid design) */}
           <Line

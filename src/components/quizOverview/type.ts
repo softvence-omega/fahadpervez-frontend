@@ -10,6 +10,7 @@ export interface SessionDetails {
   correct: number;
   incorrect: number;
   recommendations: Recommendations;
+  rawTimeSpent?: number;
 }
 
 export interface Session {
