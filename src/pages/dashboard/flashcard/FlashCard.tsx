@@ -19,11 +19,12 @@ export default function FlashCard({
         <div className="flex items-center gap-1">
           {/* <BrainCircuit className="text-zinc-950" /> */}
           <h3 className="text-[#0A0A0A]">
-            {flashcard?.title} - {flashcard?.subject}
+            {flashcard?.title} {flashcard?.subject && `- ${flashcard?.subject}`}
           </h3>
         </div>
         <p className="text-sm text-slate-500 mt-2">
-          {flashcard?.totalFlashCards} flashcard • {flashcard?.topic}
+          {flashcard?.totalFlashCards} flashcard{" "}
+          {flashcard?.topic && `• ${flashcard?.topic}`}
         </p>
       </div>
       <button
