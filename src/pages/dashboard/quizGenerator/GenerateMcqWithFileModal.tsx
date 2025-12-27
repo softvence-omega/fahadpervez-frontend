@@ -28,7 +28,7 @@ import { useNavigate } from "react-router-dom";
 // Zod Schema
 // =======================
 const quizSchema = z.object({
-  difficulty: z.enum(["Basic", "Intermediate", "Hard"]),
+  difficulty: z.enum(["Basic", "Intermediate", "Advance"]),
   questionCount: z.coerce
     .number()
     .min(1, "At least 1 question is required")
@@ -74,8 +74,8 @@ export function GenerateMcqWithFileModal({
   useEffect(() => {
     if (open) {
       reset({
-        questionCount: 10,
-        duration: 40,
+        questionCount: 5,
+        duration: 10,
         difficulty: "Basic",
       });
     }
@@ -191,7 +191,7 @@ export function GenerateMcqWithFileModal({
                     <SelectContent className="border border-slate-300">
                       <SelectItem value="Basic">Basic</SelectItem>
                       <SelectItem value="Intermediate">Intermediate</SelectItem>
-                      <SelectItem value="Hard">Hard</SelectItem>
+                      <SelectItem value="Advance">Advance</SelectItem>
                     </SelectContent>
                   </Select>
                 )}

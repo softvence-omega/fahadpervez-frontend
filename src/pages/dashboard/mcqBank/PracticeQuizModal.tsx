@@ -258,12 +258,13 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGenerateMCQMutation } from "@/store/features/MCQBank/MCQBank.api";
 import { toast } from "sonner";
+import { Zap } from "lucide-react";
 
 // =======================
 // Zod Schema
 // =======================
 const quizSchema = z.object({
-  difficulty: z.enum(["basic", "intermediate", "hard"]),
+  difficulty: z.enum(["Basic", "Intermediate", "Advance"]),
   questionType: z.enum(["hybrid", "ai_generated"]),
   questionCount: z.coerce.number().min(1, "At least 1 question is required"),
   duration: z.coerce.number().min(1, "Duration must be at least 1 minute"),
@@ -304,9 +305,9 @@ export function PracticeQuizModal({
   } = useForm({
     resolver: zodResolver(quizSchema),
     defaultValues: {
-      questionCount: 10,
-      duration: 40,
-      difficulty: "basic",
+      questionCount: 5,
+      duration: 10,
+      difficulty: "Basic",
       questionType: "hybrid",
     },
   });
@@ -315,9 +316,9 @@ export function PracticeQuizModal({
   useEffect(() => {
     if (open) {
       reset({
-        questionCount: 10,
-        duration: 40,
-        difficulty: "basic",
+        questionCount: 5,
+        duration: 10,
+        difficulty: "Basic",
         questionType: "hybrid",
       });
     }
@@ -397,9 +398,9 @@ export function PracticeQuizModal({
                     <SelectValue placeholder="Select Difficulty" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="basic">Basic</SelectItem>
-                    <SelectItem value="intermediate">Intermediate</SelectItem>
-                    <SelectItem value="hard">Hard</SelectItem>
+                    <SelectItem value="Basic">Basic</SelectItem>
+                    <SelectItem value="Intermediate">Intermediate</SelectItem>
+                    <SelectItem value="Advance">Advance</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -485,6 +486,11 @@ export function PracticeQuizModal({
               className="bg-violet-700 text-white hover:bg-violet-800"
               disabled={isGenerating}
             >
+              {isGenerating ? (
+                <Zap className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Zap className="mr-2 h-4 w-4" />
+              )}
               {isGenerating ? "Generating..." : "Generate Quiz"}
             </Button>
           </DialogFooter>
