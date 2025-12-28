@@ -3,11 +3,16 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Timer } from "lucide-react";
+import { CheckCircle, Timer, CheckCircle2, XCircle } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { useGetGeneratedMCQQuery } from "@/store/features/MCQBank/MCQBank.api";
+import {
+  useGetGeneratedMCQQuery,
+  useUpdateQuizTrackingMutation,
+} from "@/store/features/MCQBank/MCQBank.api";
+// import { setQuizResults } from "@/store/features/MCQBank/quizSlice";
+// import { useDispatch } from "react-redux";
 import GlobalLoader from "@/common/GlobalLoader";
 
 // Sample JSON data for medical students (Neurology questions)
@@ -93,6 +98,7 @@ const Quiz = () => {
   const queryParams = new URLSearchParams(location.search);
   const isReviewMode = queryParams.get("mode") === "review";
 
+  // const dispatch = useDispatch();
   const { currentQuiz: reduxQuiz } = useSelector(
     (state: RootState) => state.quiz
   );
@@ -138,6 +144,20 @@ const Quiz = () => {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [timeElapsed, setTimeElapsed] = useState<number>(0);
 
+  // Load answers from sessionStorage if in review mode and just submitted
+  useEffect(() => {
+    if (isReviewMode && id && location.state?.justSubmitted) {
+      const savedAnswers = sessionStorage.getItem(`quiz_answers_${id}`);
+      if (savedAnswers) {
+        try {
+          setAnswers(JSON.parse(savedAnswers));
+        } catch (e) {
+          console.error("Failed to parse saved answers", e);
+        }
+      }
+    }
+  }, [isReviewMode, id, location.state]);
+
   // Normalize questions format inside the data
   const rawQuestions = quizData?.questions || [];
   const questions = rawQuestions.map((q: any, index: number) => ({
@@ -153,7 +173,7 @@ const Quiz = () => {
         explanation: opt.explanation || "",
       };
     }),
-    correctAnswer: q.correctAnswer || q.answer || "",
+    correctAnswer: q.correctOption || q.correctAnswer || q.answer || "",
     explanation: q.explanation || "",
   }));
 
@@ -184,10 +204,23 @@ const Quiz = () => {
   // Handle answer selection
   const handleAnswerChange = (value: string) => {
     if (isReviewMode) return;
-    setAnswers((prev) => ({
-      ...prev,
-      [currentQuestion]: value,
-    }));
+
+    setAnswers((prev) => {
+      const newAnswers = {
+        ...prev,
+        [currentQuestion]: value,
+      };
+
+      // Save to sessionStorage
+      if (id) {
+        sessionStorage.setItem(
+          `quiz_answers_${id}`,
+          JSON.stringify(newAnswers)
+        );
+      }
+
+      return newAnswers;
+    });
   };
 
   // Navigation
@@ -204,51 +237,72 @@ const Quiz = () => {
       setCurrentQuestion((prev) => prev + 1);
     } else {
       if (isReviewMode) {
-        navigate("/dashboard/quiz-page", { state: { activeTab: "myQuiz" } });
+        // Clear sessionStorage on finish review
+        if (id) {
+          sessionStorage.removeItem(`quiz_answers_${id}`);
+        }
+        navigate(`/dashboard/quiz-page/${id}`, {
+          state: { activeTab: "myQuiz" },
+        });
       } else {
         handleSubmit();
       }
     }
   };
 
+  const [updateTracking] = useUpdateQuizTrackingMutation();
+
   // Submit answers
-  const handleSubmit = () => {
-    const totalQuestions = questions.length;
-    const answeredCount = Object.keys(answers).length;
+  const handleSubmit = async () => {
+    const totalQuestions = questions?.length || 0;
+    const answeredCount = Object.keys(answers)?.length || 0;
     let correctCount = 0;
 
-    questions.forEach((q: any, index: number) => {
+    questions?.forEach((q: any, index: number) => {
       if (answers[index] === q.correctAnswer) {
         correctCount++;
       }
     });
 
-    const submittedAnswers = {
-      session: quizData.title,
-      answers: Object.entries(answers).map(([index, answer]) => ({
-        questionId: questions[Number(index)].id,
-        selected: answer,
-      })),
+    const trackingData = {
+      totalMcqCount: totalQuestions,
+      totalAttemptCount: answeredCount,
+      correctMcqCount: correctCount,
+      wrongMcqCount: answeredCount - correctCount,
+      timeTaken: formatTime(timeElapsed),
     };
-    console.log(
-      "Submitted Answers:",
-      JSON.stringify(submittedAnswers, null, 2)
-    );
 
-    // Redirect to quiz-page my-quiz tab with actual data
-    navigate("/dashboard/quiz-page", {
-      state: {
-        activeTab: "myQuiz",
-        quizId: id || "generated",
-        progress: (answeredCount / totalQuestions) * 100,
-        answeredCount,
-        correctCount,
-        incorrectCount: answeredCount - correctCount,
-        totalQuestions,
-        timeSpent: formatTime(timeElapsed),
-        rawTimeSpent: timeElapsed,
-      },
-    });
+    try {
+      if (id && id !== "generated") {
+        await updateTracking({ id, data: trackingData }).unwrap();
+      }
+
+      // REDUX PERSISTENCE (COMMENTED OUT AS REQUESTED)
+      /*
+      const results = questions.map((q, index) => ({
+        questionId: q.id,
+        selectedOption: answers[index] || "",
+        isCorrect: answers[index] === q.correctAnswer
+      }));
+      dispatch(setQuizResults(results));
+      */
+
+      // Save final answers to sessionStorage for review
+      if (id) {
+        sessionStorage.setItem(`quiz_answers_${id}`, JSON.stringify(answers));
+      }
+
+      // Redirect to quiz-page analysis tab
+      navigate(`/dashboard/quiz-page/${id || "generated"}`, {
+        state: { activeTab: "myQuiz", justSubmitted: true },
+      });
+    } catch (error) {
+      console.error("Failed to update tracking:", error);
+      // Fallback redirection even if update fails
+      navigate(`/dashboard/quiz-page/${id || "generated"}`, {
+        state: { activeTab: "myQuiz", justSubmitted: true },
+      });
+    }
   };
 
   if (isLoading) return <GlobalLoader />;
@@ -268,7 +322,7 @@ const Quiz = () => {
           {questions.map((q: any, index: number) => (
             <div
               key={q.id}
-              className={`p-2 mb-2 rounded cursor-pointer ${
+              className={`p-2 mb-2 rounded cursor-pointer flex items-center justify-between ${
                 index === currentQuestion
                   ? "bg-blue-100 text-blue-600"
                   : answers[index] || isReviewMode
@@ -288,7 +342,11 @@ const Quiz = () => {
               Question {q.id}
               {isReviewMode && answers[index] && (
                 <span className="ml-2">
-                  {answers[index] === q.correctAnswer ? "✅" : "❌"}
+                  {answers[index] === q.correctAnswer ? (
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                  ) : (
+                    <XCircle className="w-4 h-4 text-red-500" />
+                  )}
                 </span>
               )}
             </div>
@@ -307,10 +365,12 @@ const Quiz = () => {
               variant="secondary"
               onClick={
                 isReviewMode
-                  ? () =>
-                      navigate("/dashboard/quiz-page", {
+                  ? () => {
+                      if (id) sessionStorage.removeItem(`quiz_answers_${id}`);
+                      navigate(`/dashboard/quiz-page/${id}`, {
                         state: { activeTab: "myQuiz" },
-                      })
+                      });
+                    }
                   : handleSubmit
               }
               disabled={!isReviewMode && Object.keys(answers).length === 0}
@@ -334,42 +394,78 @@ const Quiz = () => {
                 {currentQuestionData.options.map((option: any) => {
                   const isCorrect =
                     option.value === currentQuestionData.correctAnswer;
-                  const isSelected = answers[currentQuestion] === option.value;
+                  const isUserSelection =
+                    answers[currentQuestion] === option.value;
                   const showResult = isReviewMode;
 
                   return (
                     <div
                       key={option.value}
-                      className="flex items-center space-x-2 mb-2"
+                      className={`flex justify-between items-center p-3 rounded-lg border mb-3 transition-colors ${
+                        showResult
+                          ? isCorrect
+                            ? "bg-green-50 border-green-200 text-green-800"
+                            : isUserSelection
+                            ? "bg-red-50 border-red-200 text-red-800"
+                            : "bg-white border-gray-100 text-gray-500"
+                          : "bg-white border-gray-200 hover:border-blue-300"
+                      }`}
                     >
-                      <RadioGroupItem value={option.value} id={option.value} />
-                      <Label
-                        htmlFor={option.value}
-                        className={`cursor-pointer ${
-                          showResult
-                            ? isCorrect
-                              ? "text-green-600 font-bold"
-                              : isSelected
-                              ? "text-red-600"
-                              : ""
-                            : ""
-                        }`}
-                      >
-                        {option.label}
-                      </Label>
+                      <div className="flex items-center space-x-3 w-full cursor-pointer">
+                        <RadioGroupItem
+                          value={option.value}
+                          id={option.value}
+                          className={showResult ? "hidden" : ""}
+                        />
+                        <Label
+                          htmlFor={option.value}
+                          className="flex-grow cursor-pointer font-medium"
+                        >
+                          {option.label}
+                        </Label>
+                      </div>
+                      {showResult && (
+                        <div>
+                          {isCorrect ? (
+                            <CheckCircle2 className="w-5 h-5 text-green-600" />
+                          ) : isUserSelection ? (
+                            <XCircle className="w-5 h-5 text-red-600" />
+                          ) : null}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
               </RadioGroup>
 
-              {isReviewMode && currentQuestionData.explanation && (
-                <div className="mt-6 p-4 bg-blue-50 rounded text-sm">
-                  <p className="font-semibold text-blue-800 mb-1">
-                    Explanation:
-                  </p>
-                  <p className="text-gray-700 italic">
-                    {currentQuestionData.explanation}
-                  </p>
+              {isReviewMode && (
+                <div className="mt-8">
+                  <h4 className="text-lg font-bold text-gray-900 border-b pb-2 mb-4">
+                    Explanation
+                  </h4>
+                  <div className="space-y-6">
+                    {currentQuestionData.options.map((option: any) => {
+                      const isOptionCorrect =
+                        option.value === currentQuestionData.correctAnswer;
+                      return (
+                        <div key={option.value} className="text-sm">
+                          <p
+                            className={`font-bold mb-1 ${
+                              isOptionCorrect
+                                ? "text-green-600"
+                                : "text-red-500"
+                            }`}
+                          >
+                            [{isOptionCorrect ? "Correct - " : ""}Choice{" "}
+                            {option.value}]
+                          </p>
+                          <p className="text-gray-700 leading-relaxed">
+                            {option.explanation || "No explanation provided."}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 
