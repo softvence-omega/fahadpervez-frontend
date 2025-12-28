@@ -61,7 +61,7 @@ export interface getUserResponse {
       password: string;
       isDeleted: boolean;
       accountStatus: "ACTIVE" | "INACTIVE" | string;
-      role: "ADMIN" | "MENTOR" | "STUDENT" | string;
+      role: "ADMIN" | "MENTOR" | "STUDENT" | "PROFESSIONAL" | string;
       profile_type: string;
       authType: string;
       isSubscribed: boolean;

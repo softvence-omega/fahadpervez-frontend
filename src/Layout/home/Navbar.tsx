@@ -38,7 +38,10 @@ const Navbar: React.FC = () => {
     } else if (user?.account?.role === "MENTOR") {
       navigate("/mentor");
       return;
-    } else if (user?.account?.role === "STUDENT") {
+    } else if (
+      user?.account?.role === "STUDENT" ||
+      user?.account?.role === "PROFESSIONAL"
+    ) {
       navigate("/dashboard");
       return;
     }
