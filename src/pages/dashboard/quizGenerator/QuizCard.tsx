@@ -6,6 +6,7 @@ interface QuizCardProps {
   title: string;
   questionCount?: number;
   sourceFile?: string;
+  isCompleted?: boolean;
 }
 
 export default function QuizCard({
@@ -13,11 +14,18 @@ export default function QuizCard({
   title,
   questionCount,
   sourceFile,
+  isCompleted,
 }: QuizCardProps) {
   const navigate = useNavigate();
 
   const handleQuiz = (id: string) => {
-    navigate(`/dashboard/quiz/${id}`);
+    if (isCompleted) {
+      navigate(`/dashboard/quiz-page/${id}`, {
+        state: { activeTab: "myQuiz" },
+      });
+    } else {
+      navigate(`/dashboard/quiz/${id}`);
+    }
   };
 
   return (
@@ -40,9 +48,19 @@ export default function QuizCard({
         </div>
         <button
           onClick={() => handleQuiz(id)}
-          className="w-full rounded-[4px] py-3 flex justify-center gap-1 items-center bg-emerald-800 hover:bg-emerald-900 transition-colors text-white cursor-pointer mt-auto"
+          className={`w-full rounded-[4px] py-3 flex justify-center gap-1 items-center transition-colors text-white cursor-pointer mt-auto ${
+            isCompleted
+              ? "bg-blue-600 hover:bg-blue-700"
+              : "bg-emerald-800 hover:bg-emerald-900"
+          }`}
         >
-          <Play className="w-4 h-4 fill-current" /> Start Quiz
+          {isCompleted ? (
+            <>View Analysis</>
+          ) : (
+            <>
+              <Play className="w-4 h-4 fill-current" /> Start Quiz
+            </>
+          )}
         </button>
       </div>
     </div>

@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
+// import { Plus } from "lucide-react";
 import TicketsList from "../TicketsList";
 import ChatWindow from "../ChatWindow";
 import CreateTicketModal from "../CreateTicketModal";
@@ -80,13 +80,13 @@ export default function Tickets() {
             All Ticket
           </h2>
         </div>
-        <button
+        {/* <button
           onClick={() => setShowCreateModal(true)}
           className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-blue-700 transition font-medium text-sm"
         >
           <Plus className="w-4 h-4" />
           Create Ticket
-        </button>
+        </button> */}
       </div>
 
       {/* Main Content - List and Chat */}

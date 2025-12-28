@@ -84,6 +84,7 @@ export const baseAPI = createApi({
     "WebSetting",
     "ReportResponse",
     "BioDigital",
+    "GeneratedMCQ",
   ],
   endpoints: () => ({}),
 });

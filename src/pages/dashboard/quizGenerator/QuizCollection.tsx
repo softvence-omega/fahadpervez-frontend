@@ -29,6 +29,10 @@ export default function QuizCollection() {
                   quiz.questionCount
                 }
                 sourceFile={quiz.sourceFile || quiz.fileName}
+                isCompleted={
+                  quiz.isCompleted ||
+                  (quiz.tracking && quiz.tracking.totalAttemptCount > 0)
+                }
               />
             ))}
           </div>

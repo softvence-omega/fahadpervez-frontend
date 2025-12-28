@@ -2,20 +2,22 @@ import DashboardHeading from "@/components/reusable/DashboardHeading";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { Plus } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import MyQuizAnalysisTab from "./MyQuizAnalysisTab";
 import QuizOverviewTab from "./QuizOverviewTab";
-// import FlashCardOverview from "./FlashCardOverview"
 
 const QuizPage = () => {
+  const { id } = useParams<{ id: string }>();
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState(id ? "myQuiz" : "overview");
 
   useEffect(() => {
     if (location.state?.activeTab) {
       setActiveTab(location.state.activeTab);
+    } else if (id) {
+      setActiveTab("myQuiz");
     }
-  }, [location.state]);
+  }, [location.state, id]);
 
   const tabs = [
     { id: "overview", label: "Overview" },

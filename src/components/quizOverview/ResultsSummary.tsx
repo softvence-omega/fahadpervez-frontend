@@ -6,7 +6,8 @@ interface ResultsSummaryProps {
   total: number;
   correct: number;
   incorrect: number;
-  quizId?: string | number;
+  quizId?: string;
+  justSubmitted?: boolean;
 }
 
 const ResultsSummary: React.FC<ResultsSummaryProps> = ({
@@ -14,10 +15,11 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({
   total = 0,
   correct = 0,
   incorrect = 0,
-  quizId = "3",
+  quizId,
+  justSubmitted,
 }) => {
   const correctPercentage = total > 0 ? Math.round((correct / total) * 100) : 0;
-
+  // console.log(quizId);
   return (
     <div className="text-center mt-4">
       <p className="text-lg">
@@ -38,15 +40,18 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({
         </span>
       </div>
       <div className="flex justify-center space-x-4 mt-8">
-        <Link to={`/dashboard/quiz/${quizId}`}>
-          <Button className="bg-blue-600 hover:bg-blue-700 h-11 px-6">
+        {/* <Link to={`/dashboard/quiz/${quizId}`}>
+          <Button className="bg-blue-600 hover:bg-blue-700 h-11 px-6 cursor-pointer">
             Repeat Session
           </Button>
-        </Link>
-        <Link to={`/dashboard/quiz/${quizId}?mode=review`}>
+        </Link> */}
+        <Link
+          to={`/dashboard/quiz/${quizId}?mode=review`}
+          state={{ justSubmitted }}
+        >
           <Button
             variant="outline"
-            className="h-11 px-6 border-slate-300 text-slate-700 hover:bg-slate-50 font-medium"
+            className="h-11 px-6 border-slate-300 text-slate-700 hover:bg-slate-50 font-medium cursor-pointer"
           >
             Review Session
           </Button>
