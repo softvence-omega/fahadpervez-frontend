@@ -63,7 +63,7 @@ import BioDigitalDetailView from "@/pages/dashboard/bio-digital/DetailView";
 const dashboardRoutes = {
   path: "/dashboard",
   element: (
-    <PrivateRoute allowedRoles={["STUDENT"]}>
+    <PrivateRoute allowedRoles={["STUDENT", "PROFESSIONAL"]}>
       <DashboardLayout />
     </PrivateRoute>
   ),
