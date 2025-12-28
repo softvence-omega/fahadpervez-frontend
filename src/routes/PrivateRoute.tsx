@@ -2,7 +2,7 @@ import { selectUser } from "@/store/features/auth/auth.slice";
 import { useSelector } from "react-redux";
 import { Navigate, useLocation } from "react-router-dom";
 
-type UserRole = "STUDENT" | "MENTOR" | "ADMIN";
+type UserRole = "STUDENT" | "MENTOR" | "ADMIN" | "PROFESSIONAL";
 
 interface PrivateRouteProps {
   children: React.ReactNode;
