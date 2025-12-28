@@ -222,7 +222,7 @@ const dashboardRoutes = {
       element: <CreateNotes />,
     },
     {
-      path: "quiz-page",
+      path: "quiz-page/:id?",
       element: <QuizPage />,
     },
     {

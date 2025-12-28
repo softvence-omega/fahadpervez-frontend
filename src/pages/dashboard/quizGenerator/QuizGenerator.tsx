@@ -40,7 +40,7 @@ const QuizGenerator = () => {
             title="AI Quiz Generator"
             titleSize="text-xl"
             titleColor="text-[#0A0A0A]"
-            description="Create custom quizzes from your images and videos using AI"
+            description="Create custom quizzes from your images using AI"
             descColor="text-[#4A5565]"
             descFont="text-sm"
             className="mt-12 mb-8"
@@ -82,7 +82,7 @@ const QuizGenerator = () => {
               <Upload className="w-5 h-5 mb-1" /> Upload Media
             </h3>
             <p className="text-sm text-gray-500 mb-4">
-              Upload images or videos to generate AI-powered Notes
+              Upload images to generate AI-powered quizzes
             </p>
             <FileUploader
               onFilesChange={(newFiles) => setFiles([...files, ...newFiles])}
@@ -92,9 +92,9 @@ const QuizGenerator = () => {
           {/* Right side */}
           <div className="p-6 border rounded-xl border-black/10 flex flex-col justify-between gap-4">
             <h3 className="text-lg font-semibold">Recent Uploads</h3>
-            <p className="text-sm text-gray-500">
+            {/* <p className="text-sm text-gray-500">
               Your uploaded files ready for quiz generation
-            </p>
+            </p> */}
 
             {/* Preview List */}
             <FilePreviewList files={files} onRemove={handleRemoveFile} />

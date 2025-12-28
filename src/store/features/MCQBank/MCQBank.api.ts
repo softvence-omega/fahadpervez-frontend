@@ -71,6 +71,7 @@ export const mcqBankAPI = baseAPI.injectEndpoints({
         url: `/my_content/mcqs`,
         method: "GET",
       }),
+      providesTags: ["GeneratedMCQ"],
     }),
 
     getGeneratedMCQ: build.query({
@@ -78,6 +79,7 @@ export const mcqBankAPI = baseAPI.injectEndpoints({
         url: `/my_content/mcqs/${id}`,
         method: "GET",
       }),
+      providesTags: (id) => [{ type: "GeneratedMCQ", id }],
     }),
 
     generateMCQ: build.mutation({
@@ -86,6 +88,18 @@ export const mcqBankAPI = baseAPI.injectEndpoints({
         method: "POST",
         body: data,
       }),
+    }),
+
+    updateQuizTracking: build.mutation({
+      query: ({ id, data }: { id: string; data: any }) => ({
+        url: `/my_content/update-tracking/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ({ id }) => [
+        { type: "GeneratedMCQ", id },
+        "GeneratedMCQ",
+      ],
     }),
 
     // end
@@ -101,4 +115,5 @@ export const {
   useGetAllGeneratedMCQQuery,
   useGetGeneratedMCQQuery,
   useGenerateMCQMutation,
+  useUpdateQuizTrackingMutation,
 } = mcqBankAPI;

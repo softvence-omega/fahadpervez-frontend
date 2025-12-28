@@ -1,10 +1,10 @@
 import Pagination from "@/common/custom/Pagination";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
-import PrimaryButton from "@/components/reusable/PrimaryButton";
+// import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { useGetSingleUserNotesQuery } from "@/store/features/note/NoteAPI";
-import { Filter, Plus, Search } from "lucide-react";
+import { Filter, Search } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import FlashCardFilterModal from "../flashcard/FlashCardFilterModal";
 import AllNotesTab from "./AllNotesTab";
 import GeneratedNotes from "./GeneratedNotes";
@@ -121,7 +121,7 @@ export default function DownloadNotes() {
           </button>
         </div>
 
-        <Link to={"/dashboard/create-note"}>
+        {/* <Link to={"/dashboard/create-note"}>
           <PrimaryButton
             bgType="solid"
             iconPosition="left"
@@ -131,7 +131,7 @@ export default function DownloadNotes() {
           >
             Create Notes
           </PrimaryButton>
-        </Link>
+        </Link> */}
       </div>
 
       {/* Active Filters Display */}
