@@ -7,15 +7,8 @@ import osce from "@/assets/dashboard/osce.png";
 import dailyStreak from "@/assets/dashboard/daily-streak.png";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";
 import {
-  Activity,
-  BrainCog,
-  BriefcaseMedical,
-  CircleCheck,
   FileBadge2,
 } from "lucide-react";
-import CircularProgress from "@/components/quizOverview/CircularProgress";
-import { Progress } from "@/components/ui/progress";
-import { AiFillFire } from "react-icons/ai";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -183,7 +176,7 @@ export default function StudentProfile() {
         </div>
 
         {/* Activity in this Week */}
-        <div className="">
+        {/* <div className="">
           <div className="border border-slate-300 rounded-[8px]">
             <PrimaryHeading
               title="Activity in this Week"
@@ -217,12 +210,12 @@ export default function StudentProfile() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 mt-7 gap-7">
         {/* Clinical Case Performance */}
-        <div className="col-span-2 bg-white p-10 border border-slate-300 rounded-[8px]">
+        {/* <div className="col-span-2 bg-white p-10 border border-slate-300 rounded-[8px]">
           <div className="flex items-center justify-between mb-10">
             <PrimaryHeading
               title="Clinical Case Performance"
@@ -286,10 +279,10 @@ export default function StudentProfile() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Strong Areas */}
-        <div className="max-w-[700px] bg-white border border-slate-300 p-4 rounded-[8px]">
+        {/* <div className="max-w-[700px] bg-white border border-slate-300 p-4 rounded-[8px]">
           <p className="flex items-center gap-2 text-lg font-medium text-[#111827]">
             <BrainCog className="w-6 h-6 text-blue-main" /> Areas to Improve
           </p>
@@ -324,7 +317,7 @@ export default function StudentProfile() {
               <Progress value={60} className="[&>div]:bg-[#7F56D9]" />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

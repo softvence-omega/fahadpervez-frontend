@@ -1,16 +1,16 @@
 import React from "react";
 
 const demoSubjects = [
-  { name: "Cardiovascular Physiology", value: 90, color: "blue" },
-  { name: "Neuroanatomy", value: 86, color: "yellow" },
-  { name: "Endocrinology", value: 80, color: "red" },
-  { name: "Follow-up Planning", value: 60, color: "green" },
+  { name: "MCQ", value: 90, color: "blue" },
+  { name: "Flashcard", value: 86, color: "yellow" },
+  { name: "Clinical Case", value: 80, color: "red" },
+  { name: "OSCE", value: 60, color: "green" },
 ];
 
 const PerformanceBySubject: React.FC = () => {
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Performance by Subject</h3>
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">Performance</h3>
       <div className="space-y-4">
         {demoSubjects.map((sub, i) => (
           <div key={i}>
