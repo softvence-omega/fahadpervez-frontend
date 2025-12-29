@@ -3,10 +3,16 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, Timer, CheckCircle2, XCircle } from "lucide-react";
+import {
+  CheckCircle,
+  Timer,
+  CheckCircle2,
+  XCircle,
+  ArrowLeft,
+} from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import {
   useGetGeneratedMCQQuery,
   useUpdateQuizTrackingMutation,
@@ -15,88 +21,13 @@ import {
 // import { useDispatch } from "react-redux";
 import GlobalLoader from "@/common/GlobalLoader";
 
-// Sample JSON data for medical students (Neurology questions)
-// const sampleQuizData = {
-//   title: "Session 1",
-//   description: "5 Question. Medium. Neurology.",
-//   questions: [
-//     {
-//       id: "01",
-//       text: "A 19-year-old female presents ... After the following recommendations should the physician prioritize to minimize mechanical irritation?",
-//       options: [
-//         { value: "A", label: "A. Increase dairy intake" },
-//         { value: "B", label: "B. Use oil-based moisturizers" },
-//         { value: "C", label: "C. Avoid touching the face frequently" },
-//         { value: "D", label: "D. Apply heavy makeup daily" },
-//         { value: "E", label: "E. Engage in prolonged sun exposure" },
-//       ],
-//       correctAnswer: "C",
-//       explanation:
-//         "Mechanical irritation should be minimized by avoiding frequent face touching.",
-//     },
-//     {
-//       id: "02",
-//       text: "A patient with migraine headaches is prescribed a triptan. What is the primary mechanism of action?",
-//       options: [
-//         { value: "A", label: "A. Beta-blocker" },
-//         { value: "B", label: "B. Serotonin receptor agonist" },
-//         { value: "C", label: "C. Calcium channel blocker" },
-//         { value: "D", label: "D. Anticonvulsant" },
-//         { value: "E", label: "E. Opioid agonist" },
-//       ],
-//       correctAnswer: "B",
-//       explanation: "Triptans are serotonin (5-HT1B/1D) receptor agonists.",
-//     },
-//     {
-//       id: "03",
-//       text: "Which of the following is a common symptom of Parkinson's disease?",
-//       options: [
-//         { value: "A", label: "A. Hyperreflexia" },
-//         { value: "B", label: "B. Tremor at rest" },
-//         { value: "C", label: "C. Visual hallucinations" },
-//         { value: "D", label: "D. Seizures" },
-//         { value: "E", label: "E. Ataxia" },
-//       ],
-//       correctAnswer: "B",
-//       explanation: "Resting tremor is a hallmark sign of Parkinson's.",
-//     },
-//     {
-//       id: "04",
-//       text: "A 45-year-old man presents with sudden onset of severe headache. CT scan shows subarachnoid hemorrhage. What is the most likely cause?",
-//       options: [
-//         { value: "A", label: "A. Hypertension" },
-//         { value: "B", label: "B. Ruptured aneurysm" },
-//         { value: "C", label: "C. Trauma" },
-//         { value: "D", label: "D. Arteriovenous malformation" },
-//         { value: "E", label: "E. Coagulopathy" },
-//       ],
-//       correctAnswer: "B",
-//       explanation:
-//         "Ruptured saccular (berry) aneurysm is the most common cause of non-traumatic SAH.",
-//     },
-//     {
-//       id: "05",
-//       text: "What is the first-line treatment for acute ischemic stroke?",
-//       options: [
-//         { value: "A", label: "A. Aspirin" },
-//         { value: "B", label: "B. tPA (tissue plasminogen activator)" },
-//         { value: "C", label: "C. Heparin" },
-//         { value: "D", label: "D. Warfarin" },
-//         { value: "E", label: "E. Clopidogrel" },
-//       ],
-//       correctAnswer: "B",
-//       explanation:
-//         "Intravenous alteplase (tPA) is the standard for acute ischemic stroke within 3-4.5 hours.",
-//     },
-//   ],
-// };
-
 const Quiz = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const isReviewMode = queryParams.get("mode") === "review";
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // const dispatch = useDispatch();
   const { currentQuiz: reduxQuiz } = useSelector(
@@ -312,9 +243,15 @@ const Quiz = () => {
   return (
     <div className="min-h-screen p-4">
       {/* Main Content */}
-      <div className="flex flex-col md:flex-row gap-4 my-10">
+      <Link to="/dashboard/quiz-page" className="sm:mb-0">
+        <button className="flex items-center gap-1 border border-gray-300 px-3 py-2 rounded cursor-pointer">
+          <ArrowLeft className="w-5 h-4" /> Back
+        </button>
+      </Link>
+
+      <div className="flex gap-4 my-10">
         {/* Sidebar */}
-        <div className="w-full md:w-1/4 bg-white p-4 rounded-lg shadow">
+        {/* <div className="w-full md:w-1/4 bg-white p-4 rounded-lg shadow">
           <h2 className="font-semibold mb-2">
             {isReviewMode ? "Review Mode" : quizData?.title}
           </h2>
@@ -351,10 +288,79 @@ const Quiz = () => {
               )}
             </div>
           ))}
+        </div> */}
+
+        {/* Sidebar */}
+        <div
+          className={`bg-white rounded-lg shadow transition-all duration-300
+  ${isSidebarOpen ? "w-full md:w-1/6" : "w-14"}
+  `}
+        >
+          {/* Sidebar Header */}
+          <div className="flex items-center justify-between p-4 border-b border-b-slate-300">
+            {isSidebarOpen && (
+              <div>
+                <h2 className="font-semibold mb-1">
+                  {isReviewMode ? "Review Mode" : quizData?.title}
+                </h2>
+                <p className="text-sm text-gray-600">{quizData?.description}</p>
+              </div>
+            )}
+
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="text-gray-500 hover:text-gray-800 cursor-pointer"
+              title={isSidebarOpen ? "Collapse" : "Expand"}
+            >
+              {isSidebarOpen ? "❮" : "❯"}
+            </button>
+          </div>
+
+          {/* Scrollable Question List */}
+          <div className="max-h-[500px] overflow-y-auto p-2">
+            {questions.map((q: any, index: number) => (
+              <div
+                key={q.id}
+                className={`p-2 mb-2 rounded cursor-pointer flex items-center justify-between text-sm
+        ${
+          index === currentQuestion
+            ? "bg-blue-100 text-blue-600"
+            : answers[index] || isReviewMode
+            ? "bg-gray-50"
+            : "text-gray-600 hover:bg-gray-100"
+        }`}
+                onClick={() => {
+                  if (
+                    isReviewMode ||
+                    index <= currentQuestion ||
+                    answers[index - 1]
+                  ) {
+                    setCurrentQuestion(index);
+                  }
+                }}
+              >
+                <span>{isSidebarOpen ? `Question ${q.id}` : q.id}</span>
+
+                {isReviewMode && answers[index] && isSidebarOpen && (
+                  <span className="ml-2">
+                    {answers[index] === q.correctAnswer ? (
+                      <CheckCircle className="w-4 h-4 text-green-500" />
+                    ) : (
+                      <XCircle className="w-4 h-4 text-red-500" />
+                    )}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Question Area */}
-        <div className="w-full md:w-3/4">
+        <div
+          className={`transition-all duration-300
+  ${isSidebarOpen ? "w-full md:w-5/6" : "w-full md:w-[calc(100%-3.5rem)]"}
+  `}
+        >
           {/* Timer / Header */}
           <div className=" bg-white border-e-slate-300 rounded p-4 flex justify-between items-center mb-5">
             <div className="flex items-center">
@@ -362,6 +368,7 @@ const Quiz = () => {
               {isReviewMode ? "Reviewing..." : formatTime(timeElapsed)}
             </div>
             <Button
+              className="cursor-pointer"
               variant="secondary"
               onClick={
                 isReviewMode
@@ -440,7 +447,7 @@ const Quiz = () => {
 
               {isReviewMode && (
                 <div className="mt-8">
-                  <h4 className="text-lg font-bold text-gray-900 border-b pb-2 mb-4">
+                  <h4 className="text-lg font-bold text-gray-900 border-b border-b-slate-300 pb-2 mb-4">
                     Explanation
                   </h4>
                   <div className="space-y-6">
@@ -472,13 +479,18 @@ const Quiz = () => {
               {/* Navigation Buttons */}
               <div className="flex justify-between mt-6">
                 {currentQuestion > 0 ? (
-                  <Button variant="outline" onClick={handlePrevious}>
+                  <Button
+                    className="cursor-pointer"
+                    variant="outline"
+                    onClick={handlePrevious}
+                  >
                     Previous
                   </Button>
                 ) : (
                   <div></div>
                 )}
                 <Button
+                  className="cursor-pointer"
                   onClick={handleNext}
                   disabled={!isReviewMode && !answers[currentQuestion]}
                 >

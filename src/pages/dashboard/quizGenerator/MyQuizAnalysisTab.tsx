@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { Stats } from "@/components/quizOverview/type";
 import StatsRow from "@/components/quizOverview/StatsRow";
 import CircularProgress from "@/components/quizOverview/CircularProgress";
 import ResultsSummary from "@/components/quizOverview/ResultsSummary";
 import StudyRecommendations from "@/components/quizOverview/StudyRecommendations";
 import { useGetGeneratedMCQQuery } from "@/store/features/MCQBank/MCQBank.api";
+import { ArrowLeft } from "lucide-react";
+import DashboardHeading from "@/components/reusable/DashboardHeading";
 
 const MyQuizAnalysisTab: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -46,10 +48,25 @@ const MyQuizAnalysisTab: React.FC = () => {
     <div className="min-h-screen">
       <div className="py-6">
         <div className="w-full space-y-6">
-          <div className="flex justify-between items-center">
+          {/* <div className="flex justify-between items-center">
             <h3 className="text-gray-800 font-medium font-inter text-xl">
               Performance Analysis
             </h3>
+          </div> */}
+          <div className="flex items-start gap-1">
+            <Link to="/dashboard/quiz-page" className="sm:mb-0">
+              <ArrowLeft className="mt-0.5" />
+            </Link>
+
+            <DashboardHeading
+              title="Performance Analysis"
+              titleSize="text-xl"
+              titleColor="text-[#0A0A0A]"
+              description="Analyze quiz performance, track user progress from detailed results"
+              descColor="text-[#4A5565]"
+              descFont="text-sm"
+              className="mb-5"
+            />
           </div>
 
           <StatsRow stats={stats} />

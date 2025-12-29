@@ -40,7 +40,7 @@ export default function GeneratedFlashCard({
         </div>
       </div> */}
 
-      <div className="mt-12 bg-white border border-slate-300 p-5 rounded-[8px]">
+      <div className="bg-white border border-slate-300 p-5 rounded-[8px]">
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-medium">Generated Cards</h3>
           {/* <Link

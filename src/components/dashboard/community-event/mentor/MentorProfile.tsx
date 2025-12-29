@@ -75,10 +75,10 @@ export default function MentorProfile() {
             <img
               src={
                 mentor.profile_photo ||
-                "https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D"
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZYgW4c4mScN4iMaoZM2YNPO2iV7aaxtmDVg&s"
               }
               alt="mentor"
-              className="w-28 h-28 rounded-full border-4 border-white shadow object-cover mt-6"
+              className="w-28 h-28 rounded-full border-2 border-white shadow object-cover mt-6"
             />
             {mentor.profileVerification === "VERIFIED" && (
               <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">

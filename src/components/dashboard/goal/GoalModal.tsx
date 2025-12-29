@@ -34,7 +34,7 @@ export const GoalModal: React.FC<ModalProps> = ({
 
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-gray-400 hover:text-gray-600 cursor-pointer"
           >
             ✕
           </button>
@@ -128,14 +128,14 @@ export const Step1: React.FC<Step1Props> = ({
       <div className="flex justify-between mt-6">
         <button
           onClick={onCancel}
-          className="px-4 py-2 text-gray-600 hover:text-gray-800"
+          className="px-4 py-2 text-gray-600 hover:text-gray-800 cursor-pointer"
         >
           Cancel
         </button>
         <button
           onClick={onNext}
           disabled={!isValid}
-          className={`px-6 py-2 rounded-lg ${
+          className={`px-6 py-2 rounded-lg cursor-pointer ${
             isValid
               ? "bg-blue-500 text-white hover:bg-blue-600"
               : "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -301,14 +301,14 @@ export const Step2: React.FC<Step2Props> = ({
       <div className="flex justify-between mt-6">
         <button
           onClick={onPrevious}
-          className="px-4 py-2 text-gray-600 hover:text-gray-800"
+          className="px-4 py-2 text-gray-600 hover:text-gray-800 cursor-pointer"
         >
           ← Previous
         </button>
         <button
           onClick={onNext}
           disabled={!isValid}
-          className={`px-6 py-2 rounded-lg ${
+          className={`px-6 py-2 rounded-lg cursor-pointer ${
             isValid
               ? "bg-blue-500 text-white hover:bg-blue-600"
               : "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -394,13 +394,13 @@ export const Step3: React.FC<Step3Props> = ({
       <div className="flex justify-between mt-6">
         <button
           onClick={onPrevious}
-          className="px-4 py-2 text-gray-600 hover:text-gray-800"
+          className="px-4 py-2 text-gray-600 hover:text-gray-800 cursor-pointer"
         >
           ← Previous
         </button>
         <button
           onClick={onCreate}
-          className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 cursor-pointer"
         >
           {isEditMode ? "Update Preference" : "Create Preference"}
         </button>

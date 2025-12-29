@@ -2,7 +2,7 @@ import { useGetSettingsQuery } from "@/store/features/adminDashboard/settings/se
 import { logout, selectUser } from "@/store/features/auth/auth.slice";
 import { useAppDispatch } from "@/store/hook";
 import Cookies from "js-cookie";
-import { Bell, ChevronDown, Globe, Menu, Search } from "lucide-react";
+import { Bell, ChevronDown, Menu, Search } from "lucide-react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -18,7 +18,6 @@ const StudentDashboardHeader: React.FC<StudentDashboardHeaderProps> = ({
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const user = useSelector(selectUser);
-  console.log(user);
 
   const handleLogout = () => {
     Cookies.remove("accessToken");
@@ -70,10 +69,10 @@ const StudentDashboardHeader: React.FC<StudentDashboardHeaderProps> = ({
         {/* Right Section: Icons + Profile */}
         <div className="flex items-center gap-3 lg:gap-4">
           {/* Language Selector */}
-          <button className="hidden lg:flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors">
+          {/* <button className="hidden lg:flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors">
             <Globe className="h-5 w-5" />
             <span className="text-sm font-medium">En</span>
-          </button>
+          </button> */}
 
           {/* Notifications */}
           <button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors">

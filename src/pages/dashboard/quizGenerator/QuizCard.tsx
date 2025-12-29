@@ -20,7 +20,7 @@ export default function QuizCard({
 
   const handleQuiz = (id: string) => {
     if (isCompleted) {
-      navigate(`/dashboard/quiz-page/${id}`, {
+      navigate(`/dashboard/quiz-analysis/${id}`, {
         state: { activeTab: "myQuiz" },
       });
     } else {
