@@ -15,6 +15,11 @@ import { examOptions } from "./constants";
 import { useUpdateInitialProfileMutation } from "@/store/features/auth/auth.api";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import {
+  useUploadMentorDocumentMutation,
+  useVerifyMentorProfessionMutation,
+  useUpdateMentorPaymentInformationMutation,
+} from "@/store/features/mentor/mentor.api";
 
 export default function MultiStepRegisterForm() {
   const [step, setStep] = useState<number>(0);
@@ -23,6 +28,10 @@ export default function MultiStepRegisterForm() {
   const navigate = useNavigate();
 
   const [updateInitialProfile] = useUpdateInitialProfileMutation();
+  const [uploadMentorDocument] = useUploadMentorDocumentMutation();
+  const [verifyMentorProfession] = useVerifyMentorProfessionMutation();
+  const [updateMentorPaymentInformation] =
+    useUpdateMentorPaymentInformationMutation();
 
   // Determine steps based on role
   const role = selectedRole || formData.profile?.role;
@@ -36,7 +45,7 @@ export default function MultiStepRegisterForm() {
         "UpdatePreference",
         "PlatformTraining",
         "PayoutSetup",
-        "UploadProfile",
+        // "UploadProfile", // User requested to remove this for mentor as bio/photo are handled earlier
       ]
     : isProfessional
     ? ["AboutYourSelfTab", "UploadProfile"] // Skip PreparingFor for Professional
@@ -44,9 +53,135 @@ export default function MultiStepRegisterForm() {
   const stepCount = steps.length;
   const progressValue = ((step + 1) / stepCount) * 100;
 
-  const handleNext = (partial: Partial<MultiStepFormData>) => {
+  const handleNext = async (partial: Partial<MultiStepFormData>) => {
+    const currentStepName = steps[step];
+
+    // Mentor-specific API calls
+    if (isMentor) {
+      // Call initial profile API when mentor completes Profile Setup (AboutYourSelfTab)
+      if (currentStepName === "AboutYourSelfTab" && "profile" in partial) {
+        const profileData = partial.profile as any;
+        const payload = {
+          role: "MENTOR",
+          mentor: {
+            firstName: profileData.firstName,
+            lastName: profileData.lastName,
+            country: profileData.country,
+            currentRole: profileData.currentRole || "",
+            hospitalOrInstitute: profileData.hospitalOrInstitute || "",
+            specialty: profileData.specialty || "",
+            professionalExperience: profileData.experience || "",
+            postgraduateDegree: profileData.postgraduateDegree || "",
+            isConditionAccepted: true,
+            bio: "",
+          },
+        };
+
+        const formDataToSend = new FormData();
+        formDataToSend.append("data", JSON.stringify(payload));
+
+        try {
+          await updateInitialProfile(formDataToSend).unwrap();
+          toast.success("Profile information saved");
+        } catch (err) {
+          console.error("Initial profile save failed", err);
+          toast.error("Failed to save profile information");
+          return; // Stop progress
+        }
+      }
+
+      if (
+        currentStepName === "VerifyProfession" &&
+        "verifyProfession" in partial
+      ) {
+        const files = partial.verifyProfession;
+        const fd = new FormData();
+        if (files?.photo) fd.append("profile_photo", files.photo);
+        if (files?.degree) fd.append("degree", files.degree);
+        if (files?.identity) fd.append("identity_card", files.identity);
+        if (files?.certificate) fd.append("certificate", files.certificate);
+
+        try {
+          await uploadMentorDocument(fd).unwrap();
+          toast.success("Documents uploaded successfully");
+        } catch (err) {
+          console.error("Document upload failed", err);
+          toast.error("Failed to upload documents");
+          return; // Stop progress
+        }
+      }
+
+      if (
+        currentStepName === "UpdatePreference" &&
+        "updatePreference" in partial
+      ) {
+        const pref = partial.updatePreference!;
+
+        // Transform availability
+        // Input: { Monday: { enabled: true, startTime: "10:00", endTime: "11:00" }, ... }
+        // Output: [{ day: "Monday", time: ["10:00 - 11:00"] }]
+        const availabilityArray = Object.entries(pref.availability || {})
+          .filter(([_, val]: any) => val.enabled)
+          .map(([day, val]: any) => ({
+            day,
+            time: [`${val.startTime} - ${val.endTime}`],
+          }));
+
+        const payload = {
+          bio: pref.bio,
+          skills: pref.subjects, // Mapping subjects to skills as deduced
+          languages: pref.languages,
+          hourlyRate: pref.hourlyRate,
+          currency: pref.currency,
+          availability: availabilityArray,
+        };
+
+        try {
+          await verifyMentorProfession(payload).unwrap();
+          toast.success("Professional info saved");
+        } catch (err) {
+          console.error("Professional info save failed", err);
+          toast.error("Failed to save professional info");
+          return;
+        }
+      }
+
+      if (currentStepName === "PayoutSetup" && "payoutSetup" in partial) {
+        // Payload is constructed in PayoutSetup or here.
+        // Assuming partial.payoutSetup contains valid structure or needs simple wrapper.
+        // User req: { bankInformation: { ... } }
+        const pData = partial.payoutSetup as any;
+        const payload = {
+          bankInformation: {
+            accountHolderName: pData.accountHolderName,
+            bankName: pData.bankName,
+            accountNumber: pData.accountNumber,
+            routingNumber: pData.routingNumber,
+            accountType: pData.accountType,
+          },
+        };
+
+        try {
+          await updateMentorPaymentInformation(payload).unwrap();
+          toast.success("Payout information saved");
+          // For mentor, this might be the last step, so we might want to navigate or show success
+          navigate("/login"); // or dashboard? User said "completed registration" usually goes to login or dashboard.
+          // However, handleNext also updates local state.
+        } catch (err) {
+          console.error("Payout save failed", err);
+          toast.error("Failed to save payout info");
+          return;
+        }
+      }
+    }
+
     setFormData((prev: any) => ({ ...prev, ...partial }));
-    setStep((s) => Math.min(s + 1, stepCount - 1));
+
+    // For mentors, PayoutSetup is the last step index 4 (0-based) based on new array (length 5)
+    // If it's the last step, we are done.
+    if (step < stepCount - 1) {
+      setStep((s) => s + 1);
+    }
   };
 
   const handleBack = () => setStep((s) => Math.max(0, s - 1));

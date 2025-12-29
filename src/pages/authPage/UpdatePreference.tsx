@@ -23,6 +23,7 @@ export default function UpdatePreference({
     formState: { errors, isSubmitting },
     setValue,
     getValues,
+    watch,
   } = useForm({
     resolver: zodResolver(updatePreferenceSchema),
     defaultValues: {
@@ -30,7 +31,7 @@ export default function UpdatePreference({
       subjects: defaultValues?.subjects || [""],
       languages: defaultValues?.languages || [""],
       hourlyRate: defaultValues?.hourlyRate || 0,
-      currency: defaultValues?.currency || "Dollar", // ✅ fine, matches schema
+      currency: defaultValues?.currency || "USD",
       availability: defaultValues?.availability || {
         Monday: { enabled: false, startTime: "", endTime: "" },
         Tuesday: { enabled: false, startTime: "", endTime: "" },
@@ -55,25 +56,42 @@ export default function UpdatePreference({
   }, [defaultValues, reset]);
 
   const addInput = (type: "subject" | "language") => {
-    if (type === "subject") setSubjectInputs([...subjectInputs, ""]);
-    else setLanguageInputs([...languageInputs, ""]);
+    if (type === "subject") {
+      // Get current values and check if last one is not empty
+      const currentValues = getValues("subjects") as string[];
+      const lastValue = currentValues[currentValues.length - 1];
+      if (!lastValue || lastValue.trim() === "") {
+        return; // Don't add if last field is empty
+      }
+      // Add new empty field to both state and form
+      const newSubjects = [...currentValues, ""];
+      setSubjectInputs(newSubjects);
+      setValue("subjects", newSubjects);
+    } else {
+      // Get current values and check if last one is not empty
+      const currentValues = getValues("languages") as string[];
+      const lastValue = currentValues[currentValues.length - 1];
+      if (!lastValue || lastValue.trim() === "") {
+        return; // Don't add if last field is empty
+      }
+      // Add new empty field to both state and form
+      const newLanguages = [...currentValues, ""];
+      setLanguageInputs(newLanguages);
+      setValue("languages", newLanguages);
+    }
   };
 
   const removeInput = (type: "subject" | "language", index: number) => {
     if (type === "subject") {
-      const newSubjects = subjectInputs.filter((_, i) => i !== index);
-      setSubjectInputs(newSubjects);
-      setValue(
-        "subjects",
-        newSubjects.map((_s) => getValues(`subjects.${index}`) || "")
-      );
+      const currentValues = getValues("subjects") as string[];
+      const newSubjects = currentValues.filter((_, i) => i !== index);
+      setSubjectInputs(newSubjects.length > 0 ? newSubjects : [""]);
+      setValue("subjects", newSubjects.length > 0 ? newSubjects : [""]);
     } else {
-      const newLanguages = languageInputs.filter((_, i) => i !== index);
-      setLanguageInputs(newLanguages);
-      setValue(
-        "languages",
-        newLanguages.map((_s) => getValues(`languages.${index}`) || "")
-      );
+      const currentValues = getValues("languages") as string[];
+      const newLanguages = currentValues.filter((_, i) => i !== index);
+      setLanguageInputs(newLanguages.length > 0 ? newLanguages : [""]);
+      setValue("languages", newLanguages.length > 0 ? newLanguages : [""]);
     }
   };
 
@@ -81,10 +99,17 @@ export default function UpdatePreference({
     onNext(data);
   };
 
-  const timeOptions = Array.from({ length: 24 }, (_, i) => {
-    const hour = i < 10 ? `0${i}` : `${i}`;
-    return `${hour}:00-${hour === "23" ? "00" : `${+hour + 1}:00`}`;
-  });
+  // Helper function to convert 24-hour to 12-hour format with AM/PM
+  const formatTime = (hour: number): string => {
+    const period = hour >= 12 ? "PM" : "AM";
+    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+    const displayHourStr =
+      displayHour < 10 ? `0${displayHour}` : `${displayHour}`;
+    return `${displayHourStr}:00 ${period}`;
+  };
+
+  // Generate time options in 12-hour format with AM/PM
+  const timeOptions = Array.from({ length: 24 }, (_, i) => formatTime(i));
   return (
     <div className="w-full max-w-3xl mx-auto p-6">
       <div className="flex justify-between items-center mb-2">
@@ -124,33 +149,52 @@ export default function UpdatePreference({
           <label className="block text-sm font-medium mb-2">
             Subject You Teach
           </label>
-          {subjectInputs.map((_, index) => (
-            <div key={index} className="flex items-center mb-2">
-              <input
-                {...register(`subjects.${index}` as const)}
-                placeholder="Enter subject"
-                className="w-full p-3 border border-slate-300 rounded-md"
-              />
-              {index > 0 && (
-                <button
-                  type="button"
-                  onClick={() => removeInput("subject", index)}
-                  className="ml-2 text-red-500 hover:text-red-700"
+
+          {/* Display existing subjects as tags */}
+          <div className="flex flex-wrap gap-2 mb-3">
+            {subjectInputs.map((_, index) => {
+              const value = watch(`subjects.${index}`);
+              if (!value) return null;
+              return (
+                <div
+                  key={index}
+                  className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 rounded-md text-sm"
                 >
-                  ×
-                </button>
-              )}
-              {index === subjectInputs.length - 1 && (
-                <button
-                  type="button"
-                  onClick={() => addInput("subject")}
-                  className="ml-2 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Add
-                </button>
-              )}
-            </div>
-          ))}
+                  <span>{value}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeInput("subject", index)}
+                    className="text-gray-600 hover:text-red-600 font-bold text-lg leading-none"
+                    title="Remove"
+                  >
+                    ×
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Input field for new subject */}
+          <div className="flex items-center gap-2">
+            <input
+              {...register(`subjects.${subjectInputs.length - 1}` as const)}
+              placeholder="Enter subject"
+              className="flex-1 p-3 border border-slate-300 rounded-md"
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  addInput("subject");
+                }
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => addInput("subject")}
+              className="px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 font-medium"
+            >
+              Add
+            </button>
+          </div>
           {errors.subjects && (
             <p className="text-red-500 text-sm mt-1">
               {errors.subjects.message}
@@ -161,33 +205,52 @@ export default function UpdatePreference({
         {/* Language */}
         <div className="border border-slate-300 rounded-lg p-4 bg-white">
           <label className="block text-sm font-medium mb-2">Language</label>
-          {languageInputs.map((_, index) => (
-            <div key={index} className="flex items-center mb-2">
-              <input
-                {...register(`languages.${index}` as const)}
-                placeholder="Enter language"
-                className="w-full p-3 border border-slate-300 rounded-md"
-              />
-              {index > 0 && (
-                <button
-                  type="button"
-                  onClick={() => removeInput("language", index)}
-                  className="ml-2 text-red-500 hover:text-red-700"
+
+          {/* Display existing languages as tags */}
+          <div className="flex flex-wrap gap-2 mb-3">
+            {languageInputs.map((_, index) => {
+              const value = watch(`languages.${index}`);
+              if (!value) return null;
+              return (
+                <div
+                  key={index}
+                  className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 rounded-md text-sm"
                 >
-                  ×
-                </button>
-              )}
-              {index === languageInputs.length - 1 && (
-                <button
-                  type="button"
-                  onClick={() => addInput("language")}
-                  className="ml-2 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Add
-                </button>
-              )}
-            </div>
-          ))}
+                  <span>{value}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeInput("language", index)}
+                    className="text-gray-600 hover:text-red-600 font-bold text-lg leading-none"
+                    title="Remove"
+                  >
+                    ×
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Input field for new language */}
+          <div className="flex items-center gap-2">
+            <input
+              {...register(`languages.${languageInputs.length - 1}` as const)}
+              placeholder="Enter language"
+              className="flex-1 p-3 border border-slate-300 rounded-md"
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  addInput("language");
+                }
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => addInput("language")}
+              className="px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 font-medium"
+            >
+              Add
+            </button>
+          </div>
           {errors.languages && (
             <p className="text-red-500 text-sm mt-1">
               {errors.languages.message}
@@ -219,64 +282,88 @@ export default function UpdatePreference({
               {...register("currency")}
               className="w-full p-3 border border-slate-300 rounded-md"
             >
-              <option value="Dollar">Dollar</option>
-              <option value="Euro">Euro</option>
-              <option value="Pound">Pound</option>
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="GBP">GBP (£)</option>
             </select>
           </div>
         </div>
 
         {/* Availability */}
         <div className="border border-slate-300 rounded-lg p-4 bg-white">
-          <label className="block text-sm font-medium mb-2">Availability</label>
-          {[
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-            "Sunday",
-          ].map((day) => (
-            <div key={day} className="flex items-center mb-2">
-              <input
-                type="checkbox"
-                {...register(`availability.${day}.enabled`)}
-                className="mr-2"
-                onChange={(e) => {
-                  if (!e.target.checked) {
-                    setValue(`availability.${day}.startTime`, "");
-                    setValue(`availability.${day}.endTime`, "");
-                  }
-                }}
-              />
-              <span className="mr-2">{day}</span>
-              <select
-                {...register(`availability.${day}.startTime`)}
-                className="p-2 border border-slate-300 rounded-md mr-2"
-                disabled={!getValues(`availability.${day}.enabled`)}
-              >
-                <option value="">Start Time</option>
-                {timeOptions.map((time) => (
-                  <option key={time} value={time}>
-                    {time}
-                  </option>
-                ))}
-              </select>
-              <select
-                {...register(`availability.${day}.endTime`)}
-                className="p-2 border border-slate-300 rounded-md"
-                disabled={!getValues(`availability.${day}.enabled`)}
-              >
-                <option value="">End Time</option>
-                {timeOptions.map((time) => (
-                  <option key={time} value={time}>
-                    {time}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ))}
+          <label className="block text-sm font-medium mb-4">Availability</label>
+          <div className="space-y-2">
+            {[
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday",
+              "Sunday",
+            ].map((day) => {
+              const isEnabled = watch(`availability.${day}.enabled`);
+              const startTime = watch(`availability.${day}.startTime`);
+              const endTime = watch(`availability.${day}.endTime`);
+
+              return (
+                <div
+                  key={day}
+                  className="flex items-center justify-between py-2"
+                >
+                  <div className="flex items-center gap-3 flex-1">
+                    <input
+                      type="checkbox"
+                      {...register(`availability.${day}.enabled`)}
+                      className="w-4 h-4"
+                      onChange={(e) => {
+                        if (!e.target.checked) {
+                          setValue(`availability.${day}.startTime`, "");
+                          setValue(`availability.${day}.endTime`, "");
+                        }
+                      }}
+                    />
+                    <span className="text-sm font-medium w-24">{day}</span>
+                  </div>
+
+                  {/* Time Range Display/Input */}
+                  <div className="flex items-center gap-2">
+                    {isEnabled ? (
+                      <>
+                        <select
+                          {...register(`availability.${day}.startTime`)}
+                          className="px-3 py-1.5 border border-slate-300 rounded text-sm"
+                        >
+                          <option value="">Start</option>
+                          {timeOptions.map((time) => (
+                            <option key={time} value={time}>
+                              {time}
+                            </option>
+                          ))}
+                        </select>
+                        <span className="text-sm text-gray-500">-</span>
+                        <select
+                          {...register(`availability.${day}.endTime`)}
+                          className="px-3 py-1.5 border border-slate-300 rounded text-sm"
+                        >
+                          <option value="">End</option>
+                          {timeOptions.map((time) => (
+                            <option key={time} value={time}>
+                              {time}
+                            </option>
+                          ))}
+                        </select>
+                      </>
+                    ) : (
+                      <span className="text-sm text-gray-400 w-[200px] text-right">
+                        {startTime && endTime ? `${startTime}-${endTime}` : ""}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
           {errors?.availability &&
             typeof errors.availability?.message === "string" && (
               <p className="text-red-500 text-sm mt-1">

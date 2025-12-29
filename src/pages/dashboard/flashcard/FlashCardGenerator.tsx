@@ -3,7 +3,6 @@ import DashboardHeading from "@/components/reusable/DashboardHeading";
 import FilePreviewList from "@/components/reusable/FilePreview";
 import FileUploader from "@/components/reusable/FileUploader";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
-import { Progress } from "@/components/ui/progress";
 import { Atom, Upload } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { FlashCardGeneratorDialog } from "./FlashCardGeneratorDialog";
@@ -99,7 +98,7 @@ const FlashCardGenerator = () => {
           title="Upload a Text or Documents for generate Flashcard"
           titleSize="text-xl"
           titleColor="text-[#0A0A0A]"
-          description="Upload a document, paste your notes, or select a video to automatically generate flashcards with AI."
+          description="Create custom flashcards from your images and prompts using AI"
           descColor="text-[#4A5565]"
           descFont="text-sm"
           className="mt-12 mb-8"
@@ -116,7 +115,7 @@ const FlashCardGenerator = () => {
         </Link>
       </div>
 
-      <div className="bg-white py-5 px-7 mb-12">
+      {/* <div className="bg-white py-5 px-7 mb-12">
         <div className="flex justify-between mb-6">
           <h3 className="text-sm text-[#0A0A0A]">Monthly Usage</h3>
         </div>
@@ -127,7 +126,7 @@ const FlashCardGenerator = () => {
           </div>
           <Progress value={70} />
         </div>
-      </div>
+      </div> */}
 
       <div className="w-full">
         <form
@@ -143,7 +142,7 @@ const FlashCardGenerator = () => {
               <Upload className="w-5 h-5 mb-1" /> Upload Media
             </h3>
             <p className="text-sm text-gray-500 mb-4">
-              Upload images or videos to generate AI-powered Flash Card
+              Upload images or pdf to generate AI-powered Flash Card
             </p>
             <FileUploader
               onFilesChange={(newFiles) => setFiles([...files, ...newFiles])}
@@ -153,9 +152,9 @@ const FlashCardGenerator = () => {
           {/* Right side */}
           <div className="p-6 border rounded-xl border-black/10 flex flex-col justify-between gap-4">
             <h3 className="text-lg font-semibold">Recent Uploads</h3>
-            <p className="text-sm text-gray-500">
+            {/* <p className="text-sm text-gray-500">
               Your uploaded files ready for flash card generation
-            </p>
+            </p> */}
 
             {/* Preview List */}
             <FilePreviewList files={files} onRemove={handleRemoveFile} />
