@@ -169,7 +169,7 @@ export function GenerateMcqWithFileModal({
         <DialogHeader>
           <DialogTitle>Generate Quiz</DialogTitle>
           <DialogDescription>
-            Make your quiz from your uploaded files and notes using AI.
+            Make your quiz from your uploaded files and prompt using AI.
           </DialogDescription>
         </DialogHeader>
 

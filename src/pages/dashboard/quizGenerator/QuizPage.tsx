@@ -21,7 +21,7 @@ const QuizPage = () => {
 
   const tabs = [
     { id: "overview", label: "Overview" },
-    { id: "myQuiz", label: "My Quiz" },
+    // { id: "myQuiz", label: "My Quiz" },
   ];
 
   return (
@@ -31,7 +31,7 @@ const QuizPage = () => {
           title="AI Quiz Generator Overview"
           titleSize="text-xl"
           titleColor="text-[#0A0A0A]"
-          description="Create custom quizzes from your images and videos using AI"
+          description="Create custom quizzes from your images and prompts using AI"
           descColor="text-[#4A5565]"
           descFont="text-sm"
           className="mt-12 mb-8"

@@ -46,7 +46,7 @@ export default function AllGeneratedQuiz() {
                 <DashboardHeading
                     title="Generated Quiz"
                     titleSize="text-xl"
-                    description="Create custom quizzes from your images and videos using AI"
+                    description="Create custom quizzes from your images and prompts using AI"
                     descColor="text-[#4A5565]"
                     descSize="text-sm"
                     className="mt-12 mb-12 space-y-1"
