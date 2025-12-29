@@ -5,8 +5,11 @@ import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { useState } from "react";
-import Pagination from "@/components/reusable/Pagination";
+import Pagination from "@/common/custom/Pagination";
 import MyMentorCard from "./MyMentorCard";
+import { useGetAllMentorQuery } from "@/store/features/mentor/mentor.api";
+import { Mentor } from "../types";
+import GlobalLoader from "@/common/GlobalLoader";
 
 export default function AllMentorPage() {
   const breadcrumbs: BreadcrumbItem[] = [
@@ -15,37 +18,29 @@ export default function AllMentorPage() {
     { name: "All Mentor", link: "/dashboard/all-mentor" },
   ];
 
-  // Dummy products (replace with API data)
-  const products = Array.from({ length: 57 }, (_, i) => ({
-    id: `p${i + 1}`,
-    name: `Product ${i + 1}`,
-    price: Math.floor(Math.random() * 1000) + 1,
-  }));
+  const { data: mentorsData, isLoading } = useGetAllMentorQuery({});
+  const mentors: Mentor[] = mentorsData?.data || [];
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
-  const [showAll, setShowAll] = useState(false);
+  const [showAll] = useState(false);
 
   // Config
-  const productsPerPage = 10;
-  const totalProducts = products.length;
+  const productsPerPage = 12; // 4 columns * 3 rows
+  const totalProducts = mentors.length;
   const totalPages = Math.ceil(totalProducts / productsPerPage);
 
-  // Handle toggle show all
-  const handleShowAll = () => setShowAll((prev) => !prev);
-
-  // Get products for current page or all
-  // const paginatedProducts = useMemo(() => {
-  //     if (showAll) return products;
-  //     const startIndex = (currentPage - 1) * productsPerPage;
-  //     return products.slice(startIndex, startIndex + productsPerPage);
-  // }, [products, currentPage, showAll]);
-
   // Showing range
-  const start = showAll ? 1 : (currentPage - 1) * productsPerPage + 1;
+  const start = (currentPage - 1) * productsPerPage;
   const end = showAll
     ? totalProducts
     : Math.min(currentPage * productsPerPage, totalProducts);
+
+  const currentMentors = showAll ? mentors : mentors.slice(start, end);
+
+  if (isLoading) {
+    return <GlobalLoader />;
+  }
 
   return (
     <div className="my-6">
@@ -94,39 +89,25 @@ export default function AllMentorPage() {
 
       <div className="">
         <div className="my-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {Array(6)
-            .fill(null)
-            .map(() => (
-              <MyMentorCard />
-            ))}
+          {currentMentors.length > 0 ? (
+            currentMentors.map((mentor) => (
+              <MyMentorCard key={mentor._id} mentor={mentor} />
+            ))
+          ) : (
+            <p>No mentors found.</p>
+          )}
         </div>
       </div>
 
       {/* Pagination */}
       <div className="mt-16 mb-32 flex justify-center space-x-5 ">
-        {!showAll && (
+        {!showAll && mentors.length > 0 && (
           <Pagination
-            title={"All Products"}
-            showText={`Showing ${start} to ${end} of ${totalProducts} Products`}
             totalPages={totalPages}
             currentPage={currentPage}
             onPageChange={setCurrentPage}
-            onToggleShowAll={handleShowAll}
-            showAll={showAll}
           />
         )}
-
-        {/* Show All Toggle */}
-        {/* {showAll && (
-                    <div className="flex justify-center">
-                        <button
-                            onClick={handleShowAll}
-                            className="px-6 py-2 bg-sunset-orange text-white rounded-lg"
-                        >
-                            Show Less
-                        </button>
-                    </div>
-                )} */}
       </div>
     </div>
   );

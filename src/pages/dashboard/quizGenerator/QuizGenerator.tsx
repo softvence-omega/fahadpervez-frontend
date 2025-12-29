@@ -3,7 +3,7 @@ import DashboardHeading from "@/components/reusable/DashboardHeading";
 import FilePreviewList from "@/components/reusable/FilePreview";
 import FileUploader from "@/components/reusable/FileUploader";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
-import { Progress } from "@/components/ui/progress";
+// import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Atom, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GenerateMcqWithFileModal } from "./GenerateMcqWithFileModal";
@@ -40,7 +40,7 @@ const QuizGenerator = () => {
             title="AI Quiz Generator"
             titleSize="text-xl"
             titleColor="text-[#0A0A0A]"
-            description="Create custom quizzes from your images using AI"
+            description="Create custom quizzes from your images and prompts using AI"
             descColor="text-[#4A5565]"
             descFont="text-sm"
             className="mt-12 mb-8"
@@ -58,7 +58,7 @@ const QuizGenerator = () => {
         </Link>
       </div>
 
-      <div className="bg-white py-5 px-7 mb-12">
+      {/* <div className="bg-white py-5 px-7 mb-12">
         <div className="flex justify-between mb-6">
           <h3 className="text-sm text-[#0A0A0A]">Monthly Usage</h3>
         </div>
@@ -69,7 +69,7 @@ const QuizGenerator = () => {
           </div>
           <Progress value={70} />
         </div>
-      </div>
+      </div> */}
 
       <div className="w-full">
         <form
@@ -99,6 +99,9 @@ const QuizGenerator = () => {
             {/* Preview List */}
             <FilePreviewList files={files} onRemove={handleRemoveFile} />
 
+            <p className="text-sm text-gray-500 -mb-4">
+              Write a prompt for generate quiz (ex. generate mcq on anatomy)
+            </p>
             {/* Note Textarea */}
             <textarea
               placeholder="Make your note!"

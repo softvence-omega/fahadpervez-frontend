@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useLocation, useParams } from "react-router-dom";
 import { Stats } from "@/components/quizOverview/type";
 import StatsRow from "@/components/quizOverview/StatsRow";
@@ -10,9 +11,7 @@ const MyQuizAnalysisTab: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const justSubmitted = location.state?.justSubmitted;
-  const { data: response, isLoading } = useGetGeneratedMCQQuery(
-    id || "6950ac7506cb71e538130837"
-  );
+  const { data: response, isLoading } = useGetGeneratedMCQQuery(id || "");
   const quizData = response?.data;
 
   if (isLoading) {

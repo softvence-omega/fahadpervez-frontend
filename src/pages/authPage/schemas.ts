@@ -86,8 +86,8 @@ export const updatePreferenceSchema = z.object({
   hourlyRate: z.number().min(0, "Hourly rate must be positive"),
   currency: z
     .string()
-    .default("Dollar")
-    .transform((val) => val ?? "Dollar"),
+    .default("USD")
+    .transform((val) => val ?? "USD"),
   availability: z
     .record(
       z.string(),
@@ -106,10 +106,51 @@ export const platformTrainingSchema = z.object({
   }),
 });
 
-export const payoutSetupSchema = z.object({
-  paymentMethod: z.string().min(1, "Payment method is required"),
-  paymentDetails: z.string().min(1, "Payment details are required"),
-});
+export const payoutSetupSchema = z
+  .object({
+    paymentMethod: z.string().min(1, "Payment method is required"),
+    accountHolderName: z.string().optional(),
+    bankName: z.string().optional(),
+    accountNumber: z.string().optional(),
+    routingNumber: z.string().optional(),
+    accountType: z.string().optional(),
+    paypalEmail: z.string().optional(), // In case needed
+  })
+  .superRefine((data, ctx) => {
+    if (data.paymentMethod === "Bank Transfer") {
+      if (!data.accountHolderName)
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Account Holder Name is required",
+          path: ["accountHolderName"],
+        });
+      if (!data.bankName)
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Bank Name is required",
+          path: ["bankName"],
+        });
+      if (!data.accountNumber)
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Account Number is required",
+          path: ["accountNumber"],
+        });
+      if (!data.routingNumber)
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Routing Number is required",
+          path: ["routingNumber"],
+        });
+      if (!data.accountType)
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Account Type is required",
+          path: ["accountType"],
+        });
+    }
+    // Add PayPal validation if needed
+  });
 
 // end mentor onboarding
 
