@@ -100,7 +100,7 @@ const QuizGenerator = () => {
             <FilePreviewList files={files} onRemove={handleRemoveFile} />
 
             <p className="text-sm text-gray-500 -mb-4">
-              Write a prompt for generate quiz (ex. generate mcq on anatomy)
+              Write a prompt for generate quiz (example: generate mcq on anatomy)
             </p>
             {/* Note Textarea */}
             <textarea

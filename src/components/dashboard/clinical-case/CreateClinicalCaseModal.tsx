@@ -74,7 +74,7 @@ const CreateClinicalCaseModal = ({ open, onClose }: Props) => {
 
         {/* input */}
         <div>
-          <label className="text-sm font-medium">Prompt (optional)</label>
+          <label className="text-sm font-medium">Prompt</label>
           <input
             type="text"
             value={prompt}

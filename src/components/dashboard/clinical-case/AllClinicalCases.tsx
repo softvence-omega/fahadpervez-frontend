@@ -239,7 +239,7 @@ const AllClinicalCases: React.FC = () => {
       {/* Tabs */}
       <div className="mb-6 border-b border-gray-200">
         <nav className="-mb-px flex space-x-8">
-          {(["All Cases", "AI Generated", "Complete Cases"] as TabType[]).map(
+          {(["All Cases", "AI Generated"] as TabType[]).map(
             (tab) => (
               <button
                 key={tab}

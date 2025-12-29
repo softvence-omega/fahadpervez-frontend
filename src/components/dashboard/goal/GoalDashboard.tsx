@@ -1,15 +1,30 @@
 import { CalendarRange, Clock, PencilLine, Target } from "lucide-react";
 import { DashboardProps } from "./type";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/features/auth/auth.slice";
 
 // Dashboard Component
 export const GoalDashboard: React.FC<DashboardProps> = ({
   goal,
   onChangeGoal,
 }) => {
+  const user = useSelector(selectUser);
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+
+    if (hour < 12) return "Good Morning";
+    if (hour < 17) return "Good Afternoon";
+    if (hour < 21) return "Good Evening";
+    return "Good Night";
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-sm p-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">Good Morning, Emma Harrison!</h1>
+        <h1 className="text-2xl font-bold">
+          {getGreeting()}, {user?.profile?.firstName}
+        </h1>
         <button
           onClick={onChangeGoal}
           className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center gap-2 cursor-pointer"

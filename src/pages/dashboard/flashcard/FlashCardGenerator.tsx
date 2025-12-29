@@ -159,6 +159,10 @@ const FlashCardGenerator = () => {
             {/* Preview List */}
             <FilePreviewList files={files} onRemove={handleRemoveFile} />
 
+            <p className="text-sm text-gray-500 -mb-4">
+              Write a prompt for generate Flashcards (example: generate
+              Flashcards on anatomy)
+            </p>
             {/* Note Textarea */}
             <textarea
               placeholder="Ask me anything ! make your flash card"

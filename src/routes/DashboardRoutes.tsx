@@ -59,6 +59,7 @@ import PrivateRoute from "./PrivateRoute";
 // import MCQPracticeWithSidebar from "@/components/Test";
 import BioDigitalExplorer from "@/pages/dashboard/bio-digital/Explorer";
 import BioDigitalDetailView from "@/pages/dashboard/bio-digital/DetailView";
+import MyQuizAnalysisTab from "@/pages/dashboard/quizGenerator/MyQuizAnalysisTab";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -224,6 +225,10 @@ const dashboardRoutes = {
     {
       path: "quiz-page/:id?",
       element: <QuizPage />,
+    },
+    {
+      path: "quiz-analysis/:id",
+      element: <MyQuizAnalysisTab />,
     },
     {
       path: "quiz-collection",

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
-import mcqBankImg from "@/assets/dashboard/MCQ Bank img.png";
+// import mcqBankImg from "@/assets/dashboard/MCQ Bank img.png";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { Clock10, Cog, FileText, Plus, Search, Target } from "lucide-react";
@@ -50,10 +50,10 @@ const McqBank = () => {
   // console.log("filter :", filteredMCQBank, "search :", searchTerm);
 
   return (
-    <div className="my-6 md:my-10">
+    <div className="my-6 md:my-10 px-2">
       <Breadcrumb breadcrumbs={breadcrumbs} />
 
-      <div className="md:flex items-center gap-8 border border-slate-300 rounded-[8px] py-6 px-10">
+      {/* <div className="md:flex items-center gap-8 border border-slate-300 rounded-[8px] py-6 px-10">
         <img src={mcqBankImg} alt="" className="mx-auto" />
         <div>
           <h3 className="text-xl text-slate-800 font-semibold mb-3">
@@ -65,7 +65,7 @@ const McqBank = () => {
             already seen specific questions in previous Qbank sessions.
           </p>
         </div>
-      </div>
+      </div> */}
 
       <div className="md:flex justify-between items-center">
         <DashboardHeading
@@ -75,7 +75,7 @@ const McqBank = () => {
           description="AI-powered adaptive questioning system"
           descColor="text-[#4A5565]"
           descFont="text-sm"
-          className="mt-12 mb-8"
+          className="mb-8"
         />
         {/* <Link to={"/dashboard/quiz-generator"}> */}
         <PrimaryButton

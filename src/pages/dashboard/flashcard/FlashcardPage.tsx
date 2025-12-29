@@ -1,9 +1,7 @@
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { Plus } from "lucide-react";
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import FlashCardOverview from "./FlashCardOverview";
 import FlashCardCollection from "./FlashCardCollection";
 import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
@@ -14,16 +12,16 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const FlashcardPage = () => {
-  const [activeTab, setActiveTab] = useState("flashcard");
+  // const [activeTab, setActiveTab] = useState("flashcard");
 
   // Only "overview" stays as tab
-  const tabs = [
-    { id: "flashcard", label: "Flashcards" },
-    { id: "overview", label: "Overview" },
-  ];
+  // const tabs = [
+  //   { id: "flashcard", label: "Flashcards" },
+  //   { id: "overview", label: "Overview" },
+  // ];
 
   return (
-    <div>
+    <div className="my-2 px-2">
       <Breadcrumb breadcrumbs={breadcrumbs} />
       <div className="md:flex justify-between items-center">
         <DashboardHeading
@@ -52,7 +50,7 @@ const FlashcardPage = () => {
 
       <div>
         {/* Tab Buttons */}
-        <div className="flex gap-4 my-6 items-end">
+        {/* <div className="flex gap-4 my-6 items-end">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -67,12 +65,13 @@ const FlashcardPage = () => {
               {tab.label}
             </button>
           ))}
-        </div>
+        </div> */}
 
         {/* Tab Content */}
         <div>
-          {activeTab === "overview" && <FlashCardOverview />}
-          {activeTab === "flashcard" && <FlashCardCollection />}
+          <FlashCardCollection />
+          {/* {activeTab === "overview" && <FlashCardOverview />}
+          {activeTab === "flashcard" && <FlashCardCollection />} */}
         </div>
       </div>
     </div>

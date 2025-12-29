@@ -20,10 +20,10 @@ export default function MyMentorCard({ mentor }: MyMentorCardProps) {
             <img
               src={
                 mentor?.profile_photo ||
-                "https://media.istockphoto.com/id/2194078950/photo/profile-picture-of-smiling-confident-arabic-businessman.webp?a=1&b=1&s=612x612&w=0&k=20&c=42Z7FDi1u5Ogevtd0xMUkTWM7hDzrre4YOlbHKvK_T8="
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZYgW4c4mScN4iMaoZM2YNPO2iV7aaxtmDVg&s"
               }
               alt={`${mentor?.firstName} ${mentor?.lastName}`}
-              className="w-10 h-10 rounded-full object-cover"
+              className="w-10 h-10 rounded-full object-cover border"
             />
             <div className="space-y-[6px]">
               <h3 className="font-medium text-nowrap">
@@ -33,7 +33,8 @@ export default function MyMentorCard({ mentor }: MyMentorCardProps) {
             Availability: Weekends, Evenings
           </p> */}
               <p className="text-sm text-[#6B7280] text-nowrap">
-                {mentor?.specialty} • {mentor?.languages?.join(", ") || "English"}
+                {mentor?.specialty} •{" "}
+                {mentor?.languages?.join(", ") || "English"}
               </p>
             </div>
           </div>
