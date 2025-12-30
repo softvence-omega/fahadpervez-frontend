@@ -16,8 +16,8 @@ export default function Preferences({
   onNext,
   onBack,
   defaultValues,
-  // onSkip,
-}: Props) {
+}: // onSkip,
+Props) {
   type FormValues = PreferencesData;
 
   const {
