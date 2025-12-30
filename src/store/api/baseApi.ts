@@ -88,6 +88,7 @@ export const baseAPI = createApi({
     "professionalType",
     "BioDigital",
     "GeneratedMCQ",
+    "GeneratedNotes",
   ],
   endpoints: () => ({}),
 });

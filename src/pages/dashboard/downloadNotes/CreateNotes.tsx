@@ -1,33 +1,68 @@
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import FilePreviewList from "@/components/reusable/FilePreview";
 import FileUploader from "@/components/reusable/FileUploader";
-import { ArrowLeft, Atom, Upload } from "lucide-react";
+import { useGenerateNoteMutation } from "@/store/features/note/NoteAPI";
+import { ArrowLeft, Atom, Upload, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function CreateNotes() {
+  const navigate = useNavigate();
+  const [generateNote, { isLoading }] = useGenerateNoteMutation();
 
   const [files, setFiles] = useState<File[]>([]);
   const [note, setNote] = useState("");
-  const [noteName, setNoteName] = useState("Cardiology Note");
+  const [noteName, setNoteName] = useState("");
   const [noteFormat, setNoteFormat] = useState("Bullet point");
 
   const handleRemoveFile = (index: number) => {
     setFiles(files.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ files, note, noteName, noteFormat });
+
+    if (!files.length) {
+      toast.error("Please upload a file");
+      return;
+    }
+    if (!noteName) {
+      toast.error("Please enter a note name");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", files[0]); // API expects single file 'file'
+
+    // Construct the data object as JSON string
+    const dataPayload = {
+      make_your_note: note,
+      topic_name: noteName,
+      note_format: noteFormat,
+    };
+    formData.append("data", JSON.stringify(dataPayload));
+
+    try {
+      const res = await generateNote(formData).unwrap();
+      if (res.success) {
+        toast.success("Note generated successfully!");
+        navigate("/dashboard/download-notes");
+      }
+    } catch (error: any) {
+      console.error("Failed to generate note:", error);
+      toast.error(error?.data?.message || "Failed to generate note");
+    }
   };
 
   return (
     <div className="w-full">
       <div className="flex items-center gap-3">
-        <Link to={'/dashboard/download-notes'} className="mb-7">
-          <ArrowLeft /></Link>
+        <Link to={"/dashboard/download-notes"} className="mb-7">
+          <ArrowLeft />
+        </Link>
         <DashboardHeading
-          title="Create  Notes"
+          title="Create Notes"
           titleSize="text-xl"
           description="Builds confidence through repeated practice."
           className="mt-12 mb-12 space-y-1"
@@ -47,7 +82,9 @@ export default function CreateNotes() {
             <p className="text-sm text-gray-500 mb-4">
               Upload images or videos to generate AI-powered Notes
             </p>
-            <FileUploader onFilesChange={(newFiles) => setFiles([...files, ...newFiles])} />
+            <FileUploader
+              onFilesChange={(newFiles) => setFiles([...files, ...newFiles])}
+            />
           </div>
 
           {/* Right side */}
@@ -62,22 +99,22 @@ export default function CreateNotes() {
 
             {/* Note Textarea */}
             <textarea
-              placeholder="Make your note!"
+              placeholder="Make your note! (optional instructions)"
               value={note}
               onChange={(e) => setNote(e.target.value)}
               className="w-full border border-black/10 rounded p-3 text-sm"
+              rows={4}
             />
 
             {/* Dropdowns */}
             <div>
-              <label className="block text-sm mb-1">Note Name</label>
+              <label className="block text-sm mb-1">Note Name / Topic</label>
               <input
                 value={noteName}
                 onChange={(e) => setNoteName(e.target.value)}
-                placeholder="Enter note name"
+                placeholder="Enter topic name (e.g. Cardiology Basics)"
                 className="w-full border rounded p-2 text-sm border-black/10"
               />
-
             </div>
 
             <div>
@@ -87,32 +124,33 @@ export default function CreateNotes() {
                 onChange={(e) => setNoteFormat(e.target.value)}
                 className="w-full border rounded border-black/10 p-2 text-sm"
               >
-                <option>Bullet point</option>
-                <option>Summary</option>
-                <option>Paragraph</option>
+                <option value="Bullet point">Bullet point</option>
+                <option value="Summary">Summary</option>
+                <option value="Paragraph">Paragraph</option>
               </select>
             </div>
 
             {/* Buttons */}
             <div className="flex gap-3">
               <button
-                type="button"
-                className="flex-1 bg-cyan-700 text-white py-2 rounded-lg hover:bg-cyan-900"
-              >
-                Summarize Notes
-              </button>
-              <button
                 type="submit"
-                className="flex-1 flex justify-center gap-4 bg-slate-500 text-white py-2 rounded-lg hover:bg-slate-700"
+                disabled={isLoading}
+                className="flex-1 flex justify-center items-center gap-2 bg-slate-500 text-white py-2 rounded-lg hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Atom />
-                Generate Notes
+                {isLoading ? (
+                  <>
+                    <Loader2 className="animate-spin w-4 h-4" /> Generating...
+                  </>
+                ) : (
+                  <>
+                    <Atom className="w-4 h-4" /> Generate Notes
+                  </>
+                )}
               </button>
             </div>
           </div>
         </form>
-
       </div>
     </div>
-  )
+  );
 }
