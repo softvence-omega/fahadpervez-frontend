@@ -249,7 +249,7 @@ const Quiz = () => {
         </button>
       </Link>
 
-      <div className="flex gap-4 my-10">
+      <div className="flex gap-4 my-5">
         {/* Sidebar */}
         {/* <div className="w-full md:w-1/4 bg-white p-4 rounded-lg shadow">
           <h2 className="font-semibold mb-2">
@@ -459,14 +459,21 @@ const Quiz = () => {
                           <p
                             className={`font-bold mb-1 ${
                               isOptionCorrect
-                                ? "text-green-600"
+                                ? "text-green-700"
                                 : "text-red-500"
                             }`}
                           >
                             [{isOptionCorrect ? "Correct - " : ""}Choice{" "}
                             {option.value}]
                           </p>
-                          <p className="text-gray-700 leading-relaxed">
+
+                          <p
+                            className={` ${
+                              isOptionCorrect
+                                && "text-green-700"
+                                //: "text-red-400"
+                            }`}
+                          >
                             {option.explanation || "No explanation provided."}
                           </p>
                         </div>

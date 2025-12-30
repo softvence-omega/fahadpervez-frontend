@@ -2,13 +2,15 @@ import Pagination from "@/common/custom/Pagination";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 // import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { useGetSingleUserNotesQuery } from "@/store/features/note/NoteAPI";
-import { Filter, Search } from "lucide-react";
+import { Filter, Plus, Search } from "lucide-react";
 import { useState } from "react";
 // import { Link } from "react-router-dom";
 import FlashCardFilterModal from "../flashcard/FlashCardFilterModal";
 import AllNotesTab from "./AllNotesTab";
 import GeneratedNotes from "./GeneratedNotes";
 import RecentDownloadsTab from "./RecentDownloadsTab";
+import { Link } from "react-router-dom";
+import PrimaryButton from "@/components/reusable/PrimaryButton";
 
 export default function DownloadNotes() {
   const [activeTab, setActiveTab] = useState("allNotes");
@@ -27,8 +29,8 @@ export default function DownloadNotes() {
 
   const tabs = [
     { id: "allNotes", label: "All Notes" },
-    // { id: "generatedNotes", label: "Generated Notes" },
-    { id: "recentDownloads", label: "Recent Downloads" },
+    { id: "generatedNotes", label: "Generated Notes" },
+    // { id: "recentDownloads", label: "Recent Downloads" },
   ];
 
   // Fetch notes with query parameters
@@ -121,7 +123,7 @@ export default function DownloadNotes() {
           </button>
         </div>
 
-        {/* <Link to={"/dashboard/create-note"}>
+        <Link to={"/dashboard/create-note"}>
           <PrimaryButton
             bgType="solid"
             iconPosition="left"
@@ -131,7 +133,7 @@ export default function DownloadNotes() {
           >
             Create Notes
           </PrimaryButton>
-        </Link> */}
+        </Link>
       </div>
 
       {/* Active Filters Display */}
