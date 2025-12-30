@@ -1,5 +1,6 @@
 import { baseAPI } from "@/store/api/baseApi";
 import { DifficultyFilter } from "@/types";
+import { UploadMode } from "../MCQ/types/addMoreMcq";
 import {
   FlashCardParams,
   FlashcardResponse,
@@ -83,6 +84,19 @@ export const flashCardApi = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ["FlashCard"],
     }),
+
+    addMoreFlashcardToFlashcardBank: build.mutation<
+      void,
+      { flashCardBankId: string; data: FormData } & UploadMode
+    >({
+      query: ({ data, flashCardBankId, key }) => ({
+        url: `/flash-card/upload-more-flash-card/${flashCardBankId}`,
+        method: "PUT",
+        body: data,
+        params: { key },
+      }),
+      invalidatesTags: ["FlashCard"],
+    }),
   }),
 });
 
@@ -94,4 +108,5 @@ export const {
   useDeleteFlashCardBankMutation,
   useUpdateSingleFlashCardMutation,
   useDeleteSingleFlashCardMutation,
+  useAddMoreFlashcardToFlashcardBankMutation,
 } = flashCardApi;

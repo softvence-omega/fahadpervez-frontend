@@ -37,7 +37,7 @@ export type SelectedNode = {
 const StudyMode = () => {
   //manage  key
   const dispatch = useAppDispatch();
-  const { contentType, studentType } = useAppSelector(
+  const { contentType, contentFor, profileType } = useAppSelector(
     (state: RootState) => state.staticContent
   );
   const [isSubjectModalOpen, setIsSubjectModalOpen] = useState(false);
@@ -60,7 +60,8 @@ const StudyMode = () => {
   const queryArg = isValidSelection
     ? {
         key: contentType,
-        studentType,
+        contentFor,
+        profileType,
         subject: selectedNode.subject.trim(),
         system: selectedNode.system.trim(),
         topic: selectedNode.topic.trim(),
@@ -78,20 +79,25 @@ const StudyMode = () => {
   const [bankId, setBankId] = useState<string>("");
   const totalPages = mcqBank?.meta?.totalPages || 1;
 
-  // handle update table of content
   const [initialContent, setInitialContent] = useState<TOCItem | null>(null);
 
-  console.log("initialContent", initialContent);
+  const mcqBankLength = mcqBank?.data?.length === 0;
+
+  const handleOpenSubjectModal = () => {
+    setIsSubjectModalOpen(true);
+    setInitialContent(null);
+  };
 
   return (
     <div>
       <div className="w-full  flex  items-start gap-6 pb-6">
         <TableContent
-          openModal={() => setIsSubjectModalOpen(true)}
+          openModal={handleOpenSubjectModal}
           setSelectedNode={(node) => {
             setSelectedNode(node);
             setBankId("");
           }}
+          selectedNode={selectedNode}
           initialContent={initialContent}
           setInitialContent={setInitialContent}
         />
@@ -109,6 +115,8 @@ const StudyMode = () => {
           <div>
             {isLoading ? (
               <Spinner />
+            ) : mcqBankLength ? (
+              <p>No {contentType} found</p>
             ) : (
               <div>
                 {contentType === "MCQ" && mcqBank && (

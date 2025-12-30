@@ -1,75 +1,76 @@
 import CommonSpace from "@/common/space/CommonSpace";
-import { HiOutlineBookOpen } from "react-icons/hi2";
 import DashBoardCard from "../reuseable/DashBoardCard";
 import DashboardTopSection from "../reuseable/DashboardTopSection";
 
+import { useGetDashboardDataQuery } from "@/store/features/adminDashboard/UserManagement/studentsManagementApi";
 import { LuUsers } from "react-icons/lu";
-// import { useGetDashboardDataQuery } from "@/store/features/adminDashboard/UserManagement/studentsManagementApi";
-
-const dashboardStats = [
-  {
-    title: "Total Students",
-    value: 1250,
-    subtitle: "Up 15% this month",
-    icon: LuUsers,
-    subtitleColor: "text-green-500",
-    iconColor: "text-[#09090B]",
-  },
-  {
-    title: "Total Professionals",
-    value: `24,200`,
-    icon: LuUsers,
-    iconColor: "text-[#09090B]",
-    subtitleColor: "text-green-500",
-    subtitle: "Up 25% this month",
-  },
-  {
-    title: "Active Mentors",
-    value: `200`,
-    icon: LuUsers,
-    iconColor: "text-[#09090B]",
-    subtitleColor: "text-green-500",
-    subtitle: "Up 25% this month",
-  },
-  {
-    title: "Content Items",
-    value: `500`,
-    icon: HiOutlineBookOpen,
-    iconColor: "text-[#09090B]",
-    subtitleColor: "text-green-500",
-    subtitle: "Up 25% this month",
-  },
-  {
-    title: "Quiz Attempts",
-    value: 320,
-    subtitle: "Up 85% this month",
-
-    icon: LuUsers,
-    iconColor: "text-[#09090B]",
-    subtitleColor: "text-green-500",
-  },
-
-  {
-    title: "Engagement Rate",
-    value: 87,
-    subtitle: "Up 19.8% this month",
-    icon: LuUsers,
-    iconColor: "text-[#09090B]",
-    subtitleColor: "text-green-500",
-  },
-  {
-    title: "Daily AI Requests",
-    value: 87,
-    subtitle: "Up 18% this month",
-    icon: LuUsers,
-    iconColor: "text-[#09090B]",
-    subtitleColor: "text-green-500",
-  },
-];
 
 const TopSectionCard = () => {
-  // const { data, isError, isLoading, error, refetch, isSuccess } =
-  //   useGetDashboardDataQuery(undefined);
+  const { data } = useGetDashboardDataQuery();
+  const dashboardData = data?.data;
+
+  const dashboardStats = [
+    {
+      title: dashboardData?.students?.title || "Total Students",
+      value: dashboardData?.students?.total ?? 0,
+      subtitle: `${
+        (dashboardData?.students?.change ?? 0) >= 0 ? "Up" : "Down"
+      } ${Math.abs(dashboardData?.students?.change ?? 0)}% ${
+        dashboardData?.students?.period || "from last month"
+      }`,
+      icon: LuUsers,
+      iconColor: "text-[#09090B]",
+      subtitleColor:
+        dashboardData?.students?.trend === "increase"
+          ? "text-green-500"
+          : "text-red-500",
+    },
+    {
+      title: dashboardData?.professionals?.title || "Total Professionals",
+      value: dashboardData?.professionals?.total ?? 0,
+      subtitle: `${
+        (dashboardData?.professionals?.change ?? 0) >= 0 ? "Up" : "Down"
+      } ${Math.abs(dashboardData?.professionals?.change ?? 0)}% ${
+        dashboardData?.professionals?.period || "from last month"
+      }`,
+      icon: LuUsers,
+      iconColor: "text-[#09090B]",
+      subtitleColor:
+        dashboardData?.professionals?.trend === "increase"
+          ? "text-green-500"
+          : "text-red-500",
+    },
+    {
+      title: dashboardData?.mentors?.title || "Active Mentors",
+      value: dashboardData?.mentors?.total ?? 0,
+      subtitle: `${
+        (dashboardData?.mentors?.change ?? 0) >= 0 ? "Up" : "Down"
+      } ${Math.abs(dashboardData?.mentors?.change ?? 0)}% ${
+        dashboardData?.mentors?.period || "from last month"
+      }`,
+      icon: LuUsers,
+      iconColor: "text-[#09090B]",
+      subtitleColor:
+        dashboardData?.mentors?.trend === "increase"
+          ? "text-green-500"
+          : "text-red-500",
+    },
+    {
+      title: dashboardData?.aiRequest?.title || "Daily AI Requests",
+      value: dashboardData?.aiRequest?.total ?? 0,
+      subtitle: `${
+        (dashboardData?.aiRequest?.change ?? 0) >= 0 ? "Up" : "Down"
+      } ${Math.abs(dashboardData?.aiRequest?.change ?? 0)}% ${
+        dashboardData?.aiRequest?.period || "from yesterday"
+      }`,
+      icon: LuUsers,
+      iconColor: "text-[#09090B]",
+      subtitleColor:
+        dashboardData?.aiRequest?.trend === "increase"
+          ? "text-green-500"
+          : "text-red-500",
+    },
+  ];
 
   return (
     <div>

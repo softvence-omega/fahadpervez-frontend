@@ -1,3 +1,5 @@
+import { ContentFor } from "../../../staticContent/staticContentSlice";
+
 interface MCQOption {
   option: string;
   optionText: string;
@@ -19,7 +21,8 @@ export interface ManualMCQBank {
   topic: string;
   subtopic?: string;
   type: string;
-  studentType: string;
+  profileType: string;
+  contentFor: ContentFor;
   mcqs: MCQ[];
 }
 

@@ -22,7 +22,15 @@ const persistConfig = {
 const staticContentPersistConfig = {
   key: "staticContent",
   storage,
-  whitelist: ["studentType"],
+  whitelist: [
+    "studentType",
+    "profileType",
+    "contentType",
+    "contentFor",
+    "type",
+
+    "bankId",
+  ],
 };
 const persistedReducer = persistReducer(persistConfig, authReducer);
 const persistedStaticContentReducer = persistReducer(

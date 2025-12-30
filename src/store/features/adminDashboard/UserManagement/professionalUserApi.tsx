@@ -1,47 +1,39 @@
 import { baseAPI } from "@/store/api/baseApi";
 import {
-  GetStudentsParams,
-  GetStudentsResponse,
-  StudentItem,
-} from "./type/student/Students";
+  GetProfessionalsParams,
+  ProfessionalResponse,
+  SingleProfessionalResponse,
+} from "./type/professional/professional";
 
 export const professionalUserApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
-    getDashboardData: build.query<any, void>({
-      query: () => ({
-        url: "/admin/overview",
-        method: "GET",
-      }),
-    }),
-
-    getStudentsData: build.query<GetStudentsResponse, GetStudentsParams>({
+    getProfessionalData: build.query<
+      ProfessionalResponse,
+      GetProfessionalsParams
+    >({
       query: (params) => ({
-        url: `/admin/students`,
+        url: `/admin/professionals`,
         method: "GET",
         params,
       }),
-      providesTags: ["Student"],
+      providesTags: ["professionalsProfile"],
     }),
 
-    getSingleStudents: build.query<StudentItem, string>({
+    getSingleProfessional: build.query<SingleProfessionalResponse, string>({
       query: (id) => ({
-        url: `/admin/student/${id}`,
+        url: `/admin/professional/${id}`,
         method: "GET",
       }),
-      transformResponse: (response: {
-        success: boolean;
-        message: string;
-        data: StudentItem;
-      }) => response.data,
-      providesTags: ["Student"],
+
+      providesTags: ["professionalsProfile"],
     }),
 
-    deleteSingleStudent: build.mutation<void, string>({
+    deleteProfessional: build.mutation<void, string>({
       query: (id) => ({
-        url: `/admin/student/${id}`,
+        url: `/admin/professional/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Student"],
+      invalidatesTags: ["professionalsProfile"],
     }),
   }),
 
@@ -50,8 +42,7 @@ export const professionalUserApi = baseAPI.injectEndpoints({
 
 // Export hooks
 export const {
-  useGetDashboardDataQuery,
-  useGetStudentsDataQuery,
-  useGetSingleStudentsQuery,
-  useDeleteSingleStudentMutation,
+  useGetProfessionalDataQuery,
+  useGetSingleProfessionalQuery,
+  useDeleteProfessionalMutation,
 } = professionalUserApi;

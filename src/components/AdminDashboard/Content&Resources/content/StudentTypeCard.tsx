@@ -1,13 +1,10 @@
-import AlertDialogBox from "@/common/custom/AlertDialogBox";
 import CommonHeader from "@/common/header/CommonHeader";
 import { toSlug } from "@/help/help";
 import { ProfileType } from "@/store/features/adminDashboard/ContentResources/MCQ/types/student";
-import { setStudentType } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
+import { setProfileType } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
 import { BookOpen, GraduationCap } from "lucide-react";
 import { FC } from "react";
 import { FaUserDoctor } from "react-icons/fa6";
-import { RiDeleteBinLine } from "react-icons/ri";
-import { TbEdit } from "react-icons/tb";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -15,18 +12,8 @@ interface CardProps {
   data: ProfileType;
   className?: string;
   index: number;
-  handleEdit: () => void;
-  handleDelete: (id: string) => void;
-  isDeleting?: boolean;
 }
-const StudentTypeCard: FC<CardProps> = ({
-  data,
-  className,
-  index,
-  handleEdit,
-  handleDelete,
-  isDeleting,
-}) => {
+const StudentTypeCard: FC<CardProps> = ({ data, className, index }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   return (
@@ -43,11 +30,8 @@ const StudentTypeCard: FC<CardProps> = ({
                 <FaUserDoctor size={24} className="text-[#030213]" />
               )}
             </div>
-            <CommonHeader className="">{data.typeName}</CommonHeader>
+            <CommonHeader className=" ">{data.typeName}</CommonHeader>
           </div>
-          <span className="cursor-pointer" onClick={handleEdit}>
-            <TbEdit size={20} className="text-[#030213]" />
-          </span>
         </div>
 
         <div className="space-y-3 mt-7.5 pb-3">
@@ -72,26 +56,13 @@ const StudentTypeCard: FC<CardProps> = ({
           <CommonHeader
             onClick={() => {
               navigate(`dashboard/${toSlug(data.typeName)}`);
-              dispatch(setStudentType(data.typeName));
+              dispatch(setProfileType(data.typeName));
             }}
             className="w-full flex items-center gap-2 cursor-pointer   !text-sm !font-inter !text-[#030213] !font-medium"
           >
             <BookOpen size={16} className="text-[#030213] " />
             Manage Content
           </CommonHeader>
-
-          <AlertDialogBox
-            trigger={
-              <RiDeleteBinLine
-                size={20}
-                className="text-[#030213] hover:text-red-600 transition-colors duration-200"
-              />
-            }
-            action={async () => handleDelete(data._id)}
-            title="Delete Student Type"
-            description="Are you sure you want to delete this student type?"
-            isLoading={isDeleting ?? false}
-          />
         </div>
       </div>
     )

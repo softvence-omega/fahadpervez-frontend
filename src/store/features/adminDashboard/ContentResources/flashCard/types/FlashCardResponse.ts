@@ -1,4 +1,5 @@
 import { DifficultyLevel } from "@/types";
+import { ContentFor } from "../../../staticContent/staticContentSlice";
 
 export type SingleFlashCardParams = {
   page?: number;
@@ -65,6 +66,7 @@ export type ManualFlashCardUpload = {
   topic: string;
   subtopic?: string;
   type: "study" | "exam";
-  studentType: string;
+  profileType: string;
+  contentFor: ContentFor;
   flashCards: FlashCard[];
 };

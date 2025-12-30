@@ -1,8 +1,12 @@
 import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
-import { useBulkUploadFlashCardMutation } from "@/store/features/adminDashboard/ContentResources/flashCard/flashCardSlice";
+import {
+  useAddMoreFlashcardToFlashcardBankMutation,
+  useBulkUploadFlashCardMutation,
+} from "@/store/features/adminDashboard/ContentResources/flashCard/flashCardSlice";
+import { setUploadIntoBank } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
 import { RootState } from "@/store/store";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ActionButtons from "../ActionButtons";
 import RequiredColumnsList from "../medical/studyMode/RequiredColumsList";
@@ -29,13 +33,14 @@ const BulkUploadFlashCard = () => {
   const [detectedCount, setDetectedCount] = useState(0);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const selectFormData = useSelector(
-    (state: RootState) => state.staticContent.formData
-  );
-  const contentType = useSelector(
-    (state: RootState) => state.staticContent.contentType
-  );
-
+  const {
+    contentType,
+    uploadIntoBank,
+    bankId,
+    formData: selectFormData,
+  } = useSelector((state: RootState) => state.staticContent);
+  const [addMoreFlashcardToFlashcardBank, { isLoading: addMoreLoading }] =
+    useAddMoreFlashcardToFlashcardBankMutation();
   const [bulkUploadFlashCard, { isLoading: isUploading }] =
     useBulkUploadFlashCardMutation();
   const handleFileSelect = (file: File, detectedCount: number) => {
@@ -43,6 +48,8 @@ const BulkUploadFlashCard = () => {
     setDetectedCount(detectedCount);
     console.log(`File uploaded: ${file.name}, rows detected: ${detectedCount}`);
   };
+
+  const dispatch = useDispatch();
 
   const handleImport = async () => {
     if (!selectedFile) {
@@ -52,15 +59,23 @@ const BulkUploadFlashCard = () => {
 
     try {
       const formData = new FormData();
-
       formData.append("file", selectedFile);
-      if (selectFormData) {
-        formData.append("data", JSON.stringify(selectFormData));
+      if (uploadIntoBank && bankId) {
+        addMoreFlashcardToFlashcardBank({
+          flashCardBankId: bankId,
+          data: formData,
+          key: "bulk",
+        });
+        dispatch(setUploadIntoBank(false));
+      } else {
+        if (selectFormData) {
+          formData.append("data", JSON.stringify(selectFormData));
+        }
+        if (formData) {
+          await bulkUploadFlashCard(formData);
+        }
       }
-      if (formData) {
-        await bulkUploadFlashCard(formData);
-        navigate(`/admin/content-management/dashboard/${contentType}`);
-      }
+      navigate(`/admin/content-management/dashboard/${contentType}`);
     } catch (error) {
       console.error("Upload error:", error);
     }
@@ -96,7 +111,7 @@ const BulkUploadFlashCard = () => {
       <div className="mb-6">
         <ActionButtons
           onSavePublish={handleImport}
-          isLoading={isUploading}
+          isLoading={isUploading || addMoreLoading}
           onCancel={handleBack}
         />
       </div>

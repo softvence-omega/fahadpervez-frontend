@@ -9,6 +9,7 @@ import {
   usePostStudyModeTreeMutation,
   useUpdateStudyModeTreeMutation,
 } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import { ContentFor } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
 import { useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
 import { Trash2 } from "lucide-react";
@@ -30,7 +31,8 @@ type System = {
 export type PostStudyModeTree = {
   subjectName: string;
   systems: System[];
-  studentType: string;
+  profileType: string;
+  contentFor: ContentFor;
 };
 
 // Zod validation schema
@@ -63,22 +65,34 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
   const [subjectName, setSubjectName] = useState("");
   const [systems, setSystems] = useState<System[]>([]);
   const [errors, setErrors] = useState<any>({});
-  const { studentType } = useAppSelector(
+  const { profileType, contentFor } = useAppSelector(
     (state: RootState) => state.staticContent
   );
 
   const addSystem = () => setSystems([...systems, { name: "", topics: [] }]);
+  // const addTopic = (sIdx: number) =>
+  //   setSystems((prev) =>
+  //     prev.map((sys, idx) =>
+  //       idx === sIdx
+  //         ? {
+  //             ...sys,
+  //             topics: [...sys.topics, { topicName: "", subTopics: [""] }],
+  //           }
+  //         : sys
+  //     )
+  //   );
   const addTopic = (sIdx: number) =>
     setSystems((prev) =>
       prev.map((sys, idx) =>
         idx === sIdx
           ? {
               ...sys,
-              topics: [...sys.topics, { topicName: "", subTopics: [""] }],
+              topics: [...sys.topics, { topicName: "", subTopics: [] }],
             }
           : sys
       )
     );
+
   const addSubtopic = (sIdx: number, tIdx: number) =>
     setSystems((prev) =>
       prev.map((sys, sysIdx) =>
@@ -176,10 +190,8 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
 
   useEffect(() => {
     if (initialContent) {
-      // For the new TOCItem, the root title is the subject
       setSubjectName(initialContent.title);
 
-      // Convert children → systems
       const mappedSystems: System[] = (initialContent.children ?? []).map(
         (systemItem) => ({
           name: systemItem.title,
@@ -202,7 +214,8 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
     const payload: PostStudyModeTree = {
       subjectName,
       systems,
-      studentType,
+      profileType,
+      contentFor,
     };
     const validation = postStudyModeTreeSchema.safeParse(payload);
 
@@ -232,7 +245,7 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
   const inputClass = {
     label: "block text-sm font-normal text-[#020617] font-inter mb-2",
     input:
-      "w-full border border-[#CBD5E1] rounded-md p-3 outline-none text-[#94A3B8] text-xs ",
+      "w-full border border-[#CBD5E1] rounded-md p-3 outline-none text-[#94A3B8] text-xs  ",
     error: "text-red-500 text-xs mt-1",
   };
 
@@ -250,14 +263,14 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
             }
           />
 
-          <div>
-            <label className={inputClass.label}>System Name</label>
+          <div className="">
+            <label className={inputClass.label}>Subject Name</label>
             <input
               type="text"
               value={subjectName}
               onChange={(e) => setSubjectName(e.target.value)}
               placeholder="e.g., Anatomy"
-              className={inputClass.input}
+              className={`${inputClass.input} bg-blue-600! text-white!`}
             />
             {errors?.subjectName?._errors && (
               <p className={inputClass.error}>
@@ -275,7 +288,7 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
             {systems.map((system, sIdx) => (
               <div
                 key={sIdx}
-                className="border border-black/10 rounded-lg p-3 mb-3 bg-gray-50"
+                className="border border-black/10 rounded-lg p-3 mb-3 "
               >
                 <div className="flex items-center gap-2 mb-2">
                   <input
@@ -283,7 +296,7 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
                     value={system.name}
                     onChange={(e) => updateSystemName(sIdx, e.target.value)}
                     placeholder="System name (e.g., Cardiovascular System)"
-                    className={`!bg-[#EFF6FF] ${inputClass.input}`}
+                    className={`${inputClass.input} !bg-[#0f0f0f] !text-white`}
                   />
                   <button
                     onClick={() => removeSystem(sIdx)}
@@ -322,7 +335,9 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
                             updateTopicName(sIdx, tIdx, e.target.value)
                           }
                           placeholder="Topic name (e.g., Heart)"
-                          className={inputClass.input}
+                          className={`
+                            ${inputClass.input} bg-[#6794c9]! text-white!
+                          `}
                         />
                         <button
                           onClick={() => removeTopic(sIdx, tIdx)}
@@ -369,7 +384,7 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
                                 )
                               }
                               placeholder="Subtopic name (e.g., Heart)"
-                              className={inputClass.input}
+                              className={`${inputClass.input} bg-[#baadc9]! text-white! `}
                             />
                             <button
                               onClick={() => removeSubtopic(sIdx, tIdx, subIdx)}

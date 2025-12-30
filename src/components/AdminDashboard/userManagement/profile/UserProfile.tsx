@@ -1,12 +1,13 @@
-import React, { useRef, useState } from "react";
-import { FaUser } from "react-icons/fa";
 import bannerDefault from "@/assets/home/banner.jpg";
-import CommonButton from "@/common/button/CommonButton";
-import MediumHeader from "@/common/header/MediumHeader";
-import CommonHeader from "@/common/header/CommonHeader";
 import camera from "@/assets/home/camera.png";
-import { Link } from "react-router-dom";
 import image from "@/assets/home/mentor1.png";
+import CommonButton from "@/common/button/CommonButton";
+import CommonHeader from "@/common/header/CommonHeader";
+import MediumHeader from "@/common/header/MediumHeader";
+import React from "react";
+import { FaUser } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import ConvertPath from "./ConvertPath";
 
 interface UserProfileProps {
   fullName: string;
@@ -20,6 +21,7 @@ interface UserProfileProps {
   yearOfStudy?: string;
   profession?: string;
   backLink: string;
+  role: string;
 }
 
 const inputClass = {
@@ -41,58 +43,24 @@ const UserProfile: React.FC<UserProfileProps> = ({
   yearOfStudy,
   profession,
   backLink,
+  role,
 }) => {
-  const [bannerPreview, setBannerPreview] = useState<string>(bannerDefault);
-  const [profilePreview, setProfilePreview] = useState<string>(profileImage);
-
-  const bannerInputRef = useRef<HTMLInputElement>(null);
-  const profileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setBannerPreview(url);
-    }
-  };
-
-  const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setProfilePreview(url);
-    }
-  };
-
   return (
     <div className="">
       <div className="mb-6">
-        <p className="text-sm text-gray-500">
-          Dashboard &gt;{" "}
-          <span className="text-gray-800 font-medium">AI Tutor</span>
-        </p>
+        <ConvertPath />
       </div>
 
       <div className="relative h-[215px]">
         <img
           className="w-full h-full object-cover rounded-lg"
-          src={bannerPreview}
+          src={bannerDefault}
           alt="Banner"
         />
         <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(0,0,0,0.2),rgba(0,0,0,0.2))] rounded-lg"></div>
 
-        <div
-          className="absolute top-1 right-1 bg-white w-10 h-10 rounded-full flex items-center justify-center border border-[#94A3B8] cursor-pointer"
-          onClick={() => bannerInputRef.current?.click()}
-        >
+        <div className="absolute top-1 right-1 bg-white w-10 h-10 rounded-full flex items-center justify-center border border-[#94A3B8] cursor-pointer">
           <img src={camera} alt="Upload banner" />
-          <input
-            type="file"
-            accept="image/*"
-            hidden
-            ref={bannerInputRef}
-            onChange={handleBannerChange}
-          />
         </div>
 
         <div className="flex flex-col lg:flex-row gap-6 mx-5 absolute top-1/2 left-0 right-0">
@@ -100,22 +68,12 @@ const UserProfile: React.FC<UserProfileProps> = ({
             <div className="bg-white rounded-md flex flex-col items-center w-full max-w-[415px] px-6 pb-10">
               <div className="relative">
                 <img
-                  src={profilePreview || profileImage || image}
+                  src={profileImage || image}
                   alt="Profile"
                   className="w-32 h-32 rounded-full object-cover border-4 border-white -mt-10"
                 />
-                <div
-                  className="absolute top-10 right-0 bg-white w-10 h-10 rounded-full flex items-center justify-center border border-[#94A3B8] cursor-pointer"
-                  onClick={() => profileInputRef.current?.click()}
-                >
+                <div className="absolute top-10 right-0 bg-white w-10 h-10 rounded-full flex items-center justify-center border border-[#94A3B8] cursor-pointer">
                   <img src={camera} alt="Upload profile" />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    hidden
-                    ref={profileInputRef}
-                    onChange={handleProfileChange}
-                  />
                 </div>
               </div>
               <MediumHeader className="mt-4 !text-xl !font-semibold">
@@ -141,10 +99,13 @@ const UserProfile: React.FC<UserProfileProps> = ({
             </div>
 
             <div className="mt-6 flex gap-3">
+              {role === "MENTOR" && (
+                <CommonButton className="!bg-[#1D4ED8] !text-white ">
+                  Activate mentor
+                </CommonButton>
+              )}
+
               <CommonButton className="!bg-[#1D4ED8] !text-white ">
-                Deactivate user
-              </CommonButton>
-              <CommonButton className="">
                 <Link to={backLink}>Back</Link>
               </CommonButton>
             </div>

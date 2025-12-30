@@ -1,18 +1,25 @@
 import { baseAPI } from "@/store/api/baseApi";
 import { DifficultyFilter } from "@/types";
+import { ContentFor } from "../../staticContent/staticContentSlice";
+import { UploadMode } from "./types/addMoreMcq";
 import {
   AllContentMCQList,
   ClinicalCaseTreeResponse,
   NotesTreeResponse,
   OsceTreeResponse,
 } from "./types/allContent";
+import { GetSingleMcqData } from "./types/getMcqData";
 import { ManualMCQBank, UploadImageResponse } from "./types/manual";
 import { GetAllMcqResponse, McqBankParams } from "./types/mcq";
 import { SingleMcqData, SingleMCQUpdatePayload } from "./types/singleMcq";
 import { SingleMCQResponse } from "./types/singleMcqBank";
-import { CreateProfileTypePayload, ProfileTypeResponse } from "./types/student";
+import {
+  CreateProfileTypePayload,
+  ProfileParams,
+  ProfileTypeResponse,
+} from "./types/student";
 import { GetExamsResponse, PostExam, PostStudyModeTree } from "./types/tree";
-import { GetStudyModeTree } from "./types/TreeResponse";
+import { GetStudyModeTree, GetStudyModeTreeParams } from "./types/TreeResponse";
 
 export const mcqApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
@@ -109,13 +116,38 @@ export const mcqApi = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ["SingleMcq", "Mcq", "StudyModeTree", "Exams"],
     }),
+    getSingleMcqApiForSupport: build.query<
+      GetSingleMcqData,
+      { mcqBankId: string; mcqId: string }
+    >({
+      query: ({ mcqBankId, mcqId }) => ({
+        url: `/mcq-bank/single/${mcqBankId}/${mcqId}`,
+        method: "GET",
+      }),
+      providesTags: ["SingleMcq", "Mcq"],
+    }),
 
+    // /mcq-bank/add-more-mcq
+
+    addMoreMcqToMcqBank: build.mutation<
+      void,
+      { mcqBankId: string; data: FormData } & UploadMode
+    >({
+      query: ({ data, mcqBankId, key }) => ({
+        url: `/mcq-bank/add-more-mcq/${mcqBankId}`,
+        method: "PUT",
+        body: data,
+        params: { key },
+      }),
+      invalidatesTags: ["SingleMcq", "Mcq", "StudyModeTree"],
+    }),
     //student type get and post
 
-    getStudentTypeApi: build.query<ProfileTypeResponse, void>({
-      query: () => ({
+    getStudentTypeApi: build.query<ProfileTypeResponse, ProfileParams>({
+      query: (params) => ({
         url: "/profile_type_const/all",
         method: "GET",
+        params,
       }),
       providesTags: ["studentType"],
     }),
@@ -169,11 +201,11 @@ export const mcqApi = baseAPI.injectEndpoints({
       invalidatesTags: ["StudyModeTree"],
     }),
 
-    getStudyModeTree: build.query<GetStudyModeTree, { studentType: string }>({
-      query: ({ studentType }) => ({
+    getStudyModeTree: build.query<GetStudyModeTree, GetStudyModeTreeParams>({
+      query: (params) => ({
         url: `/study_mode_tree/all`,
         method: "GET",
-        params: { studentType },
+        params,
       }),
       providesTags: ["StudyModeTree"],
     }),
@@ -185,8 +217,9 @@ export const mcqApi = baseAPI.injectEndpoints({
       | NotesTreeResponse,
       {
         key: string;
+        contentFor: ContentFor;
+        profileType?: string;
         subject: string;
-        studentType: string;
         system?: string;
         topic?: string;
         subtopic?: string;
@@ -302,4 +335,6 @@ export const {
   useDeleteMcqBankApiMutation,
   useUpdatedSingleMcqApiMutation,
   useGetSingleUserReportQuery,
+  useAddMoreMcqToMcqBankMutation,
+  useGetSingleMcqApiForSupportQuery,
 } = mcqApi;

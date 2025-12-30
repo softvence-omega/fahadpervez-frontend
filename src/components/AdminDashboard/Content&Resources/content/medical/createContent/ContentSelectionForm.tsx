@@ -10,14 +10,21 @@ import {
   Topic,
 } from "@/store/features/adminDashboard/ContentResources/MCQ/types/TreeResponse";
 
-import { setFormData } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
+import {
+  ContentModeType,
+  ContentType,
+  setContentModeType,
+  setFormData,
+} from "@/store/features/adminDashboard/staticContent/staticContentSlice";
 import { useAppSelector } from "@/store/hook";
 import { AppDispatch, RootState } from "@/store/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
+import { tabs } from "../../ParentComponent";
 
 const createContentSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -25,7 +32,9 @@ const createContentSchema = z.object({
   system: z.string().min(1, "System is required"),
   topic: z.string().min(1, "Topic is required"),
   subtopic: z.string().optional(),
-  type: z.enum(["exam", "study"]),
+  // profileType: z.string().optional(),
+  // type: z.enum(["exam", "study"]),
+  // contentFor: z.enum(["student", "professional"]),
 });
 
 export type CreateContentDataType = z.infer<typeof createContentSchema>;
@@ -47,12 +56,12 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
   handleBreadcrumb,
   setIsContentCreation,
 }) => {
-  const { studentType } = useAppSelector(
+  const { contentFor, profileType, type } = useAppSelector(
     (state: RootState) => state.staticContent
   );
   const dispatch = useDispatch<AppDispatch>();
   const { data: allStudyModeData } = useGetStudyModeTreeQuery(
-    { studentType },
+    { contentFor, profileType },
     {
       refetchOnMountOrArgChange: true,
     }
@@ -73,11 +82,13 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
       system: "",
       topic: "",
       subtopic: "",
-      type: "study",
+      // type: "study",
+      // profileType: "",
+      // contentFor: "student",
     },
   });
 
-  const mode = watch("type");
+  // const mode = watch("type");
   const subject = watch("subject");
   const system = watch("system");
   const topic = watch("topic");
@@ -179,11 +190,24 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
   const isFormComplete = subject && system && topic;
 
   const onSubmit = (data: CreateContentDataType) => {
-    const payload = { ...data, studentType };
+    const payload = { ...data, profileType, contentFor, type };
     dispatch(setFormData(payload));
     setIsContentCreation(true);
   };
+  const { contentType } = useAppSelector(
+    (state: RootState) => state.staticContent
+  );
+  const navigate = useNavigate();
 
+  const contentTitleMap: Record<ContentType, string> = {
+    MCQ: "MCQ Bank Title",
+    Flashcard: "Flashcard Bank Title",
+    ClinicalCase: "Clinical Case Title",
+    OSCE: "OSCE Title",
+    Notes: "Notes Title",
+  };
+
+  const bankTitle = contentTitleMap[contentType] ?? "Content Bank Title";
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <CommonBorderWrapper className="space-y-6">
@@ -194,21 +218,17 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
         <div>
           <label className={inputClass.label}>Mode</label>
           <ToggleButtonGroup
-            options={[
-              { label: "Study Mode", value: "study" },
-              { label: "Exam Mode", value: "exam" },
-            ]}
-            active={mode}
-            onChange={(val) => setValue("type", val)}
+            options={tabs}
+            active={type}
+            onChange={(value) =>
+              dispatch(setContentModeType(value as ContentModeType))
+            }
           />
-          {errors.type && (
-            <p className={inputClass.error}>{errors.type.message}</p>
-          )}
         </div>
 
         <div className="grid grid-cols-2 gap-6 ">
           <div className=" col-span-2">
-            <label className={inputClass.label}>Title</label>
+            <label className={inputClass.label}>{bankTitle}</label>
             <input
               type="text"
               placeholder="Enter title"
@@ -293,7 +313,14 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
           </div>
         )}
 
-        <div className="flex justify-end">
+        <div className=" w-full flex justify-between">
+          <CommonButton
+            onClick={() => navigate(-1)}
+            type="button"
+            className="  !bg-blue-600 !text-white"
+          >
+            Back
+          </CommonButton>
           <CommonButton
             type="submit"
             disabled={!isFormComplete}

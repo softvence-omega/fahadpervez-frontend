@@ -5,28 +5,34 @@ import { useState } from "react";
 import StepIndicator from "../medical/StepIndicator";
 import { steps } from "../medical/createContent/CreateContent";
 
+import { useAppSelector } from "@/store/hook";
+import { RootState } from "@/store/store";
 import AddBulkMCQ from "./AddBulkMCQ";
 import AddMCQForm from "./AddMCQForm";
 
 interface CreateMCQStudyProps {
-  breadcrumb: string;
+  breadcrumb?: string;
 }
 
 const activeStep = 2;
 const MCQUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
   const [mode, setMode] = useState<"manual" | "bulk">("manual");
+  const { uploadIntoBank } = useAppSelector(
+    (state: RootState) => state.staticContent
+  );
   return (
     <div>
-      <DashboardTopSection
-        title="Add Mcq Content"
-        description={breadcrumb}
-        descriptionClassName="!text-[#717182]"
-      />
+      {!uploadIntoBank && (
+        <DashboardTopSection
+          title="Add Mcq Content"
+          description={breadcrumb}
+          descriptionClassName="!text-[#717182]"
+        />
+      )}
 
       <CommonSpace>
         <StepIndicator steps={steps} activeStep={activeStep} />
       </CommonSpace>
-
       <div>
         <div className="py-10">
           <ToggleButtonGroup

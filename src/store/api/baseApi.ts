@@ -60,7 +60,9 @@ export const baseAPI = createApi({
   tagTypes: [
     "Student",
     "Professional",
+    "professionalsProfile",
     "Mentor",
+    "mentorsProfile",
     "Forum",
     "Questions",
     "SocialPost",
@@ -83,6 +85,7 @@ export const baseAPI = createApi({
     "StudyPlan",
     "WebSetting",
     "ReportResponse",
+    "professionalType",
     "BioDigital",
     "GeneratedMCQ",
   ],

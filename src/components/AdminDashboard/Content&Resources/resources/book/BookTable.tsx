@@ -14,9 +14,9 @@ import { BiSolidEdit } from "react-icons/bi";
 import { RiDeleteBinLine } from "react-icons/ri";
 
 const tableHeaders = [
-  { label: "Book", align: "text-center sm:table-cell hidden" },
-  { label: "Author", align: "text-center" },
-  { label: "Category", align: "text-center sm:table-cell hidden" },
+  { label: "Book", align: "text-center " },
+  { label: "Author", align: "text-center md:table-cell hidden" },
+  { label: "Category", align: "text-center xl:table-cell hidden" },
   { label: "Language", align: "text-center xl:table-cell hidden" },
   { label: "Status", align: "text-center xl:table-cell hidden" },
   { label: "Action", align: "text-center" },
@@ -72,11 +72,11 @@ const BookTable: React.FC<Props> = ({ data, handleViewAll, handleEdit }) => {
         <TableBody>
           {data.map((p) => (
             <TableRow key={p._id} className={tableDesign.bodyRow}>
-              <TableCell className={`sm:table-cell hidden ${tableDesign.cell}`}>
+              <TableCell className={` ${tableDesign.cell}`}>
                 <div>{p.title}</div>
               </TableCell>
 
-              <TableCell className={`sm:table-cell hidden ${tableDesign.cell}`}>
+              <TableCell className={`md:table-cell hidden ${tableDesign.cell}`}>
                 <div>{p.author}</div>
               </TableCell>
 
@@ -84,7 +84,7 @@ const BookTable: React.FC<Props> = ({ data, handleViewAll, handleEdit }) => {
                 <div>{p.tags.map((tag) => tag).join(", ")}</div>
               </TableCell>
 
-              <TableCell className={`lg:table-cell hidden ${tableDesign.cell}`}>
+              <TableCell className={`xl:table-cell hidden ${tableDesign.cell}`}>
                 <div>{p.language}</div>
               </TableCell>
 
