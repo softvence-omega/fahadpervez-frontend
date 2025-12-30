@@ -7,13 +7,20 @@ import {
   Heart,
   Microscope,
   Scan,
-  Bookmark,
   Printer,
   Share2,
 } from "lucide-react";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useGetSingleClinicalCaseQuery, useGetSingleGeneratedClinicalCaseQuery } from "@/store/features/clinicalCase/clinicalCase.api";
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
+import {
+  useGetSingleClinicalCaseQuery,
+  useGetSingleGeneratedClinicalCaseQuery,
+} from "@/store/features/clinicalCase/clinicalCase.api";
 import GlobalLoader from "@/common/GlobalLoader";
 import { ClinicalCaseData } from "@/types/clinicalCase";
 // import { ClinicalCaseData } from "@/types/clinicalCase.types";
@@ -36,34 +43,51 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState("history");
 
   // ... (refs remain same, omitting for brevity in diff but will be preserved)
-  const presentationRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
-  const historyRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
-  const vitalsRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
-  const labsRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
-  const imagingRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
-
+  const presentationRef = useRef<HTMLDivElement>(
+    null
+  ) as React.RefObject<HTMLDivElement>;
+  const historyRef = useRef<HTMLDivElement>(
+    null
+  ) as React.RefObject<HTMLDivElement>;
+  const vitalsRef = useRef<HTMLDivElement>(
+    null
+  ) as React.RefObject<HTMLDivElement>;
+  const labsRef = useRef<HTMLDivElement>(
+    null
+  ) as React.RefObject<HTMLDivElement>;
+  const imagingRef = useRef<HTMLDivElement>(
+    null
+  ) as React.RefObject<HTMLDivElement>;
 
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const caseType = searchParams.get("type"); // "generated" or null/undefined
-  
+
   const isGenerated = caseType === "generated";
 
   // Standard Query
-  const { data: standardData, isLoading: isLoadingStandard, error: errorStandard } = useGetSingleClinicalCaseQuery(
-    id as string, { skip: isGenerated }
-  );
+  const {
+    data: standardData,
+    isLoading: isLoadingStandard,
+    error: errorStandard,
+  } = useGetSingleClinicalCaseQuery(id as string, { skip: isGenerated });
 
   // Generated Query
-  const { data: generatedData, isLoading: isLoadingGenerated, error: errorGenerated } = useGetSingleGeneratedClinicalCaseQuery(
-     id as string, { skip: !isGenerated }
-  );
+  const {
+    data: generatedData,
+    isLoading: isLoadingGenerated,
+    error: errorGenerated,
+  } = useGetSingleGeneratedClinicalCaseQuery(id as string, {
+    skip: !isGenerated,
+  });
 
   const isLoading = isGenerated ? isLoadingGenerated : isLoadingStandard;
   const error = isGenerated ? errorGenerated : errorStandard;
-  
+
   // Combine data source
-  const clinicalCase = (isGenerated ? generatedData?.data : standardData?.data) as ClinicalCaseData;
+  const clinicalCase = (
+    isGenerated ? generatedData?.data : standardData?.data
+  ) as ClinicalCaseData;
 
   const navigate = useNavigate();
 
@@ -86,11 +110,35 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
 
   const handleMakeDecision = (): void => {
     console.log("Make Your Decision clicked");
-    navigate(`/dashboard/clinical-case/${id}/make-decision${isGenerated ? "?type=generated" : ""}`);
+    navigate(
+      `/dashboard/clinical-case/${id}/make-decision${
+        isGenerated ? "?type=generated" : ""
+      }`
+    );
   };
 
   const handleQuickAction = (action: string): void => {
-    console.log(`Quick action: ${action}`);
+    if (action === "print") {
+      handlePrint();
+    } else {
+      console.log(`Quick action: ${action}`);
+    }
+  };
+
+  const handlePrint = () => {
+    // Expand all sections for printing
+    setExpandedSections({
+      presentation: true,
+      history: true,
+      physical: true,
+      investigations: true,
+      imaging: true,
+    });
+
+    // Give React a moment to render before printing
+    setTimeout(() => {
+      window.print();
+    }, 100);
   };
 
   const getDifficultyColor = (difficulty: string) => {
@@ -116,9 +164,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
       surgery: "bg-purple-100 text-purple-800",
       "internal medicine": "bg-green-100 text-green-800",
     };
-    return (
-      colors[specialty?.toLowerCase()] || "bg-blue-100 text-blue-800"
-    );
+    return colors[specialty?.toLowerCase()] || "bg-blue-100 text-blue-800";
   };
 
   // Helper function to parse vital sign values and units
@@ -221,108 +267,189 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
   }
 
   return (
-    <div className="min-h-screen">
-      <div>
-        {/* Header */}
-        <div className="bg-white border-b border-gray-200 px-6 py-4 rounded-lg mt-4 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={onBack}
-                className="flex items-center text-gray-600 hover:text-gray-800"
-              >
-                <Link to={"/dashboard/clinical-case-generator"}>
-                  {" "}
-                  <ArrowLeft size={20} />
-                </Link>
-                <span className="ml-2 font-medium">Clinical Case</span>
-              </button>
-            </div>
-            {/* <div className="flex items-center gap-2  px-4 py-2 border border-gray-300 rounded-lg">
+    <>
+      {/* Print-specific styles */}
+      <style>{`
+        @media print {
+          /* General page setup */
+          @page {
+            margin: 2cm;
+            size: auto;
+          }
+
+          /* Hide global layout elements that might interfere */
+          /* Note: We rely on specific hiding of non-print elements */
+          
+          /* Force container to be full width */
+          .min-h-screen {
+            min-height: auto !important;
+            height: auto !important;
+          }
+          
+          /* Reset grid layout for print */
+          .grid, .md\\:grid-cols-3 {
+            display: block !important;
+            grid-template-columns: 1fr !important;
+          }
+          
+          /* Hide the sidebar and header explicitly */
+          .no-print, header {
+            display: none !important;
+          }
+          
+          /* Make main content full width */
+          .md\\:col-span-2 {
+            width: 100% !important;
+            grid-column: span 1 !important;
+          }
+          
+          /* Clean up shadows and borders for print */
+          .shadow-sm, .shadow-md, .shadow-lg {
+            box-shadow: none !important;
+          }
+          
+          .border {
+            border-color: #e5e7eb !important;
+          }
+          
+          /* Ensure text is black for better printing */
+          body {
+            color: black !important;
+            background: white !important;
+          }
+          
+          /* Specific print section styling */
+          .print-clean {
+            border: 1px solid #eee !important;
+            break-inside: avoid;
+            margin-bottom: 20px !important;
+          }
+
+          /* Ensure sections are visible */
+          .bg-white {
+            background-color: white !important;
+          }
+        }
+      `}</style>
+      <div className="min-h-screen">
+        <div>
+          {/* Header */}
+          <div className="bg-white border-b border-gray-200 px-6 py-4 rounded-lg mt-4 shadow-sm print-clean">
+            <div id="printable-header">
+              <div className="flex items-center justify-between no-print">
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={onBack}
+                    className="flex items-center text-gray-600 hover:text-gray-800"
+                  >
+                    <Link to={"/dashboard/clinical-case-generator"}>
+                      {" "}
+                      <ArrowLeft size={20} />
+                    </Link>
+                    <span className="ml-2 font-medium">Clinical Case</span>
+                  </button>
+                </div>
+                {/* <div className="flex items-center gap-2  px-4 py-2 border border-gray-300 rounded-lg">
               <Sparkles className="text-blue-600" size={16} />
               <span className="text-sm text-blue-600 font-medium">
                 AI Tutor
               </span>
             </div> */}
-          </div>
+              </div>
 
-          <div className="mt-4">
-            <p className="text-gray-600 text-sm">
-              Sharpen your diagnostic skills. Ready for your next challenge?
-            </p>
-          </div>
+              <div className="mt-4 no-print">
+                <p className="text-gray-600 text-sm">
+                  Sharpen your diagnostic skills. Ready for your next challenge?
+                </p>
+              </div>
 
-          <div className="mt-6 flex items-center gap-4">
-            <span
-              className={`px-3 py-1 rounded-full text-sm font-medium ${getSpecialtyColor(
-                clinicalCase?.subject || ""
-              )}`}
-            >
-              {clinicalCase?.subject}
-            </span>
-            <span
-              className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(
-                clinicalCase?.difficultyLevel || ""
-              )}`}
-            >
-              {clinicalCase?.difficultyLevel}
-            </span>
-          </div>
-
-          <h1 className="text-2xl font-bold text-gray-900 mt-4 mb-6">
-            {clinicalCase?.caseTitle}
-          </h1>
-
-          {/* Navigation Tabs */}
-          <div className="flex gap-4 md:gap-6 lg:gap-8 border-b border-gray-200 overflow-auto">
-            {[
-              {
-                key: "history",
-                label: "History",
-                icon: History,
-                ref: historyRef,
-              },
-              { key: "vitals", label: "Vitals", icon: Heart, ref: vitalsRef },
-              { key: "labs", label: "Labs", icon: Microscope, ref: labsRef },
-              { key: "imaging", label: "Imaging", icon: Scan, ref: imagingRef },
-            ].map(({ key, label, icon: Icon, ref }) => (
-              <button
-                key={key}
-                onClick={() => scrollToSection(ref, key)}
-                className={`flex items-center gap-2 pb-3 border-b-2 transition-colors px-4 cursor-pointer ${
-                  activeTab === key
-                    ? "border-blue-main text-blue-main"
-                    : "border-transparent text-gray-500 hover:text-black"
-                }`}
-              >
-                <Icon size={16} />
-                <span className="text-sm lg:text-base font-medium">
-                  {label}
+              {/* Header information - always visible in print */}
+              <div className="mt-6 flex items-center gap-4">
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${getSpecialtyColor(
+                    clinicalCase?.subject || ""
+                  )}`}
+                >
+                  {clinicalCase?.subject}
                 </span>
-              </button>
-            ))}
-          </div>
-        </div>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(
+                    clinicalCase?.difficultyLevel || ""
+                  )}`}
+                >
+                  {clinicalCase?.difficultyLevel}
+                </span>
+              </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-4 lg:my-6">
-          {/* Main Content */}
-          <div className="md:col-span-2 space-y-6">
-            {/* Patient Presentation */}
-            <div
-              ref={presentationRef}
-              className="bg-white rounded-lg shadow-sm border border-gray-200"
-            >
-              <SectionHeader
-                title="Patient Presentation"
-                icon={<History size={20} />}
-                isExpanded={expandedSections.presentation}
-                onToggle={() => toggleSection("presentation")}
-              />
+              <h1 className="text-2xl font-bold text-gray-900 mt-4 mb-6">
+                {clinicalCase?.caseTitle}
+              </h1>
 
-              {expandedSections.presentation && (
-                <div className="px-6 pb-6">
-                  {/* Patient Details - COMMENTED OUT - No parsing from patientPresentation */}
-                  {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+              {/* Navigation Tabs - hidden in print */}
+              <div className="flex gap-4 md:gap-6 lg:gap-8 border-b border-gray-200 overflow-auto no-print">
+                {[
+                  {
+                    key: "history",
+                    label: "History",
+                    icon: History,
+                    ref: historyRef,
+                  },
+                  {
+                    key: "vitals",
+                    label: "Vitals",
+                    icon: Heart,
+                    ref: vitalsRef,
+                  },
+                  {
+                    key: "labs",
+                    label: "Labs",
+                    icon: Microscope,
+                    ref: labsRef,
+                  },
+                  {
+                    key: "imaging",
+                    label: "Imaging",
+                    icon: Scan,
+                    ref: imagingRef,
+                  },
+                ].map(({ key, label, icon: Icon, ref }) => (
+                  <button
+                    key={key}
+                    onClick={() => scrollToSection(ref, key)}
+                    className={`flex items-center gap-2 pb-3 border-b-2 transition-colors px-4 cursor-pointer ${
+                      activeTab === key
+                        ? "border-blue-main text-blue-main"
+                        : "border-transparent text-gray-500 hover:text-black"
+                    }`}
+                  >
+                    <Icon size={16} />
+                    <span className="text-sm lg:text-base font-medium">
+                      {label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-4 lg:my-6">
+              {/* Main Content */}
+              <div className="md:col-span-2 space-y-6">
+                {/* Patient Presentation */}
+                <div
+                  ref={presentationRef}
+                  className="bg-white rounded-lg shadow-sm border border-gray-200 print-clean"
+                >
+                  <SectionHeader
+                    title="Patient Presentation"
+                    icon={<History size={20} />}
+                    isExpanded={expandedSections.presentation}
+                    onToggle={() => toggleSection("presentation")}
+                  />
+
+                  {expandedSections.presentation && (
+                    <div className="px-6 pb-6">
+                      {/* Patient Details - COMMENTED OUT - No parsing from patientPresentation */}
+                      {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-gray-500">Age:</span>
                       <p className="text-gray-900">--</p>
@@ -341,55 +468,55 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
                     </div>
                   </div> */}
 
-                  <p className="text-gray-700 leading-relaxed">
-                    {clinicalCase?.patientPresentation}
-                  </p>
+                      <p className="text-gray-700 leading-relaxed">
+                        {clinicalCase?.patientPresentation}
+                      </p>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            {/* History of Present Illness */}
-            <div
-              ref={historyRef}
-              className="bg-white rounded-lg shadow-sm border border-gray-200"
-            >
-              <SectionHeader
-                title="History of Present Illness"
-                icon={<History size={20} />}
-                isExpanded={expandedSections.history}
-                onToggle={() => toggleSection("history")}
-              />
+                {/* History of Present Illness */}
+                <div
+                  ref={historyRef}
+                  className="bg-white rounded-lg shadow-sm border border-gray-200 print-clean"
+                >
+                  <SectionHeader
+                    title="History of Present Illness"
+                    icon={<History size={20} />}
+                    isExpanded={expandedSections.history}
+                    onToggle={() => toggleSection("history")}
+                  />
 
-              {expandedSections.history && (
-                <div className="px-6 pb-6">
-                  <div className="space-y-4 text-gray-700 leading-relaxed">
-                    <p>{clinicalCase?.historyOfPresentIllness}</p>
-                  </div>
+                  {expandedSections.history && (
+                    <div className="px-6 pb-6">
+                      <div className="space-y-4 text-gray-700 leading-relaxed">
+                        <p>{clinicalCase?.historyOfPresentIllness}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            {/* Physical Examination */}
-            <div
-              ref={vitalsRef}
-              className="bg-white rounded-lg shadow-sm border border-gray-200"
-            >
-              <SectionHeader
-                title="Physical Examination Findings"
-                icon={<Heart size={20} />}
-                isExpanded={expandedSections.physical}
-                onToggle={() => toggleSection("physical")}
-              />
+                {/* Physical Examination */}
+                <div
+                  ref={vitalsRef}
+                  className="bg-white rounded-lg shadow-sm border border-gray-200 print-clean"
+                >
+                  <SectionHeader
+                    title="Physical Examination Findings"
+                    icon={<Heart size={20} />}
+                    isExpanded={expandedSections.physical}
+                    onToggle={() => toggleSection("physical")}
+                  />
 
-              {expandedSections.physical && (
-                <div className="px-6 pb-6">
-                  {/* Display the physical examination as text */}
-                  <div className="text-gray-700 leading-relaxed">
-                    <p>{clinicalCase?.physicalExamination}</p>
-                  </div>
+                  {expandedSections.physical && (
+                    <div className="px-6 pb-6">
+                      {/* Display the physical examination as text */}
+                      <div className="text-gray-700 leading-relaxed">
+                        <p>{clinicalCase?.physicalExamination}</p>
+                      </div>
 
-                  {/* COMMENTED OUT - Structured vital signs display (no parsing) */}
-                  {/* <div className="mb-6">
+                      {/* COMMENTED OUT - Structured vital signs display (no parsing) */}
+                      {/* <div className="mb-6">
                     <h3 className="font-semibold text-gray-900 mb-3">
                       Vital Signs
                     </h3>
@@ -420,150 +547,158 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
                       />
                     </div>
                   </div> */}
-                </div>
-              )}
-            </div>
-
-            {/* Laboratory Results */}
-            <div
-              ref={labsRef}
-              className="bg-white rounded-lg shadow-sm border border-gray-200"
-            >
-              <SectionHeader
-                title="Laboratory Results"
-                icon={<Microscope size={20} />}
-                isExpanded={expandedSections.investigations}
-                onToggle={() => toggleSection("investigations")}
-              />
-
-              {expandedSections.investigations &&
-                clinicalCase?.laboratoryResults && (
-                  <div className="px-6 pb-6">
-                    <h3 className="font-semibold text-gray-900 mb-4">
-                      Test Results
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {clinicalCase?.laboratoryResults?.map((test, index) => (
-                        <LabResultCard
-                          key={index}
-                          test={test?.name || ""}
-                          value={test?.value || ""}
-                          unit=""
-                        />
-                      ))}
                     </div>
-                  </div>
-                )}
-            </div>
-
-            {/* Imaging Studies */}
-            <div
-              ref={imagingRef}
-              className="bg-white rounded-lg shadow-sm border border-gray-200"
-            >
-              <SectionHeader
-                title="Imaging Studies"
-                icon={<Scan size={20} />}
-                isExpanded={expandedSections.imaging}
-                onToggle={() => toggleSection("imaging")}
-              />
-
-              {expandedSections.imaging && clinicalCase?.imaging && (
-                <div className="px-6 pb-6 space-y-4">
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">
-                      Imaging Findings:
-                    </h3>
-                    <p className="text-gray-700">{clinicalCase?.imaging}</p>
-                  </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Reading Progress */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-3">
-                Case Progress
-              </h3>
-              <PrimaryButton
-                className="w-full px-4 py-2 text-base"
-                onClick={handleMakeDecision}
-              >
-                Make Your Decision
-              </PrimaryButton>
-            </div>
+                {/* Laboratory Results */}
+                <div
+                  ref={labsRef}
+                  className="bg-white rounded-lg shadow-sm border border-gray-200 print-clean"
+                >
+                  <SectionHeader
+                    title="Laboratory Results"
+                    icon={<Microscope size={20} />}
+                    isExpanded={expandedSections.investigations}
+                    onToggle={() => toggleSection("investigations")}
+                  />
 
-            {/* Quick Actions */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">
-                Quick Actions
-              </h3>
-              <div className="space-y-3">
-                {[
-                  { icon: Bookmark, label: "Bookmark", action: "bookmark" },
-                  { icon: Printer, label: "Print Case", action: "print" },
-                  { icon: Share2, label: "Share Case", action: "share" },
-                ].map(({ icon: Icon, label, action }) => (
-                  <button
-                    key={action}
-                    onClick={() => handleQuickAction(action)}
-                    className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-gray-50 rounded transition-colors"
-                  >
-                    <Icon size={16} />
-                    <span>{label}</span>
-                  </button>
-                ))}
+                  {expandedSections.investigations &&
+                    clinicalCase?.laboratoryResults && (
+                      <div className="px-6 pb-6">
+                        <h3 className="font-semibold text-gray-900 mb-4">
+                          Test Results
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {clinicalCase?.laboratoryResults?.map(
+                            (test, index) => (
+                              <LabResultCard
+                                key={index}
+                                test={test?.name || ""}
+                                value={test?.value || ""}
+                                unit=""
+                              />
+                            )
+                          )}
+                        </div>
+                      </div>
+                    )}
+                </div>
+
+                {/* Imaging Studies */}
+                <div
+                  ref={imagingRef}
+                  className="bg-white rounded-lg shadow-sm border border-gray-200 print-clean"
+                >
+                  <SectionHeader
+                    title="Imaging Studies"
+                    icon={<Scan size={20} />}
+                    isExpanded={expandedSections.imaging}
+                    onToggle={() => toggleSection("imaging")}
+                  />
+
+                  {expandedSections.imaging && clinicalCase?.imaging && (
+                    <div className="px-6 pb-6 space-y-4">
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">
+                          Imaging Findings:
+                        </h3>
+                        <p className="text-gray-700">{clinicalCase?.imaging}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
 
-            {/* Case Information */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">
-                Case Information
-              </h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Subject:</span>
-                  <span className="text-gray-700">
-                    {clinicalCase?.subject}
-                  </span>
+              {/* Sidebar - hidden in print */}
+              <div className="space-y-6 no-print">
+                {/* Reading Progress */}
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                  <h3 className="font-semibold text-gray-900 mb-3">
+                    Case Progress
+                  </h3>
+                  <PrimaryButton
+                    className="w-full px-4 py-2 text-base"
+                    onClick={handleMakeDecision}
+                  >
+                    Make Your Decision
+                  </PrimaryButton>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">System:</span>
-                  <span className="text-gray-700">
-                    {clinicalCase?.system}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Topic:</span>
-                  <span className="text-gray-700">
-                    {clinicalCase?.topic}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Created:</span>
-                  <span className="text-gray-700">
-                    {clinicalCase?.createdAt ? new Date(clinicalCase.createdAt).toLocaleDateString() : "--"}
-                  </span>
-                </div>
-                {clinicalCase?.publishedBy && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Published by:</span>
-                    <span className="text-gray-700">
-                      {clinicalCase?.publishedBy?.firstName}{" "}
-                      {clinicalCase?.publishedBy?.lastName}
-                    </span>
+
+                {/* Quick Actions */}
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                  <h3 className="font-semibold text-gray-900 mb-4">
+                    Quick Actions
+                  </h3>
+                  <div className="space-y-3">
+                    {[
+                      // { icon: Bookmark, label: "Bookmark", action: "bookmark" },
+                      { icon: Printer, label: "Print Case", action: "print" },
+                      { icon: Share2, label: "Share Case", action: "share" },
+                    ].map(({ icon: Icon, label, action }) => (
+                      <button
+                        key={action}
+                        onClick={() => handleQuickAction(action)}
+                        className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-gray-50 rounded transition-colors cursor-pointer"
+                      >
+                        <Icon size={16} />
+                        <span>{label}</span>
+                      </button>
+                    ))}
                   </div>
-                )}
+                </div>
+
+                {/* Case Information */}
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                  <h3 className="font-semibold text-gray-900 mb-4">
+                    Case Information
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">Subject:</span>
+                      <span className="text-gray-700">
+                        {clinicalCase?.subject}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">System:</span>
+                      <span className="text-gray-700">
+                        {clinicalCase?.system}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">Topic:</span>
+                      <span className="text-gray-700">
+                        {clinicalCase?.topic}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">Created:</span>
+                      <span className="text-gray-700">
+                        {clinicalCase?.createdAt
+                          ? new Date(
+                              clinicalCase.createdAt
+                            ).toLocaleDateString()
+                          : "--"}
+                      </span>
+                    </div>
+                    {clinicalCase?.publishedBy && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Published by:</span>
+                        <span className="text-gray-700">
+                          {clinicalCase?.publishedBy?.firstName}{" "}
+                          {clinicalCase?.publishedBy?.lastName}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
