@@ -89,15 +89,52 @@ export const updatePreferenceSchema = z.object({
     .default("USD")
     .transform((val) => val ?? "USD"),
   availability: z
-    .record(
-      z.string(),
-      z.object({
+    .object({
+      Monday: z.object({
         enabled: z.boolean().optional(),
         startTime: z.string().optional(),
         endTime: z.string().optional(),
-      })
-    )
-    .default({}),
+      }),
+      Tuesday: z.object({
+        enabled: z.boolean().optional(),
+        startTime: z.string().optional(),
+        endTime: z.string().optional(),
+      }),
+      Wednesday: z.object({
+        enabled: z.boolean().optional(),
+        startTime: z.string().optional(),
+        endTime: z.string().optional(),
+      }),
+      Thursday: z.object({
+        enabled: z.boolean().optional(),
+        startTime: z.string().optional(),
+        endTime: z.string().optional(),
+      }),
+      Friday: z.object({
+        enabled: z.boolean().optional(),
+        startTime: z.string().optional(),
+        endTime: z.string().optional(),
+      }),
+      Saturday: z.object({
+        enabled: z.boolean().optional(),
+        startTime: z.string().optional(),
+        endTime: z.string().optional(),
+      }),
+      Sunday: z.object({
+        enabled: z.boolean().optional(),
+        startTime: z.string().optional(),
+        endTime: z.string().optional(),
+      }),
+    })
+    .default({
+      Monday: { enabled: false, startTime: "", endTime: "" },
+      Tuesday: { enabled: false, startTime: "", endTime: "" },
+      Wednesday: { enabled: false, startTime: "", endTime: "" },
+      Thursday: { enabled: false, startTime: "", endTime: "" },
+      Friday: { enabled: false, startTime: "", endTime: "" },
+      Saturday: { enabled: false, startTime: "", endTime: "" },
+      Sunday: { enabled: false, startTime: "", endTime: "" },
+    }),
 });
 
 export const platformTrainingSchema = z.object({

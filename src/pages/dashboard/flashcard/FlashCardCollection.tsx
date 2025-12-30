@@ -26,7 +26,7 @@ export default function FlashCardCollection() {
       searchTerm,
       ...filters,
       page,
-      limit: 10,
+      limit: 12,
     });
 
   const flashcardBank = flashcardData?.data;
