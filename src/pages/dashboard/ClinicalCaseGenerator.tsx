@@ -13,7 +13,7 @@ const ClinicalCaseGenerator = () => {
   const [openModal, setOpenModal] = useState(false);
 
   return (
-    <div className="my-10">
+    <div className="mt-5 px-2">
       {/* heading */}
       <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-6">
         <div>

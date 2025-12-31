@@ -1,16 +1,64 @@
 import { useGetAllGeneratedMCQQuery } from "@/store/features/MCQBank/MCQBank.api";
 import QuizCard from "./QuizCard";
 import GlobalLoader from "@/common/GlobalLoader";
+import { Filter, Search } from "lucide-react";
+import { useState } from "react";
+import FlashCardFilterModal from "../flashcard/FlashCardFilterModal";
+import Pagination from "@/common/custom/Pagination";
 
 export default function QuizCollection() {
-  const { data: quizzesResponse, isLoading } = useGetAllGeneratedMCQQuery({});
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filters, setFilters] = useState({
+    subject: "",
+    system: "",
+    topic: "",
+  });
+  const [page, setPage] = useState(1);
 
-  const quizzes = quizzesResponse?.data || quizzesResponse || [];
+  const { data: quizzesResponse, isLoading } = useGetAllGeneratedMCQQuery({
+    searchTerm,
+    ...filters,
+    page,
+    limit: 12,
+  });
+
+  const quizzes = quizzesResponse?.data || [];
+  const meta = quizzesResponse?.meta;
+  const totalPages = meta?.totalPages || 1;
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
 
   if (isLoading) return <GlobalLoader />;
 
   return (
     <div className="md:my-6">
+      <div className="flex items-center justify-between mb-6 mt-3">
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search by condition or keyword"
+            className="w-full md:w-112.5 h-12 pl-10 pr-4 border border-slate-300 rounded"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setPage(1); // reset page
+            }}
+          />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
+        </div>
+
+        <button
+          onClick={() => setIsFilterOpen(true)}
+          className="flex items-center gap-2 bg-slate-500 text-white px-4 py-2 rounded cursor-pointer"
+        >
+          <Filter className="w-4 h-4" />
+          Filter
+        </button>
+      </div>
+
       <div className="mt-12">
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-medium text-lg text-zinc-800">All Quiz's</h3>
@@ -43,7 +91,28 @@ export default function QuizCollection() {
             </p>
           </div>
         )}
+
+        <div className="mt-6">
+          {totalPages > 1 && (
+            <Pagination
+              totalPages={totalPages}
+              currentPage={page}
+              onPageChange={handlePageChange}
+            />
+          )}
+        </div>
       </div>
+
+      {isFilterOpen && (
+        <FlashCardFilterModal
+          close={() => setIsFilterOpen(false)}
+          onApply={(newFilters) => {
+            setFilters(newFilters);
+            setPage(1);
+            setIsFilterOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }

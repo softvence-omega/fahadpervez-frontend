@@ -27,6 +27,7 @@ export default function SolveFlashCard() {
   // 🔥 Get flashcard data from navigate() state
   const stateFlashcardData = location.state?.flashCardData;
   const source = location.state?.source || "all";
+  const totalFlashCards = location.state?.totalFlashCards;
 
   // console.log("SolveFlashCard State Data:", stateFlashcardData);
   // console.log("SolveFlashCard ID:", id);
@@ -35,15 +36,21 @@ export default function SolveFlashCard() {
   // 🔥 Do NOT call API if we already have state data
   // Call standard API if source is 'all' (and no pre-loaded data)
   const { data: standardData, isLoading: isStandardLoading } =
-    useGetSingleFlashCardQuery(id as string, {
-      skip: !!stateFlashcardData || source === "generated",
-    });
+    useGetSingleFlashCardQuery(
+      { id: id as string, limit: totalFlashCards },
+      {
+        skip: !!stateFlashcardData || source === "generated",
+      }
+    );
 
   // Call generated API if source is 'generated' (and no pre-loaded data)
   const { data: generatedData, isLoading: isGeneratedLoading } =
-    useGetSingleGeneratedFlashCardQuery(id as string, {
-      skip: !!stateFlashcardData || source !== "generated",
-    });
+    useGetSingleGeneratedFlashCardQuery(
+      { id: id as string, limit: totalFlashCards },
+      {
+        skip: !!stateFlashcardData || source !== "generated",
+      }
+    );
 
   const isLoading = isStandardLoading || isGeneratedLoading;
 
@@ -124,7 +131,7 @@ export default function SolveFlashCard() {
   }
 
   return (
-    <div className="min-h-screen my-2 px-2">
+    <div className="min-h-screen my-2 px-2 overflow-y-auto">
       <div className="text-sm text-gray-600">
         <Breadcrumb breadcrumbs={breadcrumbs} />
       </div>

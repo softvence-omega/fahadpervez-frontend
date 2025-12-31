@@ -9,7 +9,7 @@ import {
 import { PostFaq } from "@/store/features/adminDashboard/planAndFaq/types/Faq";
 import { ChevronRight, Edit2, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
-import DashboardSearch from "../AdminDashboard/reuseable/DashboardSearch";
+import DashboardSearch from "@/Layout/dashboard/DashboardSearch";
 import DashboardTopSection from "../AdminDashboard/reuseable/DashboardTopSection";
 import CreateFaqModal, { FaqFormType } from "./CreateFaqModal";
 

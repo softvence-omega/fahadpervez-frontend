@@ -5,7 +5,7 @@ import CommonSpace from "@/common/space/CommonSpace";
 import { useGetAllReportForAdminQuery } from "@/store/features/adminDashboard/support/support";
 import { ReportItem } from "@/store/features/adminDashboard/support/types/support";
 import { useState } from "react";
-import DashboardSearch from "../reuseable/DashboardSearch";
+import DashboardSearch from "@/Layout/dashboard/DashboardSearch";
 import DashboardTopSection from "../reuseable/DashboardTopSection";
 import Tabs from "../reuseable/Tabs";
 import TicketDetail from "./TicketDetail";

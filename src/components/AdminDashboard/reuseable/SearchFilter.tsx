@@ -1,5 +1,5 @@
 import ButtonWithIcon from "@/common/button/ButtonWithIcon";
-import DashboardSearch from "./DashboardSearch";
+import DashboardSearch from "@/Layout/dashboard/DashboardSearch";
 import CommonButton from "@/common/button/CommonButton";
 import { IoFilterSharp } from "react-icons/io5";
 

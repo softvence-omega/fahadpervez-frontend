@@ -247,9 +247,9 @@ const AllClinicalCases: React.FC = () => {
         </div>
       )}
 
-      <div className="mt-4 text-center text-sm text-gray-500">
+      {/* <div className="mt-4 text-center text-sm text-gray-500">
         Showing {meta?.total || 0} cases
-      </div>
+      </div> */}
 
       {/* Filter Modal */}
       {isFilterOpen && (

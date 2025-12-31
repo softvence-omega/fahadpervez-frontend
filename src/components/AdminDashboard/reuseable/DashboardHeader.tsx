@@ -15,7 +15,7 @@ import { useAppDispatch } from "@/store/hook";
 import Cookies from "js-cookie";
 import { FaRegBell } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
-import DashboardSearch from "./DashboardSearch";
+import DashboardSearch from "@/Layout/dashboard/DashboardSearch";
 import NotificationIcon from "./NotificationIcon";
 
 interface DashboardHeaderProps {

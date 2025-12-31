@@ -36,7 +36,7 @@ export interface Goal {
   daysLeft: number;
   remainingHours: number;
   // UI specific or legacy fields that might be used
-  accuracy?: number; 
+  accuracy?: number;
 }
 
 export interface StepIndicatorProps {
@@ -87,4 +87,5 @@ export interface Step3Props {
   onPrevious: () => void;
   onCreate: () => void;
   isEditMode?: boolean;
+  isLoading?: boolean;
 }
