@@ -61,7 +61,7 @@ export const noteApi = baseAPI.injectEndpoints({
         url: `/my_content/notes/${id}`,
         method: "GET",
       }),
-      providesTags: (result, error, id) => [{ type: "GeneratedNotes", id }],
+      providesTags: (id) => [{ type: "GeneratedNotes", id }],
     }),
 
     // end
