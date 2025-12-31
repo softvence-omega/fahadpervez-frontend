@@ -22,6 +22,7 @@ export function FlashCardGeneratorDialog({
   open,
   setOpen,
   onFinalSubmit,
+  isLoading,
 }: any) {
   const [quizName, setQuizName] = useState("");
   // const [subject, setSubject] = useState("");
@@ -48,8 +49,24 @@ export function FlashCardGeneratorDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[450px] max-h-[80vh] overflow-y-auto">
+    <Dialog
+      open={open}
+      onOpenChange={(val) => {
+        if (!isLoading) {
+          setOpen(val);
+        }
+      }}
+    >
+      <DialogContent
+        onInteractOutside={(e) => {
+          if (isLoading) {
+            e.preventDefault();
+          }
+        }}
+        className={`sm:max-w-[450px] max-h-[80vh] overflow-y-auto ${
+          isLoading ? "cursor-wait select-none pointer-events-none" : ""
+        }`}
+      >
         <DialogHeader>
           <DialogTitle>Customize Flashcard</DialogTitle>
           <DialogDescription>

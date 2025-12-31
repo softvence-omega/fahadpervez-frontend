@@ -117,6 +117,7 @@ export const Step1: React.FC<Step1Props> = ({
           <input
             type="date"
             value={formData.endDate}
+            min={formData.startDate}
             onChange={(e) =>
               onFormDataChange({ ...formData, endDate: e.target.value })
             }
@@ -332,6 +333,7 @@ export const Step3: React.FC<Step3Props> = ({
   onPrevious,
   isEditMode = false,
   onCreate,
+  isLoading = false,
 }) => {
   return (
     <div className="p-6">
@@ -400,9 +402,18 @@ export const Step3: React.FC<Step3Props> = ({
         </button>
         <button
           onClick={onCreate}
-          className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 cursor-pointer"
+          disabled={isLoading}
+          className={`px-6 py-2 rounded-lg cursor-pointer ${
+            isLoading
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : "bg-blue-500 text-white hover:bg-blue-600"
+          }`}
         >
-          {isEditMode ? "Update Preference" : "Create Preference"}
+          {isLoading
+            ? "Saving..."
+            : isEditMode
+            ? "Update Preference"
+            : "Create Preference"}
         </button>
       </div>
     </div>

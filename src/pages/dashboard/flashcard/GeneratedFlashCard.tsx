@@ -16,13 +16,14 @@ export default function GeneratedFlashCard({
   const [page, setPage] = useState(1);
   const { data: flashcardData, isLoading } = useGetGeneratedFlashCardQuery({
     searchTerm,
-    filters,
-  }) as { data: { data: IFlashcardBank[] } | undefined; isLoading: boolean };
+    ...filters,
+    page,
+    limit: 8,
+  });
+
   const allGeneratedFlashcard = flashcardData?.data ?? [];
-  const totalPages = flashcardData?.data
-    ? Math.ceil(flashcardData.data.length / 10)
-    : 1;
-  console.log(allGeneratedFlashcard);
+  const meta = flashcardData?.meta;
+  const totalPages = meta?.totalPages || 1;
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);

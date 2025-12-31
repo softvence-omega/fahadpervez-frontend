@@ -168,8 +168,24 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[800px]">
+    <Dialog
+      open={open}
+      onOpenChange={(val) => {
+        if (!isGenerating) {
+          setOpen(val);
+        }
+      }}
+    >
+      <DialogContent
+        onInteractOutside={(e) => {
+          if (isGenerating) {
+            e.preventDefault();
+          }
+        }}
+        className={`sm:max-w-[800px] ${
+          isGenerating ? "cursor-wait select-none pointer-events-none" : ""
+        }`}
+      >
         <DialogHeader>
           <DialogTitle>Generate Quiz</DialogTitle>
           <DialogDescription>

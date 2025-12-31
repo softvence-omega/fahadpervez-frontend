@@ -67,9 +67,17 @@ export const mcqBankAPI = baseAPI.injectEndpoints({
     }),
 
     getAllGeneratedMCQ: build.query({
-      query: () => ({
+      query: ({
+        searchTerm,
+        subject,
+        system,
+        topic,
+        page = 1,
+        limit = 10,
+      }: any) => ({
         url: `/my_content/mcqs`,
         method: "GET",
+        params: { searchTerm, subject, system, topic, page, limit },
       }),
       providesTags: ["GeneratedMCQ"],
     }),

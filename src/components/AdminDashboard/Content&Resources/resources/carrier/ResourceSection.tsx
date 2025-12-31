@@ -3,7 +3,7 @@ import Spinner from "@/common/button/Spinner";
 import Pagination from "@/common/custom/Pagination";
 import { useDebounce } from "@/common/custom/useDebounce";
 import CommonSpace from "@/common/space/CommonSpace";
-import DashboardSearch from "@/components/AdminDashboard/reuseable/DashboardSearch";
+import DashboardSearch from "@/Layout/dashboard/DashboardSearch";
 import { useGetResourceCarrierQuery } from "@/store/features/adminDashboard/ContentResources/resourceCariier/resourceCarrierApi";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";

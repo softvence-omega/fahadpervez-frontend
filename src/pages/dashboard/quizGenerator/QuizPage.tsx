@@ -3,7 +3,7 @@ import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import MyQuizAnalysisTab from "./MyQuizAnalysisTab";
+// import MyQuizAnalysisTab from "./MyQuizAnalysisTab";
 import QuizOverviewTab from "./QuizOverviewTab";
 
 const QuizPage = () => {
@@ -74,7 +74,7 @@ const QuizPage = () => {
             {/* Tab Content */}
             <div className="">
               {activeTab === "overview" && <QuizOverviewTab />}
-              {activeTab === "myQuiz" && <MyQuizAnalysisTab />}
+              {/* {activeTab === "myQuiz" && <MyQuizAnalysisTab />} */}
             </div>
           </div>
         </div>

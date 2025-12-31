@@ -11,7 +11,9 @@ import {
 } from "@/store/features/goal/goal.api";
 import { toast } from "sonner";
 import GlobalLoader from "@/common/GlobalLoader";
+import { useGetMCQBankTreeQuery } from "@/store/features/MCQBank/MCQBank.api";
 
+/* 
 const availableSubjects: Subject[] = [
   {
     name: "Pathology",
@@ -104,6 +106,7 @@ const availableSubjects: Subject[] = [
     ],
   },
 ];
+*/
 
 // Main Component
 const MedicalStudyGoalTracker: React.FC = () => {
@@ -112,9 +115,19 @@ const MedicalStudyGoalTracker: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   // const [goal, setGoal] = useState<Goal | null>(null);
 
-  const [createGoal] = useCreateGoalMutation();
-  const [updateGoal] = useUpdateGoalMutation();
+  const [createGoal, { isLoading: isCreating }] = useCreateGoalMutation();
+  const [updateGoal, { isLoading: isUpdating }] = useUpdateGoalMutation();
   const { data, isLoading } = useGetGoalQuery({});
+
+  const { data: treeData, isLoading: isTreeLoading } = useGetMCQBankTreeQuery(
+    {}
+  );
+
+  const availableSubjects: Subject[] =
+    treeData?.data?.map((subject: any) => ({
+      name: subject.subjectName,
+      systems: subject.systems.map((system: any) => system.name),
+    })) || [];
 
   const apiGoal = data?.data?.[0];
 
@@ -299,7 +312,7 @@ const MedicalStudyGoalTracker: React.FC = () => {
     setShowModal(true);
   };
 
-  if (isLoading)
+  if (isLoading || isTreeLoading)
     return (
       <div>
         <GlobalLoader />
@@ -351,6 +364,7 @@ const MedicalStudyGoalTracker: React.FC = () => {
               onPrevious={() => setCurrentStep(2)}
               onCreate={handleCreateGoal}
               isEditMode={isEditMode}
+              isLoading={isCreating || isUpdating}
             />
           )}
         </GoalModal>

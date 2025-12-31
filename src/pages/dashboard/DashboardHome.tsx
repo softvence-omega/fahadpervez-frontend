@@ -2,7 +2,7 @@ import React from "react";
 // import Header from "@/components/dashboard_new/Header";
 import OverviewSection from "@/components/dashboard_new/OverviewSection";
 import SmartStudyPlan from "@/components/dashboard_new/SmartStudyPlan";
-import DailyChallenge from "@/components/dashboard_new/DailyChallenge";
+// import DailyChallenge from "@/components/dashboard_new/DailyChallenge";
 import PerformanceBySubject from "@/components/dashboard_new/PerformanceBySubject";
 import WeeklyLeaderboard from "@/components/dashboard_new/WeeklyLeaderboard";
 import WeeklyHighlights from "@/components/dashboard_new/WeeklyHighlights";
@@ -21,9 +21,9 @@ const Dashboard: React.FC = () => {
       <OverviewSection />
 
       {/* Smart Study Plan + Daily Challenge */}
-      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols- gap-6 mb-6">
         <SmartStudyPlan />
-        <DailyChallenge />
+        {/* <DailyChallenge /> */}
       </div>
 
       {/* Performance by Subject + Weekly Leaderboard */}

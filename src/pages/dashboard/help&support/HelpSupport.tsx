@@ -30,7 +30,7 @@ export default function HelpSupport() {
   };
 
   return (
-    <div className="">
+    <div className="my-3 px-2">
       <Breadcrumb breadcrumbs={breadcrumbs} />
 
       <main className="">

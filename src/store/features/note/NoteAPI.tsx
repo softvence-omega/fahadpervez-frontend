@@ -64,6 +64,15 @@ export const noteApi = baseAPI.injectEndpoints({
       providesTags: (id) => [{ type: "GeneratedNotes", id }],
     }),
 
+    // Delete Generated Note
+    deleteGeneratedNote: build.mutation({
+      query: (id) => ({
+        url: `/my_content/notes/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["GeneratedNotes"],
+    }),
+
     // end
   }),
 });
@@ -74,4 +83,5 @@ export const {
   useGenerateNoteMutation,
   useGetAllGeneratedNotesQuery,
   useGetGeneratedNoteByIdQuery,
+  useDeleteGeneratedNoteMutation,
 } = noteApi;

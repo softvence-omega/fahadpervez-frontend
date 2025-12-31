@@ -37,10 +37,11 @@ export default function GeneratedNoteDetails() {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto">
+    <div className="w-full max-w-5xl mx-auto mb-3">
       <div className="flex items-center gap-3 mb-8 mt-4">
         <Link
           to="/dashboard/download-notes"
+          state={{ activeTab: "generatedNotes" }}
           className="p-2 hover:bg-slate-100 rounded-full transition-colors"
         >
           <ArrowLeft className="w-5 h-5 text-gray-700" />

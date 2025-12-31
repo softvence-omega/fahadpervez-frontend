@@ -18,7 +18,7 @@ import { BiSolidEdit } from "react-icons/bi";
 import { IoChevronDownSharp } from "react-icons/io5";
 import { LuEye } from "react-icons/lu";
 import { Link } from "react-router-dom";
-import DashboardSearch from "../../reuseable/DashboardSearch";
+import DashboardSearch from "@/Layout/dashboard/DashboardSearch";
 const dropdownItems = [
   { label: "Pending", value: "PENDING" },
   { label: "Approved", value: "APPROVED" },
