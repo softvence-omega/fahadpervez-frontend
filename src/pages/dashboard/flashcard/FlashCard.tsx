@@ -9,7 +9,7 @@ export default function FlashCard({
   const navigate = useNavigate();
   const handleQuiz = (id: string) => {
     navigate(`/dashboard/solve-flash-card/${id}`, {
-      state: { source: source },
+      state: { source: source, totalFlashCards: flashcard?.totalFlashCards },
     });
   };
 

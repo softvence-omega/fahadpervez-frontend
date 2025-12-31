@@ -45,7 +45,7 @@ const MyQuizAnalysisTab: React.FC = () => {
   const wrongPercentage = tracking?.wrongPercentage ?? 0;
 
   return (
-    <div className="min-h-screen">
+  <div className="">
       <div className="py-6">
         <div className="w-full space-y-6">
           {/* <div className="flex justify-between items-center">

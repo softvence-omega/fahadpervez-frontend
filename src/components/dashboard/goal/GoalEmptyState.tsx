@@ -1,11 +1,24 @@
 import { Target } from "lucide-react";
 import { EmptyStateProps } from "./type";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/features/auth/auth.slice";
 
 export const GoalEmptyState: React.FC<EmptyStateProps> = ({ onSetGoal }) => {
+  const user = useSelector(selectUser);
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+
+    if (hour < 12) return "Good Morning";
+    if (hour < 17) return "Good Afternoon";
+    if (hour < 21) return "Good Evening";
+    return "Good Night";
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-sm p-4 pb-5">
       <h1 className="text-2xl font-semibold mb-">
-        Good Morning, Emma Harrison!
+        {getGreeting()}, {user?.profile?.firstName}
       </h1>
 
       <div className="flex flex-col items-center justify-center space-y-4">

@@ -18,7 +18,7 @@ import { slugify } from "@/help/help";
 import { useGetStudentsDataQuery } from "@/store/features/adminDashboard/UserManagement/studentsManagementApi";
 import { LuEye } from "react-icons/lu";
 import { Link } from "react-router-dom";
-import DashboardSearch from "../../reuseable/DashboardSearch";
+import DashboardSearch from "@/Layout/dashboard/DashboardSearch";
 
 const dropdownItems = [
   { label: "All", value: "" },

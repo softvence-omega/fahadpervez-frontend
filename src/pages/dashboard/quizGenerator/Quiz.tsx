@@ -241,7 +241,7 @@ const Quiz = () => {
   const currentQuestionData = questions[currentQuestion];
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="min-h- p-4">
       {/* Main Content */}
       <Link to="/dashboard/quiz-page" className="sm:mb-0">
         <button className="flex items-center gap-1 border border-gray-300 px-3 py-2 rounded cursor-pointer">
