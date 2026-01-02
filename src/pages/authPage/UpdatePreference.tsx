@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {
   UpdatePreferenceData,
   Availability,
-  AvailabilitySlot,
+  // AvailabilitySlot,
   TimeSlot,
 } from "./schemas";
 
