@@ -18,7 +18,6 @@ const ForumList = () => {
   const role = user?.account?.role;
   console.log(role);
 
-
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [showAll, setShowAll] = useState(false);
@@ -52,7 +51,14 @@ const ForumList = () => {
   return (
     <div className="space-y-4">
       {currentPosts.map((post) => (
-        <Link to={`/mentor/forum-details/${post._id}`} key={post._id}>
+        <Link
+          to={
+            role === "MENTOR"
+              ? `/mentor/forum-details/${post._id}`
+              : `/dashboard/forum-details/${post._id}`
+          }
+          key={post._id}
+        >
           <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 hover:shadow-md transition-shadow mt-6 cursor-pointer">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2">
               <div className="flex items-center gap-2">

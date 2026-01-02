@@ -24,7 +24,7 @@ import SolveFlashCard from "@/pages/dashboard/flashcard/SolveFlashCard";
 import AllCommunities from "@/components/dashboard/community-event/AllCommunities";
 import CareerResourcePage from "@/pages/dashboard/careerResource/CareerResourcePage";
 import MyResource from "@/pages/dashboard/careerResource/MyResource";
-import StudyPlan from "@/pages/dashboard/study plan/StudyPlan";
+// import StudyPlan from "@/pages/dashboard/study plan/StudyPlan";
 import CreateStudyPlan from "@/pages/dashboard/study plan/CreateStudyPlan";
 import MyPlan from "@/pages/dashboard/study plan/MyPlan";
 import WeeklyPlan from "@/pages/dashboard/study plan/WeeklyPlan";
@@ -32,7 +32,7 @@ import EditStudentProfile from "@/pages/dashboard/student profile/EditStudentPro
 import DailyChallenge from "@/pages/dashboard/gamifiedLearning/DailyChallenge";
 import PracticeMCQ from "@/pages/dashboard/mcqBank/PracticeMCQ";
 // import DiagramDetails from "@/components/dashboard/diagram/DiagramDetails";
-import OSCE from "@/pages/dashboard/OSCE";
+// import OSCE from "@/pages/dashboard/OSCE";
 import DrugCard from "@/pages/dashboard/DrugCard";
 import YourDrugCard from "@/components/dashboard/drug card/YourDrugCard";
 import MakeDecesion from "@/components/dashboard/clinical-case/MakeDecesion";
@@ -61,6 +61,7 @@ import PrivateRoute from "./PrivateRoute";
 import BioDigitalExplorer from "@/pages/dashboard/bio-digital/Explorer";
 import BioDigitalDetailView from "@/pages/dashboard/bio-digital/DetailView";
 import MyQuizAnalysisTab from "@/pages/dashboard/quizGenerator/MyQuizAnalysisTab";
+import ForumDetail from "@/components/mentorCommunity/ForumDetail";
 
 const dashboardRoutes = {
   path: "/dashboard",
@@ -136,6 +137,10 @@ const dashboardRoutes = {
     },
 
     {
+      path: "forum-details/:id",
+      element: <ForumDetail />,
+    },
+    {
       path: "ai-tutor",
       element: <AITutor />,
     },
@@ -195,12 +200,16 @@ const dashboardRoutes = {
       path: "gamified-learning/daily-challenges",
       element: <DailyChallenge />,
     },
+    // {
+    //   path: "osce",
+    //   element: <OSCE />,
+    // },
+    // {
+    //   path: "osce-station",
+    //   element: <OSCEStation />,
+    // },
     {
       path: "osce",
-      element: <OSCE />,
-    },
-    {
-      path: "osce-station",
       element: <OSCEStation />,
     },
     {
@@ -280,16 +289,20 @@ const dashboardRoutes = {
       path: "my-resources",
       element: <MyResource />,
     },
-    {
-      path: "smart-study",
-      element: <StudyPlan />,
-    },
+    // {
+    //   path: "smart-study",
+    //   element: <StudyPlan />,
+    // },
     {
       path: "create-study-plan",
       element: <CreateStudyPlan />,
     },
+    // {
+    //   path: "my-plan",
+    //   element: <MyPlan />,
+    // },
     {
-      path: "my-plan",
+      path: "smart-study",
       element: <MyPlan />,
     },
     {

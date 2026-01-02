@@ -27,7 +27,7 @@ const StudentDashboardHeader: React.FC<StudentDashboardHeaderProps> = ({
   };
 
   const profileMenuItems = [
-    { label: "Settings", onClick: () => navigate("/dashboard/settings") },
+    // { label: "Settings", onClick: () => navigate("/dashboard/settings") },
     { label: "Profile", onClick: () => navigate("/dashboard/student-profile") },
     { label: "Help & Support", onClick: () => navigate("/dashboard/help") },
     { label: "Logout", onClick: handleLogout, danger: true },

@@ -1,18 +1,38 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { timeAgo } from "@/common/timeAgo"
-import { useDeleteSocialPostMutation, useSaveCommentSocialPostMutation, useSaveOrUpdateReactionSocialPostMutation, useUpdateSocialPostMutation } from "@/store/features/socialPost/social.api"
-import { TSocialPost } from "@/store/storeTypes/social"
-import { Ellipsis, Heart, MessageCircle, Send, X } from "lucide-react"
-import { useState } from "react"
-import { useSelector } from "react-redux"
-import { Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer"
-import LoaderWithoutText from "@/common/LoaderWithoutText"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import { timeAgo } from "@/common/timeAgo";
+import {
+  useDeleteSocialPostMutation,
+  useSaveCommentSocialPostMutation,
+  useSaveOrUpdateReactionSocialPostMutation,
+  useUpdateSocialPostMutation,
+} from "@/store/features/socialPost/social.api";
+import { TSocialPost } from "@/store/storeTypes/social";
+import { Ellipsis, Heart, MessageCircle, Send, X } from "lucide-react";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+import LoaderWithoutText from "@/common/LoaderWithoutText";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import PostDelete from "./PostDelete";
-import PostEdit from "./PostEdit"
+import PostEdit from "./PostEdit";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 interface PostCardProps {
-  post: TSocialPost
+  post: TSocialPost;
 }
 
 const PostCard = ({ post }: PostCardProps) => {
@@ -29,29 +49,32 @@ const PostCard = ({ post }: PostCardProps) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [newComment, setNewComment] = useState("");
 
-  // delete post 
+  // delete post
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   // edit post
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
+  // image preview state
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
   const handleLike = async () => {
     try {
       // optimistic update
-      const nextLiked = !isLiked
-      setIsLiked(nextLiked)
-      setLikeCount((prev) => (nextLiked ? prev + 1 : prev - 1))
+      const nextLiked = !isLiked;
+      setIsLiked(nextLiked);
+      setLikeCount((prev) => (nextLiked ? prev + 1 : prev - 1));
 
       // send only _id to backend
       await saveReaction({
         id: post._id,
         body: { reaction: true },
-      }).unwrap()
+      }).unwrap();
     } catch (error) {
-      console.error("Failed to update reaction:", error)
+      console.error("Failed to update reaction:", error);
     }
-  }
+  };
 
   const handleAddComment = async () => {
     if (newComment.trim() === "") return;
@@ -66,9 +89,9 @@ const PostCard = ({ post }: PostCardProps) => {
       setNewComment("");
       // setIsDrawerOpen(!isDrawerOpen);
     } catch (error) {
-      console.error("Failed to add comment:", error)
+      console.error("Failed to add comment:", error);
     }
-  }
+  };
 
   // const handleKeyPress = (e: React.KeyboardEvent) => {
   //   if (e.key === "Enter" && !e.shiftKey) {
@@ -77,48 +100,51 @@ const PostCard = ({ post }: PostCardProps) => {
   //   }
   // }
 
-  // delete function 
+  // delete function
   const handleDelete = async () => {
     try {
-      setIsDeleting(true)
-      await postDelete(post?._id).unwrap()
+      setIsDeleting(true);
+      await postDelete(post?._id).unwrap();
       // console.log("Post deleted:", post?._id)
-      setIsDeleting(false)
-      setDeleteDialogOpen(false)
+      setIsDeleting(false);
+      setDeleteDialogOpen(false);
     } catch (error) {
-      console.error("Delete failed:", error)
-      setIsDeleting(false)
+      console.error("Delete failed:", error);
+      setIsDeleting(false);
     }
-  }
+  };
 
   // console.log("edit option :", post?.comments[1]?.commentedBy?.email === userEmail);
 
   // edit function
-  const handleUpdatePost = async (updatedData: { content: string; topic?: string; image?: File | null }) => {
+  const handleUpdatePost = async (updatedData: {
+    content: string;
+    topic?: string;
+    image?: File | null;
+  }) => {
     try {
-      const formData = new FormData()
+      const formData = new FormData();
 
       if (updatedData.image) {
-        formData.append("image", updatedData.image)
+        formData.append("image", updatedData.image);
       }
 
       const dataObj = {
         topic: updatedData.topic,
         content: updatedData.content,
-      }
-      formData.append("data", JSON.stringify(dataObj))
+      };
+      formData.append("data", JSON.stringify(dataObj));
 
       await updatePost({
         id: post._id,
-        body: formData
-      }).unwrap()
+        body: formData,
+      }).unwrap();
 
-      setEditDialogOpen(false)
+      setEditDialogOpen(false);
     } catch (error) {
-      console.error("Update failed:", error)
+      console.error("Update failed:", error);
     }
-  }
-
+  };
 
   return (
     <>
@@ -153,7 +179,9 @@ const PostCard = ({ post }: PostCardProps) => {
                   </span>
                 )}
               </div>
-              <p className="text-sm text-gray-500">{timeAgo(post?.createdAt)}</p>
+              <p className="text-sm text-gray-500">
+                {timeAgo(post?.createdAt)}
+              </p>
             </div>
           </div>
           {/* Right side: Ellipsis Dropdown */}
@@ -167,13 +195,10 @@ const PostCard = ({ post }: PostCardProps) => {
               )}
             </DropdownMenuTrigger>
 
-
             <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => setEditDialogOpen(true)}
-              >
+              <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>
                 Edit Post
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -194,7 +219,8 @@ const PostCard = ({ post }: PostCardProps) => {
           <img
             src={post.postImage}
             alt="Post image"
-            className="w-full h-64 object-cover rounded-lg mb-4"
+            className="w-full h-64 object-cover rounded-lg mb-4 cursor-pointer hover:opacity-95 transition-opacity"
+            onClick={() => setIsPreviewOpen(true)}
           />
         )}
 
@@ -210,12 +236,14 @@ const PostCard = ({ post }: PostCardProps) => {
               className={`w-5 h-5 cursor-pointer 
               ${isLiked ? "fill-current" : ""}
             `}
-
             />
             <span className="text-sm">{likeCount}</span>
           </button>
 
-          <button onClick={() => setIsDrawerOpen(true)} className="flex items-center gap-2 text-gray-600 hover:text-blue-500 transition-colors">
+          <button
+            onClick={() => setIsDrawerOpen(true)}
+            className="flex items-center gap-2 text-gray-600 hover:text-blue-500 transition-colors"
+          >
             <MessageCircle className="w-5 h-5 cursor-pointer" />
             <span className="text-sm">{post?.comments?.length || 0}</span>
           </button>
@@ -262,7 +290,9 @@ const PostCard = ({ post }: PostCardProps) => {
                               <h4 className="font-semibold text-sm">
                                 {comment?.commentedBy?.name}
                               </h4>
-                              <p className="text-gray-800 mt-1">{comment.comment}</p>
+                              <p className="text-gray-800 mt-1">
+                                {comment.comment}
+                              </p>
                             </div>
                             <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
                               <span>{timeAgo(comment.createdAt)}</span>
@@ -292,6 +322,12 @@ const PostCard = ({ post }: PostCardProps) => {
                       type="text"
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          handleAddComment();
+                        }
+                      }}
                       placeholder="Write a comment..."
                       className="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
@@ -301,8 +337,11 @@ const PostCard = ({ post }: PostCardProps) => {
                       disabled={newComment.trim() === ""}
                       className="  disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
-                      {isLoading ? <LoaderWithoutText /> :
-                        <Send className="w-6 h-6 text-blue-600 cursor-pointer" />}
+                      {isLoading ? (
+                        <LoaderWithoutText />
+                      ) : (
+                        <Send className="w-6 h-6 text-blue-600 cursor-pointer" />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -328,8 +367,33 @@ const PostCard = ({ post }: PostCardProps) => {
           isLoading={isLoading}
         />
       )}
+
+      {/* Image Preview Modal */}
+      <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+        <DialogContent
+          showCloseButton={false}
+          className="max-w-4xl border-none bg-transparent p-0 shadow-none outline-none"
+        >
+          <DialogTitle>
+            <VisuallyHidden>Post Image Preview</VisuallyHidden>
+          </DialogTitle>
+          <div className="relative flex items-center justify-center">
+            <button
+              onClick={() => setIsPreviewOpen(false)}
+              className="absolute -top-10 right-0 text-white hover:text-gray-300 transition-colors"
+            >
+              <X className="h-8 w-8" />
+            </button>
+            <img
+              src={post?.postImage || ""}
+              alt="Full size post"
+              className="max-h-[85vh] max-w-full rounded-lg object-contain shadow-2xl"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
-  )
-}
+  );
+};
 
 export default PostCard;

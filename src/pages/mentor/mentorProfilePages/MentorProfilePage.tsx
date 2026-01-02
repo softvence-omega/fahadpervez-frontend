@@ -1,31 +1,24 @@
-import profileImage from "@/assets/dashboard/profileImage.png";
 import profileBg from "@/assets/dashboard/profileBg.png";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import certificate from "@/assets/dashboard/certificate.jpg";
 import { Star, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import EditMentorProfileModal from "./EditMentorProfileModal";
 import { Label } from "@/components/ui/label";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/features/auth/auth.slice";
 
 export default function MentorProfilePage() {
   const [open, setOpen] = useState(false);
-
-  const data = {
-    degree:
-      "https://img.freepik.com/free-vector/realistic-certificate-template_52683-83834.jpg?semt=ais_hybrid&w=740&q=80",
-    nid: "https://static.wixstatic.com/media/be895c_0cb803b4796449bdb715628c84ae17ee~mv2.png/v1/fill/w_964,h_591,al_c,q_90/be895c_0cb803b4796449bdb715628c84ae17ee~mv2.png",
-    certificate:
-      "https://img.freepik.com/free-vector/realistic-certificate-template_52683-83834.jpg?semt=ais_hybrid&w=740&q=80",
-    fullName: "Emma Harrison",
-    bankName: "Bank of Denmark",
-    accountNumber: "123456789012",
-  };
+  const user = useSelector(selectUser);
 
   const [modalImage, setModalImage] = useState<string | null>(null);
 
   const openModal = (imgUrl: string) => setModalImage(imgUrl);
   const closeModal = () => setModalImage(null);
+
+  const profile = user?.profile;
+  const account = user?.account;
 
   return (
     <div className="my-6 sm:my-10">
@@ -42,15 +35,15 @@ export default function MentorProfilePage() {
           <div className="bg-white border border-slate-300 rounded-lg p-4 sm:p-6">
             <div className="text-center">
               <img
-                src={profileImage}
+                src={profile?.profile_photo || "/default-avatar.png"}
                 alt="Profile"
-                className="mx-auto w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 object-cover rounded-full"
+                className="mx-auto w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 object-cover rounded-full border border-gray-200"
               />
               <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold text-black mt-2">
-                Emma Harrison
+                {profile?.firstName} {profile?.lastName}
               </h3>
               <p className="text-sm sm:text-base text-slate-700">
-                Medical Student
+                {profile?.currentRole || "Mentor"}
               </p>
             </div>
 
@@ -96,14 +89,35 @@ export default function MentorProfilePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-6">
             {[
-              { label: "First Name", value: "Enter first name" },
-              { label: "Last Name", value: "Enter last name" },
-              { label: "Email Address", value: "sarah.johnson@email.com", full: true },
-              { label: "Medical Specialty", value: "e.g. Cardiology" },
-              { label: "Current Role", value: "e.g. Resident Doctor" },
-              { label: "Post Graduate", value: "e.g. MD, MS" },
-              { label: "Year of Experience", value: "e.g. 5" },
-              { label: "Bio", value: "Write about yourself...", full: true, large: true },
+              { label: "First Name", value: profile?.firstName || "N/A" },
+              { label: "Last Name", value: profile?.lastName || "N/A" },
+              {
+                label: "Email Address",
+                value: account?.email || "N/A",
+                full: true,
+              },
+              {
+                label: "Medical Specialty",
+                value: profile?.specialty || "N/A",
+              },
+              {
+                label: "Current Role",
+                value: profile?.currentRole || "N/A",
+              },
+              {
+                label: "Post Graduate",
+                value: profile?.postgraduateDegree || "N/A",
+              },
+              {
+                label: "Year of Experience",
+                value: profile?.professionalExperience?.toString() || "0",
+              },
+              {
+                label: "Bio",
+                value: profile?.bio || "N/A",
+                full: true,
+                large: true,
+              },
             ].map((item, idx) => (
               <div
                 key={idx}
@@ -130,40 +144,52 @@ export default function MentorProfilePage() {
             Basic info
           </h2>
           <div className="flex flex-wrap gap-4">
-            {data.degree && (
+            {profile?.degree && (
               <div>
                 <p className="text-sm font-medium mb-1">Your Degree</p>
                 <img
-                  src={data.degree}
+                  src={profile.degree}
                   alt="Degree"
                   className="w-28 sm:w-40 h-20 object-cover cursor-pointer border rounded"
-                  onClick={() => openModal(data.degree!)}
+                  onClick={() => openModal(profile.degree!)}
                 />
               </div>
             )}
-            {data.nid && (
+            {profile?.identity_card && (
               <div>
                 <p className="text-sm font-medium mb-1">
                   NID/Passport/Driving License
                 </p>
-                <img
-                  src={data.nid}
-                  alt="NID"
-                  className="w-28 sm:w-40 h-20 object-cover cursor-pointer border rounded"
-                  onClick={() => openModal(data.nid!)}
-                />
+                <div
+                  className="w-28 sm:w-40 h-20 bg-gray-100 flex items-center justify-center cursor-pointer border rounded text-xs text-center p-2"
+                  onClick={() =>
+                    profile.identity_card?.endsWith(".pdf")
+                      ? window.open(profile.identity_card, "_blank")
+                      : openModal(profile.identity_card!)
+                  }
+                >
+                  {profile.identity_card.endsWith(".pdf") ? (
+                    "View PDF Document"
+                  ) : (
+                    <img
+                      src={profile.identity_card}
+                      alt="NID"
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </div>
               </div>
             )}
-            {data.certificate && (
+            {profile?.certificate && (
               <div>
                 <p className="text-sm font-medium mb-1">
                   Professional Certificate
                 </p>
                 <img
-                  src={certificate}
+                  src={profile.certificate}
                   alt="Certificate"
                   className="w-28 sm:w-40 h-20 object-cover cursor-pointer border rounded"
-                  onClick={() => openModal(data.certificate!)}
+                  onClick={() => openModal(profile.certificate!)}
                 />
               </div>
             )}
@@ -174,9 +200,14 @@ export default function MentorProfilePage() {
           </h2>
           <div className="space-y-1 text-sm sm:text-base">
             <p className="font-medium">Account Details</p>
-            <p>Name: {data.fullName}</p>
-            <p>Bank Name: {data.bankName}</p>
-            <p>Account Number: {data.accountNumber}</p>
+            <p>Name: {profile?.bankInformation?.accountHolderName || "N/A"}</p>
+            <p>Bank Name: {profile?.bankInformation?.bankName || "N/A"}</p>
+            <p>
+              Account Number: {profile?.bankInformation?.accountNumber || "N/A"}
+            </p>
+            <p>
+              Routing Number: {profile?.bankInformation?.routingNumber || "N/A"}
+            </p>
           </div>
         </div>
       </div>
@@ -203,7 +234,7 @@ export default function MentorProfilePage() {
         </div>
       )}
 
-      <EditMentorProfileModal open={open} setOpen={setOpen} />
+      <EditMentorProfileModal open={open} setOpen={setOpen} user={user} />
     </div>
   );
 }
