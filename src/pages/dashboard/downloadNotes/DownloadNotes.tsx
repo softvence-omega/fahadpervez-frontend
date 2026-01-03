@@ -86,7 +86,7 @@ export default function DownloadNotes() {
   };
 
   return (
-    <div>
+    <div className="mb-5">
       <DashboardHeading
         title="High-Yield Medical Study Notes"
         description="Download concise, topic-focused PDF notes for anatomy, pathology, pharmacology, and more."

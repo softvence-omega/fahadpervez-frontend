@@ -21,24 +21,24 @@ export type TUser = {
     accountId: string;
     firstName: string;
     lastName: string;
-    studentType: string;
+    studentType?: string;
     country: string;
-    university: string;
-    preparingFor: {
+    university?: string;
+    preparingFor?: {
       examName: string;
       description: string;
     }[];
     bio: string;
-    year_of_study: string;
+    year_of_study?: string;
     profile_photo: string;
-    dailyStreak: number;
-    point: number;
-    completedQuiz: any[];
-    completedFlashCard: any[];
-    completedCase: any[];
-    badges: any[];
-    connectedMentor: any[];
-    preference: {
+    dailyStreak?: number;
+    point?: number;
+    completedQuiz?: any[];
+    completedFlashCard?: any[];
+    completedCase?: any[];
+    badges?: any[];
+    connectedMentor?: any[];
+    preference?: {
       subject: string;
       systemPreference: string;
       topic: string;
@@ -46,6 +46,36 @@ export type TUser = {
       createdAt: string;
       updatedAt: string;
     };
+    // Mentor specific fields
+    currentRole?: string;
+    hospitalOrInstitute?: string;
+    specialty?: string;
+    professionalExperience?: number;
+    postgraduateDegree?: string;
+    profileVerification?: string;
+    certificate?: string;
+    degree?: string;
+    identity_card?: string;
+    availability?: {
+      day: string;
+      time: string[];
+    }[];
+    currency?: string;
+    hourlyRate?: number;
+    languages?: string[];
+    skills?: string[];
+    bankInformation?: {
+      accountHolderName: string;
+      bankName: string;
+      accountNumber: string;
+      routingNumber: string;
+      accountType: string;
+    };
+    // Professional specific fields (preliminary)
+    institution?: string;
+    experience?: string;
+    post_graduate?: string;
+    professionName?: string;
     createdAt: string;
     updatedAt: string;
   } | null;

@@ -1,13 +1,10 @@
 import Pagination from "@/common/custom/Pagination";
 import GeneratedNoteCard from "@/components/reusable/GeneratedNoteCard";
-import {
-  useDeleteGeneratedNoteMutation,
-  useGetAllGeneratedNotesQuery,
-} from "@/store/features/note/NoteAPI";
+import { useGetAllGeneratedNotesQuery } from "@/store/features/note/NoteAPI";
+import { useDeleteMyContentMutation } from "@/store/features/content/content.api";
 import { Loader2, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -44,8 +41,8 @@ export default function GeneratedNotes({
     topic,
   });
 
-  const [deleteNote, { isLoading: isDeleting }] =
-    useDeleteGeneratedNoteMutation();
+  const [deleteContent, { isLoading: isDeleting }] =
+    useDeleteMyContentMutation();
 
   const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
 
@@ -60,11 +57,9 @@ export default function GeneratedNotes({
   const handleDeleteConfirm = async () => {
     if (!noteToDelete) return;
     try {
-      await deleteNote(noteToDelete).unwrap();
-      toast.success("Note deleted successfully");
+      await deleteContent({ id: noteToDelete, key: "notes" }).unwrap();
       setNoteToDelete(null);
     } catch (error) {
-      toast.error("Failed to delete note");
       console.error("Delete error:", error);
     }
   };

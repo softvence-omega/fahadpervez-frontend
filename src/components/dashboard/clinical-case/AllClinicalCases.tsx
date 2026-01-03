@@ -6,9 +6,22 @@ import {
   ChevronRight,
   ArrowRight,
   Filter,
+  Trash2,
+  Loader2,
+  AlertCircle,
 } from "lucide-react";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { useNavigate } from "react-router-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { useDeleteMyContentMutation } from "@/store/features/content/content.api";
 import {
   useGetAllClinicalCaseQuery,
   useGetAllGeneratedClinicalCasesQuery,
@@ -29,6 +42,10 @@ const AllClinicalCases: React.FC = () => {
   });
   const [activeTab, setActiveTab] = useState<TabType>("All Cases");
   const [currentPage, setCurrentPage] = useState(1);
+  const [caseToDelete, setCaseToDelete] = useState<string | null>(null);
+
+  const [deleteContent, { isLoading: isDeletingContent }] =
+    useDeleteMyContentMutation();
 
   const navigate = useNavigate();
 
@@ -102,6 +119,16 @@ const AllClinicalCases: React.FC = () => {
     setCurrentPage(1);
   }, [searchTerm, activeTab]);
 
+  const handleDeleteConfirm = async () => {
+    if (!caseToDelete) return;
+    try {
+      await deleteContent({ id: caseToDelete, key: "clinicalcase" }).unwrap();
+      setCaseToDelete(null);
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
+  };
+
   const CaseCard = ({ caseData }: { caseData: ClinicalCaseData }) => {
     const handleStartCase = () => {
       // Appends ?type=generated if we are in the generated tab
@@ -111,14 +138,32 @@ const AllClinicalCases: React.FC = () => {
 
     return (
       <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
-        <div className="flex items-center mb-3 gap-3">
-          <span className="px-2 py-1 rounded-full text-xs font-semibold bg-slate-100 border border-slate-200 text-slate-800">
-            {caseData.topic || "General"}
-          </span>
-          {caseData?.difficultyLevel && (
-            <span className="px-2 py-1 text-xs font-medium border rounded-full text-purple-600">
-              {caseData?.difficultyLevel}
+        <div className="flex justify-between items-start mb-3">
+          <div className="flex items-center gap-3">
+            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-slate-100 border border-slate-200 text-slate-800">
+              {caseData.topic || "General"}
             </span>
+            {caseData?.difficultyLevel && (
+              <span className="px-2 py-1 text-xs font-medium border rounded-full text-purple-600">
+                {caseData?.difficultyLevel}
+              </span>
+            )}
+          </div>
+          {activeTab === "AI Generated" && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setCaseToDelete(caseData._id);
+              }}
+              disabled={isDeletingContent}
+              className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors cursor-pointer disabled:opacity-50"
+            >
+              {isDeletingContent && caseToDelete === caseData._id ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Trash2 className="w-4 h-4" />
+              )}
+            </button>
           )}
         </div>
 
@@ -258,6 +303,50 @@ const AllClinicalCases: React.FC = () => {
           onApply={handleApplyFilter}
         />
       )}
+
+      {/* Delete Confirmation Modal */}
+      <Dialog
+        open={!!caseToDelete}
+        onOpenChange={(open) => !open && setCaseToDelete(null)}
+      >
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <div className="flex items-center gap-3 text-red-600 mb-2">
+              <AlertCircle className="w-6 h-6" />
+              <DialogTitle>Delete Clinical Case</DialogTitle>
+            </div>
+            <DialogDescription>
+              Are you sure you want to delete this AI-generated clinical case?
+              This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              variant="outline"
+              onClick={() => setCaseToDelete(null)}
+              disabled={isDeletingContent}
+              className="cursor-pointer"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteConfirm}
+              disabled={isDeletingContent}
+              className="cursor-pointer flex items-center gap-2"
+            >
+              {isDeletingContent ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete Case"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -6,13 +6,15 @@ import oranBadge from "@/assets/dashboard/orange-badge.png";
 import osce from "@/assets/dashboard/osce.png";
 import dailyStreak from "@/assets/dashboard/daily-streak.png";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";
-import {
-  FileBadge2,
-} from "lucide-react";
+import { FileBadge2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/features/auth/auth.slice";
 
 export default function StudentProfile() {
+  const user = useSelector(selectUser);
+
   return (
     <div className="my-8 md:my-10">
       {/* Background Image */}
@@ -22,17 +24,42 @@ export default function StudentProfile() {
       <div className=" grid md:grid-cols-3 gap-4 md:gap-6 justify-between px-1 -mt-5">
         <div className="bg-white border border-slate-300 rounded-[8px] p-4 md:p-6">
           <div className="text-center">
-            <img src={profileImage} alt="" className="mx-auto" />
+            <img
+              src={user?.profile?.profile_photo || profileImage}
+              alt="Profile"
+              className="mx-auto w-32 h-32 rounded-full object-cover border-4 border-white shadow-sm"
+            />
             <h3 className="text-xl font-semibold text-black mt-2">
-              Emma Harrison
+              {user?.profile?.firstName} {user?.profile?.lastName}
             </h3>
-            <p className="text-slate-700">Medical Student</p>
+            <p className="text-slate-700">
+              {user?.account?.role === "STUDENT"
+                ? user?.profile?.studentType || "Medical Student"
+                : user?.profile?.professionName || "Professional"}
+            </p>
           </div>
 
           <div className="mt-6 space-y-4 ml-7 ">
-            <p>University : Heriot-Watt University</p>
-            <p>Year of Study : 2nd Year</p>
-            <p>Preparing For : PLAB</p>
+            {user?.account?.role === "STUDENT" ? (
+              <>
+                <p>University : {user?.profile?.university || "N/A"}</p>
+                <p>Year of Study : {user?.profile?.year_of_study || "N/A"}</p>
+                <p>
+                  Preparing For :{" "}
+                  {user?.profile?.preparingFor?.length
+                    ? user.profile.preparingFor
+                        .map((exam) => exam.examName)
+                        .join(", ")
+                    : "N/A"}
+                </p>
+              </>
+            ) : (
+              <>
+                <p>Institution : {user?.profile?.institution || "N/A"}</p>
+                <p>Experience : {user?.profile?.experience || "N/A"}</p>
+                <p>Post Graduate : {user?.profile?.post_graduate || "N/A"}</p>
+              </>
+            )}
           </div>
           <Link to={"/dashboard/edit-student-profile"}>
             <Button className="w-full bg-blue-main hover:bg-blue-600 h-auto py-3 cursor-pointer mt-4">

@@ -172,15 +172,15 @@ const Quiz = () => {
         if (id) {
           sessionStorage.removeItem(`quiz_answers_${id}`);
         }
-        navigate(`/dashboard/quiz-page/${id}`, {
-          state: { activeTab: "myQuiz" },
+        navigate(`/dashboard/quiz-analysis/${id}`, {
+          // state: { activeTab: "myQuiz" },
         });
       } else {
         handleSubmit();
       }
     }
   };
-
+  
   const [updateTracking] = useUpdateQuizTrackingMutation();
 
   // Submit answers
@@ -224,14 +224,20 @@ const Quiz = () => {
       }
 
       // Redirect to quiz-page analysis tab
-      navigate(`/dashboard/quiz-page/${id || "generated"}`, {
-        state: { activeTab: "myQuiz", justSubmitted: true },
+      // navigate(`/dashboard/quiz-page/${id || "generated"}`, {
+      //   state: { activeTab: "myQuiz", justSubmitted: true },
+      // });
+      navigate(`/dashboard/quiz-analysis/${id}`, {
+        // state: { activeTab: "myQuiz", justSubmitted: true },
       });
     } catch (error) {
       console.error("Failed to update tracking:", error);
       // Fallback redirection even if update fails
-      navigate(`/dashboard/quiz-page/${id || "generated"}`, {
-        state: { activeTab: "myQuiz", justSubmitted: true },
+      // navigate(`/dashboard/quiz-page/${id || "generated"}`, {
+      //   state: { activeTab: "myQuiz", justSubmitted: true },
+      // });
+      navigate(`/dashboard/quiz-analysis/${id}`, {
+        // state: { activeTab: "myQuiz", justSubmitted: true },
       });
     }
   };
@@ -375,7 +381,7 @@ const Quiz = () => {
                   ? () => {
                       if (id) sessionStorage.removeItem(`quiz_answers_${id}`);
                       navigate(`/dashboard/quiz-page/${id}`, {
-                        state: { activeTab: "myQuiz" },
+                        // state: { activeTab: "myQuiz" },
                       });
                     }
                   : handleSubmit
@@ -469,9 +475,8 @@ const Quiz = () => {
 
                           <p
                             className={` ${
-                              isOptionCorrect
-                                && "text-green-700"
-                                //: "text-red-400"
+                              isOptionCorrect && "text-green-700"
+                              //: "text-red-400"
                             }`}
                           >
                             {option.explanation || "No explanation provided."}

@@ -1,6 +1,6 @@
 // components/WeeklyPlan.tsx
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   ArrowLeft,
@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
-import image1 from "@/assets/dashboard/planImage.png";
+// import image1 from "@/assets/dashboard/planImage.png";
 import { useGetStudyPlanQuery } from "@/store/features/studyPlan/studyPlan.api";
 import GlobalLoader2 from "@/common/GlobalLoader2";
 
@@ -98,9 +98,12 @@ export default function WeeklyPlan() {
     return (
       <div className="mb-10 bg-slate-50">
         <div className="flex items-center gap-3">
-          <Link to={"/dashboard/my-plan"} className="mb-7">
+          <Link to={"/dashboard/smart-study"} className="mb-7">
             <ArrowLeft />
           </Link>
+          {/* <Link to={"/dashboard/my-plan"} className="mb-7">
+            <ArrowLeft />
+          </Link> */}
           <DashboardHeading
             title="Study Plan Not Found"
             titleSize="text-xl"
@@ -116,7 +119,10 @@ export default function WeeklyPlan() {
     <div className="mb-10 bg-slate-50">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <Link to={"/dashboard/my-plan"} className="mb-7">
+          {/* <Link to={"/dashboard/my-plan"} className="mb-7">
+            <ArrowLeft />
+          </Link> */}
+          <Link to={"/dashboard/smart-study"} className="mb-7">
             <ArrowLeft />
           </Link>
           <DashboardHeading
@@ -146,7 +152,7 @@ export default function WeeklyPlan() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 gap-6">
         {/* Left Section */}
         <div className="lg:col-span-3">
           <Card className="border-0 bg-transparent shadow-none">
@@ -293,7 +299,7 @@ export default function WeeklyPlan() {
         </div>
 
         {/* Right Section */}
-        <div className=" col-span-2">
+        {/* <div className=" col-span-2">
           <div className="border border-slate-300 p-6 rounded-[8px]">
             <h3 className="flex items-center gap-2 mb-7 text-xl text-[#111827]">
               <img src={image1} alt="" className="w-5" /> AI Recommendations
@@ -372,7 +378,7 @@ export default function WeeklyPlan() {
               </Card>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

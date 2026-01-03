@@ -1,15 +1,8 @@
-import { useState } from "react"
+
 import { Search } from "lucide-react"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 
 const MentorSearchFilter = () => {
-  const [filterType, setFilterType] = useState("all")
+  // const [filterType, setFilterType] = useState("all")
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-4 h-fit sticky top-28 w-full">
@@ -25,7 +18,7 @@ const MentorSearchFilter = () => {
           />
         </div>
 
-        <div>
+        {/* <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Filter by type</label>
           <Select value={filterType} onValueChange={setFilterType}>
             <SelectTrigger className="w-full border-gray-300 focus:ring-2 focus:ring-blue-500">
@@ -38,7 +31,7 @@ const MentorSearchFilter = () => {
               <SelectItem value="resources">Resources</SelectItem>
             </SelectContent>
           </Select>
-        </div>
+        </div> */}
       </div>
     </div>
   )

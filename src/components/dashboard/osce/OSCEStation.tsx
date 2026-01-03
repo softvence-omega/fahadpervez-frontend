@@ -3,10 +3,10 @@ import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types";
 import OSCECard from "@/components/dashboard/osce/OSCECard";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
-import PrimaryButton from "@/components/reusable/PrimaryButton";
+// import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { useGetAllOsceQuery } from "@/store/features/adminDashboard/ContentResources/Osce/osceApi";
-import { ArrowLeft, Filter, Search } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Search } from "lucide-react";
+// import { Link } from "react-router-dom";
 import { useState } from "react";
 import { OsceItem } from "@/store/features/adminDashboard/ContentResources/Osce/types/getOsce";
 import GlobalLoader2 from "@/common/GlobalLoader2";
@@ -42,12 +42,12 @@ export default function OSCEStation() {
   };
 
   return (
-    <div className="my-6">
+    <div className="my-6 px-2">
       <Breadcrumb breadcrumbs={breadcrumbs} />
       <div className="flex items-start gap-3">
-        <Link to={"/dashboard/osce"} className="mt-1.5">
+        {/* <Link to={"/dashboard/osce"} className="mt-1.5">
           <ArrowLeft />
-        </Link>
+        </Link> */}
         <DashboardHeading
           title="OSCE station"
           titleSize="text-xl"
@@ -70,7 +70,7 @@ export default function OSCEStation() {
 
       <div className="flex items-center justify-between mt-12">
         <h3 className="text-xl font-semibold text-slate-800">History</h3>
-        <PrimaryButton
+        {/* <PrimaryButton
           icon={<Filter className="w-4 h-4" />}
           bgType="solid"
           iconPosition="left"
@@ -78,14 +78,14 @@ export default function OSCEStation() {
           className="h-10 mb-4 hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer"
         >
           Filter
-        </PrimaryButton>
+        </PrimaryButton> */}
       </div>
 
       {/* OSCE Cards */}
       {isOsceLoading ? (
         <GlobalLoader2 />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {filtered.map((item: any) => (
             <OSCECard
               key={item._id}

@@ -92,48 +92,76 @@ export const updatePreferenceSchema = z.object({
     .object({
       Monday: z.object({
         enabled: z.boolean().optional(),
-        startTime: z.string().optional(),
-        endTime: z.string().optional(),
+        slots: z.array(
+          z.object({
+            startTime: z.string(),
+            endTime: z.string(),
+          })
+        ),
       }),
       Tuesday: z.object({
         enabled: z.boolean().optional(),
-        startTime: z.string().optional(),
-        endTime: z.string().optional(),
+        slots: z.array(
+          z.object({
+            startTime: z.string(),
+            endTime: z.string(),
+          })
+        ),
       }),
       Wednesday: z.object({
         enabled: z.boolean().optional(),
-        startTime: z.string().optional(),
-        endTime: z.string().optional(),
+        slots: z.array(
+          z.object({
+            startTime: z.string(),
+            endTime: z.string(),
+          })
+        ),
       }),
       Thursday: z.object({
         enabled: z.boolean().optional(),
-        startTime: z.string().optional(),
-        endTime: z.string().optional(),
+        slots: z.array(
+          z.object({
+            startTime: z.string(),
+            endTime: z.string(),
+          })
+        ),
       }),
       Friday: z.object({
         enabled: z.boolean().optional(),
-        startTime: z.string().optional(),
-        endTime: z.string().optional(),
+        slots: z.array(
+          z.object({
+            startTime: z.string(),
+            endTime: z.string(),
+          })
+        ),
       }),
       Saturday: z.object({
         enabled: z.boolean().optional(),
-        startTime: z.string().optional(),
-        endTime: z.string().optional(),
+        slots: z.array(
+          z.object({
+            startTime: z.string(),
+            endTime: z.string(),
+          })
+        ),
       }),
       Sunday: z.object({
         enabled: z.boolean().optional(),
-        startTime: z.string().optional(),
-        endTime: z.string().optional(),
+        slots: z.array(
+          z.object({
+            startTime: z.string(),
+            endTime: z.string(),
+          })
+        ),
       }),
     })
     .default({
-      Monday: { enabled: false, startTime: "", endTime: "" },
-      Tuesday: { enabled: false, startTime: "", endTime: "" },
-      Wednesday: { enabled: false, startTime: "", endTime: "" },
-      Thursday: { enabled: false, startTime: "", endTime: "" },
-      Friday: { enabled: false, startTime: "", endTime: "" },
-      Saturday: { enabled: false, startTime: "", endTime: "" },
-      Sunday: { enabled: false, startTime: "", endTime: "" },
+      Monday: { enabled: false, slots: [{ startTime: "", endTime: "" }] },
+      Tuesday: { enabled: false, slots: [{ startTime: "", endTime: "" }] },
+      Wednesday: { enabled: false, slots: [{ startTime: "", endTime: "" }] },
+      Thursday: { enabled: false, slots: [{ startTime: "", endTime: "" }] },
+      Friday: { enabled: false, slots: [{ startTime: "", endTime: "" }] },
+      Saturday: { enabled: false, slots: [{ startTime: "", endTime: "" }] },
+      Sunday: { enabled: false, slots: [{ startTime: "", endTime: "" }] },
     }),
 });
 
@@ -224,6 +252,11 @@ export type PreferencesData = z.infer<typeof preferencesSchema>;
 export type UploadProfileData = z.infer<typeof uploadProfileSchema>;
 export type VerifyProfessionData = z.infer<typeof verifyProfessionSchema>;
 export type UpdatePreferenceData = z.infer<typeof updatePreferenceSchema>;
+
+export type Availability = UpdatePreferenceData["availability"];
+export type AvailabilitySlot = Availability["Monday"];
+export type TimeSlot = AvailabilitySlot["slots"][number];
+
 export type PlatformTrainingData = z.infer<typeof platformTrainingSchema>;
 export type PayoutSetupData = z.infer<typeof payoutSetupSchema>;
 export type MultiStepFormData = z.infer<typeof multiStepSchema>;

@@ -376,6 +376,8 @@ export default function ProfileSetupTab({
                   Professional Experience (Years)
                 </label>
                 <input
+                  type="number"
+                  min={0}
                   {...register("experience")}
                   placeholder="Years of experience"
                   className="w-full p-3 border border-slate-300 rounded-md"
@@ -407,7 +409,7 @@ export default function ProfileSetupTab({
           <div className="flex gap-3 mt-3">
             <button
               type="submit"
-              className="w-full bg-blue-main text-white p-3 rounded-md"
+              className="w-full bg-blue-main text-white p-3 rounded-md cursor-pointer"
             >
               Continue
             </button>

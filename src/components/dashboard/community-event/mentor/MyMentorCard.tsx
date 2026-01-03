@@ -11,7 +11,7 @@ export default function MyMentorCard({ mentor }: MyMentorCardProps) {
   return (
     <div className="flex flex-col justify-between bg-[#F9FAFB] border border-slate-300 rounded-[8px] p-3">
       <Link
-        to={`/dashboard/mentor-profile/${mentor?._id}`}
+        to={`/dashboard/mentor-profile/${mentor?.accountId}`}
         state={{ mentor }}
         className=""
       >

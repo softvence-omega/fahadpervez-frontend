@@ -155,22 +155,40 @@ export default function EditStudentProfile() {
             </div>
 
             <div className="mt-6 space-y-3 text-sm sm:text-base">
-              <p>
-                <span className="font-medium">University:</span>{" "}
-                {user?.profile?.university}
-              </p>
-              <p>
-                <span className="font-medium">Year of Study:</span>{" "}
-                {user?.profile?.year_of_study}
-              </p>
-              <p>
-                <span className="font-medium">Preparing For:</span>{" "}
-                {user?.profile?.preparingFor?.length
-                  ? user.profile.preparingFor
-                      .map((item) => item.examName)
-                      .join(", ")
-                  : "N/A"}
-              </p>
+              {user?.account?.role === "STUDENT" && (
+                <p>
+                  <span className="font-medium">University:</span>{" "}
+                  {user?.profile?.university}
+                </p>
+              )}
+              {user?.account?.role === "PROFESSIONAL" && (
+                <p>
+                  <span className="font-medium">institution:</span>{" "}
+                  {user?.profile?.institution}
+                </p>
+              )}
+              {user?.account?.role === "STUDENT" && (
+                <p>
+                  <span className="font-medium">Year of Study:</span>{" "}
+                  {user?.profile?.year_of_study}
+                </p>
+              )}
+              {user?.account?.role === "PROFESSIONAL" && (
+                <p>
+                  <span className="font-medium">Year of Experience:</span>{" "}
+                  {user?.profile?.experience}
+                </p>
+              )}
+              {user?.account?.role === "STUDENT" && (
+                <p>
+                  <span className="font-medium">Preparing For:</span>{" "}
+                  {user?.profile?.preparingFor?.length
+                    ? user.profile.preparingFor
+                        .map((item) => item.examName)
+                        .join(", ")
+                    : "N/A"}
+                </p>
+              )}
             </div>
           </div>
           <Button
@@ -194,21 +212,47 @@ export default function EditStudentProfile() {
                   label: "Name",
                   value: `${user?.profile?.firstName} ${user?.profile?.lastName}`,
                 },
-                { label: "Email", value: `${user?.account?.email}` },
+                { label: "Email", value: user?.account?.email },
                 { label: "Phone", value: "+20 214521" },
-                { label: "Country", value: `${user?.profile?.country}` },
-                { label: "University", value: `${user?.profile?.university}` },
-                {
-                  label: "Preparing For",
-                  value: `${
-                    user?.profile?.preparingFor?.length
-                      ? user.profile.preparingFor
-                          .map((item) => item.examName)
-                          .join(", ")
-                      : "N/A"
-                  }`,
-                },
-                { label: "Bio", value: `${user?.profile?.bio || "N/A"}` },
+                { label: "Country", value: user?.profile?.country },
+
+                // STUDENT-specific fields
+                ...(user?.account?.role === "STUDENT"
+                  ? [
+                      {
+                        label: "University",
+                        value: user?.profile?.university || "N/A",
+                      },
+                      {
+                        label: "Preparing For",
+                        value: user?.profile?.preparingFor?.length
+                          ? user.profile.preparingFor
+                              .map((item) => item.examName)
+                              .join(", ")
+                          : "N/A",
+                      },
+                    ]
+                  : []),
+
+                // PROFESSIONAL-specific fields
+                ...(user?.account?.role === "PROFESSIONAL"
+                  ? [
+                      {
+                        label: "Institution",
+                        value: user?.profile?.institution || "N/A",
+                      },
+                      {
+                        label: "Post Graduate",
+                        value: user?.profile?.post_graduate || "N/A",
+                      },
+                      {
+                        label: "Profession",
+                        value: user?.profile?.professionName || "N/A",
+                      },
+                    ]
+                  : []),
+
+                { label: "Bio", value: user?.profile?.bio || "N/A" },
               ].map((item, idx) => (
                 <div
                   key={idx}

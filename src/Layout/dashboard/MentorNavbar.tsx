@@ -3,17 +3,18 @@ import { useGetSettingsQuery } from "@/store/features/adminDashboard/settings/se
 import {
   Bell,
   ChevronDown,
-  Globe,
-  HelpCircle,
   LogOut,
   Menu,
   Search,
-  Settings,
   User,
   X,
 } from "lucide-react";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { logout, selectUser } from "@/store/features/auth/auth.slice";
+import { useAppDispatch } from "@/hooks/useRedux";
+import Cookies from "js-cookie";
 
 const MentorNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,6 +22,15 @@ const MentorNavbar = () => {
 
   // Get current location to determine active route
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const user = useSelector(selectUser);
+
+  const handleLogout = () => {
+    Cookies.remove("accessToken");
+    dispatch(logout());
+    navigate("/login");
+  };
 
   const navigationItems = [
     { name: "Dashboard", href: "/mentor" },
@@ -33,11 +43,17 @@ const MentorNavbar = () => {
   ];
 
   const profileItems = [
-    { name: "Settings", icon: Settings, href: "/dashboard/settings" },
     { name: "Profile", icon: User, href: "/mentor/mentor-profile" },
-    { name: "Help & Support", icon: HelpCircle, href: "/dashboard/help" },
-    { name: "Logout", icon: LogOut, href: "#" },
+    // { name: "Help & Support", icon: HelpCircle, href: "/dashboard/help" },
+    { name: "Logout", icon: LogOut, href: "#", action: handleLogout },
   ];
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleItemClick = (item: any) => {
+    setIsProfileOpen(false);
+    if (item.action) item.action();
+    else navigate(item.href);
+  };
 
   // Function to check if route is active
   const isActiveRoute = (href: string) => {
@@ -84,10 +100,10 @@ const MentorNavbar = () => {
           <div className="flex items-center gap-4">
             {/* Language & Notifications */}
             <div className="hidden lg:flex items-center space-x-3">
-              <button className="text-gray-400 hover:text-gray-600 flex items-center gap-2">
+              {/* <button className="text-gray-400 hover:text-gray-600 flex items-center gap-2">
                 <Globe className="h-5 w-5" />
                 <span className="">En</span>
-              </button>
+              </button> */}
               <button className="text-gray-400 hover:text-gray-600">
                 <Bell className="h-5 w-5" />
               </button>
@@ -99,11 +115,22 @@ const MentorNavbar = () => {
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                 className="flex items-center space-x-2 text-sm focus:outline-none"
               >
-                <div className="w-8 h-8 bg-gradient-to-r from-pink-400 to-orange-400 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-semibold">EH</span>
+                <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 bg-gray-100 flex items-center justify-center">
+                  {user?.profile?.profile_photo ? (
+                    <img
+                      src={user?.profile?.profile_photo}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-gray-500 text-xs font-semibold">
+                      {user?.profile?.firstName?.charAt(0)}
+                      {user?.profile?.lastName?.charAt(0)}
+                    </span>
+                  )}
                 </div>
                 <span className="hidden lg:block text-gray-700 font-medium">
-                  Emma Harrison
+                  {user?.profile?.firstName} {user?.profile?.lastName}
                 </span>
                 <ChevronDown className="h-4 w-4 text-gray-500" />
               </button>
@@ -121,17 +148,16 @@ const MentorNavbar = () => {
                       </p>
                     </div>
                     {profileItems.map((item) => (
-                      <Link
+                      <button
                         key={item.name}
-                        to={item.href}
-                        className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                        onClick={() => setIsProfileOpen(false)}
+                        onClick={() => handleItemClick(item)}
+                        className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
                       >
                         <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mr-3">
                           <item.icon className="h-4 w-4 text-gray-600" />
                         </div>
                         {item.name}
-                      </Link>
+                      </button>
                     ))}
                   </div>
                 </>
