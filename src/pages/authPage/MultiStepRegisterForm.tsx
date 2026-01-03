@@ -118,13 +118,15 @@ export default function MultiStepRegisterForm() {
         const pref = partial.updatePreference!;
 
         // Transform availability
-        // Input: { Monday: { enabled: true, startTime: "10:00", endTime: "11:00" }, ... }
-        // Output: [{ day: "Monday", time: ["10:00 - 11:00"] }]
+        // Input: { Monday: { enabled: true, slots: [{ startTime: "10:00 AM", endTime: "11:00 AM" }] }, ... }
+        // Output: [{ day: "Monday", time: ["10:00 AM - 11:00 AM"] }]
         const availabilityArray = Object.entries(pref.availability || {})
           .filter(([_, val]: any) => val.enabled)
           .map(([day, val]: any) => ({
             day,
-            time: [`${val.startTime} - ${val.endTime}`],
+            time: (val.slots || [])
+              .filter((slot: any) => slot.startTime && slot.endTime)
+              .map((slot: any) => `${slot.startTime} - ${slot.endTime}`),
           }));
 
         const payload = {

@@ -1,6 +1,6 @@
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
-import { ArrowLeft, Filter, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import MyStudyPlanCard from "./MyStudyPlanCard";
 import { useGetStudyPlanQuery } from "@/store/features/studyPlan/studyPlan.api";
@@ -13,12 +13,12 @@ export default function MyPlan() {
   console.log("data :", allStudyPlans);
 
   return (
-    <div>
+    <div className="px-2">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <Link to={"/dashboard/smart-study"} className="mb-7">
+          {/* <Link to={"/dashboard/smart-study"} className="mb-7">
             <ArrowLeft />
-          </Link>
+          </Link> */}
           <DashboardHeading
             title="All Study Plan"
             titleSize="text-xl"
@@ -27,7 +27,7 @@ export default function MyPlan() {
           />
         </div>
         <div className="flex items-center gap-6">
-          <Link to={"/dashboard/my-plan"}>
+          {/* <Link to={"/dashboard/my-plan"}>
             <PrimaryButton
               bgType="solid"
               bgColor="bg-teal-700"
@@ -37,7 +37,7 @@ export default function MyPlan() {
             >
               Filter
             </PrimaryButton>
-          </Link>
+          </Link> */}
           <Link to={"/dashboard/create-study-plan"}>
             <PrimaryButton
               bgType="solid"
@@ -56,9 +56,27 @@ export default function MyPlan() {
         <GlobalLoader2 />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-9">
-          {allStudyPlans.map((plan: { _id: string; plan_summary: string; total_days: number; daily_plan: { day_number: number; date: string; total_hours: number; topics: string[]; hourly_breakdown: { task_type: string; description: string; duration_hours: number; suggest_content: string }[] }[] }) => (
-            <MyStudyPlanCard key={plan._id} plan={plan} />
-          ))}
+          {allStudyPlans.map(
+            (plan: {
+              _id: string;
+              plan_summary: string;
+              total_days: number;
+              daily_plan: {
+                day_number: number;
+                date: string;
+                total_hours: number;
+                topics: string[];
+                hourly_breakdown: {
+                  task_type: string;
+                  description: string;
+                  duration_hours: number;
+                  suggest_content: string;
+                }[];
+              }[];
+            }) => (
+              <MyStudyPlanCard key={plan._id} plan={plan} />
+            )
+          )}
         </div>
       )}
     </div>

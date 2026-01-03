@@ -31,6 +31,7 @@ export const flashCardAPI = baseAPI.injectEndpoints({
         method: "GET",
         params: { searchTerm, subject, system, topic, page, limit },
       }),
+      providesTags: ["GeneratedFlashcard"],
     }),
 
     getAllFlashCard: build.query({

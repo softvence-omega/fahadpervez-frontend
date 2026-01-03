@@ -16,8 +16,8 @@ import { ConnectionRequestModal } from "./ConnectionRequestModal";
 import { SessionSelectionModal } from "./SessionSelectionModal";
 import { BreadcrumbItem } from "../../gamified-learning/types";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
-import { Link, useLocation } from "react-router-dom";
-import { Mentor } from "../types";
+import { Link, useParams } from "react-router-dom";
+import { useGetSingleMentorQuery } from "@/store/features/mentor/mentor.api";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { name: "Dashboard", link: "/dashboard" },
@@ -26,8 +26,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function MentorProfile() {
-  const { state } = useLocation();
-  const mentor = state?.mentor as Mentor;
+  const { id } = useParams<{ id: string }>();
+  const { data: mentorResponse, isLoading } = useGetSingleMentorQuery(id);
+  const mentor = mentorResponse?.data?.profile_id;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -58,6 +59,10 @@ export default function MentorProfile() {
   //   "Physician - Internal Medicine",
   //   "Physician - Internal Medicine",
   // ]);
+
+  if (isLoading) {
+    return <div className="p-6">Loading mentor profile...</div>;
+  }
 
   if (!mentor) {
     return <div className="p-6">Mentor data not found.</div>;
@@ -166,14 +171,16 @@ export default function MentorProfile() {
             <div className="max-w-96 mt-6">
               <h2 className="text-[#0F172A] font-semibold mb-4">Skills</h2>
               <div className="flex flex-wrap gap-2 mt-3">
-                {mentor?.skills?.slice(0, 5).map((skill, idx) => (
-                  <span
-                    key={idx}
-                    className="px-3 py-1 bg-gray-100 text-gray-700 border border-slate-200 rounded-full text-sm"
-                  >
-                    {skill}
-                  </span>
-                ))}
+                {mentor?.skills
+                  ?.slice(0, 5)
+                  .map((skill: string, idx: number) => (
+                    <span
+                      key={idx}
+                      className="px-3 py-1 bg-gray-100 text-gray-700 border border-slate-200 rounded-full text-sm"
+                    >
+                      {skill}
+                    </span>
+                  ))}
                 {mentor?.skills?.length > 5 && (
                   <span className="px-3 py-1 text-gray-700 text-sm border-b border-b-[#334155]">
                     + {mentor?.skills?.length - 5} more
@@ -274,6 +281,7 @@ export default function MentorProfile() {
           isOpen={activeModal === "session"}
           onClose={() => setActiveModal(null)}
           onBookNow={handleBookSession}
+          mentor={mentor}
         />
       </div>
     </div>
