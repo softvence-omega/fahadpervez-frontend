@@ -97,6 +97,8 @@ export const baseAPI = createApi({
     "BioDigital",
     "GeneratedMCQ",
     "GeneratedNotes",
+    "GeneratedFlashcard",
+    "GeneratedClinicalCase",
   ],
   endpoints: () => ({}),
 });

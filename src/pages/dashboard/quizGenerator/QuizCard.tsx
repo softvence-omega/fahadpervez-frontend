@@ -1,4 +1,4 @@
-import { Play } from "lucide-react";
+import { Play, Trash2, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface QuizCardProps {
@@ -7,6 +7,8 @@ interface QuizCardProps {
   questionCount?: number;
   sourceFile?: string;
   isCompleted?: boolean;
+  onDelete?: () => void;
+  isDeleting?: boolean;
 }
 
 export default function QuizCard({
@@ -15,6 +17,8 @@ export default function QuizCard({
   questionCount,
   sourceFile,
   isCompleted,
+  onDelete,
+  isDeleting,
 }: QuizCardProps) {
   const navigate = useNavigate();
 
@@ -31,19 +35,37 @@ export default function QuizCard({
   return (
     <div>
       <div className="p-5 border border-slate-300 rounded-[12px] h-full flex flex-col justify-between">
-        <div className="mb-10">
-          <div className="flex items-start gap-2">
-            {/* <BrainCircuit className="text-zinc-950 shrink-0 mt-1" size={20} /> */}
-            <h3 className="text-[#0A0A0A] font-semibold leading-tight">
-              {title || "Untitled Quiz"}
-            </h3>
+        <div className="mb-10 flex justify-between items-start gap-2">
+          <div>
+            <div className="flex items-start gap-2">
+              {/* <BrainCircuit className="text-zinc-950 shrink-0 mt-1" size={20} /> */}
+              <h3 className="text-[#0A0A0A] font-semibold leading-tight">
+                {title || "Untitled Quiz"}
+              </h3>
+            </div>
+            {(questionCount !== undefined || sourceFile) && (
+              <p className="text-sm text-slate-500 mt-3">
+                {questionCount !== undefined && `${questionCount} questions`}
+                {questionCount !== undefined && sourceFile && " • "}
+                {sourceFile && `From ${sourceFile}`}
+              </p>
+            )}
           </div>
-          {(questionCount !== undefined || sourceFile) && (
-            <p className="text-sm text-slate-500 mt-3">
-              {questionCount !== undefined && `${questionCount} questions`}
-              {questionCount !== undefined && sourceFile && " • "}
-              {sourceFile && `From ${sourceFile}`}
-            </p>
+          {onDelete && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete?.();
+              }}
+              disabled={isDeleting}
+              className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors cursor-pointer disabled:opacity-50"
+            >
+              {isDeleting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Trash2 className="w-4 h-4" />
+              )}
+            </button>
           )}
         </div>
         <button

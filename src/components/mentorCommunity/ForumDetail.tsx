@@ -110,7 +110,7 @@ const ForumDetail = () => {
   ];
 
   return (
-    <div>
+    <div className="py-2 px-2">
       <Breadcrumb breadcrumbs={breadcrumbs} />
       <div className="flex items-center gap-4 mb-8">
         <button
@@ -198,7 +198,10 @@ const ForumDetail = () => {
                                         </span> */}
                     <img
                       className="w-8 h-8 sm:w-12 sm:h-12 rounded-full object-cover"
-                      src={comment?.photo}
+                      src={
+                        comment?.photo ||
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFR-YpemDCwzHIkc9lrQHD6AUFpxQMCfQKoA&s"
+                      }
                     />
                   </div>
                   <div className="flex-1">

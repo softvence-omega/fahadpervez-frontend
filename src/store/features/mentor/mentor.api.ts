@@ -26,6 +26,9 @@ export const mentorAPI = baseAPI.injectEndpoints({
         body: data,
       }),
     }),
+    getSingleMentor: builder.query({
+      query: (id) => `/admin/mentor/${id}`,
+    }),
   }),
 });
 
@@ -34,4 +37,5 @@ export const {
   useUploadMentorDocumentMutation,
   useVerifyMentorProfessionMutation,
   useUpdateMentorPaymentInformationMutation,
+  useGetSingleMentorQuery,
 } = mentorAPI;

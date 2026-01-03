@@ -14,9 +14,15 @@ export interface Mentor {
   expertise?: string;
   languages: string[];
   skills: string[];
-  availability: any[]; // Define more specifically if structure is known
-  profileVerification: "PENDING" | "VERIFIED" | "REJECTED"; // Assuming possible values
+  availability: {
+    day: string;
+    time: string[];
+  }[];
+  profileVerification: "PENDING" | "VERIFIED" | "REJECTED";
   isConditionAccepted: boolean;
+  hourlyRate?: number;
+  currency?: string;
+  bio?: string;
   createdAt: string;
   updatedAt: string;
   __v?: number;

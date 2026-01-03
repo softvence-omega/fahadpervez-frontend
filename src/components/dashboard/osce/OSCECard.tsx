@@ -38,7 +38,7 @@ const OSCECard = ({
             <h2 className="uppercase tracking-wide text-[#0A0A0A] font-semibold text-sm md:text-base truncate">
               {title}
             </h2>
-            <span className="inline-block mt-1 text-sm md:text-base font-medium text-[#030213] bg-[#ECEEF2] px-2 py-1 rounded">
+            <span className="inline-block mt-1 text-sm md:text-base font-medium text-black-2 bg-[#ECEEF2] px-2 py-1 rounded">
               {subtitle}
             </span>
           </div>

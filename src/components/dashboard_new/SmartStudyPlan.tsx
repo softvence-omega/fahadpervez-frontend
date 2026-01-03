@@ -83,10 +83,10 @@ const SmartStudyPlan: React.FC = () => {
     // currentPlanId = activePlan._id;
 
     const dailyPlanEntry =
-    activePlan.daily_plan.find(
-      (d: any) => d.date && d.date.split("T")[0] === todayStr
-    ) || activePlan.daily_plan[0]; // Fallback to day 1 if today not found
-    
+      activePlan.daily_plan.find(
+        (d: any) => d.date && d.date.split("T")[0] === todayStr
+      ) || activePlan.daily_plan[0]; // Fallback to day 1 if today not found
+
     todayTasks = dailyPlanEntry?.hourly_breakdown || [];
     // console.log("dailyPlanEntry :", dailyPlanEntry);
   }
@@ -150,64 +150,66 @@ const SmartStudyPlan: React.FC = () => {
             {currentPlanSummary}
           </p> */}
         </div>
-        <Link
-          to={`/dashboard/weekly-plan/${currentPlanId}`}
-          className="text-purple-600 text-sm hover:underline font-medium"
-        >
-          View All
-        </Link>
+        {todayTasks.length > 0 && (
+          <Link
+            to={`/dashboard/weekly-plan/${currentPlanId}`}
+            className="text-purple-600 text-sm hover:underline font-medium"
+          >
+            View All
+          </Link>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {todayTasks.length > 0 ? (
           todayTasks
-          // .slice(0, 2)
-          .map((task, i) => {
-            const config = taskTypeConfig[task.task_type.toLowerCase()] || {
-              icon: <BookOpen className="w-4 h-4" />,
-              color: "bg-gray-100 text-gray-700",
-              buttonText: "Start",
-            };
+            // .slice(0, 2)
+            .map((task, i) => {
+              const config = taskTypeConfig[task.task_type.toLowerCase()] || {
+                icon: <BookOpen className="w-4 h-4" />,
+                color: "bg-gray-100 text-gray-700",
+                buttonText: "Start",
+              };
 
-            return (
-              <div
-                key={i}
-                className="border border-gray-200 rounded-lg p-4 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex flex-wrap items-center gap-2 mb-3">
-                    <span
-                      className={`${config.color} text-nowrap px-2 py-1 rounded text-xs font-medium`}
-                    >
-                      {task.task_type}
-                    </span>
-                  </div>
-                  <h5
-                    className="font-semibold text-gray-900 mb-3 line-clamp-2"
-                    title={task.description}
-                  >
-                    {task.description}
-                  </h5>
-                  <div className="flex flex-wrap flex-col sm:flex-row sm:items-center gap-4 text-sm text-gray-600 mb-4">
-                    <span className="flex items-center gap-1 text-nowrap text-sm">
-                      <Clock className="w-4 h-4" />
-                      {task.duration_hours}h
-                    </span>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => handleStartClick(task)}
-                  className="mt-auto w-full bg-gray-800 text-white py-2.5 rounded-lg font-medium hover:bg-gray-700 transition-colors flex items-center justify-center gap-2 cursor-pointer"
+              return (
+                <div
+                  key={i}
+                  className="border border-gray-200 rounded-lg p-4 flex flex-col justify-between"
                 >
-                  {config.icon}
-                  <span className="text-sm">{config.buttonText}</span>
-                </button>
-              </div>
-            );
-          })
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2 mb-3">
+                      <span
+                        className={`${config.color} text-nowrap px-2 py-1 rounded text-xs font-medium`}
+                      >
+                        {task.task_type}
+                      </span>
+                    </div>
+                    <h5
+                      className="font-semibold text-gray-900 mb-3 line-clamp-2"
+                      title={task.description}
+                    >
+                      {task.description}
+                    </h5>
+                    <div className="flex flex-wrap flex-col sm:flex-row sm:items-center gap-4 text-sm text-gray-600 mb-4">
+                      <span className="flex items-center gap-1 text-nowrap text-sm">
+                        <Clock className="w-4 h-4" />
+                        {task.duration_hours}h
+                      </span>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => handleStartClick(task)}
+                    className="mt-auto w-full bg-gray-800 text-white py-2.5 rounded-lg font-medium hover:bg-gray-700 transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    {config.icon}
+                    <span className="text-sm">{config.buttonText}</span>
+                  </button>
+                </div>
+              );
+            })
         ) : (
-          <div className="col-span-2 text-center py-10 text-gray-500">
+          <div className="text-center py-10 text-gray-500">
             No tasks scheduled for today.
           </div>
         )}
