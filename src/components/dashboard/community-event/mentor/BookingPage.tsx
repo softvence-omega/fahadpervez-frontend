@@ -67,19 +67,16 @@ const BookingPage = () => {
 
   // Get props from route state or query params
   const bookingProps: BookingProps = location.state || {
-    price: parseInt(new URLSearchParams(location.search).get("price") || "25"),
+    price: parseInt(new URLSearchParams(location.search).get("price") || "0"),
     duration: parseInt(
-      new URLSearchParams(location.search).get("duration") || "30"
+      new URLSearchParams(location.search).get("duration") || "0"
     ),
     sessions: parseInt(
       new URLSearchParams(location.search).get("sessions") || "1"
     ),
-    mentorName:
-      new URLSearchParams(location.search).get("mentor") || "Mouhammad",
-    specialty:
-      new URLSearchParams(location.search).get("specialty") ||
-      "Medical Consultant - Preventive & Clinical Care",
-    mentorId: new URLSearchParams(location.search).get("mentorId") || "1",
+    mentorName: new URLSearchParams(location.search).get("mentor") || "",
+    specialty: new URLSearchParams(location.search).get("specialty") || "",
+    mentorId: new URLSearchParams(location.search).get("mentorId") || "",
   };
 
   // Sync sessions with bookingProps
@@ -249,7 +246,7 @@ const BookingPage = () => {
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="bg-white p-7 rounded">
         <div className="flex items-center gap-1">
-          <Link to={"/dashboard/mentorship"}>
+          <Link to={`/dashboard/mentor-profile/${bookingProps.mentorId}`}>
             {" "}
             <ArrowLeft size={20} className="mb-1" />
           </Link>
@@ -473,7 +470,7 @@ const BookingPage = () => {
                     <img
                       src={
                         bookingProps.mentor?.profile_photo ||
-                        "https://plus.unsplash.com/premium_photo-1658506671316-0b293df7c72b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZG9jdG9yfGVufDB8fDB8fHww"
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZYgW4c4mScN4iMaoZM2YNPO2iV7aaxtmDVg&s"
                       }
                       alt="mentor profile"
                       className="w-20 h-20 rounded object-cover"

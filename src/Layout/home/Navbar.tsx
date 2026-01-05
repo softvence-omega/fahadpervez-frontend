@@ -74,7 +74,7 @@ const Navbar: React.FC = () => {
     <nav className="bg-slate-200 shadow sticky top-0 z-50 py-2">
       <CommonWrapper>
         <div className="px-4 sm:px- lg:px-0">
-          <div className="flex items-center justify-between h-12 md:h-16">
+          <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex-shrink-0">
               <img src="/logo.svg" alt="Logo" className="w-40 h-16 lg:h-20 " />

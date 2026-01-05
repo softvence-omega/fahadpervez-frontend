@@ -1,23 +1,20 @@
 import { useState } from "react";
 import {
+  ArrowLeft,
   BadgeHelp,
-  Clock12,
   Languages,
   Link as LinkIcon,
   MapPin,
   MessageCircleQuestion,
-  Star,
-  Video,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import DashboardHeading from "@/components/reusable/DashboardHeading";
-import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { ConnectionRequestModal } from "./ConnectionRequestModal";
 import { SessionSelectionModal } from "./SessionSelectionModal";
 import { BreadcrumbItem } from "../../gamified-learning/types";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import { Link, useParams } from "react-router-dom";
 import { useGetSingleMentorQuery } from "@/store/features/mentor/mentor.api";
+import DashboardHeading from "@/components/reusable/DashboardHeading";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { name: "Dashboard", link: "/dashboard" },
@@ -72,6 +69,11 @@ export default function MentorProfile() {
     <div className="my-6">
       {/* Breadcrumb */}
       <Breadcrumb breadcrumbs={breadcrumbs} />
+      <Link to="/dashboard/all-mentor" className="sm:mb-0">
+        <button className="flex items-center gap-1 border border-gray-300 px-3 py-2 rounded cursor-pointer mb-2 -mt-3">
+          <ArrowLeft className="w-5 h-4" /> Back
+        </button>
+      </Link>
       <div className="min-h-screen bg-white">
         {/* Header Section */}
         <div className="bg-blue-900 h-52 w-full"></div>
@@ -155,14 +157,14 @@ export default function MentorProfile() {
                     <Languages className="w-5 h-5 text-emerald-600" /> Speaks{" "}
                     {mentor?.languages?.join(", ") || "English"}
                   </p>
-                  <p className="flex items-center gap-2 text-[#475569]">
+                  {/* <p className="flex items-center gap-2 text-[#475569]">
                     <Star className="w-5 h-5 text-emerald-600" />
                     5.0 (60 reviews)
                   </p>
                   <p className="flex items-center gap-2 text-[#475569]">
                     <Clock12 className="w-5 h-5 text-emerald-600" />
                     Active today
-                  </p>
+                  </p> */}
                 </div>
               </div>
             </div>
@@ -225,17 +227,11 @@ export default function MentorProfile() {
           </div>
 
           {/* Completed Session Section*/}
-          <div className="my-10">
+          {/* <div className="my-10">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-lg text-[#0F172A]  font-medium">
                 Completed Session
               </h3>
-              {/* <Link
-                to={`/dashboard/mentor-profile/${mentor?._id}`}
-                className="text-sm font-semibold text-blue-main underline"
-              >
-                View All
-              </Link> */}
             </div>
             <div className="border border-[#0000001A] p-4 rounded-[8px]">
               <div className="flex flex-col md:flex-row justify-between items-center mb-3 text-center md:text-left gap-6">
@@ -260,7 +256,7 @@ export default function MentorProfile() {
                 </PrimaryButton>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {Array(4)

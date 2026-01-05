@@ -8,6 +8,7 @@ import mentorRoutes from "./MentorRoutes";
 
 import adminRoutes from "./AdminRoutes";
 import UnauthorizedPage from "@/common/UnauthorizedPage";
+import PaymentSuccess from "@/pages/PaymentSuccess";
 
 const routes = createBrowserRouter([
   homeRoutes,
@@ -20,6 +21,10 @@ const routes = createBrowserRouter([
   {
     path: "unauthorized",
     element: <UnauthorizedPage />,
+  },
+  {
+    path: "checkout/success",
+    element: <PaymentSuccess />,
   },
   {
     path: "*",
