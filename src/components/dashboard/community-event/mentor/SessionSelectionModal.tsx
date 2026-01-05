@@ -37,30 +37,29 @@ export function SessionSelectionModal({
   sessions: providedSessions,
   mentor,
 }: SessionSelectionModalProps) {
-  const hourlyRate = mentor?.hourlyRate || 25;
+  const hourlyRate = mentor?.hourlyRate;
 
-  const dynamicSessions: Session[] = [
-    {
-      id: "session-30",
-      title: "Quick Consultation",
-      duration: 30,
-      price: Math.round(hourlyRate / 2),
-    },
-    {
-      id: "session-60",
-      title: "Comprehensive Mentorship",
-      duration: 60,
-      price: hourlyRate,
-    },
-    {
-      id: "session-90",
-      title: "Deep Dive Session",
-      duration: 90,
-      price: Math.round(hourlyRate * 1.5),
-    },
-  ];
+  const dynamicSessions: Session[] = hourlyRate
+    ? [
+        {
+          id: "session-30",
+          title: "Quick Consultation",
+          duration: 30,
+          price: Math.round(hourlyRate / 2),
+        },
+        {
+          id: "session-60",
+          title: "Comprehensive Mentorship",
+          duration: 60,
+          price: hourlyRate,
+        },
+      ]
+    : [];
 
-  const sessions = providedSessions || dynamicSessions;
+  const sessions =
+    providedSessions && providedSessions.length > 0
+      ? providedSessions
+      : dynamicSessions;
 
   const [selectedSession, setSelectedSession] = useState<string>(
     sessions[0]?.id || ""
@@ -102,14 +101,20 @@ export function SessionSelectionModal({
         </DialogHeader>
 
         <div className="space-y-4 py-4">
-          {sessions.map((session) => (
-            <SessionCard
-              key={session.id}
-              session={session}
-              isSelected={selectedSession === session.id}
-              onSelect={handleSessionSelect}
-            />
-          ))}
+          {sessions.length > 0 ? (
+            sessions.map((session) => (
+              <SessionCard
+                key={session.id}
+                session={session}
+                isSelected={selectedSession === session.id}
+                onSelect={handleSessionSelect}
+              />
+            ))
+          ) : (
+            <div className="py-8 text-center text-gray-500">
+              No sessions available for this mentor.
+            </div>
+          )}
         </div>
 
         <div className="flex gap-3 pt-4">
@@ -166,7 +171,7 @@ function SessionCard({ session, isSelected, onSelect }: SessionCardProps) {
               </div>
               <div className="flex items-center space-x-1">
                 <DollarSign className="w-4 h-4" />
-                <span>${session.price} per session</span>
+                <span>{session.price} per session</span>
               </div>
             </div>
           </div>

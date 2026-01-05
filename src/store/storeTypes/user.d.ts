@@ -12,9 +12,12 @@ export type TUser = {
     authType: string;
     lastOTP: string;
     isSubscribed: boolean;
+    isSubscriptionActive?: boolean;
     createdAt: string;
     updatedAt: string;
     profile_id: string;
+    aiCredit?: number;
+    planId?: string;
   } | null;
   profile: {
     _id: string;
@@ -98,6 +101,9 @@ export interface getUserResponse {
       createdAt: string;
       updatedAt: string;
       profile_id: string;
+      planId?: string;
+      aiCredit?: number;
+      isSubscriptionActive?: boolean;
     };
     profile: string | null;
   };

@@ -72,7 +72,7 @@ export default function TicketsList({
   onSelectTicket,
 }: any) {
   return (
-    <div className="space-y-5 bg-white rounded-lg border border-gray-200 p-4 h-64 lg:h-full overflow-y-auto">
+    <div className="grid grid-cols-1 lg:grid-cols-2 items-start gap-6 space-y-5 bg-white rounded-lg border border-gray-200 p-4 h-64 lg:h-full overflow-y-auto">
       {tickets.map((ticket: any) => {
         const isSelected = selectedTicket?._id === ticket._id;
 
@@ -122,6 +122,13 @@ export default function TicketsList({
 
             {/* Description */}
             <p className="text-sm text-[#717182] my-3">{ticket.report?.text}</p>
+
+            {/* Feedback */}
+            <p className="text-sm text-[#717182] my-3">
+              {ticket?.note
+                ? `Feedback: ${ticket.note} `
+                : "Feedback: On-going"}
+            </p>
 
             {/* Created at */}
             <p className="flex items-center gap-2 text-xs text-muted-foreground mt-2">

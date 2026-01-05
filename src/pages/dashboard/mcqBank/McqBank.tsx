@@ -187,7 +187,7 @@ const McqBank = () => {
         <GlobalLoader />
       ) : (
         <>
-          <div className="space-y-6 my-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-6 my-6 grid grid-cols-1 md:grid-cols-2 items-start gap-6">
             {MCQBank?.length > 0 ? (
               MCQBank?.map((mcq: TMCQBank) => (
                 <div

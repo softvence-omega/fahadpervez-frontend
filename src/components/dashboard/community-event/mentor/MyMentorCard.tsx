@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Files, Plus, Star } from "lucide-react";
+import { Files, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Mentor } from "../types";
 
@@ -38,20 +38,20 @@ export default function MyMentorCard({ mentor }: MyMentorCardProps) {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <Star className="text-orange-500" fill="currentColor" />
             5.0
-          </div>
+          </div> */}
         </div>
       </Link>
 
       <div>
-        <div className="mt-4">
+        {/* <div className="mt-4">
           <p className="text-sm text-zinc-700 font-semibold">Recent:</p>
           <p className="text-sm text-[#6B7280] underline">
             Session: USMLE Step 1 Preparation Masterclass
           </p>
-        </div>
+        </div> */}
 
         <div className="flex flex-wrap gap-2 mt-4">
           <Button className="w-full bg-white text-slate-800 hover:text-white hover:bg-blue-main border border-slate-300 rounded pt-2 px-4 cursor-pointer">
