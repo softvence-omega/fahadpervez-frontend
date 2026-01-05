@@ -4,16 +4,60 @@ import CommonWrapper from "@/common/CommonWrapper";
 import PricingCard from "@/components/PricingCard";
 import { useGetAllPricingQuery } from "@/store/features/pricing/pricing.api";
 import GlobalLoader2 from "@/common/GlobalLoader2";
-// import { useGetAllPricingQuery } from "@/store/features/pricing/pricing.api";
+import { useInitiatePaymentMutation } from "@/store/features/payment/payment.api";
+import { useMastercardCheckout } from "@/hooks/useMastercardCheckout";
+import { toast } from "sonner";
+
+import { useGetMeQuery } from "@/store/features/auth/auth.api";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/features/auth/auth.slice";
 
 const Pricing = () => {
+  const user = useSelector(selectUser);
+  const { data: userData } = useGetMeQuery(undefined, {
+    skip: !user?.account?._id,
+    refetchOnMountOrArgChange: true,
+  });
+  const userAccount = userData?.data?.account;
+
   const [activeCycle, setActiveCycle] = useState<"monthly" | "yearly">(
     "monthly"
   );
 
-  const { data: pricingData, isLoading: pricingLoading } =
+  const { data: userPricingData, isLoading: pricingLoading } =
     useGetAllPricingQuery({});
-  const plans = pricingData?.data || [];
+  const plans = userPricingData?.data || [];
+
+  console.log("Debug Pricing:", {
+    userId: user?.account?._id,
+    userPlanId: userAccount?.planId,
+    plans: plans,
+    isSubscribed: userAccount?.isSubscribed,
+    userAccountFull: userAccount,
+  });
+
+  const [initiatePayment, { isLoading: isPaymentLoading }] =
+    useInitiatePaymentMutation();
+  const { startCheckout } = useMastercardCheckout();
+
+  const handleUpgrade = async (planId: string) => {
+    try {
+      const response = await initiatePayment({ planId }).unwrap();
+      if (response.success && response.data?.sessionId) {
+        // Store paymentId in sessionStorage as backup since URL params might be stripped
+        sessionStorage.setItem("pendingPaymentId", response.data.paymentId);
+
+        // Pass paymentId in the success URL so it persists after redirect
+        const successUrl = `${window.location.origin}/checkout/success?paymentId=${response.data.paymentId}`;
+        startCheckout(response.data.sessionId, successUrl);
+      } else {
+        toast.error("Failed to initiate payment. Please try again.");
+      }
+    } catch (error: any) {
+      console.error("Payment initiation failed:", error);
+      toast.error(error?.data?.message || "Payment initiation failed");
+    }
+  };
 
   /* --------------------------------
       Filter plans by billing cycle
@@ -70,19 +114,30 @@ const Pricing = () => {
           <GlobalLoader2 />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-9 items-center justify-center mt-24 p-4">
-            {filteredPlans.map((plan: any) => (
-              <PricingCard
-                key={plan._id}
-                title={plan.planName}
-                price={`$${plan.price}`}
-                period={`/per ${plan.billingCycle.toLowerCase()}`}
-                description={plan.description}
-                features={plan.planFeatures.map(
-                  (f: any) => `${f.featureName} (${f.featureLimit})`
-                )}
-                buttonText="Upgrade Your plan"
-              />
-            ))}
+            {filteredPlans.map((plan: any) => {
+              const isCurrentPlan = userAccount?.planId === plan._id;
+              return (
+                <PricingCard
+                  key={plan._id}
+                  title={plan.planName}
+                  price={`$${plan.price}`}
+                  period={`/per ${plan.billingCycle.toLowerCase()}`}
+                  description={plan.description}
+                  features={plan.planFeatures.map(
+                    (f: any) => `${f.featureName} (${f.featureLimit})`
+                  )}
+                  buttonText={
+                    isCurrentPlan
+                      ? "Current Plan"
+                      : isPaymentLoading
+                      ? "Processing..."
+                      : "Upgrade Your plan"
+                  }
+                  onUpgrade={() => !isCurrentPlan && handleUpgrade(plan._id)}
+                  disabled={isCurrentPlan || isPaymentLoading}
+                />
+              );
+            })}
           </div>
         )}
       </CommonWrapper>
