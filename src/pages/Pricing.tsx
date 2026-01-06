@@ -42,7 +42,10 @@ const Pricing = () => {
 
   const handleUpgrade = async (planId: string) => {
     try {
-      const response = await initiatePayment({ planId }).unwrap();
+      const response = await initiatePayment({
+        planId,
+        redirectUrl: window.location.origin,
+      }).unwrap();
       if (response.success && response.data?.sessionId) {
         // Store paymentId in sessionStorage as backup since URL params might be stripped
         sessionStorage.setItem("pendingPaymentId", response.data.paymentId);

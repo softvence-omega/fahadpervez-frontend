@@ -1,40 +1,71 @@
 import React from "react";
 import OverviewCard from "./OverviewCard";
 
-const demoOverview = [
-  {
-    icon: "/image/dashboard_new/Background.svg",
-    title: "82%",
-    subtitle: "Overall Accuracy",
-    stats: [
-      { label: "Quiz Test", value: "82%" },
-      { label: "Clinical Case", value: "75%" },
-      { label: "OSCE", value: "75%" },
-    ],
-  },
-  {
-    icon: "/image/dashboard_new/Background1.svg",
-    title: "4.5 hrs",
-    subtitle: "Total Study Time",
-    stats: [
-      { label: "Quiz Test", value: "30 minutes" },
-      { label: "Clinical Case", value: "12 minutes" },
-      { label: "OSCE", value: "10 minutes" },
-    ],
-  },
-  {
-    icon: "/image/dashboard_new/Background2.svg",
-    title: "04",
-    subtitle: "Current Streak",
-  },
-];
+import { useGetGoalOverviewQuery } from "@/store/features/goal/goal.api";
 
 const OverviewSection: React.FC = () => {
+  const { data: overviewData } = useGetGoalOverviewQuery();
+
+  // dynamic data mapping
+  const overallAccuracy = overviewData?.data?.progress?.overall ?? 0;
+  // const totalStudyTime = overviewData?.data?.timeCount?.todayStudy ?? 0;
+  // sum up all time counts for total study time
+  const totalStudyTime = overviewData?.data?.timeCount
+    ? Object.values(overviewData.data.timeCount).reduce(
+        (a: number, b: number) => a + b,
+        0
+      )
+    : 0;
+  const currentStreak = overviewData?.data?.steak ?? 0;
+
+  const dynamicOverview = [
+    {
+      icon: "/image/dashboard_new/Background.svg",
+      title: `${overallAccuracy}%`,
+      subtitle: "Overall Accuracy",
+      stats: [
+        {
+          label: "Quiz Test",
+          value: `${overviewData?.data?.progress?.mcq ?? 0}%`,
+        },
+        {
+          label: "Clinical Case",
+          value: `${overviewData?.data?.progress?.clinicalCase ?? 0}%`,
+        },
+        { label: "OSCE", value: `${overviewData?.data?.progress?.osce ?? 0}%` },
+      ],
+    },
+    {
+      icon: "/image/dashboard_new/Background1.svg",
+      title: `${(totalStudyTime / 60).toFixed(1)} hrs`, // assuming api returns minutes? If hours, remove /60. Usually "timeCount" is seconds or minutes. Assuming minutes for now based on "30 minutes" in dummy.
+      subtitle: "Total Study Time",
+      stats: [
+        {
+          label: "Quiz Test",
+          value: `${overviewData?.data?.timeCount?.mcq ?? 0} m`,
+        },
+        {
+          label: "Clinical Case",
+          value: `${overviewData?.data?.timeCount?.clinicalCase ?? 0} m`,
+        },
+        {
+          label: "OSCE",
+          value: `${overviewData?.data?.timeCount?.osce ?? 0} m`,
+        },
+      ],
+    },
+    {
+      icon: "/image/dashboard_new/Background2.svg",
+      title: `${currentStreak < 10 ? `0${currentStreak}` : currentStreak}`,
+      subtitle: "Current Streak",
+    },
+  ];
+
   return (
     <div className="mb-8">
       <h3 className="text-xl font-semibold text-gray-900 mb-6">Overview</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {demoOverview.map((card, i) => (
+        {dynamicOverview.map((card, i) => (
           <OverviewCard key={i} {...card} />
         ))}
       </div>

@@ -30,6 +30,7 @@ export type TMCQBank = {
   uploadedBy: string;
 
   createdAt: string;
+  isComplete?: boolean;
 };
 
 type McqOption = {
@@ -44,11 +45,12 @@ export type McqQuestion = {
   options: McqOption[]; // list of options
   correctOption: string; // e.g., "C"
   difficulty: "Easy" | "Medium" | "Advance"; // restrict to known levels
+  imageDescription?: string;
 };
 
 export interface IFlashCardItem {
   flashCardId: string;
-  image: string
+  image: string;
   frontText: string;
   backText: string;
   explanation: string;
@@ -69,6 +71,7 @@ export interface IFlashcardBank {
   flashCards: IFlashCardItem[];
   uploadedBy: string; // e.g., "Admin admin"
   createdAt: string; // ISO date string
+  isComplete?: boolean;
 }
 
 export type DifficultyLevel = "Basic" | "Intermediate" | "Advance";
