@@ -92,6 +92,7 @@ export const flashCardAPI = baseAPI.injectEndpoints({
           limit,
         },
       }),
+      providesTags: ["FlashCard"],
     }),
 
     // end

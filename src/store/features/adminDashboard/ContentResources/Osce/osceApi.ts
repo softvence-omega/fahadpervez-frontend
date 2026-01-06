@@ -34,6 +34,7 @@ export const osceApi = baseAPI.injectEndpoints({
         url: `/osce`,
         method: "GET",
       }),
+      providesTags: ["OSCE"],
     }),
 
     getSingleOsce: build.query<OsceListResponse, any>({

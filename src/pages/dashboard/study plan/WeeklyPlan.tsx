@@ -138,7 +138,7 @@ export default function WeeklyPlan() {
         </p>
       </div>
 
-      <div className="flex items-center gap-3 px-7 py-3 border border-blue-500 bg-blue-50 rounded-[8px] my-12">
+      {/* <div className="flex items-center gap-3 px-7 py-3 border border-blue-500 bg-blue-50 rounded-[8px] my-12">
         <Target className="text-blue-600 bg-blue-200 p-2 rounded-full w-10 h-10" />
         <div>
           <h3 className="text-[#1C398E] mb-2">
@@ -150,7 +150,7 @@ export default function WeeklyPlan() {
             morning.
           </p>
         </div>
-      </div>
+      </div> */}
 
       <div className="grid grid-cols-1 gap-6">
         {/* Left Section */}
