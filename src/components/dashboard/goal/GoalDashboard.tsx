@@ -71,30 +71,64 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
 
       <div className="mb-4">
         <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-medium">Progress %</span>
+          <span className="text-sm font-medium text-gray-700">
+            Completion Progress
+          </span>
           <div className="flex gap-4 text-sm">
-            <span className="flex items-center gap-1">
-              <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
-              Accuracy {goal.accuracy || 0}%
+            <span className="flex items-center gap-1.5">
+              <span className="w-3 h-3 bg-blue-600 rounded-full"></span>
+              <span className="text-gray-600">
+                Accuracy {(goal.accuracy || 0).toFixed(2)}%
+              </span>
             </span>
-            <span className="flex items-center gap-1">
-              <span className="w-3 h-3 bg-blue-300 rounded-full"></span>
-              Completed {goal.progressPercentage}%
+            <span className="flex items-center gap-1.5">
+              <span className="w-3 h-3 bg-blue-400 rounded-full"></span>
+              <span className="text-gray-600">
+                Completed {(goal.complete || 0).toFixed(2)}%
+              </span>
             </span>
           </div>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-          <div className="h-full flex">
-            <div
-              className="bg-blue-500 h-full"
-              style={{ width: `${goal.accuracy || 0}%` }}
-            ></div>
-            <div
-              className="bg-blue-300 h-full"
-              style={{
-                width: `${goal.progressPercentage - (goal.accuracy || 0)}%`,
-              }}
-            ></div>
+        <div className="w-full bg-gray-100 rounded-full h-4 overflow-hidden shadow-inner border border-gray-200">
+          <div className="h-full flex transition-all duration-500">
+            {/* Sequential Display: Smaller metric value first, then the extra portion of the larger metric. */}
+            {(goal.accuracy || 0) < (goal.complete || 0) ? (
+              <>
+                {/* Accuracy is smaller; show it first (Blue-600) then extra completion (Blue-400) */}
+                <div
+                  className="bg-blue-600 h-full transition-all duration-500"
+                  style={{ width: `${goal.accuracy || 0}%` }}
+                  title={`Accuracy: ${(goal.accuracy || 0).toFixed(2)}%`}
+                ></div>
+                <div
+                  className="bg-blue-400 h-full transition-all duration-500"
+                  style={{
+                    width: `${(goal.complete || 0) - (goal.accuracy || 0)}%`,
+                  }}
+                  title={`Extra Completion: ${(
+                    (goal.complete || 0) - (goal.accuracy || 0)
+                  ).toFixed(2)}%`}
+                ></div>
+              </>
+            ) : (
+              <>
+                {/* Completion is smaller; show it first (Blue-400) then extra accuracy (Blue-600) */}
+                <div
+                  className="bg-blue-400 h-full transition-all duration-500"
+                  style={{ width: `${goal.complete || 0}%` }}
+                  title={`Completed: ${(goal.complete || 0).toFixed(2)}%`}
+                ></div>
+                <div
+                  className="bg-blue-600 h-full transition-all duration-500"
+                  style={{
+                    width: `${(goal.accuracy || 0) - (goal.complete || 0)}%`,
+                  }}
+                  title={`Extra Accuracy: ${(
+                    (goal.accuracy || 0) - (goal.complete || 0)
+                  ).toFixed(2)}%`}
+                ></div>
+              </>
+            )}
           </div>
         </div>
       </div>

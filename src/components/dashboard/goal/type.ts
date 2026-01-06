@@ -35,8 +35,8 @@ export interface Goal {
   progressPercentage: number;
   daysLeft: number;
   remainingHours: number;
-  // UI specific or legacy fields that might be used
   accuracy?: number;
+  complete?: number;
 }
 
 export interface StepIndicatorProps {

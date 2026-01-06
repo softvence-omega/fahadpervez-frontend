@@ -97,6 +97,7 @@ export default function OSCEStation() {
               steps={`${item.tasks.length} steps`}
               videos={`${item.tutorial.length} videos`}
               duration={item.timeLimit}
+              isComplete={item.isComplete}
               onWatchTutorial={() => handleWatchTutorial(item.tutorial)}
               onPractice={() => handlePractice(item._id)}
             />

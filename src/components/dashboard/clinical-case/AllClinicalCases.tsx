@@ -148,6 +148,11 @@ const AllClinicalCases: React.FC = () => {
                 {caseData?.difficultyLevel}
               </span>
             )}
+            {caseData?.isComplete && (
+              <span className="px-2 py-1 text-xs font-medium border rounded-full text-green-800 bg-green-100 border-green-200">
+                Completed
+              </span>
+            )}
           </div>
           {activeTab === "AI Generated" && (
             <button

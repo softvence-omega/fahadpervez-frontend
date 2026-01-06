@@ -2,7 +2,6 @@
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import { BreadcrumbItem } from "../gamified-learning/types";
 import { useGetSingleOsceQuery } from "@/store/features/adminDashboard/ContentResources/Osce/osceApi";
-import { useState } from "react";
 import { Play, Target, ArrowLeft } from "lucide-react";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -39,7 +38,7 @@ interface TutorialLocationState {
 }
 
 export default function OSCETutorial() {
-  const [sessionNotes, setSessionNotes] = useState<string>("");
+  // const [sessionNotes, setSessionNotes] = useState<string>("");
   const { state } = useLocation() as { state: TutorialLocationState | null };
   const navigate = useNavigate();
 
@@ -56,7 +55,9 @@ export default function OSCETutorial() {
   // If your backend returns { data: OsceData } or OsceData directly, handle both:
   const apiResponse = rawData as OsceApiResponse | OsceData | undefined;
   const osce: OsceData | undefined =
-    apiResponse && "data" in apiResponse ? apiResponse.data : (apiResponse as OsceData | undefined);
+    apiResponse && "data" in apiResponse
+      ? apiResponse.data
+      : (apiResponse as OsceData | undefined);
 
   // Loading
   if (isLoading || !osceId) {
@@ -77,7 +78,10 @@ export default function OSCETutorial() {
       <div className="flex h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
           <p className="text-red-600 text-lg">Failed to load tutorial.</p>
-          <button onClick={() => navigate(-1)} className="mt-4 text-blue-600 hover:underline">
+          <button
+            onClick={() => navigate(-1)}
+            className="mt-4 text-blue-600 hover:underline"
+          >
             ← Go Back
           </button>
         </div>
@@ -90,25 +94,28 @@ export default function OSCETutorial() {
   const mainTitle = osce.name ? `Tutorial: ${osce.name}` : "OSCE Tutorial";
 
   const getEmbedUrl = (url: string): string => {
-    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
+    const match = url.match(
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/
+    );
     return match ? `https://www.youtube.com/embed/${match[1]}` : url;
   };
 
   const handleBack = () => navigate(-1);
 
   return (
-    <div className="my-6 max-w-7xl mx-auto px-4">
-      <div className="flex items-center gap-4 mb-6">
+    <div className="my-6 mx-auto px-4">
+      <div className=" gap-4 mb-6">
+        <div className="flex-1">
+          <Breadcrumb breadcrumbs={breadcrumbs} />
+        </div>
+
         <button
           onClick={handleBack}
-          className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium"
+          className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium cursor-pointer"
         >
           <ArrowLeft className="w-5 h-5" />
           Back
         </button>
-        <div className="flex-1">
-          <Breadcrumb breadcrumbs={breadcrumbs} />
-        </div>
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow mb-6">
@@ -137,8 +144,10 @@ export default function OSCETutorial() {
             </div>
           )}
 
-          <div className="mt-8">
-            <p className="text-sm font-semibold text-gray-700 mb-3">Session Notes</p>
+          {/* <div className="mt-8">
+            <p className="text-sm font-semibold text-gray-700 mb-3">
+              Session Notes
+            </p>
             <textarea
               value={sessionNotes}
               onChange={(e) => setSessionNotes(e.target.value)}
@@ -146,7 +155,7 @@ export default function OSCETutorial() {
               rows={6}
               placeholder="Write your notes here..."
             />
-          </div>
+          </div> */}
         </div>
 
         {/* Sidebar */}
@@ -159,7 +168,9 @@ export default function OSCETutorial() {
             <div className="bg-white p-5 rounded-lg shadow">
               {osce.candidateInstruction ? (
                 <div
-                  dangerouslySetInnerHTML={{ __html: osce.candidateInstruction }}
+                  dangerouslySetInnerHTML={{
+                    __html: osce.candidateInstruction,
+                  }}
                   className="prose prose-sm text-gray-700"
                 />
               ) : (
@@ -170,7 +181,9 @@ export default function OSCETutorial() {
 
           {/* Quick Access */}
           <div>
-            <h3 className="font-semibold text-lg mb-3 text-gray-800">Quick Access</h3>
+            <h3 className="font-semibold text-lg mb-3 text-gray-800">
+              Quick Access
+            </h3>
             <Link to={`/dashboard/practice-with-checklist/${osceId}`}>
               <PrimaryButton
                 icon={<Target className="w-5 h-5" />}
@@ -190,13 +203,18 @@ export default function OSCETutorial() {
             <div className="bg-white rounded-lg shadow">
               {tutorials.length > 1 ? (
                 tutorials.map((url, idx) => {
-                  console.log(url)
+                  console.log(url);
                   if (idx === selectedIndex) return null;
                   return (
                     <Link
                       key={idx}
                       to="/dashboard/osce-tutorial"
-                      state={{ osceId, selectedTutorialIndex: idx } as TutorialLocationState}
+                      state={
+                        {
+                          osceId,
+                          selectedTutorialIndex: idx,
+                        } as TutorialLocationState
+                      }
                       className="flex items-center gap-4 p-4 hover:bg-gray-50 border-b last:border-b-0"
                     >
                       <div className="bg-blue-600 p-3 rounded-lg">

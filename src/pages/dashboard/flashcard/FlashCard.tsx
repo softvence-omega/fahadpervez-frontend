@@ -34,6 +34,11 @@ export default function FlashCard({
             {flashcard?.totalFlashCards} flashcard{" "}
             {flashcard?.topic && `• ${flashcard?.topic}`}
           </p>
+          {flashcard?.isComplete && (
+            <p className="mt-2 inline-block px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-full border border-emerald-200">
+              Completed
+            </p>
+          )}
         </div>
         {source === "generated" && (
           <button

@@ -215,13 +215,18 @@ const PostCard = ({ post }: PostCardProps) => {
         <p className="text-gray-800 mb-4 leading-relaxed">{post?.content}</p>
 
         {/* Post Image */}
-        {post?.postImage && (
-          <img
-            src={post.postImage}
-            alt="Post image"
-            className="w-full h-64 object-cover rounded-lg mb-4 cursor-pointer hover:opacity-95 transition-opacity"
-            onClick={() => setIsPreviewOpen(true)}
-          />
+        {post?.postImage && post.postImage.trim() !== "" && (
+          <div className="mb-4">
+            <img
+              src={post.postImage}
+              alt="Post"
+              className="w-full h-auto max-h-[500px] object-cover rounded-lg cursor-pointer hover:opacity-95 transition-opacity bg-gray-100"
+              onClick={() => setIsPreviewOpen(true)}
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
+            />
+          </div>
         )}
 
         {/* ✅ Reaction Buttons */}
