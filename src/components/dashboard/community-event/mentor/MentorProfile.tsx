@@ -1,22 +1,20 @@
 import { useState } from "react";
 import {
+  ArrowLeft,
   BadgeHelp,
-  Clock12,
   Languages,
   Link as LinkIcon,
   MapPin,
   MessageCircleQuestion,
-  Star,
-  Video,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import DashboardHeading from "@/components/reusable/DashboardHeading";
-import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { ConnectionRequestModal } from "./ConnectionRequestModal";
 import { SessionSelectionModal } from "./SessionSelectionModal";
 import { BreadcrumbItem } from "../../gamified-learning/types";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useGetSingleMentorQuery } from "@/store/features/mentor/mentor.api";
+import DashboardHeading from "@/components/reusable/DashboardHeading";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { name: "Dashboard", link: "/dashboard" },
@@ -25,6 +23,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function MentorProfile() {
+  const { id } = useParams<{ id: string }>();
+  const { data: mentorResponse, isLoading } = useGetSingleMentorQuery(id);
+  const mentor = mentorResponse?.data?.profile_id;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [activeModal, setActiveModal] = useState<
@@ -44,34 +46,52 @@ export default function MentorProfile() {
     setIsModalOpen(false);
   };
 
-  const [skills] = useState([
-    "EHR/EMR",
-    "EHR/EMR",
-    "EHR/EMR",
-    "EHR/EMR",
-    "EHR/EMR",
-    "EHR/EMR",
-    "Physician - Internal Medicine",
-    "Physician - Internal Medicine",
-  ]);
+  // const [skills] = useState([
+  //   "EHR/EMR",
+  //   "EHR/EMR",
+  //   "EHR/EMR",
+  //   "EHR/EMR",
+  //   "EHR/EMR",
+  //   "EHR/EMR",
+  //   "Physician - Internal Medicine",
+  //   "Physician - Internal Medicine",
+  // ]);
+
+  if (isLoading) {
+    return <div className="p-6">Loading mentor profile...</div>;
+  }
+
+  if (!mentor) {
+    return <div className="p-6">Mentor data not found.</div>;
+  }
 
   return (
     <div className="my-6">
       {/* Breadcrumb */}
       <Breadcrumb breadcrumbs={breadcrumbs} />
+      <Link to="/dashboard/all-mentor" className="sm:mb-0">
+        <button className="flex items-center gap-1 border border-gray-300 px-3 py-2 rounded cursor-pointer mb-2 -mt-3">
+          <ArrowLeft className="w-5 h-4" /> Back
+        </button>
+      </Link>
       <div className="min-h-screen bg-white">
         {/* Header Section */}
         <div className="bg-blue-900 h-52 w-full"></div>
         <div className="flex items-center justify-between -mt-24 px-10">
           <div className="flex items-center gap-5">
             <img
-              src="https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D"
+              src={
+                mentor.profile_photo ||
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZYgW4c4mScN4iMaoZM2YNPO2iV7aaxtmDVg&s"
+              }
               alt="mentor"
-              className="w-28 h-28 rounded-full border-4 border-white shadow object-cover mt-6"
+              className="w-28 h-28 rounded-full border-2 border-white shadow object-cover mt-6"
             />
-            <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
-              Top Mentor
-            </span>
+            {mentor.profileVerification === "VERIFIED" && (
+              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+                Verified Mentor
+              </span>
+            )}
           </div>
           <div className="flex flex-col md:flex-row gap-3">
             {/* <Button
@@ -90,10 +110,10 @@ export default function MentorProfile() {
             <div className="max-w-lg flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div>
                 <h1 className="text-2xl text-[#0F172A] font-semibold mt-2">
-                  Mohammad Essayed
+                  {mentor?.firstName} {mentor?.lastName}
                 </h1>
                 <p className="text-[#0F172A] font-medium mb-1">
-                  Medical Consultant- Preventive & Clinical Care
+                  {mentor?.currentRole}
                 </p>
 
                 <div className="w-2/3">
@@ -124,25 +144,27 @@ export default function MentorProfile() {
                 </div>
 
                 <p className="text-[#118577] hover:underline mb-5">
-                  I'll help you step confidently into the field of Medical
-                  Consultant, sharing over 12 years of real-world experience
+                  {mentor?.specialty} - {mentor?.hospitalOrInstitute}
+                  <br />
+                  {mentor?.professionalExperience} Years of Experience
                 </p>
                 <div className="mt-3 text-sm text-gray-600 space-y-3">
                   <p className="flex items-center gap-2 text-[#475569]">
-                    <MapPin className="w-5 h-5 text-emerald-600" /> Poland
+                    <MapPin className="w-5 h-5 text-emerald-600" />{" "}
+                    {mentor?.country}
                   </p>
                   <p className="flex items-center gap-2 text-[#475569]">
-                    <Languages className="w-5 h-5 text-emerald-600" /> Speaks
-                    English and Arabic
+                    <Languages className="w-5 h-5 text-emerald-600" /> Speaks{" "}
+                    {mentor?.languages?.join(", ") || "English"}
                   </p>
-                  <p className="flex items-center gap-2 text-[#475569]">
+                  {/* <p className="flex items-center gap-2 text-[#475569]">
                     <Star className="w-5 h-5 text-emerald-600" />
                     5.0 (60 reviews)
                   </p>
                   <p className="flex items-center gap-2 text-[#475569]">
                     <Clock12 className="w-5 h-5 text-emerald-600" />
                     Active today
-                  </p>
+                  </p> */}
                 </div>
               </div>
             </div>
@@ -151,17 +173,21 @@ export default function MentorProfile() {
             <div className="max-w-96 mt-6">
               <h2 className="text-[#0F172A] font-semibold mb-4">Skills</h2>
               <div className="flex flex-wrap gap-2 mt-3">
-                {skills.slice(0, 5).map((skill, idx) => (
-                  <span
-                    key={idx}
-                    className="px-3 py-1 bg-gray-100 text-gray-700 border border-slate-200 rounded-full text-sm"
-                  >
-                    {skill}
+                {mentor?.skills
+                  ?.slice(0, 5)
+                  .map((skill: string, idx: number) => (
+                    <span
+                      key={idx}
+                      className="px-3 py-1 bg-gray-100 text-gray-700 border border-slate-200 rounded-full text-sm"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                {mentor?.skills?.length > 5 && (
+                  <span className="px-3 py-1 text-gray-700 text-sm border-b border-b-[#334155]">
+                    + {mentor?.skills?.length - 5} more
                   </span>
-                ))}
-                <span className="px-3 py-1 text-gray-700 text-sm border-b border-b-[#334155]">
-                  + 13 more
-                </span>
+                )}
               </div>
             </div>
           </div>
@@ -173,7 +199,7 @@ export default function MentorProfile() {
                 Asked Question
               </h3>
               <Link
-                to={"/dashboard/my-mentor"}
+                to={"/dashboard/ask-question"}
                 className="text-sm font-semibold text-blue-main underline"
               >
                 View All
@@ -201,17 +227,11 @@ export default function MentorProfile() {
           </div>
 
           {/* Completed Session Section*/}
-          <div className="my-10">
+          {/* <div className="my-10">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-lg text-[#0F172A]  font-medium">
                 Completed Session
               </h3>
-              <Link
-                to={"/dashboard/my-mentor"}
-                className="text-sm font-semibold text-blue-main underline"
-              >
-                View All
-              </Link>
             </div>
             <div className="border border-[#0000001A] p-4 rounded-[8px]">
               <div className="flex flex-col md:flex-row justify-between items-center mb-3 text-center md:text-left gap-6">
@@ -236,7 +256,7 @@ export default function MentorProfile() {
                 </PrimaryButton>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {Array(4)
@@ -257,6 +277,7 @@ export default function MentorProfile() {
           isOpen={activeModal === "session"}
           onClose={() => setActiveModal(null)}
           onBookNow={handleBookSession}
+          mentor={mentor}
         />
       </div>
     </div>

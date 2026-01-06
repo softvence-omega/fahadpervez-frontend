@@ -8,7 +8,7 @@ type FileUploaderProps = {
 };
 
 export default function FileUploader({
-    accept = "image/*,video/*,.pdf,.docx",
+    accept = "image/*,.pdf,.docx",
     multiple = true,
     onFilesChange,
 }: FileUploaderProps) {
@@ -42,7 +42,8 @@ export default function FileUploader({
                 <span className="text-2xl bg-[#DBEAFE] p-3 rounded"><Upload /></span>
                 <p className="text-gray-600">Click to upload files</p>
                 <p className="text-xs text-gray-400">
-                    Support: JPG, PNG, MP4, DOCX, PDF (Max 100MB)
+                    {/* Support: JPG, PNG, DOCX, PDF (Max 100MB) */}
+                    Support: JPG, PNG, PDF
                 </p>
             </div>
             <input

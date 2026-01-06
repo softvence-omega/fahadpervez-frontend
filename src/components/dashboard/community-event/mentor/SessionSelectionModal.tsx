@@ -12,6 +12,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check, Clock, DollarSign } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Mentor } from "../types";
 
 interface Session {
   id: string;
@@ -26,35 +27,40 @@ interface SessionSelectionModalProps {
   onClose: () => void;
   onBookNow: (selectedSessionId: string) => void;
   sessions?: Session[];
+  mentor?: Mentor;
 }
-
-const defaultSessions: Session[] = [
-  {
-    id: "math-1",
-    title: "Advanced Mathematics Tutoring",
-    duration: 60,
-    price: 25,
-  },
-  {
-    id: "science-1",
-    title: "Science Laboratory Session",
-    duration: 45,
-    price: 30,
-  },
-  {
-    id: "language-1",
-    title: "Language Practice Session",
-    duration: 30,
-    price: 15,
-  },
-];
 
 export function SessionSelectionModal({
   isOpen,
   onClose,
   onBookNow,
-  sessions = defaultSessions,
+  sessions: providedSessions,
+  mentor,
 }: SessionSelectionModalProps) {
+  const hourlyRate = mentor?.hourlyRate;
+
+  const dynamicSessions: Session[] = hourlyRate
+    ? [
+        {
+          id: "session-30",
+          title: "Quick Consultation",
+          duration: 30,
+          price: Math.round(hourlyRate / 2),
+        },
+        {
+          id: "session-60",
+          title: "Comprehensive Mentorship",
+          duration: 60,
+          price: hourlyRate,
+        },
+      ]
+    : [];
+
+  const sessions =
+    providedSessions && providedSessions.length > 0
+      ? providedSessions
+      : dynamicSessions;
+
   const [selectedSession, setSelectedSession] = useState<string>(
     sessions[0]?.id || ""
   );
@@ -68,15 +74,16 @@ export function SessionSelectionModal({
     if (selectedSession) {
       onBookNow(selectedSession);
 
-      const selectedSessionObj = sessions.find(s => s.id === selectedSession);
+      const selectedSessionObj = sessions.find((s) => s.id === selectedSession);
       navigate("/dashboard/confirm-booking", {
         state: {
           price: selectedSessionObj?.price,
           duration: selectedSessionObj?.duration,
-          sessions: 1, // you can make this dynamic if needed
-          mentorName: "Mouhammad",
-          specialty: "Medical Consultant - Preventive & Clinical Care",
-          mentorId: selectedSessionObj?.id, // using session id as mentorId (replace if you have real mentorId)
+          sessions: 1,
+          mentorName: `${mentor?.firstName} ${mentor?.lastName}`,
+          specialty: mentor?.specialty,
+          mentorId: mentor?._id,
+          mentor: mentor, // Pass the whole mentor object for availability
         },
       });
       // Optionally close the modal after booking
@@ -94,14 +101,20 @@ export function SessionSelectionModal({
         </DialogHeader>
 
         <div className="space-y-4 py-4">
-          {sessions.map((session) => (
-            <SessionCard
-              key={session.id}
-              session={session}
-              isSelected={selectedSession === session.id}
-              onSelect={handleSessionSelect}
-            />
-          ))}
+          {sessions.length > 0 ? (
+            sessions.map((session) => (
+              <SessionCard
+                key={session.id}
+                session={session}
+                isSelected={selectedSession === session.id}
+                onSelect={handleSessionSelect}
+              />
+            ))
+          ) : (
+            <div className="py-8 text-center text-gray-500">
+              No sessions available for this mentor.
+            </div>
+          )}
         </div>
 
         <div className="flex gap-3 pt-4">
@@ -158,7 +171,7 @@ function SessionCard({ session, isSelected, onSelect }: SessionCardProps) {
               </div>
               <div className="flex items-center space-x-1">
                 <DollarSign className="w-4 h-4" />
-                <span>${session.price} per session</span>
+                <span>{session.price} per session</span>
               </div>
             </div>
           </div>

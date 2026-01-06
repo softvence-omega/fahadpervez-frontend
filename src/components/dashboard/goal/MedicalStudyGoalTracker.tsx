@@ -1,9 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
-import {
-  SelectedSubject,
-  Subject,
-  FormData as GoalFormData,
-} from "./type";
+import { SelectedSubject, Subject, FormData as GoalFormData } from "./type";
 import { GoalModal, Step1, Step2, Step3 } from "./GoalModal";
 import { GoalEmptyState } from "./GoalEmptyState";
 import { GoalDashboard } from "./GoalDashboard";
@@ -13,7 +10,10 @@ import {
   useUpdateGoalMutation,
 } from "@/store/features/goal/goal.api";
 import { toast } from "sonner";
+import GlobalLoader from "@/common/GlobalLoader";
+import { useGetMCQBankTreeQuery } from "@/store/features/MCQBank/MCQBank.api";
 
+/* 
 const availableSubjects: Subject[] = [
   {
     name: "Pathology",
@@ -106,6 +106,7 @@ const availableSubjects: Subject[] = [
     ],
   },
 ];
+*/
 
 // Main Component
 const MedicalStudyGoalTracker: React.FC = () => {
@@ -114,10 +115,20 @@ const MedicalStudyGoalTracker: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   // const [goal, setGoal] = useState<Goal | null>(null);
 
-  const [createGoal] = useCreateGoalMutation();
-  const [updateGoal] = useUpdateGoalMutation();
-  const { data } = useGetGoalQuery({});
-  
+  const [createGoal, { isLoading: isCreating }] = useCreateGoalMutation();
+  const [updateGoal, { isLoading: isUpdating }] = useUpdateGoalMutation();
+  const { data, isLoading } = useGetGoalQuery({});
+
+  const { data: treeData, isLoading: isTreeLoading } = useGetMCQBankTreeQuery(
+    {}
+  );
+
+  const availableSubjects: Subject[] =
+    treeData?.data?.map((subject: any) => ({
+      name: subject.subjectName,
+      systems: subject.systems.map((system: any) => system.name),
+    })) || [];
+
   const apiGoal = data?.data?.[0];
 
   const [formData, setFormData] = useState<GoalFormData>({
@@ -255,7 +266,10 @@ const MedicalStudyGoalTracker: React.FC = () => {
     } catch (error: any) {
       console.error("Goal operation error:", error);
       toast.error(
-        error?.data?.message || `Failed to ${isEditMode ? "update" : "create"} goal. Please try again ❌`
+        error?.data?.message ||
+          `Failed to ${
+            isEditMode ? "update" : "create"
+          } goal. Please try again ❌`
       );
     }
 
@@ -285,7 +299,7 @@ const MedicalStudyGoalTracker: React.FC = () => {
         startDate: apiGoal.startDate.split("T")[0], // Convert to YYYY-MM-DD format
         endDate: apiGoal.endDate.split("T")[0],
       });
-      
+
       // Pre-populate selected subjects
       setSelectedSubjects(
         apiGoal.selectedSubjects.map((subject: any) => ({
@@ -297,6 +311,13 @@ const MedicalStudyGoalTracker: React.FC = () => {
     }
     setShowModal(true);
   };
+
+  if (isLoading || isTreeLoading)
+    return (
+      <div>
+        <GlobalLoader />
+      </div>
+    );
 
   return (
     <div className="bg-gray-50 mb-12">
@@ -343,6 +364,7 @@ const MedicalStudyGoalTracker: React.FC = () => {
               onPrevious={() => setCurrentStep(2)}
               onCreate={handleCreateGoal}
               isEditMode={isEditMode}
+              isLoading={isCreating || isUpdating}
             />
           )}
         </GoalModal>

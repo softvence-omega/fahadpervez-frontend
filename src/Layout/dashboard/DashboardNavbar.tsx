@@ -46,7 +46,7 @@ const DashboardNavbar = () => {
     { name: "Clinical Cases", href: "/dashboard/clinical-case-generator" },
     { name: "Download Notes", href: "/dashboard/download-notes" },
     { name: "OSCE / Clinical Skills Lab", href: "/dashboard/osce" },
-    { name: "Diagram Explorer", href: "/dashboard/diagram-explorer" },
+    { name: "Diagram Explorer", href: "/dashboard/bio-digital" },
     { name: "AI Tutor", href: "/dashboard/ai-tutor" },
     { name: "Gamified Learning", href: "/dashboard/gamified-learning" },
   ];

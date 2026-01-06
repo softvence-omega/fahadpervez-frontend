@@ -39,6 +39,7 @@ const persistedStaticContentReducer = persistReducer(
 );
 
 import { bioDigitalExternalAPI } from "./features/bioDigital/bioDigitalExternal.api";
+import quizReducer from "./features/MCQBank/quizSlice";
 
 export const store = configureStore({
   reducer: {
@@ -46,6 +47,7 @@ export const store = configureStore({
     [bioDigitalExternalAPI.reducerPath]: bioDigitalExternalAPI.reducer,
     auth: persistedReducer,
     staticContent: persistedStaticContentReducer,
+    quiz: quizReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

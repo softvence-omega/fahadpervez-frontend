@@ -31,7 +31,11 @@ const mentorSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().optional(),
   country: z.string().min(1, "Country is required"),
-  mentorField: z.string().min(1, "Field of expertise is required"),
+  currentRole: z.string().min(1, "Current role is required"),
+  hospitalOrInstitute: z.string().min(1, "Hospital/Institute is required"),
+  specialty: z.string().min(1, "Medical specialty is required"),
+  experience: z.string().min(1, "Professional experience is required"),
+  postgraduateDegree: z.string().min(1, "Postgraduate degree is required"),
 });
 
 export const profileSetupSchema = z.discriminatedUnion("role", [
@@ -82,18 +86,83 @@ export const updatePreferenceSchema = z.object({
   hourlyRate: z.number().min(0, "Hourly rate must be positive"),
   currency: z
     .string()
-    .default("Dollar")
-    .transform((val) => val ?? "Dollar"),
+    .default("USD")
+    .transform((val) => val ?? "USD"),
   availability: z
-    .record(
-      z.string(),
-      z.object({
+    .object({
+      Monday: z.object({
         enabled: z.boolean().optional(),
-        startTime: z.string().optional(),
-        endTime: z.string().optional(),
-      })
-    )
-    .default({}),
+        slots: z.array(
+          z.object({
+            startTime: z.string(),
+            endTime: z.string(),
+          })
+        ),
+      }),
+      Tuesday: z.object({
+        enabled: z.boolean().optional(),
+        slots: z.array(
+          z.object({
+            startTime: z.string(),
+            endTime: z.string(),
+          })
+        ),
+      }),
+      Wednesday: z.object({
+        enabled: z.boolean().optional(),
+        slots: z.array(
+          z.object({
+            startTime: z.string(),
+            endTime: z.string(),
+          })
+        ),
+      }),
+      Thursday: z.object({
+        enabled: z.boolean().optional(),
+        slots: z.array(
+          z.object({
+            startTime: z.string(),
+            endTime: z.string(),
+          })
+        ),
+      }),
+      Friday: z.object({
+        enabled: z.boolean().optional(),
+        slots: z.array(
+          z.object({
+            startTime: z.string(),
+            endTime: z.string(),
+          })
+        ),
+      }),
+      Saturday: z.object({
+        enabled: z.boolean().optional(),
+        slots: z.array(
+          z.object({
+            startTime: z.string(),
+            endTime: z.string(),
+          })
+        ),
+      }),
+      Sunday: z.object({
+        enabled: z.boolean().optional(),
+        slots: z.array(
+          z.object({
+            startTime: z.string(),
+            endTime: z.string(),
+          })
+        ),
+      }),
+    })
+    .default({
+      Monday: { enabled: false, slots: [{ startTime: "", endTime: "" }] },
+      Tuesday: { enabled: false, slots: [{ startTime: "", endTime: "" }] },
+      Wednesday: { enabled: false, slots: [{ startTime: "", endTime: "" }] },
+      Thursday: { enabled: false, slots: [{ startTime: "", endTime: "" }] },
+      Friday: { enabled: false, slots: [{ startTime: "", endTime: "" }] },
+      Saturday: { enabled: false, slots: [{ startTime: "", endTime: "" }] },
+      Sunday: { enabled: false, slots: [{ startTime: "", endTime: "" }] },
+    }),
 });
 
 export const platformTrainingSchema = z.object({
@@ -102,10 +171,51 @@ export const platformTrainingSchema = z.object({
   }),
 });
 
-export const payoutSetupSchema = z.object({
-  paymentMethod: z.string().min(1, "Payment method is required"),
-  paymentDetails: z.string().min(1, "Payment details are required"),
-});
+export const payoutSetupSchema = z
+  .object({
+    paymentMethod: z.string().min(1, "Payment method is required"),
+    accountHolderName: z.string().optional(),
+    bankName: z.string().optional(),
+    accountNumber: z.string().optional(),
+    routingNumber: z.string().optional(),
+    accountType: z.string().optional(),
+    paypalEmail: z.string().optional(), // In case needed
+  })
+  .superRefine((data, ctx) => {
+    if (data.paymentMethod === "Bank Transfer") {
+      if (!data.accountHolderName)
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Account Holder Name is required",
+          path: ["accountHolderName"],
+        });
+      if (!data.bankName)
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Bank Name is required",
+          path: ["bankName"],
+        });
+      if (!data.accountNumber)
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Account Number is required",
+          path: ["accountNumber"],
+        });
+      if (!data.routingNumber)
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Routing Number is required",
+          path: ["routingNumber"],
+        });
+      if (!data.accountType)
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Account Type is required",
+          path: ["accountType"],
+        });
+    }
+    // Add PayPal validation if needed
+  });
 
 // end mentor onboarding
 
@@ -142,6 +252,11 @@ export type PreferencesData = z.infer<typeof preferencesSchema>;
 export type UploadProfileData = z.infer<typeof uploadProfileSchema>;
 export type VerifyProfessionData = z.infer<typeof verifyProfessionSchema>;
 export type UpdatePreferenceData = z.infer<typeof updatePreferenceSchema>;
+
+export type Availability = UpdatePreferenceData["availability"];
+export type AvailabilitySlot = Availability["Monday"];
+export type TimeSlot = AvailabilitySlot["slots"][number];
+
 export type PlatformTrainingData = z.infer<typeof platformTrainingSchema>;
 export type PayoutSetupData = z.infer<typeof payoutSetupSchema>;
 export type MultiStepFormData = z.infer<typeof multiStepSchema>;

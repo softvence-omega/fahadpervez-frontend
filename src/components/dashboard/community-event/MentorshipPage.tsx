@@ -3,6 +3,8 @@ import MyMentorCard from "./mentor/MyMentorCard";
 import { Link } from "react-router-dom";
 import { BreadcrumbItem } from "../gamified-learning/types";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
+import { useGetAllMentorQuery } from "@/store/features/mentor/mentor.api";
+import GlobalLoader from "@/common/GlobalLoader";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { name: "Dashboard", link: "/dashboard" },
@@ -10,6 +12,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const MentorshipPage = () => {
+  const { data: mentorsData, isLoading } = useGetAllMentorQuery({});
+  const mentors = mentorsData?.data;
+  console.log(mentors);
+
   return (
     <div className="mt-6 mb-16">
       <Breadcrumb breadcrumbs={breadcrumbs} />
@@ -60,11 +66,21 @@ const MentorshipPage = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-7">
-          {Array(4)
-            .fill(null)
-            .map(() => (
-              <MyMentorCard />
-            ))}
+          {isLoading && (
+            <p>
+              <GlobalLoader />
+            </p>
+          )}
+
+          {!isLoading && mentors?.length > 0 && (
+            <>
+              {mentors.slice(0, 4).map((mentor: any) => (
+                <MyMentorCard key={mentor?._id} mentor={mentor} />
+              ))}
+            </>
+          )}
+
+          {!isLoading && mentors?.length === 0 && <p>No mentors found.</p>}
         </div>
         {/* <div className="border border-slate-300 rounded-xl bg-white p-7 mt-12">
           <div className="text-center">
@@ -101,11 +117,21 @@ const MentorshipPage = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-7">
-          {Array(8)
-            .fill(null)
-            .map(() => (
-              <MyMentorCard />
-            ))}
+          {isLoading && (
+            <p>
+              <GlobalLoader />
+            </p>
+          )}
+
+          {!isLoading && mentors?.length > 0 && (
+            <>
+              {mentors.slice(0, 4).map((mentor: any) => (
+                <MyMentorCard key={mentor?._id} mentor={mentor} />
+              ))}
+            </>
+          )}
+
+          {!isLoading && mentors?.length === 0 && <p>No mentors found.</p>}
         </div>
       </div>
     </div>

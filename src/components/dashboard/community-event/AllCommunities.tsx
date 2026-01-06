@@ -2,15 +2,22 @@ import React, { useState, useEffect } from "react";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import { BreadcrumbItem } from "../gamified-learning/types";
 import EventPage from "./EventPage";
-import SocialFeedPage from "./SocialFeedPage";
-import ForumsPage from "./ForumsPage";
+// import SocialFeedPage from "./SocialFeedPage";
+// import ForumsPage from "./ForumsPage";
 import MessagesPage from "./messages/MessagesPage";
 import MentorCommunityTabs from "@/components/mentorCommunity/MentorCommunityTabs";
+import SocialFeed from "@/components/mentorCommunity/SocialFeed";
+import Forums from "@/components/mentorCommunity/Forums";
 
 interface Event {
   id: string;
   title: string;
-  type: "PLAB Prep" | "Workshop" | "Conference" | "Telemedicine" | "Health Summit";
+  type:
+    | "PLAB Prep"
+    | "Workshop"
+    | "Conference"
+    | "Telemedicine"
+    | "Health Summit";
   date: string;
   time?: string;
   description: string;
@@ -38,7 +45,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const MedicalEventsDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("Events");
+  const [activeTab, setActiveTab] = useState("Social Feed");
   const [activeEventFilter, setActiveEventFilter] = useState("All Event");
   const [isLoading, setIsLoading] = useState(true);
   const [events, setEvents] = useState<Event[]>([]);
@@ -144,7 +151,8 @@ const MedicalEventsDashboard: React.FC = () => {
 
       {/* ✅ Render content based on activeTab (same logic, no functionality change) */}
       <div className="mt-6 space-y-6">
-        {activeTab === "Social Feed" && <SocialFeedPage />}
+        {/* {activeTab === "Social Feed" && <SocialFeedPage />} */}
+        {activeTab === "Social Feed" && <SocialFeed />}
 
         {activeTab === "Events" && (
           <EventPage
@@ -161,7 +169,7 @@ const MedicalEventsDashboard: React.FC = () => {
           <StudyGroupPage studyGroups={studyGroups} isLoading={isLoading} />
         )} */}
 
-        {activeTab === "Forums" && <ForumsPage />}
+        {activeTab === "Forums" && <Forums />}
 
         {activeTab === "Messages" && <MessagesPage />}
       </div>

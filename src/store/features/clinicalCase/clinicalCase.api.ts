@@ -3,10 +3,20 @@ import { baseAPI } from "@/store/api/baseApi";
 export const clinicalCaseAPI = baseAPI.injectEndpoints({
   endpoints: (build) => ({
     getAllClinicalCase: build.query({
-      query: () => ({
-        url: "/clinical-case",
-        method: "GET",
-      }),
+      query: ({ searchTerm, subject, system, topic, page, limit }: any) => {
+        const params: any = { page, limit };
+
+        if (searchTerm) params.searchTerm = searchTerm;
+        if (subject) params.subject = subject;
+        if (system) params.system = system;
+        if (topic) params.topic = topic;
+
+        return {
+          url: "/clinical-case",
+          method: "GET",
+          params,
+        };
+      },
     }),
 
     getSingleClinicalCase: build.query({
@@ -25,10 +35,21 @@ export const clinicalCaseAPI = baseAPI.injectEndpoints({
     }),
 
     getAllGeneratedClinicalCases: build.query({
-      query: () => ({
-        url: "/my_content/clinical-case",
-        method: "GET",
-      }),
+      query: ({ searchTerm, subject, system, topic, page, limit }: any) => {
+        const params: any = { page, limit };
+
+        if (searchTerm) params.searchTerm = searchTerm;
+        if (subject) params.subject = subject;
+        if (system) params.system = system;
+        if (topic) params.topic = topic;
+
+        return {
+          url: "/my_content/clinical-case",
+          method: "GET",
+          params,
+        };
+      },
+      providesTags: ["GeneratedClinicalCase"],
     }),
 
     getSingleGeneratedClinicalCase: build.query({
@@ -37,7 +58,7 @@ export const clinicalCaseAPI = baseAPI.injectEndpoints({
         method: "GET",
       }),
     }),
-    
+
     // end
   }),
 });

@@ -26,7 +26,7 @@ export default function FlashCardCollection() {
       searchTerm,
       ...filters,
       page,
-      limit: 10,
+      limit: 8,
     });
 
   const flashcardBank = flashcardData?.data;
@@ -34,12 +34,12 @@ export default function FlashCardCollection() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 mt-3">
         <div className="relative">
           <input
             type="text"
             placeholder="Search by condition or keyword"
-            className="w-full md:w-[450px] h-12 pl-10 pr-4 border border-slate-300 rounded"
+            className="w-full md:w-112.5 h-12 pl-10 pr-4 border border-slate-300 rounded"
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);

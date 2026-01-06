@@ -10,6 +10,7 @@ export interface SessionDetails {
   correct: number;
   incorrect: number;
   recommendations: Recommendations;
+  rawTimeSpent?: number;
 }
 
 export interface Session {
@@ -24,6 +25,8 @@ export interface Session {
 export interface Stats {
   completed: string;
   correct: string;
-  timePerQuestion: string;
+  timePerQuestion?: string;
   totalTime: string;
+  incorrect?: string;
+  wrong?: string;
 }

@@ -1,12 +1,23 @@
 import { Check } from "lucide-react";
 
 const PricingCard = ({
-  title = "Premium",
-  price = "$9.99",
-  period = "/per month",
-  description = "Best for professional freelancers and small teams.",
+  title,
+  price,
+  period,
+  description,
   features = [],
   buttonText = "Upgrade Your plan",
+  onUpgrade,
+  disabled = false,
+}: {
+  title?: string;
+  price?: string;
+  period?: string;
+  description?: string;
+  features?: string[];
+  buttonText?: string;
+  onUpgrade?: () => void;
+  disabled?: boolean;
 }) => {
   return (
     <div className="w-full max-w-md mx-auto border border-gray-200 rounded-2xl shadow-sm bg-white p-6 flex flex-col justify-between hover:shadow-md transition-shadow duration-300">
@@ -44,7 +55,15 @@ const PricingCard = ({
       </div>
 
       {/* Button */}
-      <button className="mt-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-2.5 rounded-md font-medium hover:from-blue-700 hover:to-blue-600 transition-all duration-200">
+      <button
+        onClick={onUpgrade}
+        disabled={disabled}
+        className={`mt-6 py-2.5 rounded-md font-medium transition-all duration-200 cursor-pointer ${
+          disabled
+            ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200"
+            : "bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:from-blue-700 hover:to-blue-600"
+        }`}
+      >
         {buttonText}
       </button>
     </div>

@@ -35,8 +35,53 @@ export const noteApi = baseAPI.injectEndpoints({
       invalidatesTags: ["Notes"],
     }),
 
+    // Generate Note
+    generateNote: build.mutation({
+      query: (formData) => ({
+        url: "/ai_part/generate-note",
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["GeneratedNotes"],
+    }),
+
+    // Get All Generated Notes
+    getAllGeneratedNotes: build.query({
+      query: (params) => ({
+        url: "/my_content/notes",
+        method: "GET",
+        params,
+      }),
+      providesTags: ["GeneratedNotes"],
+    }),
+
+    // Get Single Generated Note
+    getGeneratedNoteById: build.query({
+      query: (id) => ({
+        url: `/my_content/notes/${id}`,
+        method: "GET",
+      }),
+      providesTags: (id) => [{ type: "GeneratedNotes", id }],
+    }),
+
+    // Delete Generated Note
+    deleteGeneratedNote: build.mutation({
+      query: (id) => ({
+        url: `/my_content/notes/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["GeneratedNotes"],
+    }),
+
     // end
   }),
 });
 
-export const { useGetSingleUserNotesQuery, useIncrementNoteDownloadCountMutation } = noteApi;
+export const {
+  useGetSingleUserNotesQuery,
+  useIncrementNoteDownloadCountMutation,
+  useGenerateNoteMutation,
+  useGetAllGeneratedNotesQuery,
+  useGetGeneratedNoteByIdQuery,
+  useDeleteGeneratedNoteMutation,
+} = noteApi;

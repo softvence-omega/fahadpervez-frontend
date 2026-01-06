@@ -22,10 +22,12 @@ export default function SolveFlashCard() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // 🔥 Get flashcard data from navigate() state
   const stateFlashcardData = location.state?.flashCardData;
   const source = location.state?.source || "all";
+  const totalFlashCards = location.state?.totalFlashCards;
 
   // console.log("SolveFlashCard State Data:", stateFlashcardData);
   // console.log("SolveFlashCard ID:", id);
@@ -34,15 +36,21 @@ export default function SolveFlashCard() {
   // 🔥 Do NOT call API if we already have state data
   // Call standard API if source is 'all' (and no pre-loaded data)
   const { data: standardData, isLoading: isStandardLoading } =
-    useGetSingleFlashCardQuery(id as string, {
-      skip: !!stateFlashcardData || source === "generated",
-    });
+    useGetSingleFlashCardQuery(
+      { id: id as string, limit: totalFlashCards },
+      {
+        skip: !!stateFlashcardData || source === "generated",
+      }
+    );
 
   // Call generated API if source is 'generated' (and no pre-loaded data)
   const { data: generatedData, isLoading: isGeneratedLoading } =
-    useGetSingleGeneratedFlashCardQuery(id as string, {
-      skip: !!stateFlashcardData || source !== "generated",
-    });
+    useGetSingleGeneratedFlashCardQuery(
+      { id: id as string, limit: totalFlashCards },
+      {
+        skip: !!stateFlashcardData || source !== "generated",
+      }
+    );
 
   const isLoading = isStandardLoading || isGeneratedLoading;
 
@@ -123,7 +131,7 @@ export default function SolveFlashCard() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen my-2 px-2 overflow-y-auto">
       <div className="text-sm text-gray-600">
         <Breadcrumb breadcrumbs={breadcrumbs} />
       </div>
@@ -144,13 +152,13 @@ export default function SolveFlashCard() {
 
       <div className="flex flex-col md:flex-row gap-4">
         {/* Sidebar */}
-        <div className="w-full md:w-1/4 bg-white p-4 rounded-lg shadow">
+        {/* <div className="w-full md:w-1/4 bg-white p-4 rounded-lg shadow overflow-y-auto">
           <h2 className="font-semibold mb-2">{flashCardData?.title}</h2>
           <p className="text-sm text-gray-600 mb-4">
             {questions.length} Flashcards • {flashCardData?.subject}
           </p>
 
-          {/* {questions.map((q: any, index: number) => (
+          {questions.map((q: any, index: number) => (
             <div
               key={q?.id}
               className={`p-2 mb-2 rounded cursor-pointer ${
@@ -165,11 +173,66 @@ export default function SolveFlashCard() {
             >
               Card {index + 1}
             </div>
-          ))} */}
+          ))}
+        </div> */}
+
+        <div
+          className={`bg-white rounded-lg shadow transition-all duration-300
+  ${isSidebarOpen ? "w-full md:w-1/6" : "w-10"}
+  `}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b border-b-slate-300">
+            {isSidebarOpen && (
+              <div>
+                <h2 className="font-semibold">{flashCardData?.title}</h2>
+                <p className="text-sm text-gray-600">
+                  {questions.length} Flashcards • {flashCardData?.subject}
+                </p>
+              </div>
+            )}
+
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="text-gray-500 hover:text-gray-800 cursor-pointer"
+              title={isSidebarOpen ? "Collapse" : "Expand"}
+            >
+              {isSidebarOpen ? "❮" : "❯"}
+            </button>
+          </div>
+
+          {/* Scrollable List */}
+          <div
+            className={`overflow-y-auto transition-all
+    ${isSidebarOpen ? "max-h-[500px] p-4" : "max-h-[500px] p-2"}
+    `}
+          >
+            {questions.map((q: any, index: number) => (
+              <div
+                key={q?.id}
+                className={`p-2 mb-2 rounded cursor-pointer text-sm
+        ${
+          index === currentQuestion
+            ? "bg-blue-100 text-blue-600 font-medium"
+            : "text-gray-600 hover:bg-gray-100"
+        }`}
+                onClick={() => {
+                  setIsFlipped(false);
+                  setCurrentQuestion(index);
+                }}
+              >
+                {isSidebarOpen ? `Card ${index + 1}` : index + 1}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Flashcard Box */}
-        <div className="w-full md:w-3/4 flex flex-col items-center border border-slate-300 rounded-[8px] pb-7 px-5">
+        <div
+          className={`flex flex-col items-center border border-slate-300 rounded-[8px] pb-7 px-5 transition-all duration-300
+  ${isSidebarOpen ? "w-full md:w-5/6" : "w-full md:w-[calc(100%-2.5rem)]"}
+  `}
+        >
           <div className="w-full max-w-2xl mt-7 mb-12 border border-slate-300 py-2 px-4 rounded-[8px]">
             <h3 className="font-medium text-slate-900">
               Review your Flashcard
@@ -181,7 +244,7 @@ export default function SolveFlashCard() {
 
           {/* Flip Card */}
           <div
-            className={`relative w-full max-w-2xl h-64 md:h-80 bg-white rounded-xl shadow-lg cursor-pointer transition-transform duration-500 preserve-3d ${
+            className={`relative w-full max-w-2xl h-64 md:h-96 bg-white rounded-xl shadow-lg cursor-pointer transition-transform duration-500 preserve-3d ${
               isFlipped ? "rotate-y-180" : ""
             }`}
             onClick={() => setIsFlipped(!isFlipped)}

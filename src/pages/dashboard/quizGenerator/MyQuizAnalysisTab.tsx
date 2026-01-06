@@ -1,116 +1,123 @@
-import { useState } from "react";
-import { Progress } from "@/components/ui/progress";
-import { Session, Stats } from "@/components/quizOverview/type";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Link, useLocation, useParams } from "react-router-dom";
+import { Stats } from "@/components/quizOverview/type";
 import StatsRow from "@/components/quizOverview/StatsRow";
 import CircularProgress from "@/components/quizOverview/CircularProgress";
 import ResultsSummary from "@/components/quizOverview/ResultsSummary";
 import StudyRecommendations from "@/components/quizOverview/StudyRecommendations";
-
-const sessionsData: Session[] = [
-    {
-        id: 1,
-        name: "Custom session from Aug 1, 11AM",
-        source: "AI",
-        result: "7/10",
-        progress: 70,
-        details: {
-            completed: 5,
-            total: 5,
-            correct: 2,
-            incorrect: 3,
-            recommendations: {
-                articles: [
-                    "Chronic obstructive pulmonary",
-                    "Acute leukemia",
-                    "Nephrotic syndrome",
-                    "Tick-borne diseases",
-                    "Retinal detachment",
-                ],
-                flashcards: ["Flashcard topic 1", "Flashcard topic 2"],
-                clinicalCases: ["Case 1", "Case 2"],
-            },
-        },
-    },
-    {
-        id: 2,
-        name: "Custom session from Aug 1, 12PM",
-        source: "Question Bank",
-        result: "8/10",
-        progress: 80,
-    },
-];
-
-const overviewStats: Stats = {
-    completed: "2/5",
-    correct: "40%",
-    timePerQuestion: "00m 23s",
-    totalTime: "0h 01m",
-};
+import { useGetGeneratedMCQQuery } from "@/store/features/MCQBank/MCQBank.api";
+import { ArrowLeft } from "lucide-react";
+import DashboardHeading from "@/components/reusable/DashboardHeading";
 
 const MyQuizAnalysisTab: React.FC = () => {
-    const [selectedSession, setSelectedSession] = useState<Session>(
-        sessionsData[0]
-    );
+  const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+  const justSubmitted = location.state?.justSubmitted;
+  const { data: response, isLoading } = useGetGeneratedMCQQuery(id || "");
+  const quizData = response?.data;
 
+  if (isLoading) {
     return (
-        <div className="min-h-screen">
-            <div>
-                <div className="flex flex-col md:flex-row gap-4">
-                    {/* Left Side: Sessions List */}
-                    <div className="w-full md:w-1/4 space-y-4 mt-4">
-                        <div className="">
-                            <h3 className="text-lg text-gray-800 font-medium mb-2">All sessions</h3>
-                        {sessionsData.map((session) => (
-                            <div
-                                key={session.id}
-                                className={`p-4 rounded-lg shadow cursor-pointer ${selectedSession.id === session.id
-                                    ? " bg-[#007BFF1F]"
-                                    : "bg-white"
-                                    }`}
-                                onClick={() => setSelectedSession(session)}
-                            >
-                                <p className="font-semibold">Quiz: {session.name}</p>
-                                <p className="text-sm text-gray-600">Source: {session.source}</p>
-                                <p className="text-sm text-gray-600">Result: {session.result}</p>
-                                <Progress value={session.progress} className="mt-2 [&>div]:bg-green-500" />
-                            </div>
-                        ))}
-                        </div>
-                    </div>
-
-                    {/* Right Side: Session Details */}
-                    <div className="w-full md:w-3/4 space-y-6">
-                        <h3 className="text-gray-800 font-medium mb-4">sessions Analysis</h3>
-                        {selectedSession.details && (
-                            <StatsRow stats={overviewStats} />)}
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {selectedSession.details && (
-                                <div className="bg-white p-6 rounded-lg shadow">
-                                    <h2 className="text-lg font-bold mb-4">{selectedSession.name}</h2>
-                                    <CircularProgress percentage={40} />
-                                    <ResultsSummary
-                                        completed={selectedSession.details.completed}
-                                        total={selectedSession.details.total}
-                                        correct={selectedSession.details.correct}
-                                        incorrect={selectedSession.details.incorrect}
-                                    />
-
-
-                                </div>
-                            )}
-
-                            {selectedSession.details && (
-                                <StudyRecommendations
-                                    recommendations={selectedSession.details.recommendations}
-                                />
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <div className="flex justify-center items-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
     );
+  }
+
+  if (!quizData) {
+    return (
+      <div className="text-center py-20">
+        <p className="text-gray-500">No quiz analysis found.</p>
+      </div>
+    );
+  }
+
+  const { tracking, title } = quizData;
+
+  const stats: Stats = {
+    completed: `${tracking?.totalAttemptCount ?? 0}`,
+    correct: `${tracking?.correctMcqCount ?? 0}`,
+    wrong: `${tracking?.wrongMcqCount ?? 0}`,
+    totalTime: tracking?.timeTaken || "0",
+  };
+
+  const correctPercentage = tracking?.correctPercentage ?? 0;
+  const wrongPercentage = tracking?.wrongPercentage ?? 0;
+
+  return (
+  <div className="">
+      <div className="py-6">
+        <div className="w-full space-y-6">
+          {/* <div className="flex justify-between items-center">
+            <h3 className="text-gray-800 font-medium font-inter text-xl">
+              Performance Analysis
+            </h3>
+          </div> */}
+          <div className="flex items-start gap-1">
+            <Link to="/dashboard/quiz-page" className="sm:mb-0">
+              <ArrowLeft className="mt-0.5" />
+            </Link>
+
+            <DashboardHeading
+              title="Performance Analysis"
+              titleSize="text-xl"
+              titleColor="text-[#0A0A0A]"
+              description="Analyze quiz performance, track user progress from detailed results"
+              descColor="text-[#4A5565]"
+              descFont="text-sm"
+              className="mb-5"
+            />
+          </div>
+
+          <StatsRow stats={stats} />
+
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6">
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+              <h2 className="text-xl font-bold mb-8 text-[#1A1C1E] font-inter">
+                {title}
+              </h2>
+
+              <div className="mb-10">
+                <CircularProgress
+                  correctPercentage={correctPercentage}
+                  incorrectPercentage={wrongPercentage}
+                  label="Session Performance"
+                />
+              </div>
+
+              <ResultsSummary
+                completed={tracking?.totalAttemptCount ?? 0}
+                total={tracking?.totalMcqCount ?? 0}
+                correct={tracking?.correctMcqCount ?? 0}
+                incorrect={tracking?.wrongMcqCount ?? 0}
+                quizId={id}
+                justSubmitted={justSubmitted}
+              />
+            </div>
+
+            <StudyRecommendations
+              recommendations={
+                tracking?.recommendedContent &&
+                tracking?.recommendedContent?.length > 0
+                  ? {
+                      articles: tracking?.recommendedContent
+                        ?.filter((c: any) => c?.type === "article")
+                        ?.map((c: any) => c?.title),
+                      flashcards: tracking?.recommendedContent
+                        ?.filter((c: any) => c?.type === "flashcard")
+                        ?.map((c: any) => c?.title),
+                      clinicalCases: tracking?.recommendedContent
+                        ?.filter((c: any) => c?.type === "case")
+                        ?.map((c: any) => c?.title),
+                    }
+                  : { articles: [], flashcards: [], clinicalCases: [] }
+              }
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default MyQuizAnalysisTab;

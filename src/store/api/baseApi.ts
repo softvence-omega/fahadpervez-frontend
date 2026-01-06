@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
+import { logout } from "../features/auth/auth.slice";
 
 // Original baseQueryAPI
 const baseQueryAPI = fetchBaseQuery({
@@ -26,6 +27,13 @@ const baseQueryWithToasts: typeof baseQueryAPI = async (
   const method =
     typeof args === "object" && "method" in args ? args.method : "GET";
 
+  // Handle 401 errors globally
+  if (result?.error && result.error.status === 401) {
+    Cookies.remove("accessToken");
+    api.dispatch(logout());
+    toast.error("Session expired. Please login again.");
+  }
+
   if (method !== "GET") {
     if (
       result?.data &&
@@ -42,8 +50,8 @@ const baseQueryWithToasts: typeof baseQueryAPI = async (
       }
     }
 
-    // Error toast
-    if (result?.error) {
+    // Error toast for non-GET methods (excluding 401 which is handled above)
+    if (result?.error && result.error.status !== 401) {
       const message =
         (result.error.data as { message?: string })?.message ||
         "Something went wrong. Please try again.";
@@ -88,6 +96,10 @@ export const baseAPI = createApi({
     "professionalType",
     "BioDigital",
     "payment",
+    "GeneratedMCQ",
+    "GeneratedNotes",
+    "GeneratedFlashcard",
+    "GeneratedClinicalCase",
   ],
   endpoints: () => ({}),
 });

@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/pages/ConfirmBooking.jsx
 import { useState, useEffect, FormEvent, ChangeEvent } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { BsInfoLg } from "react-icons/bs";
+import { ArrowLeft } from "lucide-react";
 
 // ---------------- Types ----------------
 type BookingProps = {
@@ -17,6 +18,7 @@ type BookingProps = {
   mentorName: string;
   specialty: string;
   mentorId: string;
+  mentor: any;
 };
 
 type AvailableSlot = {
@@ -65,19 +67,16 @@ const BookingPage = () => {
 
   // Get props from route state or query params
   const bookingProps: BookingProps = location.state || {
-    price: parseInt(new URLSearchParams(location.search).get("price") || "25"),
+    price: parseInt(new URLSearchParams(location.search).get("price") || "0"),
     duration: parseInt(
-      new URLSearchParams(location.search).get("duration") || "30"
+      new URLSearchParams(location.search).get("duration") || "0"
     ),
     sessions: parseInt(
       new URLSearchParams(location.search).get("sessions") || "1"
     ),
-    mentorName:
-      new URLSearchParams(location.search).get("mentor") || "Mouhammad",
-    specialty:
-      new URLSearchParams(location.search).get("specialty") ||
-      "Medical Consultant - Preventive & Clinical Care",
-    mentorId: new URLSearchParams(location.search).get("mentorId") || "1",
+    mentorName: new URLSearchParams(location.search).get("mentor") || "",
+    specialty: new URLSearchParams(location.search).get("specialty") || "",
+    mentorId: new URLSearchParams(location.search).get("mentorId") || "",
   };
 
   // Sync sessions with bookingProps
@@ -85,62 +84,94 @@ const BookingPage = () => {
     setSessions(bookingProps.sessions);
   }, [bookingProps.sessions]);
 
-  // ---------------- Mock APIs ----------------
-  const fetchAvailableDates = async (mentorId: string) => {
-    console.log(mentorId);
-    return new Promise<AvailableSlot[]>((resolve) => {
-      setTimeout(() => {
-        resolve([
-          { date: "2024-08-22", displayDate: "Aug 22", day: "FR", spots: 2 },
-          { date: "2024-08-24", displayDate: "Aug 24", day: "SUN", spots: 3 },
-          { date: "2024-08-25", displayDate: "Aug 25", day: "MON", spots: 4 },
-          { date: "2024-08-27", displayDate: "Aug 27", day: "WED", spots: 2 },
-          { date: "2024-08-31", displayDate: "Aug 31", day: "SUN", spots: 3 },
-          { date: "2024-09-01", displayDate: "Sep 1", day: "MON", spots: 4 },
-          { date: "2024-09-03", displayDate: "Sep 3", day: "WED", spots: 2 },
-          { date: "2024-09-05", displayDate: "Sep 5", day: "FRI", spots: 2 },
-        ]);
-      }, 500);
-    });
+  // ---------------- Logic to get dates from mentor availability ----------------
+  const getDatesFromAvailability = (availability: any[]) => {
+    const dates: AvailableSlot[] = [];
+    const today = new Date();
+    const daysMap: Record<string, string> = {
+      Sunday: "0",
+      Monday: "1",
+      Tuesday: "2",
+      Wednesday: "3",
+      Thursday: "4",
+      Friday: "5",
+      Saturday: "6",
+    };
+
+    const shortDaysMap: Record<string, string> = {
+      Sunday: "SUN",
+      Monday: "MON",
+      Tuesday: "TUE",
+      Wednesday: "WED",
+      Thursday: "THU",
+      Friday: "FRI",
+      Saturday: "SAT",
+    };
+
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    for (let i = 0; i < 30; i++) {
+      const d = new Date();
+      d.setDate(today.getDate() + i);
+      const dayName = Object.keys(daysMap).find(
+        (key) => daysMap[key] === d.getDay().toString()
+      );
+
+      const tutorDay = availability.find((a) => a.day === dayName);
+      if (tutorDay) {
+        dates.push({
+          date: d.toISOString().split("T")[0],
+          displayDate: `${monthNames[d.getMonth()]} ${d.getDate()}`,
+          day: shortDaysMap[dayName!],
+          spots: tutorDay.time.length,
+        });
+      }
+    }
+    return dates;
   };
 
-  const fetchTimeSlots = async (mentorId: string, date: string) => {
-    console.log(mentorId);
-    setLoading(true);
-    return new Promise<TimeSlot[]>((resolve) => {
-      setTimeout(() => {
-        const timeSlotsMap: Record<string, string[]> = {
-          "2024-08-22": ["09:00 AM", "02:30 PM", "04:00 PM"],
-          "2024-08-24": ["10:00 AM", "11:30 AM", "03:00 PM", "05:30 PM"],
-          "2024-08-25": [
-            "08:00 AM",
-            "09:30 AM",
-            "01:00 PM",
-            "02:30 PM",
-            "04:00 PM",
-          ],
-          "2024-08-27": ["10:30 AM", "03:30 PM"],
-          "2024-08-31": ["09:00 AM", "11:00 AM", "02:00 PM", "04:30 PM"],
-          "2024-09-01": [
-            "08:30 AM",
-            "10:00 AM",
-            "01:30 PM",
-            "03:00 PM",
-            "05:00 PM",
-          ],
-          "2024-09-03": ["09:30 AM", "02:00 PM"],
-          "2024-09-05": ["10:00 AM", "11:30 AM", "03:30 PM"],
-        };
+  const fetchAvailableDates = async (mentor: any) => {
+    if (!mentor?.availability) return [];
+    return getDatesFromAvailability(mentor.availability);
+  };
 
-        const slots =
-          timeSlotsMap[date]?.map((time) => ({ time, available: true })) || [];
-        resolve(slots);
-      }, 300);
-    });
+  const fetchTimeSlots = async (mentor: any, date: string) => {
+    if (!mentor?.availability) return [];
+    const d = new Date(date);
+    const dayNames = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const dayName = dayNames[d.getDay()];
+    const tutorDay = mentor.availability.find((a: any) => a.day === dayName);
+
+    if (tutorDay) {
+      return tutorDay.time.map((t: string) => ({ time: t, available: true }));
+    }
+    return [];
   };
 
   const bookSession = async (bookingData: any): Promise<BookResponse> => {
     console.log(bookingData);
+    // Placeholder for actual booking API
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
@@ -155,16 +186,17 @@ const BookingPage = () => {
   // ---------------- Handlers ----------------
   useEffect(() => {
     const loadDates = async () => {
-      const dates = await fetchAvailableDates(bookingProps.mentorId);
+      const dates = await fetchAvailableDates(bookingProps.mentor);
       setAvailableSlots(dates);
     };
     loadDates();
-  }, [bookingProps.mentorId]);
+  }, [bookingProps.mentor]);
 
   const handleDateSelect = async (date: AvailableSlot) => {
     setSelectedDate(date);
     setSelectedTime(null);
-    const slots = await fetchTimeSlots(bookingProps.mentorId, date.date);
+    setLoading(true);
+    const slots = await fetchTimeSlots(bookingProps.mentor, date.date);
     setTimeSlots(slots);
     setLoading(false);
   };
@@ -213,9 +245,15 @@ const BookingPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="bg-white p-7 rounded">
-        <h1 className="text-xl font-semibold text-[#111827] mt-7 mb-8">
-          Confirm booking
-        </h1>
+        <div className="flex items-center gap-1">
+          <Link to={`/dashboard/mentor-profile/${bookingProps.mentorId}`}>
+            {" "}
+            <ArrowLeft size={20} className="mb-1" />
+          </Link>
+          <h1 className="text-xl font-semibold text-[#111827] mt-7 mb-8">
+            Confirm booking
+          </h1>
+        </div>
 
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -430,12 +468,18 @@ const BookingPage = () => {
                 <div className="space-y-4">
                   <div className="flex items-center gap-6 border-b border-slate-300 pb-5">
                     <img
-                      src="https://plus.unsplash.com/premium_photo-1658506671316-0b293df7c72b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZG9jdG9yfGVufDB8fDB8fHww"
+                      src={
+                        bookingProps.mentor?.profile_photo ||
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZYgW4c4mScN4iMaoZM2YNPO2iV7aaxtmDVg&s"
+                      }
                       alt="mentor profile"
                       className="w-20 h-20 rounded object-cover"
                     />
                     <div>
                       <h4 className="text-[#0F172A] font-medium">
+                        {bookingProps.mentorName}
+                      </h4>
+                      <h4 className="text-[#0F172A] text-sm opacity-80">
                         {bookingProps.specialty}
                       </h4>
                     </div>

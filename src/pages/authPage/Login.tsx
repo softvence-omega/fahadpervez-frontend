@@ -69,6 +69,7 @@ const Login = () => {
           ADMIN: "/admin",
           MENTOR: "/mentor",
           STUDENT: "/dashboard",
+          PROFESSIONAL: "/dashboard",
         };
 
         navigate(roleRoutes[role] || "/", { replace: true });

@@ -3,10 +3,11 @@ import DashboardHeading from "@/components/reusable/DashboardHeading";
 import FilePreviewList from "@/components/reusable/FilePreview";
 import FileUploader from "@/components/reusable/FileUploader";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
-import { Progress } from "@/components/ui/progress";
-import { Atom, Crown, Upload } from "lucide-react";
+// import { Progress } from "@/components/ui/progress";
+import { ArrowLeft, Atom, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
-import { QuizGeneratorDialog } from "./QuizGenerateModal";
+import { GenerateMcqWithFileModal } from "./GenerateMcqWithFileModal";
+import { toast } from "sonner";
 
 const QuizGenerator = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -17,32 +18,23 @@ const QuizGenerator = () => {
     setFiles(files.filter((_, i) => i !== index));
   };
 
-  // called after modal submit
-  const handleFinalSubmit = (modalData: any) => {
-    const combinedData = {
-      files,
-      note,
-      ...modalData, // modal fields (quizName, subject, difficulty, etc.)
-    };
-
-    console.log("Final Payload:", combinedData);
-
-    // ✅ Call API here
-    // await fetch("/api/generate-quiz", { method: "POST", body: JSON.stringify(combinedData) })
-  };
-
   return (
     <div>
       <div className="flex justify-between items-center">
-        <DashboardHeading
-          title="AI Quiz Generator"
-          titleSize="text-xl"
-          titleColor="text-[#0A0A0A]"
-          description="Create custom quizzes from your images and videos using AI"
-          descColor="text-[#4A5565]"
-          descFont="text-sm"
-          className="mt-12 mb-8"
-        />
+        <div className="flex items-center gap-1">
+          <Link to={"/dashboard/quiz-page"} className=" sm:mb-0">
+            <ArrowLeft className="mb-1" />
+          </Link>
+          <DashboardHeading
+            title="AI Quiz Generator"
+            titleSize="text-xl"
+            titleColor="text-[#0A0A0A]"
+            description="Create custom quizzes from your images and prompts using AI"
+            descColor="text-[#4A5565]"
+            descFont="text-sm"
+            className="mt-12 mb-8"
+          />
+        </div>
         <Link to={"/dashboard/quiz-page"}>
           <PrimaryButton
             bgType="solid"
@@ -55,12 +47,9 @@ const QuizGenerator = () => {
         </Link>
       </div>
 
-      <div className="bg-white py-5 px-7 mb-12">
+      {/* <div className="bg-white py-5 px-7 mb-12">
         <div className="flex justify-between mb-6">
           <h3 className="text-sm text-[#0A0A0A]">Monthly Usage</h3>
-          <button className="flex items-center gap-2  cursor-pointer">
-            <Crown /> Free Plan
-          </button>
         </div>
         <div>
           <div className="flex justify-between items-center mb-3">
@@ -69,67 +58,100 @@ const QuizGenerator = () => {
           </div>
           <Progress value={70} />
         </div>
-      </div>
+      </div> */}
 
       <div className="w-full">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            setOpenModal(true); // open modal on "Generate Quiz"
-          }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5x mx-auto p-6"
-        >
-          {/* Uploader */}
-          <div className="p-6 border rounded-xl border-black/10">
-            <h3 className="flex items-center gap-2 text-lg font-semibold mb-2">
-              <Upload className="w-5 h-5 mb-1" /> Upload Media
-            </h3>
-            <p className="text-sm text-gray-500 mb-4">
-              Upload images or videos to generate AI-powered Notes
-            </p>
-            <FileUploader
-              onFilesChange={(newFiles) => setFiles([...files, ...newFiles])}
-            />
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5x mx-auto p-6">
+          {/* Left side: Uploader & Preview */}
+          <div className="p-6 border rounded-xl border-black/10 flex flex-col gap-4">
+            <div>
+              <h3 className="flex items-center gap-2 text-lg font-semibold mb-2">
+                <Upload className="w-5 h-5 mb-1" /> Upload Media
+              </h3>
+              <p className="text-sm text-gray-500 mb-4">
+                Upload images to generate AI-powered quizzes
+              </p>
+              <FileUploader
+                onFilesChange={(newFiles) => setFiles([...files, ...newFiles])}
+              />
+            </div>
 
-          {/* Right side */}
-          <div className="p-6 border rounded-xl border-black/10 flex flex-col justify-between gap-4">
-            <h3 className="text-lg font-semibold">Recent Uploads</h3>
-            <p className="text-sm text-gray-500">
-              Your uploaded files ready for quiz generation
-            </p>
+            {files.length > 0 && (
+              <div className="mt-4">
+                <h3 className="text-lg font-semibold mb-2">Recent Uploads</h3>
+                <FilePreviewList files={files} onRemove={handleRemoveFile} />
+              </div>
+            )}
 
-            {/* Preview List */}
-            <FilePreviewList files={files} onRemove={handleRemoveFile} />
-
-            {/* Note Textarea */}
-            <textarea
-              placeholder="Make your note!"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              className="w-full border border-black/10 rounded p-3 text-sm"
-            />
-
-            {/* Buttons */}
             <button
-              type="submit"
-              className="w-full flex justify-center gap-4 bg-violet-700 text-white py-2 rounded-lg hover:bg-slate-700  cursor-pointer"
+              type="button"
+              onClick={() => {
+                if (files.length === 0) {
+                  toast.error("Please upload a file first.");
+                  return;
+                }
+                setOpenModal(true);
+              }}
+              className="mt-4 w-full flex justify-center items-center gap-4 bg-violet-700 text-white py-2.5 rounded-lg hover:bg-slate-700 cursor-pointer transition-colors"
             >
-              <Atom />
-              Generate Quiz
+              <Upload className="w-4 h-4" />
+              Generate with File
             </button>
           </div>
-        </form>
+
+          {/* Right side: Prompt & Actions */}
+          <div className="p-6 border rounded-xl border-black/10 flex flex-col justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-semibold mb-2 text-violet-700">
+                AI Prompt
+              </h3>
+              <p className="text-sm text-gray-500 mb-4">
+                Write a prompt for generate quiz (example: generate mcq on
+                anatomy)
+              </p>
+              <textarea
+                placeholder="Ask me anything ! make your quiz"
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                className="w-full border border-black/10 rounded p-3 text-sm min-h-[150px] mb-4"
+              />
+            </div>
+
+            {/* Buttons */}
+            <div className="flex flex-col gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  if (!note.trim()) {
+                    toast.error("Please provide a prompt first.");
+                    return;
+                  }
+                  setOpenModal(true);
+                }}
+                className="w-full flex justify-center items-center gap-4 bg-white border-2 border-violet-700 text-violet-700 py-2.5 rounded-lg hover:bg-violet-50 cursor-pointer transition-colors"
+              >
+                <Atom className="w-4 h-4" />
+                Generate with Prompt
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Modal for quiz details */}
-      <QuizGeneratorDialog
+      {/* <QuizGeneratorDialog
         onclick={() => {
           setOpenModal(!openModal);
         }}
         open={openModal}
         setOpen={setOpenModal}
         onFinalSubmit={handleFinalSubmit}
+      /> */}
+      <GenerateMcqWithFileModal
+        open={openModal}
+        setOpen={setOpenModal}
+        files={files}
+        note={note}
       />
     </div>
   );

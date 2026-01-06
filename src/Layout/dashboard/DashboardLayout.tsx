@@ -41,7 +41,7 @@ const DashboardLayout: React.FC = () => {
             sidebarCollapsed ? "lg:ml-20" : "lg:ml-[280px]"
           }`}
         >
-          <div className="p-4 lg:p-6">
+          <div className="px-2">
             <Outlet />
           </div>
         </div>

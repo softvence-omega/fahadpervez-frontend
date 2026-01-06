@@ -116,12 +116,12 @@ export default function ChatWindow() {
     };
 
     return (
-        <section className="flex-1 flex flex-col pl-6 mb-1 scrollbar-hide h-full overflow-hidden">
+        <section className="flex-1 flex flex-col mb-1 scrollbar-hide h-full overflow-hidden">
             {/* <header className="border-b border-gray-200 pb-4 mb-4 shrink-0">
                 <h2 className="text-xl font-semibold">AI Tutor</h2>
             </header> */}
             
-            <div className="flex-1 overflow-y-auto mb-4 pr-2 custom-scrollbar flex flex-col">
+            <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
                 {!currentChatId && displayMessages.length === 0 ? (
                     <NewChatPrompt />
                 ) : (
@@ -157,7 +157,7 @@ export default function ChatWindow() {
                 )}
             </div>
 
-            <div className="shrink-0">
+            <div className="shrink-0 px-1">
                 <InputField 
                     value={inputValue} 
                     onChange={setInputValue} 

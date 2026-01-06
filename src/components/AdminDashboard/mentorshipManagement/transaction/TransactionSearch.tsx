@@ -2,7 +2,7 @@ import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import CommonDropdown from "@/common/custom/CommonDropdown";
 import { IoChevronDownSharp } from "react-icons/io5";
 import { MdOutlineFileDownload } from "react-icons/md";
-import DashboardSearch from "../../reuseable/DashboardSearch";
+import DashboardSearch from "@/Layout/dashboard/DashboardSearch";
 
 const dropdownItems = [
   { label: "Edit" },

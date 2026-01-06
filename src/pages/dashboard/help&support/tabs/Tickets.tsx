@@ -2,9 +2,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
+// import { Plus } from "lucide-react";
 import TicketsList from "../TicketsList";
-import ChatWindow from "../ChatWindow";
+// import ChatWindow from "../ChatWindow";
 import CreateTicketModal from "../CreateTicketModal";
 import { mockTickets } from "../../../../data/mockData";
 import { useGetSingleUserReportQuery } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
@@ -20,6 +20,8 @@ export default function Tickets() {
       setTickets(reportresponse.data);
     }
   }, [reportresponse]);
+
+  console.log(tickets);
 
   const handleCreateTicket = (formData: any) => {
     // Prepare data for API
@@ -78,28 +80,36 @@ export default function Tickets() {
             All Ticket
           </h2>
         </div>
-        <button
+        {/* <button
           onClick={() => setShowCreateModal(true)}
           className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-blue-700 transition font-medium text-sm"
         >
           <Plus className="w-4 h-4" />
           Create Ticket
-        </button>
+        </button> */}
+      </div>
+
+      <div className="gap-6 min-h-96">
+        <TicketsList
+          tickets={tickets}
+          selectedTicket={selectedTicket}
+          onSelectTicket={setSelectedTicket}
+        />
       </div>
 
       {/* Main Content - List and Chat */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-96">
-        {/* Tickets List - Left */}
-        <div className="lg:col-span-1">
+      {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-96"> */}
+      {/* Tickets List - Left */}
+      {/* <div className="lg:col-span-1">
           <TicketsList
             tickets={tickets}
             selectedTicket={selectedTicket}
             onSelectTicket={setSelectedTicket}
           />
-        </div>
+        </div> */}
 
-        {/* Chat Window - Right */}
-        <div className="">
+      {/* Chat Window - Right */}
+      {/* <div className="">
           {selectedTicket ? (
             <ChatWindow ticket={selectedTicket} />
           ) : (
@@ -110,7 +120,7 @@ export default function Tickets() {
             </div>
           )}
         </div>
-      </div>
+      </div> */}
 
       {/* Create Ticket Modal */}
       {showCreateModal && (

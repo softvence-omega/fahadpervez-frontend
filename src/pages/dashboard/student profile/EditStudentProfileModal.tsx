@@ -20,6 +20,7 @@ import {
 import { useAppDispatch } from "@/hooks/useRedux";
 import { setUser } from "@/store/features/auth/auth.slice";
 import Cookies from "js-cookie";
+import { examOptions } from "@/pages/authPage/constants";
 
 export default function EditStudentProfileModal({ open, setOpen, user }: any) {
   const dispatch = useAppDispatch();
@@ -36,25 +37,23 @@ export default function EditStudentProfileModal({ open, setOpen, user }: any) {
   const [studentType, setStudentType] = useState(user.profile?.studentType);
   const [preparingFor, setPreparingFor] = useState(user.profile?.preparingFor);
   const [bio, setBio] = useState(user.profile?.bio);
-  // const [photo, setPhoto] = useState<File | null>(null);
+
+  // Professional fields
+  const [institution, setInstitution] = useState(user.profile?.institution);
+  const [experience, setExperience] = useState(user.profile?.experience);
+  const [postGraduate, setPostGraduate] = useState(user.profile?.post_graduate);
+  const [professionName, setProfessionName] = useState(
+    user.profile?.professionName
+  );
 
   const handleSubmit = async () => {
     try {
       // Construct data object
-      const studentData = {
-        // role: user.account?.role,
-        // student: {
+      const profileData: any = {
         firstName,
         lastName,
-        university,
         country,
-        year_of_study: yearOfStudy,
-        studentType,
-        preparingFor,
         bio,
-        // },
-
-        // those field not set in frontend
         preference: {
           subject: user?.profile?.preference?.subject,
           systemPreference: user?.profile?.preference?.systemPreference,
@@ -63,10 +62,55 @@ export default function EditStudentProfileModal({ open, setOpen, user }: any) {
         },
       };
 
-      // Validate
-      if (!firstName || !lastName || !university || !country || !yearOfStudy) {
-        toast.error("Please fill all required fields");
-        return;
+      if (user.account?.role === "STUDENT") {
+        profileData.university = university;
+        profileData.year_of_study = yearOfStudy;
+        profileData.studentType = studentType;
+        profileData.preparingFor = Array.isArray(preparingFor)
+          ? preparingFor
+          : (preparingFor || "")
+              .split(",")
+              .map((s: string) => s.trim())
+              .filter(Boolean)
+              .map((name: string) => {
+                const option = examOptions.find(
+                  (opt: any) =>
+                    opt.examName.toLowerCase() === name.toLowerCase()
+                );
+                return {
+                  examName: option?.examName || name,
+                  description: option?.description || name,
+                };
+              });
+
+        // Validate Student
+        if (
+          !firstName ||
+          !lastName ||
+          !country ||
+          !university ||
+          !yearOfStudy
+        ) {
+          toast.error("Please fill all required student fields");
+          return;
+        }
+      } else if (user.account?.role === "PROFESSIONAL") {
+        profileData.institution = institution;
+        profileData.experience = experience;
+        profileData.post_graduate = postGraduate;
+        profileData.professionName = professionName;
+
+        // Validate Professional
+        if (
+          !firstName ||
+          !lastName ||
+          !country ||
+          !institution ||
+          !professionName
+        ) {
+          toast.error("Please fill all required professional fields");
+          return;
+        }
       }
 
       // Prepare FormData
@@ -76,7 +120,7 @@ export default function EditStudentProfileModal({ open, setOpen, user }: any) {
       //   formDataToSend.append("image", photo);
       // }
 
-      formDataToSend.append("data", JSON.stringify(studentData));
+      formDataToSend.append("data", JSON.stringify(profileData));
 
       // API call
       const res = await updateProfile(formDataToSend).unwrap();
@@ -132,15 +176,6 @@ export default function EditStudentProfileModal({ open, setOpen, user }: any) {
           </div>
 
           <div className="grid gap-2">
-            <Label>University</Label>
-            <Input
-              value={university}
-              onChange={(e) => setUniversity(e.target.value)}
-              placeholder="National University"
-            />
-          </div>
-
-          <div className="grid gap-2">
             <Label>Country</Label>
             <Input
               value={country}
@@ -149,38 +184,92 @@ export default function EditStudentProfileModal({ open, setOpen, user }: any) {
             />
           </div>
 
-          <div className="grid gap-2">
-            <Label>Year of Study</Label>
-            <Input
-              value={yearOfStudy}
-              onChange={(e) => setYearOfStudy(e.target.value)}
-              placeholder="4th Year"
-            />
-          </div>
+          {user.account?.role === "STUDENT" ? (
+            <>
+              <div className="grid gap-2">
+                <Label>University</Label>
+                <Input
+                  value={university}
+                  onChange={(e) => setUniversity(e.target.value)}
+                  placeholder="National University"
+                />
+              </div>
 
-          <div className="grid gap-2">
-            <Label>Student Type</Label>
-            <Input
-              value={studentType}
-              onChange={(e) => setStudentType(e.target.value)}
-              placeholder="Undergraduate"
-            />
-          </div>
+              <div className="grid gap-2">
+                <Label>Year of Study</Label>
+                <Input
+                  value={yearOfStudy}
+                  onChange={(e) => setYearOfStudy(e.target.value)}
+                  placeholder="4th Year"
+                />
+              </div>
 
-          <div className="grid gap-2">
-            <Label>Preparing For</Label>
-            <Input
-              value={
-                preparingFor?.length
-                  ? user.profile.preparingFor
-                      .map((item: { examName: string; description: string }) => item.examName)
-                      .join(", ")
-                  : "N/A"
-              }
-              onChange={(e) => setPreparingFor(e.target.value)}
-              placeholder={preparingFor}
-            />
-          </div>
+              <div className="grid gap-2">
+                <Label>Student Type</Label>
+                <Input
+                  value={studentType}
+                  onChange={(e) => setStudentType(e.target.value)}
+                  placeholder="Undergraduate"
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label>Preparing For</Label>
+                <Input
+                  value={
+                    Array.isArray(preparingFor)
+                      ? preparingFor
+                          .map(
+                            (item: { examName: string; description: string }) =>
+                              item.examName
+                          )
+                          .join(", ")
+                      : preparingFor || ""
+                  }
+                  onChange={(e) => setPreparingFor(e.target.value)}
+                  placeholder="e.g. USMLE Step 1, NCLEX"
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="grid gap-2">
+                <Label>Institution</Label>
+                <Input
+                  value={institution}
+                  onChange={(e) => setInstitution(e.target.value)}
+                  placeholder="Medical College"
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label>Profession Name</Label>
+                <Input
+                  value={professionName}
+                  onChange={(e) => setProfessionName(e.target.value)}
+                  placeholder="Doctor / Specialist"
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label>Experience</Label>
+                <Input
+                  value={experience}
+                  onChange={(e) => setExperience(e.target.value)}
+                  placeholder="5 Years"
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label>Post Graduate</Label>
+                <Input
+                  value={postGraduate}
+                  onChange={(e) => setPostGraduate(e.target.value)}
+                  placeholder="MD / MS"
+                />
+              </div>
+            </>
+          )}
 
           <div className="grid col-span-2 gap-2">
             <Label>Bio</Label>

@@ -2,10 +2,11 @@ import { useGetSettingsQuery } from "@/store/features/adminDashboard/settings/se
 import { logout, selectUser } from "@/store/features/auth/auth.slice";
 import { useAppDispatch } from "@/store/hook";
 import Cookies from "js-cookie";
-import { Bell, ChevronDown, Globe, Menu, Search } from "lucide-react";
+import { Bell, ChevronDown, Menu } from "lucide-react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import DashboardSearch from "./DashboardSearch";
 
 interface StudentDashboardHeaderProps {
   onMenuClick: () => void;
@@ -18,7 +19,6 @@ const StudentDashboardHeader: React.FC<StudentDashboardHeaderProps> = ({
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const user = useSelector(selectUser);
-  console.log(user);
 
   const handleLogout = () => {
     Cookies.remove("accessToken");
@@ -27,7 +27,7 @@ const StudentDashboardHeader: React.FC<StudentDashboardHeaderProps> = ({
   };
 
   const profileMenuItems = [
-    { label: "Settings", onClick: () => navigate("/dashboard/settings") },
+    // { label: "Settings", onClick: () => navigate("/dashboard/settings") },
     { label: "Profile", onClick: () => navigate("/dashboard/student-profile") },
     { label: "Help & Support", onClick: () => navigate("/dashboard/help") },
     { label: "Logout", onClick: handleLogout, danger: true },
@@ -57,23 +57,16 @@ const StudentDashboardHeader: React.FC<StudentDashboardHeaderProps> = ({
 
         {/* Middle Section: Search */}
         <div className="hidden md:flex flex-1 max-w-xl mx-4">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Type to search"
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full bg-gray-50 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-            />
-          </div>
+          <DashboardSearch className="bg-gray-50 border-gray-300" />
         </div>
 
         {/* Right Section: Icons + Profile */}
         <div className="flex items-center gap-3 lg:gap-4">
           {/* Language Selector */}
-          <button className="hidden lg:flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors">
+          {/* <button className="hidden lg:flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors">
             <Globe className="h-5 w-5" />
             <span className="text-sm font-medium">En</span>
-          </button>
+          </button> */}
 
           {/* Notifications */}
           <button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors">
@@ -153,14 +146,7 @@ const StudentDashboardHeader: React.FC<StudentDashboardHeaderProps> = ({
 
       {/* Mobile Search */}
       <div className="md:hidden px-4 pb-3">
-        <div className="relative w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Type to search"
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full bg-gray-50 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-        </div>
+        <DashboardSearch className="bg-gray-50 border-gray-300" />
       </div>
     </header>
   );

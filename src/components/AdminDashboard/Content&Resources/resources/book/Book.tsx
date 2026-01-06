@@ -2,7 +2,7 @@ import ButtonWithIcon from "@/common/button/ButtonWithIcon";
 import Spinner from "@/common/button/Spinner";
 import Pagination from "@/common/custom/Pagination";
 import { useDebounce } from "@/common/custom/useDebounce";
-import DashboardSearch from "@/components/AdminDashboard/reuseable/DashboardSearch";
+import DashboardSearch from "@/Layout/dashboard/DashboardSearch";
 import { useGetResourceBooksQuery } from "@/store/features/adminDashboard/ContentResources/resourceLibery/resourceLibery";
 import { BookType } from "@/store/features/adminDashboard/ContentResources/resourceLibery/types/books";
 import { useState } from "react";

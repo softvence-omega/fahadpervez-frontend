@@ -254,13 +254,17 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useGenerateMCQMutation } from "@/store/features/MCQBank/MCQBank.api";
+import { toast } from "sonner";
+import { Zap } from "lucide-react";
 
 // =======================
 // Zod Schema
 // =======================
 const quizSchema = z.object({
-  difficulty: z.enum(["basic", "intermediate", "hard"]),
+  difficulty: z.enum(["Basic", "Intermediate", "Advance"]),
   questionType: z.enum(["hybrid", "ai_generated"]),
   questionCount: z.coerce.number().min(1, "At least 1 question is required"),
   duration: z.coerce.number().min(1, "Duration must be at least 1 minute"),
@@ -273,6 +277,10 @@ interface PracticeQuizModalProps {
   setOpen: (open: boolean) => void;
   mcqBankId: string;
   mcqBankTitle: string;
+  subject?: string;
+  system?: string;
+  topic?: string;
+  subTopic?: string;
 }
 
 export function PracticeQuizModal({
@@ -280,8 +288,13 @@ export function PracticeQuizModal({
   setOpen,
   mcqBankId,
   mcqBankTitle,
+  subject,
+  system,
+  topic,
+  subTopic,
 }: PracticeQuizModalProps) {
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const [generateMCQ, { isLoading: isGenerating }] = useGenerateMCQMutation();
 
   const {
     control,
@@ -292,9 +305,9 @@ export function PracticeQuizModal({
   } = useForm({
     resolver: zodResolver(quizSchema),
     defaultValues: {
-      questionCount: 10,
-      duration: 40,
-      difficulty: "basic",
+      questionCount: 5,
+      duration: 10,
+      difficulty: "Basic",
       questionType: "hybrid",
     },
   });
@@ -303,9 +316,9 @@ export function PracticeQuizModal({
   useEffect(() => {
     if (open) {
       reset({
-        questionCount: 10,
-        duration: 40,
-        difficulty: "basic",
+        questionCount: 5,
+        duration: 10,
+        difficulty: "Basic",
         questionType: "hybrid",
       });
     }
@@ -316,36 +329,53 @@ export function PracticeQuizModal({
   // =======================
   const onFormSubmit: SubmitHandler<QuizFormValues> = async (data) => {
     try {
-      setLoading(true);
-
       const payload = {
-        ...data,
-        questionBankId: mcqBankId,
-        questionBankTitle: mcqBankTitle,
+        quiz_name: mcqBankTitle || "Practice Quiz",
+        subject: subject || "",
+        system: system || "",
+        topic: topic || "",
+        sub_topic: subTopic || "",
+        question_type: data.questionType,
+        question_count: data.questionCount,
+        difficulty_level: data.difficulty,
+        mcq_bank_id: mcqBankId,
       };
 
-      // // 🔹 Replace with your real API
-      // await fetch("/api/quiz/generate", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(payload),
-      // });
+      const res: any = await generateMCQ(payload).unwrap();
+      const quizId = res?.data?._id || res?._id;
 
-      console.log("Quiz Generated with Payload:", payload);
-
-      setOpen(false);
+      if (quizId) {
+        toast.success("Quiz generated successfully!");
+        setOpen(false);
+        navigate(`/dashboard/quiz/${quizId}`);
+      } else {
+        toast.error("Failed to extract Quiz ID from response");
+      }
     } catch (error) {
       console.error("Quiz generation failed", error);
-    } finally {
-      setLoading(false);
+      toast.error("Failed to generate quiz. Please try again.");
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[600px]">
+    <Dialog
+      open={open}
+      onOpenChange={(val) => {
+        if (!isGenerating) {
+          setOpen(val);
+        }
+      }}
+    >
+      <DialogContent
+        onInteractOutside={(e) => {
+          if (isGenerating) {
+            e.preventDefault();
+          }
+        }}
+        className={`sm:max-w-[600px] ${
+          isGenerating ? "cursor-wait select-none pointer-events-none" : ""
+        }`}
+      >
         <DialogHeader>
           <DialogTitle>Create Your Quiz</DialogTitle>
           <DialogDescription>
@@ -384,9 +414,9 @@ export function PracticeQuizModal({
                     <SelectValue placeholder="Select Difficulty" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="basic">Basic</SelectItem>
-                    <SelectItem value="intermediate">Intermediate</SelectItem>
-                    <SelectItem value="hard">Hard</SelectItem>
+                    <SelectItem value="Basic">Basic</SelectItem>
+                    <SelectItem value="Intermediate">Intermediate</SelectItem>
+                    <SelectItem value="Advance">Advance</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -463,16 +493,21 @@ export function PracticeQuizModal({
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
-              disabled={loading}
+              disabled={isGenerating}
             >
               Cancel
             </Button>
             <Button
               type="submit"
               className="bg-violet-700 text-white hover:bg-violet-800"
-              disabled={loading}
+              disabled={isGenerating}
             >
-              {loading ? "Generating..." : "Generate Quiz"}
+              {isGenerating ? (
+                <Zap className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Zap className="mr-2 h-4 w-4" />
+              )}
+              {isGenerating ? "Generating..." : "Generate Quiz"}
             </Button>
           </DialogFooter>
         </form>

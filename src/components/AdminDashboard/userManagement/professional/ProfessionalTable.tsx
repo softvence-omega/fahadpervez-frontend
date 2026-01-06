@@ -18,7 +18,7 @@ import { useGetProfessionalDataQuery } from "@/store/features/adminDashboard/Use
 import { useState } from "react";
 import { LuEye } from "react-icons/lu";
 import { Link } from "react-router-dom";
-import DashboardSearch from "../../reuseable/DashboardSearch";
+import DashboardSearch from "@/Layout/dashboard/DashboardSearch";
 const dropdownItems = [
   { label: "All", value: "" },
   { label: "1 year", value: "1 year" },

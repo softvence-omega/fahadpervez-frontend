@@ -20,10 +20,7 @@ export default function AllGeneratedFlashCard({
       <div className="bg-white border border-slate-300 rounded-[8px] py-5 pl-7 pr-5">
         <div>
           <div className="mb-6">
-            <h3 className="text-sm text-[#0A0A0A] font-medium">All Cards</h3>
-            <p className="text-sm text-[#717182]">
-              Your AI-generated Cards ready to use
-            </p>
+            <h3 className=" text-[#0A0A0A] font-medium">All Cards</h3>
           </div>
 
           {flashcardBankLoading ? (
@@ -32,9 +29,15 @@ export default function AllGeneratedFlashCard({
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              {flashcardBanks?.map((flashcard: IFlashcardBank, idx: number) => (
-                <FlashCard key={idx} {...flashcard} source="all" />
-              ))}
+              {flashcardBanks?.length > 0 ? (
+                flashcardBanks.map((flashcard: IFlashcardBank, idx: number) => (
+                  <FlashCard key={idx} source="all" {...flashcard} />
+                ))
+              ) : (
+                <p className="text-center text-gray-500 col-span-full">
+                  No flashcards found.
+                </p>
+              )}
             </div>
           )}
         </div>

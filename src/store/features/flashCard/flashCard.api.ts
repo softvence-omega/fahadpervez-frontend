@@ -19,10 +19,19 @@ export const flashCardAPI = baseAPI.injectEndpoints({
     }),
 
     getGeneratedFlashCard: build.query({
-      query: () => ({
+      query: ({
+        searchTerm,
+        subject,
+        system,
+        topic,
+        page = 1,
+        limit = 10,
+      }: any) => ({
         url: "/my_content/flashcard",
         method: "GET",
+        params: { searchTerm, subject, system, topic, page, limit },
       }),
+      providesTags: ["GeneratedFlashcard"],
     }),
 
     getAllFlashCard: build.query({
@@ -33,16 +42,18 @@ export const flashCardAPI = baseAPI.injectEndpoints({
     }),
 
     getSingleFlashCard: build.query({
-      query: (id: string) => ({
+      query: ({ id, limit }: { id: string; limit?: number }) => ({
         url: `/flash-card/single/${id}`,
         method: "GET",
+        params: { limit },
       }),
     }),
 
     getSingleGeneratedFlashCard: build.query({
-      query: (id: string) => ({
+      query: ({ id, limit }: { id: string; limit?: number }) => ({
         url: `/my_content/flashcard/${id}`,
         method: "GET",
+        params: { limit },
       }),
     }),
 

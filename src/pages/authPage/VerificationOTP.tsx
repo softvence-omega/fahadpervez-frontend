@@ -50,11 +50,10 @@ export default function VerificationOTP() {
     }
   };
 
+  const email = localStorage.getItem("setVerificationEmail");
   // OTP submit
   const onSubmit = async (data: OtpFormInputs) => {
     // console.log("OTP Submitted:", data.otp);
-
-    const email = localStorage.getItem("setVerificationEmail");
 
     try {
       const result = await verifyOTP({ email, otp: data.otp }).unwrap();
@@ -115,8 +114,8 @@ export default function VerificationOTP() {
             Verification
           </h2>
           <p className="w-[325px] mx-auto text-sm font-normal text-slate-500 leading-5 mb-6 mt-2">
-            We've sent a 6-digit code to <b>test@test12309u.com</b>. Enter it
-            below.
+            We've sent a 6-digit code to <b>{email ? email : "your email"}</b>.
+            Enter it below.
           </p>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* OTP Inputs */}

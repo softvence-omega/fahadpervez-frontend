@@ -6,17 +6,24 @@ import { TForumGet } from "@/store/storeTypes/forum";
 import { Link } from "react-router-dom";
 import Pagination from "../reusable/Pagination";
 import { timeAgo } from "@/common/timeAgo";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/features/auth/auth.slice";
 
 const ForumList = () => {
   const { data, isLoading, isError } = useAllForumGetQuery(undefined);
   const posts: TForumGet[] = useMemo(() => data?.data ?? [], [data]);
+
+  const user = useSelector(selectUser);
+  console.log(user);
+  const role = user?.account?.role;
+  console.log(role);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [showAll, setShowAll] = useState(false);
   const productsPerPage = 5; // items per page
 
-  const totalProducts = posts.length;
+  const totalProducts = posts?.length;
   const totalPages = Math.ceil(totalProducts / productsPerPage);
 
   // Slice data for pagination
@@ -31,7 +38,9 @@ const ForumList = () => {
   // Loading state
   if (isLoading) return <GlobalLoader />;
   if (isError || totalProducts === 0)
-    return <p className="text-center text-gray-500">No forum posts available</p>;
+    return (
+      <p className="text-center text-gray-500">No forum posts available</p>
+    );
 
   // Start & end range for display text
   const start = showAll ? 1 : (currentPage - 1) * productsPerPage + 1;
@@ -42,34 +51,50 @@ const ForumList = () => {
   return (
     <div className="space-y-4">
       {currentPosts.map((post) => (
-        <Link to={`/mentor/forum-details/${post._id}`} key={post._id}>
+        <Link
+          to={
+            role === "MENTOR"
+              ? `/mentor/forum-details/${post._id}`
+              : `/dashboard/forum-details/${post._id}`
+          }
+          key={post._id}
+        >
           <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 hover:shadow-md transition-shadow mt-6 cursor-pointer">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 sm:w-8 sm:h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <img src={question} alt="icon" className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <img
+                    src={question}
+                    alt="icon"
+                    className="w-3 h-3 sm:w-4 sm:h-4"
+                  />
                 </div>
                 <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
-                  {post.title}
+                  {post?.title}
                 </h3>
               </div>
               <span className="px-2 py-1 bg-red-500 text-white text-xs rounded-full w-fit">
-                {post.category}
+                {post?.category}
               </span>
             </div>
 
-            <p className="text-gray-600 mb-3 text-sm sm:text-base">{post.content}</p>
+            <p className="text-gray-600 mb-3 text-sm sm:text-base">
+              {post?.content}
+            </p>
 
             <div className="mt-4 sm:mt-6 space-y-2">
               <div className="flex gap-2 flex-wrap">
-                {post.tags.map((tag, i) => (
-                  <span key={i} className="px-2 py-1 bg-gray-100 text-black text-xs rounded">
+                {post?.tags?.map((tag, i) => (
+                  <span
+                    key={i}
+                    className="px-2 py-1 bg-gray-100 text-black text-xs rounded"
+                  >
                     #{tag}
                   </span>
                 ))}
               </div>
               <p className="text-sm text-gray-500">
-                {post.postedBy.firstName} {post.postedBy.lastName} •{" "}
+                {post?.postedBy?.firstName} {post?.postedBy?.lastName} •{" "}
                 {timeAgo(post?.createdAt)}
               </p>
             </div>

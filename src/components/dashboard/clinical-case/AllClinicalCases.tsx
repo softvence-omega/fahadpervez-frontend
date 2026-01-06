@@ -2,41 +2,93 @@
 import React, { useState, useMemo, useEffect } from "react";
 import {
   Search,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
   ArrowRight,
+  Filter,
+  Trash2,
+  Loader2,
+  AlertCircle,
 } from "lucide-react";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { useNavigate } from "react-router-dom";
-import { useGetAllClinicalCaseQuery, useGetAllGeneratedClinicalCasesQuery } from "@/store/features/clinicalCase/clinicalCase.api";
-import GlobalLoader2 from "@/common/GlobalLoader2";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { useDeleteMyContentMutation } from "@/store/features/content/content.api";
+import {
+  useGetAllClinicalCaseQuery,
+  useGetAllGeneratedClinicalCasesQuery,
+} from "@/store/features/clinicalCase/clinicalCase.api";
 import { ClinicalCaseData } from "@/types/clinicalCase";
+import ClinicalCasesFilterModal from "./ClinicalCasesFilterModal";
 
 type TabType = "All Cases" | "AI Generated" | "Complete Cases";
-type FilterOption = string;
 
 const AllClinicalCases: React.FC = () => {
+  const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedBodySystem, setSelectedBodySystem] =
-    useState<FilterOption>("All");
-  const [selectedTopic, setSelectedTopic] = useState<FilterOption>("All");
-  const [selectedDifficulty, setSelectedDifficulty] =
-    useState<FilterOption>("All");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filters, setFilters] = useState({
+    subject: "",
+    system: "",
+    topic: "",
+  });
   const [activeTab, setActiveTab] = useState<TabType>("All Cases");
   const [currentPage, setCurrentPage] = useState(1);
+  const [caseToDelete, setCaseToDelete] = useState<string | null>(null);
+
+  const [deleteContent, { isLoading: isDeletingContent }] =
+    useDeleteMyContentMutation();
 
   const navigate = useNavigate();
 
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchTerm(searchInput);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
   // Fetch Standard Cases
-  const { data: standardData, isLoading: isLoadingStandard } = useGetAllClinicalCaseQuery(undefined, {
-    skip: activeTab === "AI Generated" // Optimization: Skip if on AI Generated tab (optional)
-  });
+  const { data: standardData, isFetching: isFetchingStandard } =
+    useGetAllClinicalCaseQuery(
+      {
+        searchTerm: searchTerm.trim() !== "" ? searchTerm : undefined,
+        subject: filters.subject !== "" ? filters.subject : undefined,
+        system: filters.system !== "" ? filters.system : undefined,
+        topic: filters.topic !== "" ? filters.topic : undefined,
+        page: currentPage,
+        limit: 6,
+      },
+      {
+        skip: activeTab === "AI Generated",
+      }
+    );
 
   // Fetch AI Generated Cases
-  const { data: generatedData, isLoading: isLoadingGenerated } = useGetAllGeneratedClinicalCasesQuery(undefined, {
-    skip: activeTab !== "AI Generated"
-  });
+  const { data: generatedData, isFetching: isFetchingGenerated } =
+    useGetAllGeneratedClinicalCasesQuery(
+      {
+        searchTerm: searchTerm.trim() !== "" ? searchTerm : undefined,
+        subject: filters.subject !== "" ? filters.subject : undefined,
+        system: filters.system !== "" ? filters.system : undefined,
+        topic: filters.topic !== "" ? filters.topic : undefined,
+        page: currentPage,
+        limit: 6,
+      },
+      {
+        skip: activeTab !== "AI Generated",
+      }
+    );
 
   // Determine which data to display
   const clinicalCases: ClinicalCaseData[] = useMemo(() => {
@@ -46,129 +98,72 @@ const AllClinicalCases: React.FC = () => {
     return standardData?.data || [];
   }, [activeTab, standardData, generatedData]);
 
-  const isLoading = activeTab === "AI Generated" ? isLoadingGenerated : isLoadingStandard;
-  
-  const casesPerPage = 6;
+  const isFetching =
+    activeTab === "AI Generated" ? isFetchingGenerated : isFetchingStandard;
+  const meta =
+    activeTab === "AI Generated" ? generatedData?.meta : standardData?.meta;
+  const totalPages = meta?.totalPages || 1;
+  const paginatedCases = clinicalCases;
 
-  const bodySystemOptions: FilterOption[] = [
-    "All",
-    "Cardiology",
-    "Pulmonology",
-    "Endocrinology",
-    "Neurology",
-  ];
-  const difficultyOptions: FilterOption[] = [
-    "All",
-    "Beginner",
-    "Intermediate",
-    "Advanced",
-  ];
-
-  const topicOptions: FilterOption[] = [
-    "All",
-    "Beginner",
-    "Intermediate",
-    "Advanced",
-  ];
-
-  // Derived data for display
-  const filteredCases = useMemo(() => {
-    let filtered = [...clinicalCases];
-
-    if (activeTab === "AI Generated") {
-      // filtered = filtered.filter((c) => c.isAIGenerated);
-    } else if (activeTab === "Complete Cases") {
-      // filtered = filtered.filter((c) => c.status === "completed");
-    }
-
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (c) =>
-          c.caseTitle?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          c.patientPresentation?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    if (selectedBodySystem !== "All") {
-      filtered = filtered.filter((c) => c.topic === selectedBodySystem);
-    }
-
-    // Difficulty filter (optional, only if your backend supports it)
-    if (selectedDifficulty !== "All" && "difficulty" in filtered[0]) {
-      filtered = filtered.filter(
-        (c: any) => c.difficulty === selectedDifficulty
-      );
-    }
-
-    return filtered;
-  }, [
-    clinicalCases,
-    activeTab,
-    searchTerm,
-    selectedBodySystem,
-    selectedDifficulty,
-  ]);
-
-  // Pagination
-  const totalPages = Math.ceil(filteredCases.length / casesPerPage);
-  const startIndex = (currentPage - 1) * casesPerPage;
-  const paginatedCases = filteredCases.slice(
-    startIndex,
-    startIndex + casesPerPage
-  );
+  const handleApplyFilter = (filterData: {
+    subject: string;
+    system: string;
+    topic: string;
+  }) => {
+    setFilters(filterData);
+    setCurrentPage(1);
+    setIsFilterOpen(false);
+  };
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, selectedBodySystem, selectedDifficulty, activeTab]);
+  }, [searchTerm, activeTab]);
 
-  // Reusable dropdown
-  const Dropdown = ({
-    value,
-    onChange,
-    options,
-    placeholder,
-  }: {
-    value: string;
-    onChange: (value: string) => void;
-    options: string[];
-    placeholder: string;
-  }) => (
-    <div className="relative">
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="appearance-none bg-white border border-gray-300 rounded px-4 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option === "All" ? placeholder : option}
-          </option>
-        ))}
-      </select>
-      <ChevronDown
-        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400"
-        size={16}
-      />
-    </div>
-  );
+  const handleDeleteConfirm = async () => {
+    if (!caseToDelete) return;
+    try {
+      await deleteContent({ id: caseToDelete, key: "clinicalcase" }).unwrap();
+      setCaseToDelete(null);
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
+  };
 
   const CaseCard = ({ caseData }: { caseData: ClinicalCaseData }) => {
     const handleStartCase = () => {
-        // Appends ?type=generated if we are in the generated tab
-        const query = activeTab === "AI Generated" ? "?type=generated" : "";
-        navigate(`/dashboard/clinical-case/${caseData._id}${query}`);
+      // Appends ?type=generated if we are in the generated tab
+      const query = activeTab === "AI Generated" ? "?type=generated" : "";
+      navigate(`/dashboard/clinical-case/${caseData._id}${query}`);
     };
 
     return (
       <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
-        <div className="flex items-center mb-3 gap-3">
-          <span className="px-2 py-1 rounded-full text-xs font-semibold bg-slate-100 border border-slate-200 text-slate-800">
-            {caseData.topic || "General"}
-          </span>
-          {caseData?.difficultyLevel && (
-            <span className="px-2 py-1 text-xs font-medium border rounded-full text-purple-600">
-              {caseData?.difficultyLevel}
+        <div className="flex justify-between items-start mb-3">
+          <div className="flex items-center gap-3">
+            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-slate-100 border border-slate-200 text-slate-800">
+              {caseData.topic || "General"}
             </span>
+            {caseData?.difficultyLevel && (
+              <span className="px-2 py-1 text-xs font-medium border rounded-full text-purple-600">
+                {caseData?.difficultyLevel}
+              </span>
+            )}
+          </div>
+          {activeTab === "AI Generated" && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setCaseToDelete(caseData._id);
+              }}
+              disabled={isDeletingContent}
+              className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors cursor-pointer disabled:opacity-50"
+            >
+              {isDeletingContent && caseToDelete === caseData._id ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Trash2 className="w-4 h-4" />
+              )}
+            </button>
           )}
         </div>
 
@@ -190,16 +185,14 @@ const AllClinicalCases: React.FC = () => {
     );
   };
 
-  if (isLoading) return <GlobalLoader2 />;
-
   return (
     <div>
       <h1 className="text-xl font-semibold mb-6 mt-10">All Cases</h1>
 
-      {/* Filters */}
-      <div className="mb-6 space-y-4">
-        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-          <div className="relative flex-1 max-w-md">
+      {/* Search and Filter */}
+      <div className="mb-6 flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="relative">
             <Search
               className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
               size={20}
@@ -207,67 +200,63 @@ const AllClinicalCases: React.FC = () => {
             <input
               type="text"
               placeholder="Search by condition or keyword"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={searchInput}
+              onChange={(e) => {
+                setSearchInput(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="w-full md:w-[450px] pl-10 pr-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
-          <div className="flex gap-3">
-            <Dropdown
-              value={selectedBodySystem}
-              onChange={setSelectedBodySystem}
-              options={bodySystemOptions}
-              placeholder="Body System"
-            />
-            <Dropdown
-              value={selectedTopic}
-              onChange={setSelectedTopic}
-              options={topicOptions}
-              placeholder="Topic"
-            />
-            <Dropdown
-              value={selectedDifficulty}
-              onChange={setSelectedDifficulty}
-              options={difficultyOptions}
-              placeholder="Difficulty"
-            />
-          </div>
+          <p className="text-gray-600">{meta?.total || 0} cases found</p>
         </div>
+        <button
+          onClick={() => setIsFilterOpen(true)}
+          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-700"
+        >
+          <Filter className="w-4 h-4" />
+          Filter
+        </button>
       </div>
 
       {/* Tabs */}
       <div className="mb-6 border-b border-gray-200">
         <nav className="-mb-px flex space-x-8">
-          {(["All Cases", "AI Generated", "Complete Cases"] as TabType[]).map(
-            (tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === tab
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }`}
-              >
-                {tab}
-              </button>
-            )
-          )}
+          {(["All Cases", "AI Generated"] as TabType[]).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`py-2 px-1 border-b-2 font-medium text-sm cursor-pointer ${
+                activeTab === tab
+                  ? "border-blue-500 text-blue-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
         </nav>
       </div>
 
       {/* Cases Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        {paginatedCases.map((caseData, idx: number) => (
-          <CaseCard key={idx} caseData={caseData} />
-        ))}
-      </div>
-
-      {paginatedCases.length === 0 && (
-        <div className="text-center py-12 text-gray-500">
-          No cases found matching your criteria.
+      {isFetching ? (
+        <div className="flex justify-center items-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
         </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {paginatedCases.map((caseData, idx: number) => (
+              <CaseCard key={idx} caseData={caseData} />
+            ))}
+          </div>
+
+          {paginatedCases.length === 0 && (
+            <div className="text-center py-12 text-gray-500">
+              No cases found matching your criteria.
+            </div>
+          )}
+        </>
       )}
 
       {/* Pagination */}
@@ -303,11 +292,61 @@ const AllClinicalCases: React.FC = () => {
         </div>
       )}
 
-      <div className="mt-4 text-center text-sm text-gray-500">
-        Showing {startIndex + 1}-
-        {Math.min(startIndex + casesPerPage, filteredCases.length)} of{" "}
-        {filteredCases.length} cases
-      </div>
+      {/* <div className="mt-4 text-center text-sm text-gray-500">
+        Showing {meta?.total || 0} cases
+      </div> */}
+
+      {/* Filter Modal */}
+      {isFilterOpen && (
+        <ClinicalCasesFilterModal
+          close={() => setIsFilterOpen(false)}
+          onApply={handleApplyFilter}
+        />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      <Dialog
+        open={!!caseToDelete}
+        onOpenChange={(open) => !open && setCaseToDelete(null)}
+      >
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <div className="flex items-center gap-3 text-red-600 mb-2">
+              <AlertCircle className="w-6 h-6" />
+              <DialogTitle>Delete Clinical Case</DialogTitle>
+            </div>
+            <DialogDescription>
+              Are you sure you want to delete this AI-generated clinical case?
+              This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              variant="outline"
+              onClick={() => setCaseToDelete(null)}
+              disabled={isDeletingContent}
+              className="cursor-pointer"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteConfirm}
+              disabled={isDeletingContent}
+              className="cursor-pointer flex items-center gap-2"
+            >
+              {isDeletingContent ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete Case"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

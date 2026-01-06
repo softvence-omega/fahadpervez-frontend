@@ -13,7 +13,8 @@ interface Props {
 const CreateClinicalCaseModal = ({ open, onClose }: Props) => {
   const [prompt, setPrompt] = useState("");
   const [file, setFile] = useState<File | null>(null);
-  // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
   const navigate = useNavigate();
 
   const [generateClinicalCase, { isLoading }] =
@@ -21,12 +22,23 @@ const CreateClinicalCaseModal = ({ open, onClose }: Props) => {
 
   if (!open) return null;
 
-  const handleSubmit = async () => {
-    const formData = new FormData();
+  const handlePromptChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPrompt(e.target.value);
 
-    if (prompt) {
-      formData.append("data", JSON.stringify({ prompt }));
+    if (error) {
+      setError(null); // clear error on user input
     }
+  };
+
+  const handleSubmit = async () => {
+    // 1️⃣ Client-side validation
+    if (!prompt.trim()) {
+      setError("Prompt is required");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("data", JSON.stringify({ prompt }));
 
     if (file) {
       formData.append("file", file);
@@ -34,18 +46,22 @@ const CreateClinicalCaseModal = ({ open, onClose }: Props) => {
 
     try {
       const result = await generateClinicalCase(formData).unwrap();
-      console.log("Clinical case generated:", result);
+
       onClose();
       setPrompt("");
       setFile(null);
-      if (result.success) {
-        // Navigate to the newly created clinical case detail page with type=generated
-        navigate(
-          `/dashboard/clinical-case/${result?.data?._id}?type=generated`
-        );
+      setError(null);
+
+      if (result?.success) {
+        navigate(`/dashboard/clinical-case/${result.data._id}?type=generated`);
       }
-    } catch (error) {
-      console.error("Failed to generate clinical case", error);
+    } catch (err: any) {
+      // 2️⃣ RTK Query error handling
+      if (err?.data?.message) {
+        setError(err.data.message);
+      } else {
+        setError("Failed to generate clinical case. Please try again.");
+      }
     }
   };
 
@@ -67,20 +83,30 @@ const CreateClinicalCaseModal = ({ open, onClose }: Props) => {
         {/* header */}
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-semibold">Create Clinical Case</h2>
-          <button onClick={onClose} className="text-gray-600 hover:text-gray-800 cursor-pointer hover:bg-slate-200 rounded-full p-1 transition">
+          <button
+            onClick={onClose}
+            className="text-gray-600 hover:text-gray-800 cursor-pointer hover:bg-slate-200 rounded-full p-1 transition"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* input */}
         <div>
-          <label className="text-sm font-medium">Prompt (optional)</label>
+          <label className="text-sm font-medium">
+            Prompt <span className="text-red-600">*</span>
+          </label>
+
+          {error && <p className="text-sm text-red-600 mt-1">{error}</p>}
+
           <input
             type="text"
             value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Generate Clinical case for a old man"
-            className="w-full mt-1 px-3 py-2 border border-slate-300 rounded-md text-sm"
+            onChange={handlePromptChange}
+            placeholder="Generate clinical case for an old man"
+            className={`w-full mt-1 px-3 py-2 border rounded-md text-sm ${
+              error ? "border-red-500" : "border-slate-300"
+            }`}
           />
         </div>
 
@@ -135,7 +161,10 @@ const CreateClinicalCaseModal = ({ open, onClose }: Props) => {
 
         {/* actions */}
         <div className="flex justify-end gap-3 pt-4">
-          <button onClick={onClose} className="text-sm text-gray-600 cursor-pointer hover:underline">
+          <button
+            onClick={onClose}
+            className="text-sm text-gray-600 cursor-pointer hover:underline"
+          >
             Cancel
           </button>
           <PrimaryButton onClick={handleSubmit} disabled={isLoading}>
