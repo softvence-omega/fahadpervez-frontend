@@ -1,37 +1,55 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import GlobalLoader from "@/common/GlobalLoader";
 import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import { useGetSingleMCQQuery } from "@/store/features/MCQBank/MCQBank.api";
+import { useUpdateProgressMcqFlashcardClinicalCaseMutation } from "@/store/features/goal/goal.api";
 import { McqQuestion } from "@/types";
 import { ArrowLeft, CircleAlert, Copy, Plus } from "lucide-react";
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate, useBlocker } from "react-router-dom";
 import QuizReportModal from "../quizGenerator/QuizReportModal";
 import { toast } from "sonner";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { PracticeQuizModal } from "./PracticeQuizModal";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function PracticeMCQ() {
   const [openQuizModal, setOpenQuizModal] = useState(false);
-
-  // const handleQuizSubmit = (data: any) => {
-  //   console.log("Quiz Data:", data);
-  //   // TODO: Redux API call integration
-  //   setOpenQuizModal(false);
-  // };
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   const breadcrumbs: BreadcrumbItem[] = [
     { name: "Dashboard", link: "/dashboard" },
-    { name: "Practice MCQ", link: "/dashboard/practice-mcq" },
+    { name: "Practice MCQ", link: `/dashboard/practice-mcq/${id}` },
   ];
 
-  const { id } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [skip, setSkip] = useState<number | undefined>(undefined);
   const [jumpQuestion, setJumpQuestion] = useState("");
+
+  // Track correctness of each question: { [qId]: boolean } (true=correct, false=incorrect)
+  const [results, setResults] = useState<{ [key: string]: boolean }>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Block navigation if user has started answering but hasn't submitted
+  const hasStarted = Object.keys(results).length > 0;
+
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      hasStarted &&
+      !isSubmitting &&
+      currentLocation.pathname !== nextLocation.pathname
+  );
 
   const limit = 1;
 
@@ -42,6 +60,8 @@ export default function PracticeMCQ() {
     skip,
   });
 
+  const [updateProgress] = useUpdateProgressMcqFlashcardClinicalCaseMutation();
+
   const meta = data?.meta;
 
   const [selected, setSelected] = useState<{ [key: string]: number | null }>(
@@ -51,16 +71,32 @@ export default function PracticeMCQ() {
   const [openReportModal, setOpenReportModal] = useState(false);
   const [mcqId, setMcqId] = useState("");
 
+  const mcqData = data?.data;
+  const questions = mcqData?.mcqs || [];
+
   const handleSelect = (qId: string, index: number) => {
+    // Prevent changing option if already selected
+    if (selected[qId] !== undefined && selected[qId] !== null) return;
+
     setSelected((prev) => ({ ...prev, [qId]: index }));
+
+    // Find the question to check correctness
+    const question = questions.find(
+      (q: McqQuestion) => (q.mcqId || `question-${currentPage}`) === qId
+    );
+    if (question) {
+      // Check correctness: index matches correctOption (assuming A=0, B=1...)
+      // Wait, correctOption is "A", "B"... we need to map index 0->A.
+      // Start from 'A' char code 65.
+      const selectedOptionChar = String.fromCharCode(65 + index); // 0->A, 1->B
+      const isCorrect = selectedOptionChar === question.correctOption;
+      setResults((prev) => ({ ...prev, [qId]: isCorrect }));
+    }
   };
 
   const toggleAnswer = (qId: string) => {
     setShowAnswer((prev) => ({ ...prev, [qId]: !prev[qId] }));
   };
-
-  const mcqData = data?.data;
-  const questions = mcqData?.mcqs || [];
 
   const totalPages = meta?.total ? Math.ceil(meta.total / meta.limit) : 1;
 
@@ -97,8 +133,77 @@ export default function PracticeMCQ() {
     }
   };
 
+  const handleSubmit = async () => {
+    if (!mcqData?._id) return;
+
+    setIsSubmitting(true);
+
+    const totalAttempted = Object.keys(results).length;
+    const totalCorrect = Object.values(results).filter(Boolean).length;
+    const totalIncorrect = totalAttempted - totalCorrect;
+
+    try {
+      await updateProgress({
+        totalCorrect,
+        totalIncorrect,
+        totalAttempted,
+        key: "mcq",
+        bankId: mcqData._id,
+      }).unwrap();
+
+      //toast.success("Progress saved successfully!");
+      navigate("/dashboard/mcq-bank");
+    } catch (error) {
+      console.error("Failed to save progress:", error);
+      toast.error("Failed to save progress");
+      setIsSubmitting(false); // Enable blocker again if failed
+    }
+  };
+
+  const currentQuestion = questions[0];
+  const currentQId = currentQuestion
+    ? currentQuestion.mcqId || `question-${(currentPage - 1) * limit}`
+    : null;
+  const isCurrentQuestionAnswered = currentQId
+    ? selected[currentQId] !== undefined && selected[currentQId] !== null
+    : false;
+
   return (
     <>
+      <div className="hidden">{/* Invisible blocker for navigation */}</div>
+      <AlertDialog open={blocker.state === "blocked"}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Save your progress?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You have answered some questions. Would you like to submit your
+              progress before leaving?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => blocker.state === "blocked" && blocker.reset()}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-blue-main hover:bg-blue-main/90"
+              onClick={async () => {
+                if (blocker.state === "blocked") {
+                  await handleSubmit();
+                  // handleSubmit will navigate, so we don't necessarily need blocker.proceed()
+                  // but if it fails, we want to stay. The navigate() in handleSubmit()
+                  // might conflict with blocker logic if not handled carefully.
+                  // However, setIsSubmitting(true) in handleSubmit should allow it.
+                }
+              }}
+            >
+              Submit & Leave
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {isLoading ? (
         <GlobalLoader />
       ) : (
@@ -121,25 +226,32 @@ export default function PracticeMCQ() {
             </div>
 
             {/* Right Section */}
-            {/* <Link
-              to={"/dashboard/quiz-collection"}
-              className="w-full sm:w-auto"
-            > */}
-            <PrimaryButton
-              style={{
-                background:
-                  "linear-gradient(103deg, #0076F5 6.94%, #0058B8 99.01%)",
-              }}
-              bgType="solid"
-              // bgColor="bg-blue-btn-1"
-              iconPosition="left"
-              icon={<Plus />}
-              className="h-10 w-full sm:w-auto hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer"
-              onClick={() => setOpenQuizModal(true)}
-            >
-              Start Quiz
-            </PrimaryButton>
-            {/* </Link> */}
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+              <PrimaryButton
+                disabled={isSubmitting || !hasStarted}
+                className={`h-10 w-full sm:w-auto cursor-pointer ${
+                  isSubmitting || !hasStarted
+                    ? "bg-gray-300 pointer-events-none"
+                    : "bg-[#059669] hover:bg-[#059669]/90"
+                }`}
+                onClick={handleSubmit}
+              >
+                {isSubmitting ? "Submitting..." : "Submit Progress"}
+              </PrimaryButton>
+              <PrimaryButton
+                style={{
+                  background:
+                    "linear-gradient(103deg, #0076F5 6.94%, #0058B8 99.01%)",
+                }}
+                bgType="solid"
+                iconPosition="left"
+                icon={<Plus />}
+                className="h-10 w-full sm:w-auto hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer"
+                onClick={() => setOpenQuizModal(true)}
+              >
+                Start Quiz
+              </PrimaryButton>
+            </div>
           </div>
 
           {/* Render questions */}
@@ -151,6 +263,8 @@ export default function PracticeMCQ() {
             const globalQuestionNumber = (currentPage - 1) * limit + idx + 1;
 
             const selectedIndex = selected[qId];
+            const isAnswered =
+              selectedIndex !== undefined && selectedIndex !== null;
 
             return (
               <div
@@ -193,6 +307,13 @@ export default function PracticeMCQ() {
                 </div>
 
                 <p className="text-slate-900 font-medium">{q.question}</p>
+                {q.imageDescription && (
+                  <img
+                    src={q.imageDescription}
+                    alt="Question Image"
+                    className="mt-4 max-w-full h-auto rounded-lg max-h-96 object-contain"
+                  />
+                )}
 
                 <div className="space-y-2">
                   {q.options.map((opt: any, optionIdx: number) => {
@@ -235,7 +356,7 @@ export default function PracticeMCQ() {
                           className="mr-2"
                           onChange={() => handleSelect(qId, optionIdx)}
                           checked={isSelected}
-                          disabled={show}
+                          disabled={show || isAnswered}
                         />
                         <span className={textClass}>
                           {opt.option}. {opt.optionText}
@@ -288,12 +409,6 @@ export default function PracticeMCQ() {
       )}
       {/* Pagination */}
       <div className="mt-16 mb-32 flex justify-center space-x-5 ">
-        {/* <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          onPageChange={handlePageChange}
-        /> */}
-
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
@@ -306,17 +421,46 @@ export default function PracticeMCQ() {
           Previous
         </button>
 
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className={`px-6 py-2 rounded border font-medium cursor-pointer ${
-            currentPage === totalPages
-              ? "cursor-not-allowed bg-gray-200 text-gray-400"
-              : "bg-blue-main text-white hover:bg-blue-main/90"
-          }`}
-        >
-          Next
-        </button>
+        {currentPage === totalPages ? (
+          <button
+            onClick={handleSubmit}
+            disabled={isSubmitting || !isCurrentQuestionAnswered}
+            className={`px-6 py-2 rounded border font-medium cursor-pointer ${
+              isSubmitting || !isCurrentQuestionAnswered
+                ? "bg-blue-300 cursor-not-allowed"
+                : "bg-blue-main text-white hover:bg-blue-main/90"
+            }`}
+          >
+            {isSubmitting ? "Submitting..." : "Submit"}
+          </button>
+        ) : (
+          <div className="flex gap-4">
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={
+                currentPage === totalPages || !isCurrentQuestionAnswered
+              }
+              className={`px-6 py-2 rounded border font-medium cursor-pointer ${
+                currentPage === totalPages || !isCurrentQuestionAnswered
+                  ? "cursor-not-allowed bg-gray-200 text-gray-400"
+                  : "bg-blue-main text-white hover:bg-blue-main/90"
+              }`}
+            >
+              Next
+            </button>
+            <button
+              onClick={handleSubmit}
+              disabled={isSubmitting || !hasStarted}
+              className={`px-6 py-2 rounded border font-medium cursor-pointer bg-white text-gray-700 hover:bg-gray-50 ${
+                isSubmitting || !hasStarted
+                  ? "opacity-50 pointer-events-none"
+                  : ""
+              }`}
+            >
+              Finish & Submit
+            </button>
+          </div>
+        )}
 
         <div className="flex items-center gap-2 ml-4">
           <input
@@ -345,7 +489,6 @@ export default function PracticeMCQ() {
       <PracticeQuizModal
         open={openQuizModal}
         setOpen={setOpenQuizModal}
-        // onSubmit={handleQuizSubmit}
         mcqBankId={mcqData?._id || ""}
         mcqBankTitle={mcqData?.title || ""}
         subject={mcqData?.subject || ""}

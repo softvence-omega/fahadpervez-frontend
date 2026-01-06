@@ -1,15 +1,23 @@
-"use client";
-
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DecisionPoint from "./DecisionPoint";
 import EvidenceReview from "./EvidenceReview";
-// import PracticeMCQ from "./PracticeMCQ";
-// import { ClinicalCaseData } from "@/types/clinicalCase.types";
 import { Progress } from "@/components/ui/progress";
 import { Bookmark, Printer, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ClinicalCaseData } from "@/types/clinicalCase";
 import ClinicalCaseMCQ from "./ClinicalCaseMCQ";
+import { useUpdateProgressMcqFlashcardClinicalCaseMutation } from "@/store/features/goal/goal.api";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
+import PrimaryButton from "@/components/reusable/PrimaryButton";
 
 type Props = {
   clinicalCase: ClinicalCaseData;
@@ -21,7 +29,20 @@ const ClinicalCaseFlow: React.FC<Props> = ({ clinicalCase }) => {
     null
   );
   const [isConfirmed, setIsConfirmed] = useState(false);
-  console.log(isConfirmed)
+console.log(isConfirmed)
+  // MCQ State
+  const [mcqIndex, setMcqIndex] = useState(0);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [isAnswerShown, setIsAnswerShown] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  // API
+  const [updateProgress, { isLoading: isUpdating }] =
+    useUpdateProgressMcqFlashcardClinicalCaseMutation();
+  const navigate = useNavigate();
+
+  const mcqs = clinicalCase?.mcqs || [];
+  const totalMCQs = mcqs.length;
 
   const handleConfirmDiagnosis = () => {
     setIsConfirmed(true);
@@ -30,6 +51,40 @@ const ClinicalCaseFlow: React.FC<Props> = ({ clinicalCase }) => {
 
   const handleStartQuiz = () => {
     setCurrentStep(3);
+  };
+
+  const handleAnswerShown = (isShown: boolean, isCorrect: boolean) => {
+    setIsAnswerShown(isShown);
+    if (isCorrect) {
+      setCorrectAnswers((prev) => prev + 1);
+    }
+  };
+
+  const handleNextMCQ = () => {
+    if (mcqIndex < totalMCQs - 1) {
+      setMcqIndex((prev) => prev + 1);
+      setIsAnswerShown(false);
+    }
+  };
+
+  const handleFinishQuiz = async () => {
+    // API Call
+    try {
+      await updateProgress({
+        totalCorrect: correctAnswers,
+        totalIncorrect: totalMCQs - correctAnswers,
+        totalAttempted: totalMCQs,
+        key: "clinicalcase",
+        bankId: clinicalCase._id,
+      }).unwrap();
+
+      setShowSuccessModal(true);
+    } catch (err) {
+      console.error("Failed to update progress", err);
+      toast.error("Failed to save progress");
+      // Still show success modal? Or block? Let's show it so they can leave.
+      setShowSuccessModal(true);
+    }
   };
 
   const getButtonConfig = () => {
@@ -47,10 +102,16 @@ const ClinicalCaseFlow: React.FC<Props> = ({ clinicalCase }) => {
         onClick: handleStartQuiz,
       };
     }
+    // Step 3: MCQ
+    const isLastQuestion = mcqIndex === totalMCQs - 1;
     return {
-      label: "Next Question",
-      disabled: false,
-      onClick: () => {},
+      label: isLastQuestion
+        ? isUpdating
+          ? "Finishing..."
+          : "Finish Quiz"
+        : "Next Question",
+      disabled: !isAnswerShown || isUpdating,
+      onClick: isLastQuestion ? handleFinishQuiz : handleNextMCQ,
     };
   };
 
@@ -76,7 +137,11 @@ const ClinicalCaseFlow: React.FC<Props> = ({ clinicalCase }) => {
         )}
 
         {currentStep === 3 && (
-          <ClinicalCaseMCQ clinicalCase={clinicalCase} />
+          <ClinicalCaseMCQ
+            clinicalCase={clinicalCase}
+            currentQuestionIndex={mcqIndex}
+            onAnswerShown={handleAnswerShown}
+          />
         )}
       </div>
 
@@ -118,6 +183,33 @@ const ClinicalCaseFlow: React.FC<Props> = ({ clinicalCase }) => {
           </Button>
         </div>
       </div>
+
+      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center text-2xl font-bold text-green-600">
+              Case Completed!
+            </DialogTitle>
+            <DialogDescription className="text-center pt-2">
+              You have successfully completed this clinical case.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col items-center justify-center py-4 space-y-2">
+            <p className="text-lg font-medium">Your Score</p>
+            <div className="text-4xl font-bold text-blue-600">
+              {correctAnswers} / {totalMCQs}
+            </div>
+          </div>
+          <DialogFooter className="sm:justify-center">
+            <PrimaryButton
+              onClick={() => navigate("/dashboard/clinical-case-generator")}
+              className="w-full sm:w-auto"
+            >
+              Back to Cases
+            </PrimaryButton>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

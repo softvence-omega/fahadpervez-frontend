@@ -29,6 +29,7 @@ export interface OsceItem {
   createdAt: string;
   updatedAt: string;
   learningResource: LearningResource;
+  isComplete?: boolean;
 }
 
 export interface OsceListResponse {

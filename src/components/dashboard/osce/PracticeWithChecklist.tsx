@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useGetSingleOsceQuery } from "@/store/features/adminDashboard/ContentResources/Osce/osceApi";
-import { ArrowRight, Play } from "lucide-react";
+import { useUpdateProgressOsceMutation } from "@/store/features/goal/goal.api";
+import { ArrowLeft, ArrowRight, Play } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { JSX } from "react";
-import { BsQuestionLg } from "react-icons/bs";
-import { FaBoxArchive } from "react-icons/fa6";
+// import { BsQuestionLg } from "react-icons/bs";
+// import { FaBoxArchive } from "react-icons/fa6";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 /**
@@ -77,7 +78,7 @@ const getYouTubeVideoId = (url: string): string | null => {
 
 // Helper: Fetch YouTube duration (placeholder)
 const fetchYouTubeDuration = async (videoId: string): Promise<string> => {
-  console.log(videoId)
+  console.log(videoId);
   return "0:00"; // Placeholder – use YouTube Data API in production
 };
 
@@ -136,7 +137,6 @@ export default function PracticeWithChecklist(): JSX.Element {
   const { id: osceId } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  // RTK Query Hook – এখানে সবার উপরে থাকবে
   const {
     data: apiResponse,
     isLoading: apiLoading,
@@ -258,6 +258,9 @@ export default function PracticeWithChecklist(): JSX.Element {
     }));
   };
 
+  // Mutation for progress update
+  const [updateProgressOsce] = useUpdateProgressOsceMutation();
+
   const handleComplete = async () => {
     if (!pageData) return;
     setIsRunning(false);
@@ -280,6 +283,12 @@ export default function PracticeWithChecklist(): JSX.Element {
 
     try {
       setIsSubmitting(true);
+
+      // Update Goal Progress
+      if (osceId) {
+        await updateProgressOsce({ osceId }).unwrap();
+      }
+
       const res = await fetch("/api/complete-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -347,6 +356,12 @@ export default function PracticeWithChecklist(): JSX.Element {
 
       {/* Left Panel */}
       <div className="w-2/3 p-6 space-y-6 overflow-y-auto left-panel">
+        <Link to="/dashboard/osce" className="sm:mb-0">
+          <button className="flex items-center gap-1 border border-gray-300 px-3 py-2 rounded mb-2 cursor-pointer">
+            <ArrowLeft className="w-5 h-4" /> Back
+          </button>
+        </Link>
+
         {/* Title & Description */}
         <div className="bg-white p-4 rounded-lg shadow">
           <h2 className="text-xl font-bold">{pageData.title}</h2>
@@ -467,7 +482,7 @@ export default function PracticeWithChecklist(): JSX.Element {
         </div>
 
         {/* Notes */}
-        <div className="bg-white p-4 rounded-lg shadow">
+        {/* <div className="bg-white p-4 rounded-lg shadow">
           <h3 className="font-semibold mb-2">Notes</h3>
           <textarea
             value={notes}
@@ -476,7 +491,7 @@ export default function PracticeWithChecklist(): JSX.Element {
             rows={4}
             placeholder="Add any notes or observations here..."
           />
-        </div>
+        </div> */}
 
         {/* Buttons */}
         <div className="flex justify-end gap-4">
@@ -621,7 +636,7 @@ export default function PracticeWithChecklist(): JSX.Element {
         </div>
 
         {/* Related Resources */}
-        <div className="bg-white p-4 rounded-lg shadow">
+        {/* <div className="bg-white p-4 rounded-lg shadow">
           <h3 className="font-semibold mb-4">Related Resources</h3>
           <div className="border border-[#FED7AA] bg-[#FFF7ED] p-3 rounded-[8px] mb-3 cursor-pointer hover:bg-[#FFEDD5]">
             <div className="flex items-center justify-between">
@@ -662,7 +677,7 @@ export default function PracticeWithChecklist(): JSX.Element {
               <ArrowRight className="text-[#0D9488]" />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

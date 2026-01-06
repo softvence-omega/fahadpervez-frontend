@@ -1,21 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ClinicalCaseData, MCQOption } from "@/types/clinicalCase";
-// import { useNavigate } from "react-router-dom";
 
 type Props = {
   clinicalCase: ClinicalCaseData;
+  currentQuestionIndex: number;
+  onAnswerShown: (isShown: boolean, isCorrect: boolean) => void;
 };
 
-const ClinicalCaseMCQ: React.FC<Props> = ({ clinicalCase }) => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+const ClinicalCaseMCQ: React.FC<Props> = ({
+  clinicalCase,
+  currentQuestionIndex,
+  onAnswerShown,
+}) => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
-  const [score, setScore] = useState(0);
-//   const navigate = useNavigate();
+  const [sessionScore, setSessionScore] = useState(0);
 
   const mcqs = clinicalCase?.mcqs || [];
   const currentMCQ = mcqs[currentQuestionIndex];
   const totalQuestions = mcqs.length;
+
+  // Reset state when question changes
+  useEffect(() => {
+    setSelectedOption(null);
+    setShowAnswer(false);
+    onAnswerShown(false, false);
+  }, [currentQuestionIndex]);
 
   const handleSelectOption = (option: string) => {
     if (!showAnswer) {
@@ -26,26 +36,11 @@ const ClinicalCaseMCQ: React.FC<Props> = ({ clinicalCase }) => {
   const handleShowAnswer = () => {
     if (selectedOption) {
       setShowAnswer(true);
-      if (selectedOption === currentMCQ.correctOption) {
-        setScore((prev) => prev + 1);
+      const isCorrect = selectedOption === currentMCQ.correctOption;
+      if (isCorrect) {
+        setSessionScore((prev) => prev + 1);
       }
-    }
-  };
-
-  const handleNext = () => {
-    if (currentQuestionIndex < totalQuestions - 1) {
-      setCurrentQuestionIndex((prev) => prev + 1);
-      setSelectedOption(null);
-      setShowAnswer(false);
-    } else {
-      // Quiz completed - redirect to another page (placeholder for now)
-      alert(
-        `Quiz Completed! Your score: ${
-          score + (selectedOption === currentMCQ.correctOption ? 1 : 0)
-        } / ${totalQuestions}`
-      );
-      // TODO: Navigate to results page when designed
-      // navigate(`/dashboard/clinical-case/${clinicalCase._id}/results`);
+      onAnswerShown(true, isCorrect);
     }
   };
 
@@ -140,17 +135,6 @@ const ClinicalCaseMCQ: React.FC<Props> = ({ clinicalCase }) => {
               Show Answer
             </button>
           )}
-
-          {showAnswer && (
-            <button
-              onClick={handleNext}
-              className="px-6 py-2 border rounded text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
-            >
-              {currentQuestionIndex < totalQuestions - 1
-                ? "Next Question"
-                : "Finish Quiz"}
-            </button>
-          )}
         </div>
 
         {showAnswer && (
@@ -178,10 +162,11 @@ const ClinicalCaseMCQ: React.FC<Props> = ({ clinicalCase }) => {
         )}
       </div>
 
-      {/* Score Display */}
+      {/* Score Display (Optional - user didn't ask to remove it, but internal state might vary from parent. Keeping local for now or we can lift it too if needed. Since parent does final calc, local is just for display.) */}
       <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
         <p className="text-sm font-medium text-gray-700">
-          Current Score: {score} / {currentQuestionIndex + (showAnswer ? 1 : 0)}
+          Current Session Score: {sessionScore} /{" "}
+          {currentQuestionIndex + (showAnswer ? 1 : 0)}
         </p>
       </div>
     </div>

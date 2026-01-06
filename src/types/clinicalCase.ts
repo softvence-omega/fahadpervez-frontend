@@ -61,6 +61,7 @@ export interface ClinicalCaseData {
   createdAt: string;
   updatedAt: string;
   publishedBy?: PublishedBy;
+  isComplete?: boolean;
 }
 
 export interface ClinicalCaseResponse {

@@ -204,9 +204,16 @@ const McqBank = () => {
                       {/* Content */}
                       <div className="space-y-2">
                         <Link to={`/dashboard/practice-mcq/${mcq?._id}`}>
-                          <h4 className="text-lg text-slate-900 font-medium hover:underline hover:text-blue-600 transition duration-75">
-                            {mcq?.title}
-                          </h4>
+                          <div className="flex items-center gap-2">
+                            <h4 className="text-lg text-slate-900 font-medium hover:underline hover:text-blue-600 transition duration-75">
+                              {mcq?.title}
+                            </h4>
+                            {mcq?.isComplete && (
+                              <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400">
+                                Completed
+                              </span>
+                            )}
+                          </div>
                         </Link>
 
                         <div className="flex flex-wrap items-center gap-4">

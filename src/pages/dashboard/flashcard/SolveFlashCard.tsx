@@ -8,8 +8,21 @@ import {
   useGetSingleFlashCardQuery,
   useGetSingleGeneratedFlashCardQuery,
 } from "@/store/features/flashCard/flashCard.api";
+import { useUpdateProgressMcqFlashcardClinicalCaseMutation } from "@/store/features/goal/goal.api";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import GlobalLoader2 from "@/common/GlobalLoader2";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useBlocker, useNavigate } from "react-router-dom";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { name: "Dashboard", link: "/dashboard" },
@@ -17,12 +30,24 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function SolveFlashCard() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [updateProgress] = useUpdateProgressMcqFlashcardClinicalCaseMutation();
+
+  // Block navigation if user has started but hasn't submitted
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      currentQuestion > 0 &&
+      !isSubmitting &&
+      currentLocation.pathname !== nextLocation.pathname
+  );
 
   // 🔥 Get flashcard data from navigate() state
   const stateFlashcardData = location.state?.flashCardData;
@@ -108,6 +133,28 @@ export default function SolveFlashCard() {
     }
   };
 
+  const handleSubmit = async () => {
+    if (!flashCardData?._id) return;
+
+    setIsSubmitting(true);
+
+    try {
+      await updateProgress({
+        totalAttempted: questions.length,
+        totalCorrect: questions.length, // Flashcards are usually just reviewed
+        totalIncorrect: 0,
+        key: "flashcard",
+        bankId: flashCardData._id,
+      }).unwrap();
+
+      navigate("/dashboard/flashcard-page");
+    } catch (error) {
+      console.error("Failed to save progress:", error);
+      toast.error("Failed to save progress");
+      setIsSubmitting(false);
+    }
+  };
+
   // Completion screen
   if (isCompleted) {
     return (
@@ -119,12 +166,11 @@ export default function SolveFlashCard() {
           You've reviewed all {questions?.length} flashcards.
         </p>
         <Button
-          onClick={() => {
-            setIsCompleted(false);
-            setCurrentQuestion(0);
-          }}
+          onClick={handleSubmit}
+          className="bg-blue-main hover:bg-blue-700"
+          disabled={isSubmitting}
         >
-          Restart Session
+          {isSubmitting ? "Saving..." : "Done & Save Progress"}
         </Button>
       </div>
     );
@@ -132,6 +178,34 @@ export default function SolveFlashCard() {
 
   return (
     <div className="min-h-screen my-2 px-2 overflow-y-auto">
+      <AlertDialog open={blocker.state === "blocked"}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Save your progress?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You are in the middle of a session. Would you like to submit your
+              progress before leaving?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => blocker.state === "blocked" && blocker.reset()}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-blue-main hover:bg-blue-main/90"
+              onClick={async () => {
+                if (blocker.state === "blocked") {
+                  await handleSubmit();
+                }
+              }}
+            >
+              Submit & Leave
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <div className="text-sm text-gray-600">
         <Breadcrumb breadcrumbs={breadcrumbs} />
       </div>
@@ -140,14 +214,27 @@ export default function SolveFlashCard() {
         <Link to={"/dashboard/flashcard-page"} className="mt-0.5">
           <ArrowLeft />
         </Link>
-        <DashboardHeading
-          title={flashCardData?.title}
-          titleColor="text-[#0A0A0A]"
-          titleSize="text-xl"
-          description="Flip the card to check the correct answer."
-          descColor="text-[#4A5565]"
-          descSize="text-sm"
-        />
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4">
+          <DashboardHeading
+            title={flashCardData?.title}
+            titleColor="text-[#0A0A0A]"
+            titleSize="text-xl"
+            description="Flip the card to check the correct answer."
+            descColor="text-[#4A5565]"
+            descSize="text-sm"
+          />
+          <Button
+            onClick={handleSubmit}
+            disabled={isSubmitting || currentQuestion === 0}
+            className={`cursor-pointer ${
+              isSubmitting || currentQuestion === 0
+                ? "bg-gray-300 pointer-events-none"
+                : "bg-emerald-600 hover:bg-emerald-700"
+            }`}
+          >
+            {isSubmitting ? "Submitting..." : "Submit Progress"}
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-col md:flex-row gap-4">
