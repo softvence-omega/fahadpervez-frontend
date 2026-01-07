@@ -435,9 +435,8 @@ import ChatMain from "@/components/message/ChatMain";
 import { demoUsers, demoMessages } from "@/components/message/demoData";
 
 const LiveChat: React.FC = () => {
-  const [activeUserId, setActiveUserId] = useState("4");
+  const [activeUser, setActiveUser] = useState<any>(demoUsers[0]);
   const [showChat, setShowChat] = useState(false);
-  const activeUser = demoUsers.find((user) => user.id === activeUserId);
 
   return (
     // if your tailwind doesn't support 'h-260', use h-[260px] or responsive variants
@@ -453,9 +452,9 @@ const LiveChat: React.FC = () => {
           <div className="flex-1 min-h-0 overflow-y-auto">
             <ChatSidebar
               users={demoUsers}
-              activeUserId={activeUserId}
-              onUserSelect={(id) => {
-                setActiveUserId(id);
+              activeUserId={activeUser?.id || activeUser?._id}
+              onUserSelect={(user) => {
+                setActiveUser(user);
                 setShowChat(true);
               }}
             />
@@ -469,7 +468,7 @@ const LiveChat: React.FC = () => {
           }`}
         >
           <ChatMain
-            messages={demoMessages}
+            messages={demoMessages} // This will be ignored for groups in new ChatMain logic
             activeUser={activeUser}
             onBack={() => setShowChat(false)}
           />

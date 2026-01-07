@@ -8,7 +8,6 @@ import {
   XCircle,
   Clock,
   MinusCircle,
-  Target,
 } from "lucide-react";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
