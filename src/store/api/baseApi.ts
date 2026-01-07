@@ -100,6 +100,8 @@ export const baseAPI = createApi({
     "GeneratedNotes",
     "GeneratedFlashcard",
     "GeneratedClinicalCase",
+    "Group",
+    "GroupMessage",
   ],
   endpoints: () => ({}),
 });

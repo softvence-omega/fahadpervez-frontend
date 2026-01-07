@@ -108,7 +108,15 @@ export const goalAPI = baseAPI.injectEndpoints({
           body: data,
         };
       },
-      invalidatesTags: ["Goal"],
+      invalidatesTags: [
+        "Goal",
+        "Mcq",
+        "FlashCard",
+        "ClinicalCase",
+        "GeneratedMCQ",
+        "GeneratedFlashcard",
+        "GeneratedClinicalCase",
+      ],
     }),
 
     updateProgressOsce: build.mutation<any, { osceId: string }>({
@@ -117,7 +125,7 @@ export const goalAPI = baseAPI.injectEndpoints({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: ["Goal"],
+      invalidatesTags: ["Goal", "OSCE"],
     }),
 
     // end

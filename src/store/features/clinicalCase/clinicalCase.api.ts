@@ -17,6 +17,7 @@ export const clinicalCaseAPI = baseAPI.injectEndpoints({
           params,
         };
       },
+      providesTags: ["ClinicalCase"],
     }),
 
     getSingleClinicalCase: build.query({
