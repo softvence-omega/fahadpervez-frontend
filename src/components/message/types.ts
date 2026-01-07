@@ -1,11 +1,15 @@
 export interface ChatUser {
   id: string;
+  _id?: string;
   name: string;
   avatar: string;
   status: "online" | "offline";
   lastSeen: string;
   isGroup?: boolean;
   memberCount?: number;
+  groupMembers?: any[];
+  groupName?: string;
+  groupLogo?: string;
   lastMessage?: string;
   timeAgo?: string;
   userType: "individual" | "group" | "mentor" | "student";

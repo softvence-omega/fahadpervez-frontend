@@ -19,6 +19,7 @@ export const mcqBankAPI = baseAPI.injectEndpoints({
           params,
         };
       },
+      providesTags: ["Mcq"],
     }),
 
     getSingleMCQ: build.query({
