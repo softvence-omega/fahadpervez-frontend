@@ -29,6 +29,29 @@ export const mentorAPI = baseAPI.injectEndpoints({
     getSingleMentor: builder.query({
       query: (id) => `/admin/mentor/${id}`,
     }),
+    getMentorTransactions: builder.query({
+      query: ({ status, page = 1, limit = 10 }) => ({
+        url: `/mentor/dashboard/transaction`,
+        method: "GET",
+        params: { status, page, limit },
+      }),
+      providesTags: ["Transaction"],
+    }),
+    getMentorEarnings: builder.query({
+      query: (year) => ({
+        url: `/mentor/dashboard/earnings`,
+        method: "GET",
+        params: { year },
+      }),
+      providesTags: ["Transaction"],
+    }),
+    getMentorOverview: builder.query({
+      query: () => ({
+        url: `/mentor/dashboard/overview`,
+        method: "GET",
+      }),
+      providesTags: ["Transaction"],
+    }),
   }),
 });
 
@@ -38,4 +61,7 @@ export const {
   useVerifyMentorProfessionMutation,
   useUpdateMentorPaymentInformationMutation,
   useGetSingleMentorQuery,
+  useGetMentorTransactionsQuery,
+  useGetMentorEarningsQuery,
+  useGetMentorOverviewQuery,
 } = mentorAPI;

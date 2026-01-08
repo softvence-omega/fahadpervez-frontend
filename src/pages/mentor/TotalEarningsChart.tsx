@@ -6,24 +6,10 @@ import {
   ResponsiveContainer,
   XAxis,
   YAxis,
+  Tooltip,
 } from "recharts";
 
-export default function TotalEarningsChart() {
-  const data = [
-    { month: "Jan", amount: 4000 },
-    { month: "Feb", amount: 3000 },
-    { month: "Mar", amount: 2000 },
-    { month: "Apr", amount: 2780 },
-    { month: "May", amount: 1890 },
-    { month: "Jun", amount: 2390 },
-    { month: "Jul", amount: 3490 },
-    { month: "Aug", amount: 3100 },
-    { month: "Sep", amount: 4200 },
-    { month: "Oct", amount: 3700 },
-    { month: "Nov", amount: 4500 },
-    { month: "Dec", amount: 4800 },
-  ];
-
+export default function TotalEarningsChart({ data }: { data: any[] }) {
   return (
     <div className="w-full h-[500px] bg-[#EFF6FF99] border border-blue-300 p-8 rounded-2xl">
       <ResponsiveContainer width="100%" height="100%">
@@ -38,9 +24,17 @@ export default function TotalEarningsChart() {
           <YAxis stroke="#374151" tick={{ fontSize: 12 }} />
 
           {/* Tooltip */}
-          {/* <Tooltip
-            formatter={(value: number) => [`$${value.toLocaleString()}`, "Earnings"]}
-          /> */}
+          <Tooltip
+            contentStyle={{
+              backgroundColor: "#fff",
+              borderRadius: "8px",
+              border: "1px solid #E5E7EB",
+            }}
+            formatter={(value: any) => [
+              `$${(value || 0).toLocaleString()}`,
+              "Earnings",
+            ]}
+          />
 
           {/* Straight line (solid design) */}
           <Line
