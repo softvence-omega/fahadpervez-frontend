@@ -101,6 +101,7 @@ export const baseAPI = createApi({
     "GeneratedClinicalCase",
     "Group",
     "GroupMessage",
+    "Transaction",
   ],
   endpoints: () => ({}),
 });

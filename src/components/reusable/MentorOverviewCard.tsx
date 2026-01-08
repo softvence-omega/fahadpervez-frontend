@@ -18,8 +18,8 @@ const MentorOverviewCard: React.FC<OverviewCardProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`max:w-[330px] flex flex-col justify-between gap-5 bg-white border border-slate-300 rounded-[8px] py-3 px-4 ${
-        onClick ? "pointer" : "default"
+      className={`w-full flex-1 flex flex-col justify-between gap-5 bg-white border border-slate-300 rounded-[8px] py-3 px-4 ${
+        onClick ? "cursor-pointer" : "cursor-default"
       } transition shadow-md hover:drop-shadow-lg`}
     >
       <div className="flex items-center gap-3 mb-5">
