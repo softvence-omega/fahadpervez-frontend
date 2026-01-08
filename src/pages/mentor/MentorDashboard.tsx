@@ -1,27 +1,41 @@
 import MentorOverviewCard from "@/components/reusable/MentorOverviewCard";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
 import {
   BookOpenText,
-  MessageCircle,
   NotepadText,
   Users,
   Video,
 } from "lucide-react";
 import TotalEarningsChart from "./TotalEarningsChart";
-import { useState } from "react";
+// import { useState } from "react";
 import { Link } from "react-router-dom";
 import MentorQuestionBankCard from "./questionBank/MentorQuestionBankCard";
 import MentorSessionCard from "./MentorSessionCard";
-import MentorAnswerAndSolutionCard from "./MentorAnswerAndSolutionCard";
+// import MentorAnswerAndSolutionCard from "./MentorAnswerAndSolutionCard";
+import { useGetMentorOverviewQuery } from "@/store/features/mentor/mentor.api";
 
 const MentorDashboard = () => {
-  const [category, setCategory] = useState<string>("");
+  // const [category, setCategory] = useState<string>("advanced");
+  const { data: overviewData, isLoading } = useGetMentorOverviewQuery({});
+
+  const data = overviewData?.data;
+  const overview = data?.overview;
+  const earningsChart = data?.earningsChart || [];
+  const toDayClasses = data?.toDayClasses || [];
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-20">
+        <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -31,28 +45,28 @@ const MentorDashboard = () => {
           icon={BookOpenText}
           iconColor="text-blue-700"
           iconBg="bg-blue-100"
-          value="02"
+          value={overview?.questionBank || 0}
           bottomText="Question Bank"
         />
         <MentorOverviewCard
           icon={NotepadText}
           iconColor="text-fuchsia-700"
           iconBg="bg-fuchsia-100"
-          value="247"
+          value={overview?.totalQuestion || 0}
           bottomText="Total Question"
         />
         <MentorOverviewCard
           icon={Users}
           iconColor="text-violet-700"
           iconBg="bg-violet-50"
-          value="20"
+          value={overview?.totalStudent || 0}
           bottomText="Total Students"
         />
         <MentorOverviewCard
           icon={Video}
           iconColor="text-green-700"
           iconBg="bg-green-100"
-          value="04"
+          value={overview?.liveClasses || 0}
           bottomText="Live Classes"
         />
       </div>
@@ -62,9 +76,9 @@ const MentorDashboard = () => {
           <p className="text-2xl text-[#111827] font-semibold">
             Total Earnings
           </p>
-          <div className="grid gap-2">
+          {/* <div className="grid gap-2">
             <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger id="category" className="w-full bg-blue-main">
+              <SelectTrigger id="category" className="w-[120px] bg-blue-main">
                 <SelectValue placeholder="Select Time" />
               </SelectTrigger>
               <SelectContent className="">
@@ -73,11 +87,11 @@ const MentorDashboard = () => {
                 <SelectItem value="advanced">Year</SelectItem>
               </SelectContent>
             </Select>
-          </div>
+          </div> */}
         </div>
 
         <div className="mt-7 mb-12">
-          <TotalEarningsChart />
+          <TotalEarningsChart data={earningsChart} />
         </div>
       </div>
 
@@ -101,8 +115,8 @@ const MentorDashboard = () => {
         <div>
           {Array(2)
             .fill(null)
-            .map(() => (
-              <MentorQuestionBankCard />
+            .map((_, i) => (
+              <MentorQuestionBankCard key={i} />
             ))}
         </div>
       </div>
@@ -124,17 +138,21 @@ const MentorDashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
-          {Array(2)
-            .fill(null)
-            .map(() => (
-              <MentorSessionCard />
+        {toDayClasses.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            {toDayClasses.map((session: any) => (
+              <MentorSessionCard key={session._id} session={session} />
             ))}
-        </div>
+          </div>
+        ) : (
+          <div className="text-center py-10 bg-gray-50 border border-dashed border-gray-300 rounded-xl text-gray-500">
+            No classes scheduled for today.
+          </div>
+        )}
       </div>
 
       {/* Answers & Solutions */}
-      <div className="mt-16">
+      {/* <div className="mt-16">
         <div className="flex flex-wrap gap-2 items-center justify-between mb-8">
           <div className="flex items-start gap-3">
             <MessageCircle />
@@ -155,7 +173,7 @@ const MentorDashboard = () => {
         </div>
 
         <MentorAnswerAndSolutionCard />
-      </div>
+      </div> */}
     </div>
   );
 };

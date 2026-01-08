@@ -82,8 +82,8 @@ const MentorClasses = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {Array(3)
                   .fill(null)
-                  .map(() => (
-                    <MentorSessionCard />
+                  .map((_, i) => (
+                    <MentorSessionCard key={i} session={null} />
                   ))}
               </div>
             )}
@@ -91,8 +91,8 @@ const MentorClasses = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {Array(2)
                   .fill(null)
-                  .map(() => (
-                    <MentorSessionCard />
+                  .map((_, i) => (
+                    <MentorSessionCard key={i} session={null} />
                   ))}
               </div>
             )}
