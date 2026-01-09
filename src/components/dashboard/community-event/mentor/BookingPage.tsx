@@ -216,10 +216,7 @@ const BookingPage = () => {
     try {
       const response = await bookSession(bookingData).unwrap();
       if (response.success && response.data?.sessionId) {
-        // Store paymentId in sessionStorage as backup
-        sessionStorage.setItem("pendingPaymentId", response.data.paymentId);
-        sessionStorage.setItem("paymentType", "session"); // To distinguish from plan upgrade
-
+        // URL parameters will be used for verification (no sessionStorage needed)
         const successUrl = `${window.location.origin}/checkout/success?orderId=${response.data.paymentId}&type=mentor_session`;
         startCheckout(response.data.sessionId, successUrl);
       } else {
