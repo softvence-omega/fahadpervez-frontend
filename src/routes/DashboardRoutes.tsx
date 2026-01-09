@@ -108,7 +108,7 @@ const dashboardRoutes = {
       element: <MentorProfile />,
     },
     {
-      path: "ask-question",
+      path: "ask-question/:id",
       element: <AskQuestion />,
     },
     {

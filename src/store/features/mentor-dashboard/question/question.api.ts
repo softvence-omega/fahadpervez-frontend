@@ -16,7 +16,8 @@ const userAPI = baseAPI.injectEndpoints({
         url: "/social-post/question/get-all",
         method: "GET",
       }),
-      transformResponse: (response: { success: boolean; data: IQuestion[] }) => response.data,
+      transformResponse: (response: { success: boolean; data: IQuestion[] }) =>
+        response.data,
       providesTags: ["Questions"],
     }),
     questionUpdate: build.mutation({
@@ -27,6 +28,15 @@ const userAPI = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ["Questions"],
     }),
+    getMentorsQuestionWithAnswers: build.query({
+      query: (id) => ({
+        url: `/social-post/question/get-all-mentors-question-with-answers/${id}`,
+        method: "GET",
+      }),
+      transformResponse: (response: { success: boolean; data: any }) =>
+        response.data,
+      providesTags: ["Questions"],
+    }),
   }),
 });
 
@@ -34,4 +44,5 @@ export const {
   useSocialQuestionPostMutation,
   useAllQuestionGetQuery,
   useQuestionUpdateMutation,
+  useGetMentorsQuestionWithAnswersQuery,
 } = userAPI;

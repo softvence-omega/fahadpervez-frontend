@@ -52,6 +52,31 @@ export const mentorAPI = baseAPI.injectEndpoints({
       }),
       providesTags: ["Transaction"],
     }),
+    getMyUpcomingSessions: builder.query({
+      query: () => ({
+        url: `/sessions/my-upcoming-session`,
+        method: "GET",
+      }),
+      transformResponse: (response: { success: boolean; data: any[] }) =>
+        response.data,
+      providesTags: ["Sessions"],
+    }),
+    bookSession: builder.mutation({
+      query: (data) => ({
+        url: "/sessions/book-session",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Sessions"],
+    }),
+    verifySession: builder.mutation({
+      query: (data) => ({
+        url: "/sessions/verify-session",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Sessions"],
+    }),
   }),
 });
 
@@ -64,4 +89,7 @@ export const {
   useGetMentorTransactionsQuery,
   useGetMentorEarningsQuery,
   useGetMentorOverviewQuery,
+  useGetMyUpcomingSessionsQuery,
+  useBookSessionMutation,
+  useVerifySessionMutation,
 } = mentorAPI;
