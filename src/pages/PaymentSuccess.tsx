@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useVerifyPaymentMutation } from "@/store/features/payment/payment.api";
+import { useVerifySessionMutation } from "@/store/features/mentor/mentor.api";
 import { useLazyGetMeQuery } from "@/store/features/auth/auth.api";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser, selectToken } from "@/store/features/auth/auth.slice";
@@ -13,130 +14,201 @@ import CommonWrapper from "@/common/CommonWrapper";
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const resultIndicator = searchParams.get("resultIndicator");
 
-  // Try getting paymentId from URL first, then sessionStorage
-  const urlPaymentId = searchParams.get("paymentId");
-  const storedPaymentId = sessionStorage.getItem("pendingPaymentId");
-  const paymentId = urlPaymentId || storedPaymentId || "";
+  // --- CAPTURE PARAMS ONCE INTO CONSTANTS ---
+  const urlOrderId = searchParams.get("orderId")?.trim();
+  const urlPaymentId = searchParams.get("paymentId")?.trim();
+  const urlType = searchParams.get("type")?.trim();
 
-  const [verifyPayment, { isLoading }] = useVerifyPaymentMutation();
+  // Local state to hold the "Locked" values for verification
+  const [verificationData, setVerificationData] = useState<{
+    id: string;
+    type: "session" | "plan";
+  } | null>(null);
+
   const [status, setStatus] = useState<"loading" | "success" | "failed">(
     "loading"
   );
   const [message, setMessage] = useState("");
-
   const hasVerified = useRef(false);
+
+  // REDUX & API
+  const [verifyPayment, { isLoading: isPlanVerifyLoading }] =
+    useVerifyPaymentMutation();
+  const [verifySession, { isLoading: isSessionVerifyLoading }] =
+    useVerifySessionMutation();
   const [triggerGetMe] = useLazyGetMeQuery();
   const dispatch = useDispatch();
   const token = useSelector(selectToken);
 
+  const isLoading = isPlanVerifyLoading || isSessionVerifyLoading;
+
+  // INITIAL SETUP: Determine what we are verifying
   useEffect(() => {
-    const verify = async () => {
-      // Prevent double invocation
-      if (hasVerified.current) return;
+    const storedPaymentId = sessionStorage.getItem("pendingPaymentId")?.trim();
+    const storedType = sessionStorage.getItem("paymentType")?.trim();
 
-      if (!resultIndicator) {
-        setStatus("failed");
-        setMessage("Invalid payment response.");
-        return;
-      }
+    // 1. Determine Type (Priority: URL > Storage)
+    const finalType =
+      urlType === "mentor_session" ||
+      storedType === "session" ||
+      storedType === "plan_upgrade"
+        ? urlType === "mentor_session" || storedType === "session"
+          ? "session"
+          : "plan"
+        : "plan";
 
+    // 2. Determine ID (Priority: Explicit orderId > Stored ID > paymentId param)
+    const finalId = urlOrderId || storedPaymentId || urlPaymentId || "";
+
+    console.log("DEBUG: Verification Data Preparation (ONLY paymentId)", {
+      finalId,
+      finalType,
+      source: {
+        urlOrderId,
+        storedPaymentId,
+        urlPaymentId,
+        urlType,
+        storedType,
+      },
+    });
+
+    if (!finalId) {
+      setStatus("failed");
+      setMessage("Payment record not found (ID missing).");
+    } else {
+      setVerificationData({
+        id: finalId,
+        type: finalType,
+      });
+    }
+  }, [urlOrderId, urlPaymentId, urlType]);
+
+  // ACTION: Execute Verification
+  useEffect(() => {
+    if (!verificationData || hasVerified.current) return;
+
+    let timeout: NodeJS.Timeout;
+
+    const runVerify = async () => {
       hasVerified.current = true;
+      const { id, type } = verificationData;
 
       try {
-        const response = await verifyPayment({
-          paymentId: paymentId || resultIndicator, // Fallback if paymentId specific param isn't there
-          resultIndicator,
-        }).unwrap();
+        console.log(`DEBUG: Executing Verification [${type}] with id: ${id}`);
 
-        // Clear stored paymentId
+        let response;
+        if (type === "session") {
+          // Sending only paymentId as requested
+          response = await verifySession({ paymentId: id }).unwrap();
+        } else {
+          // Sending only paymentId as requested
+          response = await verifyPayment({ paymentId: id }).unwrap();
+        }
+
+        // CLEAR STORAGE after first attempt
         sessionStorage.removeItem("pendingPaymentId");
+        sessionStorage.removeItem("paymentType");
 
         if (response.success) {
-          // Refresh user data
           const userResponse = await triggerGetMe().unwrap();
           if (userResponse.success && userResponse.data) {
-            // Dispatch to Redux to update global state
             const { account, profile } = userResponse.data;
-            // We reuse the current access token
             dispatch(
               setUser({ user: { account, profile }, accessToken: token })
             );
-            // Ensure structure matches
           }
 
           setStatus("success");
-          setMessage("Your plan has been upgraded successfully.");
+          setMessage(
+            type === "session"
+              ? "Your session booking is confirmed!"
+              : "Your plan has been upgraded!"
+          );
+          timeout = setTimeout(() => navigate("/dashboard"), 3000);
         } else {
           setStatus("failed");
-          setMessage(response.message || "Payment verification failed.");
+          setMessage(response.message || "Verification failed on our servers.");
         }
       } catch (error: any) {
+        console.error("Verification error:", error);
         setStatus("failed");
-        setMessage(error?.data?.message || "Payment verification error.");
+        setMessage(
+          error?.data?.message ||
+            error?.message ||
+            "Internal verification system error."
+        );
       }
     };
 
-    verify();
-  }, [resultIndicator, paymentId, verifyPayment, triggerGetMe, dispatch]);
+    runVerify();
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [
+    verificationData,
+    verifyPayment,
+    verifySession,
+    triggerGetMe,
+    dispatch,
+    token,
+    navigate,
+  ]);
 
   if (isLoading || status === "loading") {
     return <GlobalLoader2 />;
   }
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center bg-gray-50">
+    <div className="min-h-[80vh] flex items-center justify-center bg-gray-50 p-4">
       <CommonWrapper>
-        <div className="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-lg text-center">
+        <div className="max-w-md mx-auto bg-white p-10 rounded-3xl shadow-xl text-center border border-gray-100">
           {status === "success" ? (
             <div className="space-y-6">
-              <div className="flex justify-center">
-                <CheckCircle className="w-20 h-20 text-green-500" />
-              </div>
-              <h2 className="text-3xl font-bold text-gray-900">
-                Payment Successful!
+              <CheckCircle className="w-24 h-24 text-green-500 mx-auto animate-bounce" />
+              <h2 className="text-3xl font-extrabold text-gray-900">
+                Success!
               </h2>
-              <div className="bg-green-50 p-4 rounded-lg border border-green-200 text-left">
-                <p className="font-semibold text-green-800 mb-2">
-                  Account Updated:
-                </p>
-                <ul className="list-disc list-inside text-green-700 space-y-1">
-                  <li>Subscription is now active</li>
-                  {/* <li>AI Credits: 10 added</li> */}
-                </ul>
-              </div>
               <p className="text-gray-600 text-lg">{message}</p>
+              <div className="py-2 px-4 bg-blue-50 text-blue-700 text-sm rounded-full inline-block">
+                Redirecting to dashboard...
+              </div>
               <Button
                 onClick={() => navigate("/dashboard")}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg rounded-xl"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-2xl py-7 text-xl font-bold transition-all shadow-lg hover:shadow-blue-200"
               >
                 Go to Dashboard
               </Button>
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="flex justify-center">
-                <XCircle className="w-20 h-20 text-red-500" />
-              </div>
-              <h2 className="text-3xl font-bold text-gray-900">
-                Payment Failed
+              <XCircle
+                className="w-24 h-24 text-red-500 mx-auto"
+                strokeWidth={2.5}
+              />
+              <h2 className="text-3xl font-extrabold text-gray-900">
+                Problem Found
               </h2>
-              <p className="text-gray-600 text-lg">{message}</p>
-              <div className="space-y-3">
+              <p className="text-gray-600 text-lg leading-relaxed">{message}</p>
+              <div className="pt-4 space-y-4">
                 <Button
-                  onClick={() => navigate("/pricing")} // Or wherever pricing is
-                  variant="outline"
-                  className="w-full border-2 border-blue-600 text-blue-600 hover:bg-blue-50 py-6 text-lg rounded-xl"
+                  onClick={() =>
+                    navigate(
+                      verificationData?.type === "session"
+                        ? "/dashboard/mentorship"
+                        : "/pricing"
+                    )
+                  }
+                  className="w-full bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50 rounded-2xl py-6 text-lg font-bold transition-colors"
                 >
                   Try Again
                 </Button>
                 <Button
                   onClick={() => navigate("/dashboard")}
                   variant="ghost"
-                  className="w-full text-gray-500 hover:text-gray-700"
+                  className="w-full text-gray-400 hover:text-gray-600 text-base"
                 >
-                  Back to Dashboard
+                  Return to Dashboard
                 </Button>
               </div>
             </div>

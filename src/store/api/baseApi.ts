@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
@@ -20,7 +21,7 @@ const baseQueryAPI = fetchBaseQuery({
 const baseQueryWithToasts: typeof baseQueryAPI = async (
   args,
   api,
-  extraOptions: any
+  extraOptions: any,
 ) => {
   const result = await baseQueryAPI(args, api, extraOptions);
 
@@ -103,6 +104,9 @@ export const baseAPI = createApi({
     "Group",
     "GroupMessage",
     "Transaction",
+    "Tracking",
+    "Leaderboard",
+    "Sessions",
   ],
   endpoints: () => ({}),
 });

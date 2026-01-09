@@ -77,13 +77,6 @@ export const groupAPI = baseAPI.injectEndpoints({
       }),
       providesTags: ["GroupMessage"],
     }),
-    getMyGroupById: build.query({
-      query: (id) => ({
-        url: `/group/get-my-group-by-id/${id}`,
-        method: "GET",
-      }),
-      providesTags: ["Group"],
-    }),
   }),
 });
 
@@ -97,5 +90,4 @@ export const {
   useRemoveMemberFromGroupMutation,
   useSendGroupMessageMutation,
   useGetGroupMessagesQuery,
-  useGetMyGroupByIdQuery,
 } = groupAPI;
