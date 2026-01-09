@@ -1,42 +1,44 @@
 import CommonSpace from "@/common/space/CommonSpace";
+import { usePaymentOverviewQuery } from "@/store/features/adminDashboard/payment/paymentApi";
+import { FC } from "react";
+import { LuCoins } from "react-icons/lu";
 import DashBoardCard from "../reuseable/DashBoardCard";
 import DashboardTopSection from "../reuseable/DashboardTopSection";
-import { LuCoins } from "react-icons/lu";
-import { FC } from "react";
 
-const dashboardStats = [
-  {
-    title: "Total Revenue",
-    value: "$39,243.16",
-    subtitle: "+12.3% from last month",
-    icon: LuCoins,
-    subtitleColor: "text-[#000]",
-    iconColor: "!text-[#1E40AF]",
-  },
-  {
-    title: "Active Subscribers",
-    value: "12",
-
-    icon: LuCoins,
-    iconColor: "text-[#1E40AF]",
-    subtitleColor: "text-green-500",
-    subtitle: "+12% from last month",
-  },
-  {
-    title: "Active Plans",
-    value: 10,
-    subtitle: "01 New this month",
-
-    icon: LuCoins,
-    iconColor: "!text-[#1E40AF]",
-    subtitleColor: "text-[#000]",
-  },
-];
 interface PlanTopProps {
   handleCreatePlan: () => void;
 }
 
 const PlanTop: FC<PlanTopProps> = ({ handleCreatePlan }) => {
+  const { data: overview } = usePaymentOverviewQuery();
+  const dashboardStats = [
+    {
+      title: "Total Revenue",
+      value: overview?.data?.totalRevenue ?? 0,
+      subtitle: "+12.3% from last month",
+      icon: LuCoins,
+      subtitleColor: "text-[#000]",
+      iconColor: "!text-[#1E40AF]",
+    },
+    {
+      title: "Active Subscribers",
+      value: overview?.data?.activeSubscribers ?? 0,
+
+      icon: LuCoins,
+      iconColor: "text-[#1E40AF]",
+      subtitleColor: "text-green-500",
+      subtitle: "+12% from last month",
+    },
+    {
+      title: "Active Plans",
+      value: overview?.data?.thisMonthSubscribers ?? 0,
+      subtitle: "01 New this month",
+
+      icon: LuCoins,
+      iconColor: "!text-[#1E40AF]",
+      subtitleColor: "text-[#000]",
+    },
+  ];
   return (
     <div>
       <DashboardTopSection

@@ -95,6 +95,7 @@ export const baseAPI = createApi({
     "ReportResponse",
     "professionalType",
     "BioDigital",
+    "payment",
     "GeneratedMCQ",
     "GeneratedNotes",
     "GeneratedFlashcard",
