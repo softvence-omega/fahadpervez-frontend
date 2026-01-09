@@ -14,104 +14,99 @@ import CommonWrapper from "@/common/CommonWrapper";
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const resultIndicator = searchParams.get("resultIndicator");
 
-  // Step 1: Detect specific Type (Priority to URL param)
-  const urlType = searchParams.get("type");
-  const storedType = sessionStorage.getItem("paymentType");
-  const paymentType =
-    urlType === "mentor_session" || storedType === "session"
-      ? "session"
-      : "plan";
+  // --- CAPTURE PARAMS ONCE INTO CONSTANTS ---
+  const urlOrderId = searchParams.get("orderId")?.trim();
+  const urlPaymentId = searchParams.get("paymentId")?.trim();
+  const urlType = searchParams.get("type")?.trim();
 
-  // Step 2: Extract Payment ID / Order ID (Priority to explicit 'orderId' param)
-  const urlOrderId = searchParams.get("orderId");
-  const urlPaymentId = searchParams.get("paymentId");
-  const storedPaymentId = sessionStorage.getItem("pendingPaymentId");
-
-  // Strictly prioritize IDs that look like INVOICES and are NOT equal to the indicator
-  const getValidId = (id: string | null) => {
-    if (!id) return null;
-    if (id === resultIndicator) return null; // CRITICAL: Skip if it's just the indicator
-    return id;
-  };
-
-  const paymentId =
-    getValidId(urlOrderId) ||
-    getValidId(storedPaymentId) ||
-    getValidId(urlPaymentId) ||
-    "";
-
-  const [verifyPayment, { isLoading: isPlanVerifyLoading }] =
-    useVerifyPaymentMutation();
-  const [verifySession, { isLoading: isSessionVerifyLoading }] =
-    useVerifySessionMutation();
-
-  const isLoading = isPlanVerifyLoading || isSessionVerifyLoading;
+  // Local state to hold the "Locked" values for verification
+  const [verificationData, setVerificationData] = useState<{
+    id: string;
+    type: "session" | "plan";
+  } | null>(null);
 
   const [status, setStatus] = useState<"loading" | "success" | "failed">(
     "loading"
   );
   const [message, setMessage] = useState("");
-
   const hasVerified = useRef(false);
+
+  // REDUX & API
+  const [verifyPayment, { isLoading: isPlanVerifyLoading }] =
+    useVerifyPaymentMutation();
+  const [verifySession, { isLoading: isSessionVerifyLoading }] =
+    useVerifySessionMutation();
   const [triggerGetMe] = useLazyGetMeQuery();
   const dispatch = useDispatch();
   const token = useSelector(selectToken);
 
+  const isLoading = isPlanVerifyLoading || isSessionVerifyLoading;
+
+  // INITIAL SETUP: Determine what we are verifying
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
+    const storedPaymentId = sessionStorage.getItem("pendingPaymentId")?.trim();
+    const storedType = sessionStorage.getItem("paymentType")?.trim();
 
-    const verify = async () => {
-      // Prevent double invocation
-      if (hasVerified.current) return;
+    // 1. Determine Type (Priority: URL > Storage)
+    const finalType =
+      urlType === "mentor_session" ||
+      storedType === "session" ||
+      storedType === "plan_upgrade"
+        ? urlType === "mentor_session" || storedType === "session"
+          ? "session"
+          : "plan"
+        : "plan";
 
-      console.log("DEBUG: Verification Context", {
-        paymentType,
+    // 2. Determine ID (Priority: Explicit orderId > Stored ID > paymentId param)
+    const finalId = urlOrderId || storedPaymentId || urlPaymentId || "";
+
+    console.log("DEBUG: Verification Data Preparation (ONLY paymentId)", {
+      finalId,
+      finalType,
+      source: {
+        urlOrderId,
+        storedPaymentId,
+        urlPaymentId,
         urlType,
         storedType,
-        finalPaymentId: paymentId,
-        urlOrderId,
-        urlPaymentId,
-        storedPaymentId,
-        resultIndicator,
+      },
+    });
+
+    if (!finalId) {
+      setStatus("failed");
+      setMessage("Payment record not found (ID missing).");
+    } else {
+      setVerificationData({
+        id: finalId,
+        type: finalType,
       });
+    }
+  }, [urlOrderId, urlPaymentId, urlType]);
 
-      if (!resultIndicator || !paymentId || paymentId === resultIndicator) {
-        setStatus("failed");
-        setMessage(
-          !paymentId || paymentId === resultIndicator
-            ? "Missing or invalid payment ID."
-            : "Invalid payment response."
-        );
-        return;
-      }
+  // ACTION: Execute Verification
+  useEffect(() => {
+    if (!verificationData || hasVerified.current) return;
 
+    let timeout: NodeJS.Timeout;
+
+    const runVerify = async () => {
       hasVerified.current = true;
+      const { id, type } = verificationData;
 
       try {
+        console.log(`DEBUG: Executing Verification [${type}] with id: ${id}`);
+
         let response;
-        if (paymentType === "session") {
-          console.log("DEBUG: Verifying Session Booking", {
-            paymentId,
-            resultIndicator,
-          });
-          response = await verifySession({
-            paymentId,
-            resultIndicator,
-          }).unwrap();
+        if (type === "session") {
+          // Sending only paymentId as requested
+          response = await verifySession({ paymentId: id }).unwrap();
         } else {
-          console.log("DEBUG: Verifying Plan Upgrade", {
-            paymentId,
-            resultIndicator,
-          });
-          response = await verifyPayment({
-            paymentId,
-            resultIndicator,
-          }).unwrap();
+          // Sending only paymentId as requested
+          response = await verifyPayment({ paymentId: id }).unwrap();
         }
 
-        // Clear stored data
+        // CLEAR STORAGE after first attempt
         sessionStorage.removeItem("pendingPaymentId");
         sessionStorage.removeItem("paymentType");
 
@@ -126,32 +121,32 @@ const PaymentSuccess = () => {
 
           setStatus("success");
           setMessage(
-            paymentType === "session" ? "Session booked!" : "Plan upgraded!"
+            type === "session"
+              ? "Your session booking is confirmed!"
+              : "Your plan has been upgraded!"
           );
-
           timeout = setTimeout(() => navigate("/dashboard"), 3000);
         } else {
           setStatus("failed");
-          setMessage(response.message || "Verification failed.");
+          setMessage(response.message || "Verification failed on our servers.");
         }
       } catch (error: any) {
         console.error("Verification error:", error);
         setStatus("failed");
         setMessage(
-          error?.data?.message || error?.message || "Verification error."
+          error?.data?.message ||
+            error?.message ||
+            "Internal verification system error."
         );
       }
     };
 
-    verify();
-
+    runVerify();
     return () => {
       if (timeout) clearTimeout(timeout);
     };
   }, [
-    resultIndicator,
-    paymentId,
-    paymentType,
+    verificationData,
     verifyPayment,
     verifySession,
     triggerGetMe,
@@ -165,49 +160,55 @@ const PaymentSuccess = () => {
   }
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center bg-gray-50">
+    <div className="min-h-[80vh] flex items-center justify-center bg-gray-50 p-4">
       <CommonWrapper>
-        <div className="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-lg text-center">
+        <div className="max-w-md mx-auto bg-white p-10 rounded-3xl shadow-xl text-center border border-gray-100">
           {status === "success" ? (
             <div className="space-y-6">
-              <CheckCircle className="w-20 h-20 text-green-500 mx-auto" />
-              <h2 className="text-3xl font-bold text-gray-900">Success!</h2>
-              <p className="text-gray-600">{message}</p>
-              <p className="text-sm text-gray-400 italic">
+              <CheckCircle className="w-24 h-24 text-green-500 mx-auto animate-bounce" />
+              <h2 className="text-3xl font-extrabold text-gray-900">
+                Success!
+              </h2>
+              <p className="text-gray-600 text-lg">{message}</p>
+              <div className="py-2 px-4 bg-blue-50 text-blue-700 text-sm rounded-full inline-block">
                 Redirecting to dashboard...
-              </p>
+              </div>
               <Button
                 onClick={() => navigate("/dashboard")}
-                className="w-full bg-blue-600 rounded-xl py-6"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-2xl py-7 text-xl font-bold transition-all shadow-lg hover:shadow-blue-200"
               >
                 Go to Dashboard
               </Button>
             </div>
           ) : (
             <div className="space-y-6">
-              <XCircle className="w-20 h-20 text-red-500 mx-auto" />
-              <h2 className="text-3xl font-bold text-gray-900">Failed</h2>
-              <p className="text-gray-600">{message}</p>
-              <div className="space-y-3">
+              <XCircle
+                className="w-24 h-24 text-red-500 mx-auto"
+                strokeWidth={2.5}
+              />
+              <h2 className="text-3xl font-extrabold text-gray-900">
+                Problem Found
+              </h2>
+              <p className="text-gray-600 text-lg leading-relaxed">{message}</p>
+              <div className="pt-4 space-y-4">
                 <Button
                   onClick={() =>
                     navigate(
-                      paymentType === "session"
+                      verificationData?.type === "session"
                         ? "/dashboard/mentorship"
                         : "/pricing"
                     )
                   }
-                  variant="outline"
-                  className="w-full py-6 rounded-xl border-2 border-blue-600 text-blue-600"
+                  className="w-full bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50 rounded-2xl py-6 text-lg font-bold transition-colors"
                 >
                   Try Again
                 </Button>
                 <Button
                   onClick={() => navigate("/dashboard")}
                   variant="ghost"
-                  className="w-full text-gray-500"
+                  className="w-full text-gray-400 hover:text-gray-600 text-base"
                 >
-                  Back to Dashboard
+                  Return to Dashboard
                 </Button>
               </div>
             </div>

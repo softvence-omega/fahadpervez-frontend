@@ -210,7 +210,7 @@ const BookingPage = () => {
       time: selectedTime.time,
       sessionDuration: `${bookingProps.duration} minutes`,
       sessionValue: bookingProps.price * sessions,
-      redirectUrl: window.location.origin,
+      redirectUrl: `${window.location.origin}/checkout/success?type=mentor_session`,
     };
 
     try {

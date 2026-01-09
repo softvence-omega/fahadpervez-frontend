@@ -58,7 +58,7 @@ export default function AskQuestion() {
     try {
       await socialQuestionPost({
         question,
-        mentorAccountId: mentorProfileId, // Using profileId here as requested by context of fetching
+        mentorAccountId: mentorProfileId,
       }).unwrap();
       setQuestion("");
       refetch();
@@ -74,7 +74,6 @@ export default function AskQuestion() {
 
   return (
     <div className="mt-6 mb-8 px-2">
-      {/* Breadcrumb */}
       <Breadcrumb breadcrumbs={breadcrumbs} />
 
       <div className="flex items-start gap-1">
@@ -96,7 +95,6 @@ export default function AskQuestion() {
         />
       </div>
 
-      {/* Header Row */}
       <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-6 mt-5 mb-3">
         <div>
           <DashboardHeading
@@ -113,29 +111,16 @@ export default function AskQuestion() {
         </p>
       </div>
 
-      {/* Search Input */}
-      {/* <div className="relative mt-6">
-        <input
-          type="text"
-          placeholder="Search by condition or keyword"
-          className="w-full md:w-[450px] h-12 pl-10 pr-4 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
-      </div> */}
-
-      {/* Question List */}
       <div className="mt-8 space-y-6">
         {questions.map((question: IQuestion, idx: number) => (
           <div
             key={idx}
             className="border border-slate-200 rounded-lg p-5 bg-white shadow-sm hover:shadow-md transition-shadow duration-200"
           >
-            {/* Question */}
             <p className="text-slate-800 font-medium mb-4">
               Q: {question?.question}
             </p>
 
-            {/* Answers */}
             <div className="space-y-4">
               {question.answers && question.answers.length > 0 ? (
                 question.answers.map((ans: IAnswer) => (
@@ -166,7 +151,6 @@ export default function AskQuestion() {
           </div>
         ))}
 
-        {/* Ask New Question */}
         <div className="border border-slate-200 rounded-lg p-5 bg-white shadow-sm mt-8">
           <p className="text-slate-800 font-semibold mb-4">
             Ask a New Question
