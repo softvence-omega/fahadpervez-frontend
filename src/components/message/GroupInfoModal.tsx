@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Search, UserPlus, Trash2, Users } from "lucide-react";
 import { ChatUser } from "./types";
 import {
@@ -11,6 +15,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 interface GroupInfoModalProps {
   isOpen: boolean;
@@ -31,7 +36,7 @@ const GroupInfoModal: React.FC<GroupInfoModalProps> = ({
   // Removed useGetMyGroupByIdQuery as it uses a non-existent endpoint.
   // We use the group prop passed from parent (ChatSidebar/Messages)
   const activeGroup = group;
-  console.log("GroupInfoModal: activeGroup", activeGroup);
+  
   const members = activeGroup?.groupMembers || [];
 
   const [removeMember, { isLoading: isRemoving }] =
@@ -47,7 +52,7 @@ const GroupInfoModal: React.FC<GroupInfoModalProps> = ({
     { searchTerm: memberSearchTerm },
     { skip: !isAddMemberMode }
   );
-
+  
   const handleRemoveMember = async (memberId: string) => {
     if (!memberId) {
       toast.error("Invalid member ID");
@@ -122,10 +127,12 @@ const GroupInfoModal: React.FC<GroupInfoModalProps> = ({
                 "GP"
               )}
             </div>
-            <h2 className="text-xl font-semibold mb-1">
+            <DialogTitle className="text-xl font-semibold mb-1">
               {activeGroup?.name || activeGroup?.groupName}
-            </h2>
-            <p className="text-gray-400 text-sm">{members.length} members</p>
+            </DialogTitle>
+            <DialogDescription className="text-gray-400 text-sm">
+              {members.length} members
+            </DialogDescription>
 
             {/* Action Buttons */}
             {/* <div className="flex gap-4 mt-6">
@@ -270,9 +277,11 @@ const GroupInfoModal: React.FC<GroupInfoModalProps> = ({
                       communityMembersData.data.map((member: any) => (
                         <div
                           key={member._id}
-                          onClick={() => toggleMemberSelection(member._id)}
+                          onClick={() =>
+                            toggleMemberSelection(member?.accountId)
+                          }
                           className={`flex items-center justify-between p-2 rounded-lg group transition-colors cursor-pointer ${
-                            selectedMemberIds.includes(member._id)
+                            selectedMemberIds.includes(member?.accountId)
                               ? "bg-[#344456]"
                               : "hover:bg-[#2C394A]"
                           }`}
@@ -296,7 +305,9 @@ const GroupInfoModal: React.FC<GroupInfoModalProps> = ({
                                   }
                                 </AvatarFallback>
                               </Avatar>
-                              {selectedMemberIds.includes(member._id) && (
+                              {selectedMemberIds.includes(
+                                member?.accountId
+                              ) && (
                                 <div className="absolute -top-1 -right-1 bg-blue-500 rounded-full p-0.5 border-2 border-[#1D2733]">
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -389,13 +400,7 @@ const GroupInfoModal: React.FC<GroupInfoModalProps> = ({
                           </div>
                           <button
                             className="opacity-0 group-hover:opacity-100 p-2 text-gray-400 hover:text-red-500 transition-all cursor-pointer"
-                            onClick={() =>
-                              handleRemoveMember(
-                                member.profile_id?._id ||
-                                  member.profile_id ||
-                                  member._id
-                              )
-                            }
+                            onClick={() => handleRemoveMember(member._id)}
                             disabled={isRemoving}
                           >
                             <Trash2 className="w-4 h-4" />
