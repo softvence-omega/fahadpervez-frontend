@@ -15,7 +15,7 @@ const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  // --- CAPTURE PARAMS ONCE INTO CONSTANTS ---
+  // --- CAPTURE PARAMS FROM URL ONLY (NO sessionStorage) ---
   const urlOrderId = searchParams.get("orderId")?.trim();
   const urlPaymentId = searchParams.get("paymentId")?.trim();
   const urlType = searchParams.get("type")?.trim();
@@ -43,39 +43,26 @@ const PaymentSuccess = () => {
 
   const isLoading = isPlanVerifyLoading || isSessionVerifyLoading;
 
-  // INITIAL SETUP: Determine what we are verifying
+  // INITIAL SETUP: Determine what we are verifying (URL ONLY)
   useEffect(() => {
-    const storedPaymentId = sessionStorage.getItem("pendingPaymentId")?.trim();
-    const storedType = sessionStorage.getItem("paymentType")?.trim();
+    // 1. Determine Type from URL ONLY
+    const finalType = urlType === "mentor_session" ? "session" : "plan";
 
-    // 1. Determine Type (Priority: URL > Storage)
-    const finalType =
-      urlType === "mentor_session" ||
-      storedType === "session" ||
-      storedType === "plan_upgrade"
-        ? urlType === "mentor_session" || storedType === "session"
-          ? "session"
-          : "plan"
-        : "plan";
+    // 2. Determine ID from URL ONLY (orderId takes priority)
+    const finalId = urlOrderId || urlPaymentId || "";
 
-    // 2. Determine ID (Priority: Explicit orderId > Stored ID > paymentId param)
-    const finalId = urlOrderId || storedPaymentId || urlPaymentId || "";
-
-    console.log("DEBUG: Verification Data Preparation (ONLY paymentId)", {
+    console.log("DEBUG: Verification Data (URL ONLY - No sessionStorage)", {
       finalId,
       finalType,
-      source: {
-        urlOrderId,
-        storedPaymentId,
-        urlPaymentId,
-        urlType,
-        storedType,
-      },
+      currentOrigin: window.location.origin,
+      urlParams: { urlOrderId, urlPaymentId, urlType },
     });
 
     if (!finalId) {
       setStatus("failed");
-      setMessage("Payment record not found (ID missing).");
+      setMessage(
+        "Payment ID not found in URL. Please ensure the payment gateway is configured to pass orderId or paymentId parameter."
+      );
     } else {
       setVerificationData({
         id: finalId,
@@ -95,20 +82,16 @@ const PaymentSuccess = () => {
       const { id, type } = verificationData;
 
       try {
-        console.log(`DEBUG: Executing Verification [${type}] with id: ${id}`);
+        console.log(
+          `DEBUG: Executing Verification [${type}] with paymentId: ${id}`
+        );
 
         let response;
         if (type === "session") {
-          // Sending only paymentId as requested
           response = await verifySession({ paymentId: id }).unwrap();
         } else {
-          // Sending only paymentId as requested
           response = await verifyPayment({ paymentId: id }).unwrap();
         }
-
-        // CLEAR STORAGE after first attempt
-        sessionStorage.removeItem("pendingPaymentId");
-        sessionStorage.removeItem("paymentType");
 
         if (response.success) {
           const userResponse = await triggerGetMe().unwrap();
