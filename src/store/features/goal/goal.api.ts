@@ -128,6 +128,22 @@ export const goalAPI = baseAPI.injectEndpoints({
       invalidatesTags: ["Goal", "OSCE"],
     }),
 
+    getPerformance: build.query({
+      query: () => ({
+        url: "/tracking/get-performance",
+        method: "GET",
+      }),
+      providesTags: ["Tracking"],
+    }),
+
+    getLeaderboard: build.query({
+      query: () => ({
+        url: "/tracking/get-leaderboard",
+        method: "GET",
+      }),
+      providesTags: ["Leaderboard"],
+    }),
+
     // end
   }),
 });
@@ -139,4 +155,6 @@ export const {
   useGetGoalOverviewQuery,
   useUpdateProgressMcqFlashcardClinicalCaseMutation,
   useUpdateProgressOsceMutation,
+  useGetPerformanceQuery,
+  useGetLeaderboardQuery,
 } = goalAPI;

@@ -8,7 +8,12 @@ interface OverviewCardProps {
   stats?: { label: string; value: string }[];
 }
 
-const OverviewCard: React.FC<OverviewCardProps> = ({ icon, title, subtitle, stats }) => {
+const OverviewCard: React.FC<OverviewCardProps> = ({
+  icon,
+  title,
+  subtitle,
+  stats,
+}) => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6">
       <div className="flex items-center gap-3 mb-4">
@@ -17,7 +22,7 @@ const OverviewCard: React.FC<OverviewCardProps> = ({ icon, title, subtitle, stat
           <img src={icon} className="w-full h-full" alt="alt" />
         </div>
         <div>
-          <div className="text-2xl font-semibold text-gray-900">{title}</div>
+          <div className="text-2xl font-semibold text-gray-900">{parseFloat(title).toFixed(2)}</div>
           {subtitle && <div className="text-sm text-gray-600">{subtitle}</div>}
         </div>
       </div>
@@ -25,8 +30,12 @@ const OverviewCard: React.FC<OverviewCardProps> = ({ icon, title, subtitle, stat
         <div className="grid grid-cols-3 gap-4 text-sm">
           {stats.map((s, i) => (
             <div key={i}>
-              <div className="font-semibold text-gray-900 text-nowrap text-center">{s.value}</div>
-              <div className="text-gray-600 text-nowrap text-center">{s.label}</div>
+              <div className="font-semibold text-gray-900 text-nowrap text-center">
+                {parseFloat(s.value).toFixed(2)}
+              </div>
+              <div className="text-gray-600 text-nowrap text-center">
+                {s.label}
+              </div>
             </div>
           ))}
         </div>

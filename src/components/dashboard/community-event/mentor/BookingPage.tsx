@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/pages/ConfirmBooking.jsx
 import { useState, useEffect, FormEvent, ChangeEvent } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { BsInfoLg } from "react-icons/bs";
 import { ArrowLeft } from "lucide-react";
-
-// ---------------- Types ----------------
+import { useBookSessionMutation } from "@/store/features/mentor/mentor.api";
+import { useMastercardCheckout } from "@/hooks/useMastercardCheckout";
+import { toast } from "sonner";
 type BookingProps = {
   price: number;
   duration: number;
@@ -40,16 +41,9 @@ type FormData = {
   message: string;
 };
 
-type BookResponse = {
-  success: boolean;
-  bookingId: string;
-  message: string;
-};
-
 // ---------------- Component ----------------
 const BookingPage = () => {
   const location = useLocation();
-  const navigate = useNavigate();
 
   const [selectedDate, setSelectedDate] = useState<AvailableSlot | null>(null);
   const [selectedTime, setSelectedTime] = useState<TimeSlot | null>(null);
@@ -169,19 +163,8 @@ const BookingPage = () => {
     return [];
   };
 
-  const bookSession = async (bookingData: any): Promise<BookResponse> => {
-    console.log(bookingData);
-    // Placeholder for actual booking API
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          success: true,
-          bookingId: "BK" + Math.random().toString(36).substring(2, 9),
-          message: "Booking confirmed successfully",
-        });
-      }, 1000);
-    });
-  };
+  const [bookSession, { isLoading: isBooking }] = useBookSessionMutation();
+  const { startCheckout } = useMastercardCheckout();
 
   // ---------------- Handlers ----------------
   useEffect(() => {
@@ -213,26 +196,38 @@ const BookingPage = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!selectedDate || !selectedTime) {
-      alert("Please select both date and time");
+      toast.error("Please select both date and time");
       return;
     }
 
     const bookingData = {
-      ...formData,
-      ...bookingProps,
-      sessions,
-      selectedDate: selectedDate.date,
-      selectedTime: selectedTime.time,
-      bookingTimestamp: new Date().toISOString(),
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      issue: formData.message,
+      mentorAccountId: bookingProps.mentor?.accountId || bookingProps.mentorId,
+      date: selectedDate.date,
+      time: selectedTime.time,
+      sessionDuration: `${bookingProps.duration} minutes`,
+      sessionValue: bookingProps.price * sessions,
+      redirectUrl: window.location.origin,
     };
 
-    const response = await bookSession(bookingData);
-    if (response.success) {
-      navigate("/checkout", {
-        state: { ...bookingData, bookingId: response.bookingId },
-      });
-    } else {
-      alert("Booking failed. Please try again.");
+    try {
+      const response = await bookSession(bookingData).unwrap();
+      if (response.success && response.data?.sessionId) {
+        // Store paymentId in sessionStorage as backup
+        sessionStorage.setItem("pendingPaymentId", response.data.paymentId);
+        sessionStorage.setItem("paymentType", "session"); // To distinguish from plan upgrade
+
+        const successUrl = `${window.location.origin}/checkout/success?orderId=${response.data.paymentId}&type=mentor_session`;
+        startCheckout(response.data.sessionId, successUrl);
+      } else {
+        toast.error("Failed to initiate booking. Please try again.");
+      }
+    } catch (error: any) {
+      console.error("Booking failed:", error);
+      toast.error(error?.data?.message || "Booking failed. Please try again.");
     }
   };
 
@@ -246,7 +241,11 @@ const BookingPage = () => {
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="bg-white p-7 rounded">
         <div className="flex items-center gap-1">
-          <Link to={`/dashboard/mentor-profile/${bookingProps.mentorId}`}>
+          <Link
+            to={`/dashboard/mentor-profile/${
+              bookingProps.mentor?.accountId || bookingProps.mentorId
+            }`}
+          >
             {" "}
             <ArrowLeft size={20} className="mb-1" />
           </Link>
@@ -567,10 +566,12 @@ const BookingPage = () => {
                   <Button
                     type="submit"
                     className="w-full bg-blue-600 hover:bg-blue-700 cursor-pointer"
-                    disabled={!selectedDate || !selectedTime}
+                    disabled={!selectedDate || !selectedTime || isBooking}
                   >
                     {!selectedDate || !selectedTime
                       ? "Select Date & Time"
+                      : isBooking
+                      ? "Processing..."
                       : "Go To Checkout"}
                   </Button>
 

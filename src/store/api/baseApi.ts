@@ -102,6 +102,9 @@ export const baseAPI = createApi({
     "Group",
     "GroupMessage",
     "Transaction",
+    "Tracking",
+    "Leaderboard",
+    "Sessions",
   ],
   endpoints: () => ({}),
 });

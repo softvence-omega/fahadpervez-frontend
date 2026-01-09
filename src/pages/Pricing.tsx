@@ -51,7 +51,7 @@ const Pricing = () => {
         sessionStorage.setItem("pendingPaymentId", response.data.paymentId);
 
         // Pass paymentId in the success URL so it persists after redirect
-        const successUrl = `${window.location.origin}/checkout/success?paymentId=${response.data.paymentId}`;
+        const successUrl = `${window.location.origin}/checkout/success?orderId=${response.data.paymentId}&type=plan_upgrade`;
         startCheckout(response.data.sessionId, successUrl);
       } else {
         toast.error("Failed to initiate payment. Please try again.");

@@ -6,7 +6,6 @@ import {
   useRemoveMemberFromGroupMutation,
   useAddMembersIntoGroupMutation,
   useGetAllCommunityMembersQuery,
-  useGetMyGroupByIdQuery,
 } from "@/store/features/group/groupApi";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -29,11 +28,9 @@ const GroupInfoModal: React.FC<GroupInfoModalProps> = ({
   const [existingMemberSearchTerm, setExistingMemberSearchTerm] = useState("");
   const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>([]);
 
-  const { data: groupDetailsData, refetch: refetchGroup } =
-    useGetMyGroupByIdQuery(group?.id || group?._id, { skip: !isOpen });
-
-  console.log("GroupInfoModal: groupDetailsData", groupDetailsData);
-  const activeGroup = groupDetailsData?.data || group;
+  // Removed useGetMyGroupByIdQuery as it uses a non-existent endpoint.
+  // We use the group prop passed from parent (ChatSidebar/Messages)
+  const activeGroup = group;
   console.log("GroupInfoModal: activeGroup", activeGroup);
   const members = activeGroup?.groupMembers || [];
 
@@ -62,7 +59,6 @@ const GroupInfoModal: React.FC<GroupInfoModalProps> = ({
         memberId,
       }).unwrap();
       toast.success("Member removed successfully");
-      refetchGroup();
     } catch (error) {
       toast.error("Failed to remove member");
       console.error(error);
@@ -80,7 +76,6 @@ const GroupInfoModal: React.FC<GroupInfoModalProps> = ({
       setSelectedMemberIds([]);
       setIsAddMemberMode(false);
       refetchCommunity();
-      refetchGroup();
     } catch (error) {
       toast.error("Failed to add members");
       console.error(error);

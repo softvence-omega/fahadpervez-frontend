@@ -3,7 +3,6 @@ import { Users, User, Send, ChevronLeft } from "lucide-react";
 import {
   useGetGroupMessagesQuery,
   useSendGroupMessageMutation,
-  useGetMyGroupByIdQuery,
 } from "@/store/features/group/groupApi";
 import type { Message, ChatUser } from "./types";
 import GroupInfoModal from "./GroupInfoModal";
@@ -38,16 +37,8 @@ const ChatMain: React.FC<ChatMainProps> = ({
     }
   );
 
-  // Live Group Details Hook
-  const { data: groupDetailsData } = useGetMyGroupByIdQuery(
-    activeUser?.id || activeUser?._id,
-    {
-      skip: activeUser?.userType !== "group",
-    }
-  );
-
-  console.log("ChatMain: groupDetailsData", groupDetailsData);
-  const liveActiveGroup = groupDetailsData?.data || activeUser;
+  // Use activeUser directly for header info as it comes from the sidebar list
+  const liveActiveGroup = activeUser;
   console.log("ChatMain: liveActiveGroup", liveActiveGroup);
 
   const [sendGroupMessage, { isLoading }] = useSendGroupMessageMutation();
