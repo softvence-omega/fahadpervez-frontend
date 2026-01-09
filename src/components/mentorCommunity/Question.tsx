@@ -9,7 +9,6 @@ import { TForumQuestion } from "@/store/storeTypes/questions";
 import GlobalLoader from "@/common/GlobalLoader";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/features/auth/auth.slice";
-import { toast } from "sonner";
 
 // Local state type for UI management
 type QuestionUIState = TForumQuestion & {
@@ -91,7 +90,6 @@ const Question = () => {
       }).unwrap();
 
       if (res.success) {
-        toast.success(res.message || "Answer posted successfully!");
         setAnswerTexts((prev) => ({ ...prev, [id]: "" }));
         //  Immediately refetch the forum data to show the new comment
         refetch(); // This will update the comments list without page reload
@@ -176,15 +174,15 @@ const Question = () => {
                       <p className="text-xs md:text-sm text-gray-600">
                         From{" "}
                         <span className="text-blue-600">
-                          {question.postedBy.firstName}{" "}
-                          {question.postedBy.lastName}
+                          {question.postedBy?.firstName}{" "}
+                          {question.postedBy?.lastName}
                         </span>
                       </p>
 
                       {/* Answers */}
-                      {question.isExpanded && question.answers.length > 0 && (
+                      {question?.isExpanded && question?.answers?.length > 0 && (
                         <div className="mt-3 md:mt-4 space-y-3">
-                          {question.answers.map((answer) => (
+                          {question?.answers?.map((answer) => (
                             <div
                               key={answer._id}
                               className="p-3 md:p-4 bg-gray-50 rounded-lg"
@@ -199,7 +197,7 @@ const Question = () => {
                       )}
 
                       {/* Give answer textarea */}
-                      {question.showAnswerInput && (
+                      {question?.showAnswerInput && (
                         <div className="mt-3 md:mt-4">
                           <div className="bg-gray-50 rounded-lg p-3 md:p-4 border border-gray-200">
                             <label className="block text-sm font-medium text-gray-700 mb-2">
