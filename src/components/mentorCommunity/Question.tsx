@@ -1,10 +1,14 @@
 import { useMemo, useState, useEffect } from "react";
 import { ChevronRight, ChevronDown, Send } from "lucide-react";
 import Pagination from "../reusable/Pagination";
-import { useAllQuestionGetQuery, useQuestionUpdateMutation } from "@/store/features/mentor-dashboard/question/question.api";
+import {
+  useGetMentorsQuestionWithAnswersQuery,
+  useQuestionUpdateMutation,
+} from "@/store/features/mentor-dashboard/question/question.api";
 import { TForumQuestion } from "@/store/storeTypes/questions";
 import GlobalLoader from "@/common/GlobalLoader";
-// import { toast } from "sonner";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/features/auth/auth.slice";
 
 // Local state type for UI management
 type QuestionUIState = TForumQuestion & {
@@ -13,8 +17,15 @@ type QuestionUIState = TForumQuestion & {
 };
 
 const Question = () => {
-  const { data, isLoading, isError, refetch } = useAllQuestionGetQuery(undefined);
-  const [questionAnswere, { isLoading: isPosting }] = useQuestionUpdateMutation();
+  const user = useSelector(selectUser);
+  const mentorProfileId = user?.profile?._id;
+
+  const { data, isLoading, isError, refetch } =
+    useGetMentorsQuestionWithAnswersQuery(mentorProfileId, {
+      skip: !mentorProfileId,
+    });
+  const [questionAnswere, { isLoading: isPosting }] =
+    useQuestionUpdateMutation();
   const questions: TForumQuestion[] = useMemo(() => data ?? [], [data]);
 
   // UI state
@@ -37,9 +48,7 @@ const Question = () => {
   // ✅ Toggle question expansion
   const toggleQuestion = (id: string) => {
     setQuestionsUI((prev) =>
-      prev.map((q) =>
-        q._id === id ? { ...q, isExpanded: !q.isExpanded } : q
-      )
+      prev.map((q) => (q._id === id ? { ...q, isExpanded: !q.isExpanded } : q))
     );
   };
 
@@ -71,26 +80,22 @@ const Question = () => {
     try {
       // Prepare the request body according to your API
       const requestBody = {
-        answer: answerText.trim()
+        answer: answerText.trim(),
       };
 
       // Call the mutation to post the answer
-     const res = await questionAnswere({
+      const res = await questionAnswere({
         id: id, // This is the question ID
-        body: requestBody
+        body: requestBody,
       }).unwrap();
 
-       if (res.success) {
-        // toast.success(res.message || "Comment posted successfully! ");
-        // reset();
-
+      if (res.success) {
+        setAnswerTexts((prev) => ({ ...prev, [id]: "" }));
         //  Immediately refetch the forum data to show the new comment
         refetch(); // This will update the comments list without page reload
       }
 
-
       // Refetch questions to get updated data from server
-
     } catch (error) {
       console.error("Failed to submit answer:", error);
     }
@@ -120,8 +125,16 @@ const Question = () => {
   if (isLoading) return <GlobalLoader />;
 
   // Error or empty state
-  if (isError) return <p className="text-center text-red-500 py-8">Failed to load questions. Please try again.</p>;
-  if (totalProducts === 0) return <p className="text-center text-gray-500 py-8">No questions available</p>;
+  if (isError)
+    return (
+      <p className="text-center text-red-500 py-8">
+        Failed to load questions. Please try again.
+      </p>
+    );
+  if (totalProducts === 0)
+    return (
+      <p className="text-center text-gray-500 py-8">No questions available</p>
+    );
 
   return (
     <div className="w-full">
@@ -161,21 +174,22 @@ const Question = () => {
                       <p className="text-xs md:text-sm text-gray-600">
                         From{" "}
                         <span className="text-blue-600">
-                          {question.postedBy.firstName}{" "}
-                          {question.postedBy.lastName}
+                          {question.postedBy?.firstName}{" "}
+                          {question.postedBy?.lastName}
                         </span>
                       </p>
 
                       {/* Answers */}
-                      {question.isExpanded && question.answers.length > 0 && (
+                      {question?.isExpanded && question?.answers?.length > 0 && (
                         <div className="mt-3 md:mt-4 space-y-3">
-                          {question.answers.map((answer) => (
+                          {question?.answers?.map((answer) => (
                             <div
                               key={answer._id}
                               className="p-3 md:p-4 bg-gray-50 rounded-lg"
                             >
                               <p className="text-gray-700 whitespace-pre-line text-sm md:text-base">
-                                <span className="font-semibold">Answer:</span> {answer.answer}
+                                <span className="font-semibold">Answer:</span>{" "}
+                                {answer.answer}
                               </p>
                             </div>
                           ))}
@@ -183,7 +197,7 @@ const Question = () => {
                       )}
 
                       {/* Give answer textarea */}
-                      {question.showAnswerInput && (
+                      {question?.showAnswerInput && (
                         <div className="mt-3 md:mt-4">
                           <div className="bg-gray-50 rounded-lg p-3 md:p-4 border border-gray-200">
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -194,6 +208,12 @@ const Question = () => {
                               onChange={(e) =>
                                 handleAnswerChange(question._id, e.target.value)
                               }
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" && !e.shiftKey) {
+                                  e.preventDefault();
+                                  submitAnswer(question._id);
+                                }
+                              }}
                               placeholder="Write your answer here..."
                               className="w-full px-3 py-2 border border-gray-300 rounded-lg resize-none text-sm md:text-base"
                               rows={4}

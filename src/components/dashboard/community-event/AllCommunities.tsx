@@ -137,11 +137,10 @@ const MedicalEventsDashboard: React.FC = () => {
   ];
 
   return (
-    <div className="my-6 md:my-10">
-      <Breadcrumb breadcrumbs={breadcrumbs} />
-
+    <div className="my-6">
       {/* ✅ Replace ShadCN Tabs with your MentorCommunityTabs */}
-      <div className="mb-8">
+      <div className="">
+        <Breadcrumb breadcrumbs={breadcrumbs} />
         <MentorCommunityTabs
           tabs={tabs}
           activeTab={activeTab}
@@ -150,7 +149,7 @@ const MedicalEventsDashboard: React.FC = () => {
       </div>
 
       {/* ✅ Render content based on activeTab (same logic, no functionality change) */}
-      <div className="mt-6 space-y-6">
+      <div className="mt-3 space-y-6">
         {/* {activeTab === "Social Feed" && <SocialFeedPage />} */}
         {activeTab === "Social Feed" && <SocialFeed />}
 

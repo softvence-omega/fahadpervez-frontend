@@ -42,14 +42,15 @@ const Pricing = () => {
 
   const handleUpgrade = async (planId: string) => {
     try {
-      const response = await initiatePayment({ planId }).unwrap();
+      const response = await initiatePayment({
+        planId,
+        redirectUrl: `${window.location.origin}/checkout/success?type=plan_upgrade`,
+      }).unwrap();
       if (response.success && response.data?.sessionId) {
-        // Store paymentId in sessionStorage as backup since URL params might be stripped
-        sessionStorage.setItem("pendingPaymentId", response.data.paymentId);
-
-        // Pass paymentId in the success URL so it persists after redirect
-        const successUrl = `${window.location.origin}/checkout/success?paymentId=${response.data.paymentId}`;
+        // URL parameters will be used for verification (no sessionStorage needed)
+        const successUrl = `${window.location.origin}/checkout/success?orderId=${response.data.paymentId}&type=plan_upgrade`;
         startCheckout(response.data.sessionId, successUrl);
+        console.log("url:", successUrl);
       } else {
         toast.error("Failed to initiate payment. Please try again.");
       }

@@ -29,6 +29,54 @@ export const mentorAPI = baseAPI.injectEndpoints({
     getSingleMentor: builder.query({
       query: (id) => `/admin/mentor/${id}`,
     }),
+    getMentorTransactions: builder.query({
+      query: ({ status, page = 1, limit = 10 }) => ({
+        url: `/mentor/dashboard/transaction`,
+        method: "GET",
+        params: { status, page, limit },
+      }),
+      providesTags: ["Transaction"],
+    }),
+    getMentorEarnings: builder.query({
+      query: (year) => ({
+        url: `/mentor/dashboard/earnings`,
+        method: "GET",
+        params: { year },
+      }),
+      providesTags: ["Transaction"],
+    }),
+    getMentorOverview: builder.query({
+      query: () => ({
+        url: `/mentor/dashboard/overview`,
+        method: "GET",
+      }),
+      providesTags: ["Transaction"],
+    }),
+    getMyUpcomingSessions: builder.query({
+      query: () => ({
+        url: `/sessions/my-upcoming-session`,
+        method: "GET",
+      }),
+      transformResponse: (response: { success: boolean; data: any[] }) =>
+        response.data,
+      providesTags: ["Sessions"],
+    }),
+    bookSession: builder.mutation({
+      query: (data) => ({
+        url: "/sessions/book-session",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Sessions"],
+    }),
+    verifySession: builder.mutation({
+      query: (data) => ({
+        url: "/sessions/verify-session",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Sessions"],
+    }),
   }),
 });
 
@@ -38,4 +86,10 @@ export const {
   useVerifyMentorProfessionMutation,
   useUpdateMentorPaymentInformationMutation,
   useGetSingleMentorQuery,
+  useGetMentorTransactionsQuery,
+  useGetMentorEarningsQuery,
+  useGetMentorOverviewQuery,
+  useGetMyUpcomingSessionsQuery,
+  useBookSessionMutation,
+  useVerifySessionMutation,
 } = mentorAPI;

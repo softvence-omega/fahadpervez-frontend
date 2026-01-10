@@ -55,12 +55,16 @@ const MakeDecision = () => {
       <div className="border border-slate-300 rounded-2xl p-6 mt-10 bg-white">
         <div className="md:flex items-center justify-between gap-3">
           <div className="flex items-center gap-4 mb-4">
-            <p className="bg-slate-200 text-slate-900 px-[10px] py-[2px] rounded-full">
-              {clinicalCase?.subject}
-            </p>
-            <p className="border border-slate-200 text-slate-950 px-[10px] py-[2px] rounded-full">
-              {clinicalCase?.difficultyLevel}
-            </p>
+            {clinicalCase?.subject && (
+              <p className="bg-slate-200 text-slate-900 px-[10px] py-[2px] rounded-full">
+                {clinicalCase?.subject}
+              </p>
+            )}
+            {clinicalCase?.difficultyLevel && (
+              <p className="border border-slate-200 text-slate-950 px-[10px] py-[2px] rounded-full">
+                {clinicalCase?.difficultyLevel}
+              </p>
+            )}
           </div>
           {/* <Link to={`/dashboard/clinical-case/${id}${isGenerated ? "?type=generated" : ""}`}>
             <Button className="px-3 h-10 border border-indigo-500 bg-white text-indigo-500 hover:bg-indigo-50">

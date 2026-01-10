@@ -82,7 +82,7 @@ export function SessionSelectionModal({
           sessions: 1,
           mentorName: `${mentor?.firstName} ${mentor?.lastName}`,
           specialty: mentor?.specialty,
-          mentorId: mentor?._id,
+          mentorId: mentor?.accountId,
           mentor: mentor, // Pass the whole mentor object for availability
         },
       });

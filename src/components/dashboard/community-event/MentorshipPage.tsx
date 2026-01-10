@@ -3,7 +3,10 @@ import MyMentorCard from "./mentor/MyMentorCard";
 import { Link } from "react-router-dom";
 import { BreadcrumbItem } from "../gamified-learning/types";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
-import { useGetAllMentorQuery } from "@/store/features/mentor/mentor.api";
+import {
+  useGetAllMentorQuery,
+  useGetMyUpcomingSessionsQuery,
+} from "@/store/features/mentor/mentor.api";
 import GlobalLoader from "@/common/GlobalLoader";
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -13,6 +16,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const MentorshipPage = () => {
   const { data: mentorsData, isLoading } = useGetAllMentorQuery({});
+  const { data: sessions, isLoading: sessionsLoading } =
+    useGetMyUpcomingSessionsQuery({});
   const mentors = mentorsData?.data;
   console.log(mentors);
 
@@ -39,18 +44,31 @@ const MentorshipPage = () => {
           </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-5 mt-7 mb-12">
-          {Array(3)
-            .fill(null)
-            .map(() => (
-              <div>
-                <div className="border border-slate-300 p-3 rounded-[8px]">
-                  <h3 className="text-[#18181B] text-lg font-medium mb-5">
-                    USMLE Step 1 Preparation Masterclass
+          {sessionsLoading ? (
+            <div className="col-span-full py-4 text-center text-gray-500">
+              Loading sessions...
+            </div>
+          ) : sessions && sessions.length > 0 ? (
+            sessions.slice(0, 5).map((session: any) => (
+              <Link
+                key={session._id}
+                to={`/dashboard/session-details/${session.sessionId}`}
+              >
+                <div className="border border-slate-300 p-3 rounded-[8px] h-full">
+                  <h3 className="text-[#18181B] text-lg font-medium mb-5 line-clamp-2">
+                    {session.issue || "General Mentorship Session"}
                   </h3>
-                  <p className="text-sm text-[#71717A]">Today at 4:00 pm</p>
+                  <p className="text-sm text-[#71717A] mt-auto">
+                    {session.date} at {session.time}
+                  </p>
                 </div>
-              </div>
-            ))}
+              </Link>
+            ))
+          ) : (
+            <div className="col-span-full py-8 text-center bg-gray-50 rounded-lg border border-dashed border-gray-300 text-gray-500">
+              No upcoming sessions found.
+            </div>
+          )}
         </div>
       </div>
 

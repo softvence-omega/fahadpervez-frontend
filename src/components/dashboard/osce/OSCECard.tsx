@@ -10,6 +10,7 @@ export interface OSCECardProps {
   steps: string; // "3 steps"
   videos: string; // "2 videos"
   duration: string; // "~15 min" or "8 minutes"
+  isComplete?: boolean;
   onWatchTutorial: () => void;
   onPractice: () => void;
 }
@@ -23,6 +24,7 @@ const OSCECard = ({
   steps,
   videos,
   duration,
+  isComplete,
   onWatchTutorial,
   onPractice,
 }: OSCECardProps) => {
@@ -30,18 +32,25 @@ const OSCECard = ({
     <div className="w-full bg-white border-2 border-slate-200 rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md hover:border-slate-300">
       <div className="p-6">
         {/* Header */}
-        <div className="flex items-start gap-3">
-          <div className="bg-[#DBEAFE] p-3 rounded-xl flex-shrink-0">
-            <Heart className="w-5 h-5 md:w-6 md:h-6" />
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-3">
+            <div className="bg-[#DBEAFE] p-3 rounded-xl flex-shrink-0">
+              <Heart className="w-5 h-5 md:w-6 md:h-6" />
+            </div>
+            <div className="min-w-0">
+              <h2 className="uppercase tracking-wide text-[#0A0A0A] font-semibold text-sm md:text-base truncate">
+                {title}
+              </h2>
+              <span className="inline-block mt-1 text-sm md:text-base font-medium text-black-2 bg-[#ECEEF2] px-2 py-1 rounded">
+                {subtitle}
+              </span>
+            </div>
           </div>
-          <div className="min-w-0">
-            <h2 className="uppercase tracking-wide text-[#0A0A0A] font-semibold text-sm md:text-base truncate">
-              {title}
-            </h2>
-            <span className="inline-block mt-1 text-sm md:text-base font-medium text-black-2 bg-[#ECEEF2] px-2 py-1 rounded">
-              {subtitle}
+          {isComplete && (
+            <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400">
+              Completed
             </span>
-          </div>
+          )}
         </div>
 
         {/* Description */}

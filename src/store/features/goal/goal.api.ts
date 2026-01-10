@@ -18,6 +18,41 @@ export interface IGoal extends ICreateGoalPayload {
   updatedAt: string;
 }
 
+export interface IProgress {
+  overall: number;
+  mcq: number;
+  clinicalCase: number;
+  osce: number;
+}
+
+export interface ITimeCount {
+  todayStudy: number;
+  mcq: number;
+  clinicalCase: number;
+  osce: number;
+}
+
+export interface IGoalOverviewData {
+  progress: IProgress;
+  timeCount: ITimeCount;
+  steak: number;
+}
+
+export interface IGoalOverviewResponse {
+  success: boolean;
+  message: string;
+  data: IGoalOverviewData;
+  meta: null;
+}
+
+export interface IUpdateProgressPayload {
+  totalCorrect: number;
+  totalIncorrect: number;
+  totalAttempted: number;
+  key: "mcq" | "flashcard" | "clinicalcase" | string;
+  bankId: string;
+}
+
 export const goalAPI = baseAPI.injectEndpoints({
   endpoints: (build) => ({
     createGoal: build.mutation<IGoal, ICreateGoalPayload>({
@@ -41,6 +76,16 @@ export const goalAPI = baseAPI.injectEndpoints({
       providesTags: ["Goal"],
     }),
 
+    getGoalOverview: build.query<IGoalOverviewResponse, void>({
+      query: () => {
+        return {
+          url: "/goal/overview",
+          method: "GET",
+        };
+      },
+      providesTags: ["Goal"],
+    }),
+
     updateGoal: build.mutation<IGoal, ICreateGoalPayload>({
       query: (data) => {
         return {
@@ -52,8 +97,64 @@ export const goalAPI = baseAPI.injectEndpoints({
       invalidatesTags: ["Goal"],
     }),
 
+    updateProgressMcqFlashcardClinicalCase: build.mutation<
+      any,
+      IUpdateProgressPayload
+    >({
+      query: (data) => {
+        return {
+          url: "/goal/update-progress-mcq-flashcard-clinicalcase",
+          method: "PUT",
+          body: data,
+        };
+      },
+      invalidatesTags: [
+        "Goal",
+        "Mcq",
+        "FlashCard",
+        "ClinicalCase",
+        "GeneratedMCQ",
+        "GeneratedFlashcard",
+        "GeneratedClinicalCase",
+      ],
+    }),
+
+    updateProgressOsce: build.mutation<any, { osceId: string }>({
+      query: (data) => ({
+        url: "/goal/update-progress-osce",
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Goal", "OSCE"],
+    }),
+
+    getPerformance: build.query({
+      query: () => ({
+        url: "/tracking/get-performance",
+        method: "GET",
+      }),
+      providesTags: ["Tracking"],
+    }),
+
+    getLeaderboard: build.query({
+      query: () => ({
+        url: "/tracking/get-leaderboard",
+        method: "GET",
+      }),
+      providesTags: ["Leaderboard"],
+    }),
+
     // end
   }),
 });
 
-export const { useCreateGoalMutation, useGetGoalQuery, useUpdateGoalMutation } = goalAPI;
+export const {
+  useCreateGoalMutation,
+  useGetGoalQuery,
+  useUpdateGoalMutation,
+  useGetGoalOverviewQuery,
+  useUpdateProgressMcqFlashcardClinicalCaseMutation,
+  useUpdateProgressOsceMutation,
+  useGetPerformanceQuery,
+  useGetLeaderboardQuery,
+} = goalAPI;

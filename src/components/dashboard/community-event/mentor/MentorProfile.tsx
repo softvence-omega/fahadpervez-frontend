@@ -14,6 +14,8 @@ import { BreadcrumbItem } from "../../gamified-learning/types";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import { Link, useParams } from "react-router-dom";
 import { useGetSingleMentorQuery } from "@/store/features/mentor/mentor.api";
+import { useGetMentorsQuestionWithAnswersQuery } from "@/store/features/mentor-dashboard/question/question.api";
+import { IQuestion } from "@/store/features/mentor-dashboard/question/question.type";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -33,11 +35,16 @@ export default function MentorProfile() {
     "session" | "connection" | null
   >(null);
 
+  // Fetch questions for this mentor
+  const { data: questionsData, isLoading: questionsLoading } =
+    useGetMentorsQuestionWithAnswersQuery(mentor?._id, {
+      skip: !mentor?._id,
+    });
+  const questions = questionsData || [];
+
   const handleBookSession = (sessionId: string) => {
     console.log("Session booked:", sessionId);
     setActiveModal(null);
-    // After booking a session, you might want to show connection modal
-    // setActiveModal("connection");
   };
 
   const handleSendRequest = () => {
@@ -126,7 +133,10 @@ export default function MentorProfile() {
                   </Button>
 
                   <div className="flex items-center gap-1">
-                    <Link to={"/dashboard/ask-question"} className="">
+                    <Link
+                      to={`/dashboard/ask-question/${mentor?.accountId}`}
+                      className=""
+                    >
                       <Button className=" bg-white border border-indigo-500 rounded text-violet-700 font-medium hover:bg-blue-50 my-1 cursor-pointer">
                         <MessageCircleQuestion />
                         Ask a Question
@@ -192,37 +202,78 @@ export default function MentorProfile() {
             </div>
           </div>
 
-          {/* Asked Question Section */}
           <div className="my-10">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-lg text-[#0F172A]  font-medium">
                 Asked Question
               </h3>
               <Link
-                to={"/dashboard/ask-question"}
+                to={`/dashboard/ask-question/${mentor?.accountId}`}
                 className="text-sm font-semibold text-blue-main underline"
               >
                 View All
               </Link>
             </div>
             <div className="border border-[#0000001A] p-4 rounded-[8px]">
-              <div className="flex flex-col md:flex-row justify-between items-center mb-3 text-center md:text-left gap-6">
-                <div>
-                  <DashboardHeading
-                    title="Your Asked Question"
-                    titleSize="text-base"
-                    titleFont="font-normal"
-                    titleColor="text-[#0A0A0A]"
-                    description="Access your Question sessions, for getting your answer"
-                    descColor="text-[#717182]"
-                    descFont="text-sm"
-                    className="space-y-2"
-                  />
-                </div>
-                <p className="flex items-center gap-1 text-slate-800 cursor-pointer">
-                  <BadgeHelp className="w-4 h-4" />6 Question
+              {questionsLoading ? (
+                <p className="text-center py-4 text-gray-500">
+                  Loading questions...
                 </p>
-              </div>
+              ) : questions.length > 0 ? (
+                <div className="space-y-4">
+                  <div className="flex flex-col md:flex-row justify-between items-center mb-3 text-center md:text-left gap-6 border-b pb-4">
+                    <div>
+                      <DashboardHeading
+                        title="Your Asked Question"
+                        titleSize="text-base"
+                        titleFont="font-normal"
+                        titleColor="text-[#0A0A0A]"
+                        description="Access your Question sessions, for getting your answer"
+                        descColor="text-[#717182]"
+                        descFont="text-sm"
+                        className="space-y-2"
+                      />
+                    </div>
+                    <p className="flex items-center gap-1 text-slate-800 cursor-pointer">
+                      <BadgeHelp className="w-4 h-4" />
+                      {questions.length} Question{questions.length !== 1 && "s"}
+                    </p>
+                  </div>
+                  {questions.slice(0, 3).map((q: IQuestion) => (
+                    <div key={q._id} className="p-3 bg-slate-50 rounded-lg">
+                      <p className="text-gray-800 font-medium text-sm">
+                        Q: {q.question}
+                      </p>
+                      {q.answers && q.answers.length > 0 ? (
+                        <div className="mt-2 ml-4 border-l-2 border-blue-200 pl-3">
+                          <p className="text-gray-600 text-xs italic">
+                            Latest Answer:
+                          </p>
+                          <p className="text-gray-700 text-sm">
+                            {q.answers[0].answer}
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="text-gray-400 text-xs italic ml-4 mt-1">
+                          No answers yet
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="py-8 text-center">
+                  <p className="text-gray-500">
+                    No questions asked to this mentor yet.
+                  </p>
+                  <Link
+                    to={`/dashboard/ask-question/${mentor?.accountId}`}
+                    className="text-blue-600 hover:underline text-sm mt-2 inline-block font-medium"
+                  >
+                    Be the first to ask!
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
 

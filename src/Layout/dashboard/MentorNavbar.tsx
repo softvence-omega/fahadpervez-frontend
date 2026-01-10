@@ -34,8 +34,8 @@ const MentorNavbar = () => {
 
   const navigationItems = [
     { name: "Dashboard", href: "/mentor" },
-    { name: "Question Bank", href: "/mentor/question-bank" },
-    { name: "Materials", href: "/mentor/materials" },
+    // { name: "Question Bank", href: "/mentor/question-bank" },
+    // { name: "Materials", href: "/mentor/materials" },
     { name: "Classes", href: "/mentor/classes" },
     { name: "Earnings", href: "/mentor/earnings" },
     { name: "Settings", href: "/mentor/mentor-setting" },
