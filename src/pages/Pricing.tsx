@@ -48,9 +48,10 @@ const Pricing = () => {
       }).unwrap();
       if (response.success && response.data?.sessionId) {
         // URL parameters will be used for verification (no sessionStorage needed)
-        const successUrl = `${window.location.origin}/checkout/success?orderId=${response.data.paymentId}&type=plan_upgrade`;
-        startCheckout(response.data.sessionId, successUrl);
-        console.log("url:", successUrl);
+        // const successUrl = `${window.location.origin}/checkout/success?orderId=${response.data.paymentId}&type=plan_upgrade`;
+        // const successUrl = `${window.location.origin}/checkout/success?orderId=${response.data.paymentId}&type=plan_upgrade`;
+        startCheckout(response.data.sessionId);
+        // console.log("url:", successUrl);
       } else {
         toast.error("Failed to initiate payment. Please try again.");
       }

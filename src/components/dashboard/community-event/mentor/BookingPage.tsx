@@ -217,8 +217,8 @@ const BookingPage = () => {
       const response = await bookSession(bookingData).unwrap();
       if (response.success && response.data?.sessionId) {
         // URL parameters will be used for verification (no sessionStorage needed)
-        const successUrl = `${window.location.origin}/checkout/success?orderId=${response.data.paymentId}&type=mentor_session`;
-        startCheckout(response.data.sessionId, successUrl);
+        // const successUrl = `${window.location.origin}/checkout/success?orderId=${response.data.paymentId}&type=mentor_session`;
+        startCheckout(response.data.sessionId,);
       } else {
         toast.error("Failed to initiate booking. Please try again.");
       }
