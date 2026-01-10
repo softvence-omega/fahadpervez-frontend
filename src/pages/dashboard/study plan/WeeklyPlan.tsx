@@ -81,8 +81,10 @@ export default function WeeklyPlan() {
       navigate(`/dashboard/solve-flash-card/${contentId}`);
     } else if (taskType === "clinical case" || taskType === "clinical_case") {
       navigate(`/dashboard/clinical-case/${contentId}`);
-    } else if (taskType === "OSCE" || taskType === "osce") {
+    } else if (taskType === "osce") {
       navigate(`/dashboard/practice-with-checklist/${contentId}`);
+    } else if (taskType === "notes" || taskType === "note") {
+      navigate(`/dashboard/notes/${contentId}`);
     } else {
       // Default fallback - you can adjust this based on your needs
       console.log("Unknown task type:", taskType);

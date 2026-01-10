@@ -63,9 +63,19 @@ export interface IEvent {
 //   }
 // };
 
-const UpcomingEventsCard = ({ event }: { event: IEvent }) => {
-  console.log(" event: ", event);
+interface UpcomingEventsCardProps {
+  event: IEvent;
+  isMyEvent?: boolean;
+  onRegister?: (eventId: string) => void;
+  isRegistering?: boolean;
+}
 
+const UpcomingEventsCard = ({
+  event,
+  isMyEvent = false,
+  onRegister,
+  isRegistering = false,
+}: UpcomingEventsCardProps) => {
   const start = new Date(event.startTime);
   const date = start.toLocaleDateString("en-US", {
     day: "2-digit",
@@ -77,14 +87,16 @@ const UpcomingEventsCard = ({ event }: { event: IEvent }) => {
     minute: "2-digit",
   });
 
-  // ${getTypeColor(event.eventType)}
+  const isFreeEvent = event.eventPrice === 0;
+  // Show Register button for all events in "All Events" tab
+  const showRegisterButton = !isMyEvent;
 
   return (
     <div className="hover:shadow-md transition-shadow border border-gray-200 p-4 rounded-xl bg-white flex flex-col justify-between">
       {/* Top Row */}
       <div className="flex items-center justify-between mb-2">
         <span
-            className={`px-2 py-1 rounded-full text-xs font-medium bg-[#FEE2E2] text-[#B91C1C]`}  
+          className={`px-2 py-1 rounded-full text-xs font-medium bg-[#FEE2E2] text-[#B91C1C]`}
         >
           {event.eventType}
         </span>
@@ -101,11 +113,6 @@ const UpcomingEventsCard = ({ event }: { event: IEvent }) => {
           alt={"instructor image"}
           className="w-10 h-10 rounded-full object-cover"
         />
-        {/* <img
-          src={event.speakerImage || "/image/avatar.jpg"}
-          alt={event.speakerName}
-          className="w-10 h-10 rounded-full object-cover"
-        /> */}
         <div>
           <p className="text-md font-medium text-gray-800">
             {event.instructor}
@@ -131,19 +138,27 @@ const UpcomingEventsCard = ({ event }: { event: IEvent }) => {
 
       {/* Footer */}
       <div className="flex items-center justify-between">
-        <Button
-          variant="link"
-          size="sm"
-          className="text-blue-600 px-0 hover:scale-110 transition-transform"
-        >
-          Register
-        </Button>
+        {showRegisterButton ? (
+          <Button
+            variant="link"
+            size="sm"
+            className="text-blue-600 px-0 hover:scale-110 transition-transform"
+            onClick={() => onRegister?.(event._id)}
+            disabled={isRegistering}
+          >
+            {isRegistering ? "Registering..." : "Register"}
+          </Button>
+        ) : (
+          <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+            {event.status}
+          </span>
+        )}
         <span
           className={`text-sm font-medium ${
-            event.status === "Free" ? "text-purple-600" : "text-blue-600"
+            isFreeEvent ? "text-green-600" : "text-blue-600"
           }`}
         >
-          {event.eventPrice}
+          {isFreeEvent ? "Free" : `$${event.eventPrice}`}
         </span>
       </div>
     </div>

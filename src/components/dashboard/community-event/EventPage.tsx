@@ -1,10 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import React from "react";
 import CommonSkeletonLoader from "@/components/reusable/CommonSkeletonLoader";
-import FeaturedEventCard from "./events-page/FeaturedEventCard";
+// import FeaturedEventCard from "./events-page/FeaturedEventCard";
 import UpcomingEventsCard, { IEvent } from "./events-page/UpcomingEventsCard";
 import EventCalander from "./events-page/EventCalander";
 import { useState } from "react";
-import { useGetAllEventsQuery } from "@/store/features/event/event.api";
+import {
+  useGetAllEventsQuery,
+  useGetMyEventsQuery,
+  useEnrollInEventMutation,
+} from "@/store/features/event/event.api";
+import { toast } from "sonner";
+import Pagination from "@/common/custom/Pagination";
 import GlobalLoader2 from "@/common/GlobalLoader2";
 
 interface Event {
@@ -37,20 +45,92 @@ interface EventPageProps {
 }
 
 const EventPage: React.FC<EventPageProps> = ({
-  events,
-  // activeEventFilter,
-  // setActiveEventFilter,
-  // eventFilters,
+  // events,
   isLoading,
-  getTypeColor,
+  // getTypeColor,
 }) => {
-  const { data: eventResponse, isLoading: isEventLoading } =
-    useGetAllEventsQuery({});
-  const allEvents = eventResponse?.data?.events || [];
-  console.log("allEvents", allEvents);
-
   const [activeEvent, setActiveEvent] = useState("all"); // "all" or "my"
-  const featuredEvent = events.find((e) => e.featured) || events[0];
+  const [allEventsPage, setAllEventsPage] = useState(1);
+  const [myEventsPage, setMyEventsPage] = useState(1);
+  const itemsPerPage = 8;
+
+  const { data: allEventsResponse, isLoading: isAllEventsLoading } =
+    useGetAllEventsQuery({});
+  const { data: myEventsResponse, isLoading: isMyEventsLoading } =
+    useGetMyEventsQuery({}, { skip: activeEvent !== "my" });
+
+  const [enrollInEvent] = useEnrollInEventMutation();
+  const [registeringEventId, setRegisteringEventId] = useState<string | null>(
+    null
+  );
+
+  const allEvents = allEventsResponse?.data?.events || [];
+
+  // Extract registrations array from the API response
+  const myEventRegistrations = myEventsResponse?.data || [];
+
+  // Extract events from registrations for display (without unique filtering)
+  const myEvents = myEventRegistrations
+    .filter((registration: any) => registration.eventId) // Only include registrations with valid eventId
+    .map((registration: any) => ({
+      ...registration.eventId,
+      registrationId: registration._id, // Keep track of which registration this is
+      registeredAt: registration.createdAt,
+    }));
+
+  // const featuredEvent = events.find((e) => e.featured) || events[0];
+
+  // Convert myEvents to calendar format - group by unique event dates to avoid calendar duplicates
+  const uniqueCalendarEvents = new Map();
+  myEvents.forEach((event: any) => {
+    if (event._id && event.startTime && !uniqueCalendarEvents.has(event._id)) {
+      uniqueCalendarEvents.set(event._id, {
+        id: event._id,
+        title: event.eventTitle || "Event",
+        start: event.startTime,
+        url: "",
+        backgroundColor: "#cbd5f5",
+      });
+    }
+  });
+  // const myEventsForCalendar = Array.from(uniqueCalendarEvents.values());
+
+  const myEventsForCalendar = myEvents
+    .filter((event: any) => event._id && event.startTime)
+    .map((event: any) => ({
+      id: `${event._id}-${event.registrationId}`, // Unique ID combining event + registration
+      title: event.eventTitle || "Event",
+      start: event.startTime,
+      url: "",
+      backgroundColor: "#cbd5f5",
+    }));
+
+  // Registration handler
+  const handleRegister = async (eventId: string) => {
+    setRegisteringEventId(eventId);
+    try {
+      await enrollInEvent({ eventId }).unwrap();
+      // toast.success("Successfully registered for the event!");
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to register for event");
+    } finally {
+      setRegisteringEventId(null);
+    }
+  };
+
+  // Pagination logic for All Events
+  const totalAllEventsPages = Math.ceil(allEvents.length / itemsPerPage);
+  const paginatedAllEvents = allEvents.slice(
+    (allEventsPage - 1) * itemsPerPage,
+    allEventsPage * itemsPerPage
+  );
+
+  // Pagination logic for My Events
+  const totalMyEventsPages = Math.ceil(myEvents.length / itemsPerPage);
+  const paginatedMyEvents = myEvents.slice(
+    (myEventsPage - 1) * itemsPerPage,
+    myEventsPage * itemsPerPage
+  );
 
   if (isLoading) {
     return <CommonSkeletonLoader />;
@@ -90,61 +170,125 @@ const EventPage: React.FC<EventPageProps> = ({
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mt-10 mb-6 ">
-        {activeEvent === "all" && (
-          <div className="">
-            <FeaturedEventCard
-              featuredEvent={featuredEvent}
-              getTypeColor={getTypeColor}
-            />
+      {activeEvent === "all" && (
+        <>
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mt-10 mb-6">
+            <div className="">
+              <FeaturedEventCard
+                featuredEvent={featuredEvent}
+                getTypeColor={getTypeColor}
+              />
+            </div>
           </div>
-        )}
 
-        {activeEvent === "my" && (
-          <div className="lg:col-span-3">
-            <EventCalander />
+          <div className="w-full mb-6 h-[7.75rem] md:h-32 rounded-lg flex flex-col justify-center px-8 border border-gray-200 bg-white">
+            <h2 className="font-semibold text-2xl text-black/100 mb-2">
+              Medical Events Calendar
+            </h2>
+            <p className="text-black/60">
+              Stay updated with webinars, workshops, and conferences
+            </p>
+          </div> */}
+
+          <div>
+            {isAllEventsLoading ? (
+              <GlobalLoader2 />
+            ) : (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {paginatedAllEvents.map((event: IEvent) => (
+                    <UpcomingEventsCard
+                      key={event._id}
+                      event={event}
+                      isMyEvent={false}
+                      onRegister={handleRegister}
+                      isRegistering={registeringEventId === event._id}
+                    />
+                  ))}
+                </div>
+                {totalAllEventsPages > 1 && (
+                  <div className="mt-6">
+                    <Pagination
+                      currentPage={allEventsPage}
+                      totalPages={totalAllEventsPages}
+                      onPageChange={setAllEventsPage}
+                    />
+                  </div>
+                )}
+              </>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
 
-      <div className="w-full mb-6 h-[7.75rem] md:h-32 rounded-lg flex flex-col justify-center px-8 border border-gray-200 bg-white">
-        <h2 className="font-semibold text-2xl text-black/100 mb-2">
-          Medical Events Calendar
-        </h2>
-        <p className="text-black/60">
-          Stay updated with webinars, workshops, and conferences
-        </p>
-      </div>
-
-      {/* Event Filters */}
-      {/* <div className="flex gap-2">
-        {eventFilters.map((filter) => (
-          <Button
-            key={filter}
-            variant={activeEventFilter === filter ? "default" : "outline"}
-            onClick={() => setActiveEventFilter(filter)}
-          >
-            {filter}
-          </Button>
-        ))}
-      </div> */}
-
-      {/* Upcoming Events */}
-      {/* <div className="bg-white px-8 py-6 border border-gray-200 rounded-lg">
-        <h2 className="text-xl font-semibold mb-4 md:mb-6">Upcoming Events</h2> */}
-
-      <div>
-        {isEventLoading ? (
-          <GlobalLoader2 />
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {allEvents.slice(1).map((event: IEvent) => (
-              <UpcomingEventsCard key={event._id} event={event} />
-            ))}
+      {activeEvent === "my" && (
+        <>
+          <div className="grid grid-cols-1 gap-4 md:gap-6 mt-10 mb-6">
+            <div className="">
+              <EventCalander events={myEventsForCalendar} />
+            </div>
           </div>
-        )}
-      </div>
-      {/* </div> */}
+
+          <div className="w-full mb-6 h-[7.75rem] md:h-32 rounded-lg flex flex-col justify-center px-8 border border-gray-200 bg-white">
+            <h2 className="font-semibold text-2xl text-black/100 mb-2">
+              My Registered Events
+            </h2>
+            <p className="text-black/60">
+              {myEventRegistrations.length} registration
+              {myEventRegistrations.length !== 1 ? "s" : ""}
+            </p>
+          </div>
+
+          <div>
+            {isMyEventsLoading ? (
+              <GlobalLoader2 />
+            ) : myEvents.length > 0 ? (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {paginatedMyEvents.map((event: any) => (
+                    <UpcomingEventsCard
+                      key={event.registrationId}
+                      event={{
+                        _id: event._id,
+                        eventTitle: event.eventTitle,
+                        eventType: event.eventType,
+                        eventFormat: event.eventFormat,
+                        category: event.category,
+                        description: event.description || "",
+                        startTime: event.startTime,
+                        eventDuration: event.eventDuration,
+                        instructor: event.instructor,
+                        eventPrice: event.eventPrice,
+                        status: event.status,
+                        totalRegistrations: event.totalRegistrations,
+                        createdAt: event.createdAt || "",
+                        updatedAt: event.updatedAt || "",
+                      }}
+                      isMyEvent={true}
+                    />
+                  ))}
+                </div>
+                {totalMyEventsPages > 1 && (
+                  <div className="mt-6">
+                    <Pagination
+                      currentPage={myEventsPage}
+                      totalPages={totalMyEventsPages}
+                      onPageChange={setMyEventsPage}
+                    />
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="text-center py-12 text-gray-500">
+                <p className="text-lg font-medium">No registered events</p>
+                <p className="text-sm mt-2">
+                  Register for events to see them here
+                </p>
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </>
   );
 };

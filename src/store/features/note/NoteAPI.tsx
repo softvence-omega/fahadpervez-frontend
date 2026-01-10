@@ -73,6 +73,15 @@ export const noteApi = baseAPI.injectEndpoints({
       invalidatesTags: ["GeneratedNotes"],
     }),
 
+    // Get Single Note by ID (for regular notes, not generated)
+    getSingleNoteById: build.query({
+      query: (id) => ({
+        url: `/notes/single/${id}`,
+        method: "GET",
+      }),
+      providesTags: (_result, _error, id) => [{ type: "Notes", id }],
+    }),
+
     // end
   }),
 });
@@ -84,4 +93,5 @@ export const {
   useGetAllGeneratedNotesQuery,
   useGetGeneratedNoteByIdQuery,
   useDeleteGeneratedNoteMutation,
+  useGetSingleNoteByIdQuery,
 } = noteApi;
