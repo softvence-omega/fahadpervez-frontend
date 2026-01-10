@@ -14,7 +14,7 @@ const PlanTop: FC<PlanTopProps> = ({ handleCreatePlan }) => {
   const dashboardStats = [
     {
       title: "Total Revenue",
-      value: overview?.data?.totalRevenue ?? 0,
+      value: `${overview?.data?.totalRevenue} ?? 0`,
       subtitle: "+12.3% from last month",
       icon: LuCoins,
       subtitleColor: "text-[#000]",
