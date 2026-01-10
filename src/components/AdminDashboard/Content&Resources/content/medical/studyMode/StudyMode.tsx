@@ -168,7 +168,7 @@ const StudyMode = () => {
         />
       )}
 
-      {totalPages > 1 && mcqBank?.data.length !== 0 && (
+      {totalPages > 1 && mcqBank?.data.length !== 0 && bankId === "" && (
         <div className="my-10 w-full flex justify-center">
           <Pagination
             currentPage={currentPage}
