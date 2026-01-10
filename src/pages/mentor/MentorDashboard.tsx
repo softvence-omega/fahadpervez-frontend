@@ -15,7 +15,7 @@ import {
 import TotalEarningsChart from "./TotalEarningsChart";
 // import { useState } from "react";
 import { Link } from "react-router-dom";
-import MentorQuestionBankCard from "./questionBank/MentorQuestionBankCard";
+// import MentorQuestionBankCard from "./questionBank/MentorQuestionBankCard";
 import MentorSessionCard from "./MentorSessionCard";
 // import MentorAnswerAndSolutionCard from "./MentorAnswerAndSolutionCard";
 import { useGetMentorOverviewQuery } from "@/store/features/mentor/mentor.api";
@@ -96,7 +96,7 @@ const MentorDashboard = () => {
       </div>
 
       {/* Question Bank */}
-      <div className="mt-16">
+      {/* <div className="mt-16">
         <div className="flex flex-wrap gap-2 items-center justify-between mb-3">
           <div>
             <p className="text-2xl text-[#111827] font-semibold">
@@ -119,7 +119,7 @@ const MentorDashboard = () => {
               <MentorQuestionBankCard key={i} />
             ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Schedule Classes */}
       <div className="mt-16">

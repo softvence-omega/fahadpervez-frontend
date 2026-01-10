@@ -50,7 +50,7 @@ export const useMastercardCheckout = () => {
   }, []);
 
   const startCheckout = useCallback(
-    async (sessionId: string, successUrl: string) => {
+    async (sessionId: string) => {
       try {
         await loadScript();
 
@@ -60,8 +60,8 @@ export const useMastercardCheckout = () => {
           console.log("Payment completed. Result Indicator:", resultIndicator);
           // Redirect to success URL with resultIndicator
           // Append resultIndicator to existing params or add query string
-          const separator = successUrl.includes("?") ? "&" : "?";
-          window.location.href = `${successUrl}${separator}resultIndicator=${resultIndicator}`;
+          // const separator = successUrl.includes("?") ? "&" : "?";
+          // window.location.href = `${successUrl}${separator}resultIndicator=${resultIndicator}`;
         };
 
         if (window.Checkout) {
