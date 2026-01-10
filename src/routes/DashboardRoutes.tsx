@@ -1,5 +1,6 @@
 import DashboardLayout from "@/Layout/dashboard/DashboardLayout";
 import GeneratedNoteDetails from "@/pages/dashboard/downloadNotes/GeneratedNoteDetails";
+import SingleNoteView from "@/pages/dashboard/downloadNotes/SingleNoteView";
 import AITutor from "@/pages/dashboard/AI Tutor/AITutor";
 import ClinicalCaseGenerator from "@/pages/dashboard/ClinicalCaseGenerator";
 import Courses from "@/pages/dashboard/Courses";
@@ -235,6 +236,10 @@ const dashboardRoutes = {
     {
       path: "generated-notes/:id",
       element: <GeneratedNoteDetails />,
+    },
+    {
+      path: "notes/:id",
+      element: <SingleNoteView />,
     },
     {
       path: "quiz-page/:id?",

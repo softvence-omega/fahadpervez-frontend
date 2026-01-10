@@ -144,6 +144,14 @@ export const goalAPI = baseAPI.injectEndpoints({
       providesTags: ["Leaderboard"],
     }),
 
+    getWeeklyHighlights: build.query({
+      query: () => ({
+        url: "/tracking/get-highlights-content-of-this-week",
+        method: "GET",
+      }),
+      providesTags: ["Tracking"],
+    }),
+
     // end
   }),
 });
@@ -157,4 +165,5 @@ export const {
   useUpdateProgressOsceMutation,
   useGetPerformanceQuery,
   useGetLeaderboardQuery,
+  useGetWeeklyHighlightsQuery,
 } = goalAPI;

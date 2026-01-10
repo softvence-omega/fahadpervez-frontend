@@ -8,7 +8,7 @@ import {
   ClipboardCheck,
 } from "lucide-react";
 import { useGetStudyPlanQuery } from "@/store/features/studyPlan/studyPlan.api";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import GlobalLoader2 from "@/common/GlobalLoader2";
 
 const taskTypeConfig: Record<
@@ -68,7 +68,7 @@ const SmartStudyPlan: React.FC = () => {
 
   let todayTasks: any[] = [];
   // let currentPlanSummary = "Your Plan";
-  let currentPlanId = "";
+  // let currentPlanId = "";
 
   if (allStudyPlans.length > 0) {
     // Try to find a plan that has today's date in daily_plan
@@ -150,14 +150,14 @@ const SmartStudyPlan: React.FC = () => {
             {currentPlanSummary}
           </p> */}
         </div>
-        {todayTasks.length > 0 && (
+        {/* {todayTasks.length > 0 && (
           <Link
             to={`/dashboard/weekly-plan/${currentPlanId}`}
             className="text-purple-600 text-sm hover:underline font-medium"
           >
             View All
           </Link>
-        )}
+        )} */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
