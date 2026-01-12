@@ -76,7 +76,7 @@ const ChatMain: React.FC<ChatMainProps> = ({
 
       // Construct the data objects as requested: body: file and data: { ... }
       const payloadData = {
-        groupId: activeUser.id || activeUser._id,
+        groupId: activeUser?.id || activeUser?._id,
         message: messageText,
         // reply: "..." // Add reply logic later if needed
       };
@@ -173,7 +173,7 @@ const ChatMain: React.FC<ChatMainProps> = ({
           [...displayMessages].reverse().map((message: any) => {
             const isGroupMsg = activeUser?.userType === "group";
 
-            const msgId = isGroupMsg ? message._id : message.id;
+            const msgId = isGroupMsg ? message?._id : message.id;
 
             // Map fields based on API response structure
             const senderName = isGroupMsg

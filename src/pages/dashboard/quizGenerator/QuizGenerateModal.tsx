@@ -168,24 +168,8 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
   };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(val) => {
-        if (!isGenerating) {
-          setOpen(val);
-        }
-      }}
-    >
-      <DialogContent
-        onInteractOutside={(e) => {
-          if (isGenerating) {
-            e.preventDefault();
-          }
-        }}
-        className={`sm:max-w-[800px] ${
-          isGenerating ? "cursor-wait select-none pointer-events-none" : ""
-        }`}
-      >
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="sm:max-w-[800px]">
         <DialogHeader>
           <DialogTitle>Generate Quiz</DialogTitle>
           <DialogDescription>
@@ -418,11 +402,7 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
         </div>
 
         <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => setOpen(false)}
-            disabled={isGenerating}
-          >
+          <Button variant="outline" onClick={() => setOpen(false)}>
             Cancel
           </Button>
           <Button
