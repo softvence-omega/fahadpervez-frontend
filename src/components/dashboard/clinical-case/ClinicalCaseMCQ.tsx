@@ -62,18 +62,24 @@ const ClinicalCaseMCQ: React.FC<Props> = ({
             <p className="text-slate-700 text-sm font-normal">
               Question {currentQuestionIndex + 1} of {totalQuestions}
             </p>
-            <p className="bg-[#D97706] text-xs font-normal px-3 py-1 text-white rounded-full">
-              {clinicalCase?.subtopic}
-            </p>
-            <p className="text-xs font-normal px-3 py-1 bg-white rounded-full border border-slate-200">
-              {clinicalCase?.difficultyLevel}
-            </p>
+            {clinicalCase?.subtopic && (
+              <p className="bg-[#D97706] text-xs font-normal px-3 py-1 text-white rounded-full">
+                {clinicalCase?.subtopic}
+              </p>
+            )}
+            {clinicalCase?.difficultyLevel && (
+              <p className="text-xs font-normal px-3 py-1 bg-white rounded-full border border-slate-200">
+                {clinicalCase?.difficultyLevel}
+              </p>
+            )}
           </div>
         </div>
 
-        <p className="text-slate-900 font-medium text-lg">
-          {currentMCQ?.question}
-        </p>
+        {currentMCQ?.question && (
+          <p className="text-slate-900 font-medium text-lg">
+            {currentMCQ?.question}
+          </p>
+        )}
 
         <div className="space-y-2">
           {currentMCQ?.options?.map((opt: MCQOption, optionIdx: number) => {

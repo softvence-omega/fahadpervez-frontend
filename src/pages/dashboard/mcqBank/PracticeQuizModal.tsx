@@ -358,24 +358,8 @@ export function PracticeQuizModal({
   };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(val) => {
-        if (!isGenerating) {
-          setOpen(val);
-        }
-      }}
-    >
-      <DialogContent
-        onInteractOutside={(e) => {
-          if (isGenerating) {
-            e.preventDefault();
-          }
-        }}
-        className={`sm:max-w-[600px] ${
-          isGenerating ? "cursor-wait select-none pointer-events-none" : ""
-        }`}
-      >
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Create Your Quiz</DialogTitle>
           <DialogDescription>
@@ -493,7 +477,6 @@ export function PracticeQuizModal({
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
-              disabled={isGenerating}
             >
               Cancel
             </Button>

@@ -84,11 +84,18 @@ export const userAPI = baseAPI.injectEndpoints({
 
     getAllStudentType: build.query({
       query: () => ({
-        url: "/profile_type_const/all",
+        url: "/profile_type_const/all?limit=10000",
         method: "GET",
       }),
     }),
-    
+
+    getAllProfessionalType: build.query({
+      query: () => ({
+        url: "/profile_type_const/professional/all?limit=10000",
+        method: "GET",
+      }),
+    }),
+
     // end
   }),
 });
@@ -104,5 +111,6 @@ export const {
   useResendOTPMutation,
   useUpdateInitialProfileMutation,
   useUpdateProfileMutation,
-  useGetAllStudentTypeQuery
+  useGetAllStudentTypeQuery,
+  useGetAllProfessionalTypeQuery,
 } = userAPI;

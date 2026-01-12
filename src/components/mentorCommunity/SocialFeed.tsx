@@ -174,7 +174,7 @@ const SocialFeed = () => {
         <div className="w-full lg:w-3/4 flex flex-col gap-4">
           <div className="space-y-4">
             {posts.map((post: TSocialPost) => (
-              <PostCard key={post._id} post={post} />
+              <PostCard key={post?._id} post={post} />
             ))}
           </div>
 

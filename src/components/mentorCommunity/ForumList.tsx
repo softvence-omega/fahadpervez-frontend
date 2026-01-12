@@ -54,10 +54,10 @@ const ForumList = () => {
         <Link
           to={
             role === "MENTOR"
-              ? `/mentor/forum-details/${post._id}`
-              : `/dashboard/forum-details/${post._id}`
+              ? `/mentor/forum-details/${post?._id}`
+              : `/dashboard/forum-details/${post?._id}`
           }
-          key={post._id}
+          key={post?._id}
         >
           <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 hover:shadow-md transition-shadow mt-6 cursor-pointer">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2">

@@ -20,7 +20,7 @@ export default function QuizCollection() {
     searchTerm,
     ...filters,
     page,
-    limit: 12,
+    limit: 8,
   });
 
   const quizzes = quizzesResponse?.data || [];

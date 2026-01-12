@@ -2,7 +2,12 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ProfileSetupData } from "./schemas";
-import { useGetAllStudentTypeQuery } from "@/store/features/auth/auth.api";
+import {
+  useGetAllStudentTypeQuery,
+  useGetAllProfessionalTypeQuery,
+} from "@/store/features/auth/auth.api";
+import { SearchableSelect } from "@/components/SearchableSelect";
+import { countries } from "@/data/countries";
 
 interface Props {
   onNext: (data: ProfileSetupData) => void;
@@ -47,7 +52,25 @@ export default function ProfileSetupTab({
   const role = watch("role");
 
   const { data: studentType } = useGetAllStudentTypeQuery({});
-  const studentTypes = studentType?.data;
+  const { data: professionalType } = useGetAllProfessionalTypeQuery({});
+
+  const studentTypes = studentType?.data || [];
+  const professionalTypes = professionalType?.data || [];
+
+  const studentOptions = studentTypes.map((type: any) => ({
+    value: type.typeName,
+    label: type.typeName,
+  }));
+
+  const professionalOptions = professionalTypes.map((type: any) => ({
+    value: type.typeName,
+    label: type.typeName,
+  }));
+
+  const countriesOptions = countries.map((c) => ({
+    value: c,
+    label: c,
+  }));
 
   // reset fields when defaultValues change (e.g., user navigates back)
   useEffect(() => {
@@ -140,50 +163,24 @@ export default function ProfileSetupTab({
               <label className="mb-2 block text-slate-950">
                 {role === "student" ? "Student Type" : "Professional Type"}
               </label>
-              <select
-                {...register("subRole")}
-                className="w-full p-3 border border-slate-300 rounded-md"
-              >
-                <option value="">Select</option>
-                {role === "student" ? (
-                  <>
-                    {studentTypes?.map((studentType: any) => (
-                      <option key={studentType.id} value={studentType.typeName}>
-                        {studentType.typeName}
-                      </option>
-                    ))}
-                    {/* <option value="MEDICAL_STUDENT">MEDICAL STUDENT</option>
-                    <option value="NURSING_STUDENT">NURSING STUDENT</option>
-                    <option value="DENTAL_STUDENT">DENTAL STUDENT</option>
-                    <option value="PHARMACY_STUDENT">PHARMACY STUDENT</option>
-                    <option value="PUBLIC_HEALTH_STUDENT">
-                      PUBLIC HEALTH STUDENT
-                    </option>
-                    <option value="DENTAL_HYGIENE_STUDENT">
-                      DENTAL HYGIENE STUDENT
-                    </option>
-                    <option value="MEDICAL_LAB_TECHNOLOGY_STUDENT">
-                      MEDICAL LAB TECHNOLOGY STUDENT
-                    </option>
-                    <option value="RADIOLOGY_STUDENT">RADIOLOGY STUDENT</option>
-                    <option value="PHYSIOTHERAPY_STUDENT">
-                      PHYSIOTHERAPY STUDENT
-                    </option> */}
-                  </>
-                ) : (
-                  <>
-                    <option value="Physician">Physician</option>
-                    <option value="Registered Nurse">Registered Nurse</option>
-                    <option value="Pharmacist">Pharmacist</option>
-                    <option value="Dentist">Dentist</option>
-                  </>
-                )}
-              </select>
-              {errors.subRole && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.subRole.message}
-                </p>
-              )}
+              <SearchableSelect
+                options={
+                  role === "student" ? studentOptions : professionalOptions
+                }
+                value={watch("subRole")}
+                onChange={(val) => {
+                  setValue("subRole", val);
+                  if (val && errors.subRole) {
+                    // clear error logic if needed
+                  }
+                }}
+                placeholder={
+                  role === "student"
+                    ? "Select Student Type"
+                    : "Select Professional Type"
+                }
+                error={errors.subRole?.message}
+              />
             </div>
           )}
 
@@ -214,21 +211,18 @@ export default function ProfileSetupTab({
 
           <div>
             <label className="mb-2 block text-slate-950">Country</label>
-            <select
-              {...register("country")}
-              className="w-full p-3 border border-slate-300 rounded-md"
-            >
-              <option value="">Select your country</option>
-              <option value="usa">USA</option>
-              <option value="uk">UK</option>
-              <option value="canada">Canada</option>
-              <option value="bangladesh">Bangladesh</option>
-            </select>
-            {errors.country && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.country.message}
-              </p>
-            )}
+            <SearchableSelect
+              options={countriesOptions}
+              value={watch("country")}
+              onChange={(val) => {
+                setValue("country", val);
+                if (val && errors.country) {
+                  // handle error clearing if needed
+                }
+              }}
+              placeholder="Select your country"
+              error={errors.country?.message}
+            />
           </div>
 
           {/* Student */}
