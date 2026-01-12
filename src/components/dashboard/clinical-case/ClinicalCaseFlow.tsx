@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom";
 import DecisionPoint from "./DecisionPoint";
 import EvidenceReview from "./EvidenceReview";
 import { Progress } from "@/components/ui/progress";
-import { Bookmark, Printer, Share } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { ClinicalCaseData } from "@/types/clinicalCase";
 import ClinicalCaseMCQ from "./ClinicalCaseMCQ";
 import { useUpdateProgressMcqFlashcardClinicalCaseMutation } from "@/store/features/goal/goal.api";
@@ -167,7 +165,7 @@ console.log(isConfirmed)
           </div>
         </div>
 
-        <div className="border border-gray-300 rounded-2xl p-6 space-y-4 bg-white">
+        {/* <div className="border border-gray-300 rounded-2xl p-6 space-y-4 bg-white">
           <p className="text-xl font-semibold">Quick Actions</p>
           <Button className="w-full bg-[#F9FAFB] text-slate-900 hover:text-white px-6 py-2 border border-gray-300 items-center rounded disabled:opacity-50 cursor-pointer">
             <Bookmark />
@@ -181,7 +179,7 @@ console.log(isConfirmed)
             <Share />
             Share Case
           </Button>
-        </div>
+        </div> */}
       </div>
 
       <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>

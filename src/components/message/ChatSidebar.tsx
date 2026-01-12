@@ -63,7 +63,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   const confirmDelete = async () => {
     if (groupToDelete) {
       try {
-        await deleteGroup(groupToDelete._id).unwrap();
+        await deleteGroup(groupToDelete?._id).unwrap();
         toast.success("Group deleted successfully");
         setGroupToDelete(null);
       } catch (error) {
@@ -177,8 +177,8 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                 {myGroups.length > 0 ? (
                   myGroups.map((group: any) => (
                     <div
-                      key={group._id}
-                      onClick={() => onUserSelect({ ...group, userType: 'group', id: group._id, name: group.groupName })}
+                      key={group?._id}
+                      onClick={() => onUserSelect({ ...group, userType: 'group', id: group?._id, name: group.groupName })}
                       className={`p-3 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50 group relative ${
                         activeUserId === group._id ? "bg-blue-50" : ""
                       }`}

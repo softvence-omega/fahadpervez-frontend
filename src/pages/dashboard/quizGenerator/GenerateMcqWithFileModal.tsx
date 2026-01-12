@@ -164,24 +164,8 @@ export function GenerateMcqWithFileModal({
   };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(val) => {
-        if (!isLoading) {
-          setOpen(val);
-        }
-      }}
-    >
-      <DialogContent
-        onInteractOutside={(e) => {
-          if (isLoading) {
-            e.preventDefault();
-          }
-        }}
-        className={`sm:max-w-[700px] ${
-          isLoading ? "cursor-wait select-none pointer-events-none" : ""
-        }`}
-      >
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="sm:max-w-[700px]">
         <DialogHeader>
           <DialogTitle>Generate Quiz</DialogTitle>
           <DialogDescription>
@@ -242,7 +226,6 @@ export function GenerateMcqWithFileModal({
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
-              disabled={isLoading}
             >
               Cancel
             </Button>
