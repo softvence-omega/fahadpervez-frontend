@@ -40,11 +40,13 @@ const persistedStaticContentReducer = persistReducer(
 
 import { bioDigitalExternalAPI } from "./features/bioDigital/bioDigitalExternal.api";
 import quizReducer from "./features/MCQBank/quizSlice";
+import { drugApi } from "./features/drugApi/drugApi";
 
 export const store = configureStore({
   reducer: {
     [baseAPI.reducerPath]: baseAPI.reducer,
     [bioDigitalExternalAPI.reducerPath]: bioDigitalExternalAPI.reducer,
+    [drugApi.reducerPath]: drugApi.reducer,
     auth: persistedReducer,
     staticContent: persistedStaticContentReducer,
     quiz: quizReducer,
@@ -56,7 +58,8 @@ export const store = configureStore({
       },
     })
       .concat(baseAPI.middleware)
-      .concat(bioDigitalExternalAPI.middleware),
+      .concat(bioDigitalExternalAPI.middleware)
+      .concat(drugApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

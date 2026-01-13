@@ -68,6 +68,9 @@ export default function PracticeMCQ() {
     {}
   );
   const [showAnswer, setShowAnswer] = useState<{ [key: string]: boolean }>({});
+  const [lockedQuestions, setLockedQuestions] = useState<{
+    [key: string]: boolean;
+  }>({});
   const [openReportModal, setOpenReportModal] = useState(false);
   const [mcqId, setMcqId] = useState("");
 
@@ -75,8 +78,8 @@ export default function PracticeMCQ() {
   const questions = mcqData?.mcqs || [];
 
   const handleSelect = (qId: string, index: number) => {
-    // Prevent changing option if already selected
-    if (selected[qId] !== undefined && selected[qId] !== null) return;
+    // Prevent changing option if already locked
+    if (lockedQuestions[qId]) return;
 
     setSelected((prev) => ({ ...prev, [qId]: index }));
 
@@ -96,6 +99,9 @@ export default function PracticeMCQ() {
 
   const toggleAnswer = (qId: string) => {
     setShowAnswer((prev) => ({ ...prev, [qId]: !prev[qId] }));
+    if (!lockedQuestions[qId]) {
+      setLockedQuestions((prev) => ({ ...prev, [qId]: true }));
+    }
   };
 
   const totalPages = meta?.total ? Math.ceil(meta.total / meta.limit) : 1;
@@ -263,8 +269,6 @@ export default function PracticeMCQ() {
             const globalQuestionNumber = (currentPage - 1) * limit + idx + 1;
 
             const selectedIndex = selected[qId];
-            const isAnswered =
-              selectedIndex !== undefined && selectedIndex !== null;
 
             return (
               <div
@@ -356,7 +360,7 @@ export default function PracticeMCQ() {
                           className="mr-2"
                           onChange={() => handleSelect(qId, optionIdx)}
                           checked={isSelected}
-                          disabled={show || isAnswered}
+                          disabled={lockedQuestions[qId]}
                         />
                         <span className={textClass}>
                           {opt.option}. {opt.optionText}
