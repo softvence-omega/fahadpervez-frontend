@@ -21,20 +21,24 @@ const OverviewSection: React.FC = () => {
   const dynamicOverview = [
     {
       icon: "/image/dashboard_new/Background.svg",
-      title: `${overallAccuracy}%`,
+      title: `${Math.round(overallAccuracy)}%`,
       subtitle: "Overall Accuracy",
       stats: [
         {
           label: "Quiz Test",
-          value: `${overviewData?.data?.progress?.mcq ?? 0}%`,
+          value: `${Math.round(overviewData?.data?.progress?.mcq ?? 0)}%`,
         },
         {
           label: "Clinical Case",
-          value: `${overviewData?.data?.progress?.clinicalCase ?? 0}%`,
+          value: `${Math.round(
+            overviewData?.data?.progress?.clinicalCase ?? 0
+          )}%`,
         },
-        { label: "OSCE", value: `${overviewData?.data?.progress?.osce ?? 0}%` },
-      ],
-    },
+        {
+          label: "OSCE",
+          value: `${Math.round(overviewData?.data?.progress?.osce ?? 0)}%`,
+        },
+      ], },
     {
       icon: "/image/dashboard_new/Background1.svg",
       title: `${(totalStudyTime / 60).toFixed(1)} hrs`, // assuming api returns minutes? If hours, remove /60. Usually "timeCount" is seconds or minutes. Assuming minutes for now based on "30 minutes" in dummy.
@@ -42,15 +46,15 @@ const OverviewSection: React.FC = () => {
       stats: [
         {
           label: "Quiz Test",
-          value: `${overviewData?.data?.timeCount?.mcq ?? 0} m`,
+          value: `${overviewData?.data?.timeCount?.mcq ?? 0} hrs`,
         },
         {
           label: "Clinical Case",
-          value: `${overviewData?.data?.timeCount?.clinicalCase ?? 0} m`,
+          value: `${overviewData?.data?.timeCount?.clinicalCase ?? 0} hrs`,
         },
         {
           label: "OSCE",
-          value: `${overviewData?.data?.timeCount?.osce ?? 0} m`,
+          value: `${overviewData?.data?.timeCount?.osce ?? 0} hrs`,
         },
       ],
     },
