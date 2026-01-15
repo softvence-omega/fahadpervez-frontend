@@ -34,7 +34,7 @@ import DailyChallenge from "@/pages/dashboard/gamifiedLearning/DailyChallenge";
 import PracticeMCQ from "@/pages/dashboard/mcqBank/PracticeMCQ";
 // import DiagramDetails from "@/components/dashboard/diagram/DiagramDetails";
 // import OSCE from "@/pages/dashboard/OSCE";
-import DrugCard from "@/pages/dashboard/DrugCard";
+// import DrugCard from "@/pages/dashboard/DrugCard";
 import DrugSearchCard from "@/pages/DrugSearchCard";
 import YourDrugCard from "@/components/dashboard/drug card/YourDrugCard";
 import MakeDecesion from "@/components/dashboard/clinical-case/MakeDecesion";
