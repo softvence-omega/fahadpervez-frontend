@@ -1,6 +1,6 @@
-import { ArrowLeft, Bookmark, Download, AlertTriangle, Printer, Loader2 } from 'lucide-react';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import { ArrowLeft, Bookmark, AlertTriangle, Loader2 } from 'lucide-react';
+// import html2canvas from 'html2canvas';
+// import jsPDF from 'jspdf';
 import { useRef, useState, useEffect } from 'react';
 import DrugImage from './DrugImage';
 import SimpleTabs from './SimpleTabs';
@@ -50,60 +50,60 @@ export default function DrugDetails({ drug, onBack, onSave, isSaved }: DrugDetai
     fetchExtendedData();
   }, [drug, brandName, genericName]);
 
-  const handleDownload = async () => {
-    if (!contentRef.current) return;
+  // const handleDownload = async () => {
+  //   if (!contentRef.current) return;
 
-    try {
-      const element = contentRef.current;
+  //   try {
+  //     const element = contentRef.current;
 
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        onclone: (clonedDoc) => {
-          const clonedElement = clonedDoc.querySelector('[data-pdf-content]') as HTMLElement;
-          if (clonedElement) {
-            clonedElement.querySelectorAll('*').forEach((el) => {
-              const htmlEl = el as HTMLElement;
-              const computedStyle = window.getComputedStyle(htmlEl);
-              htmlEl.style.color = computedStyle.color;
-              htmlEl.style.backgroundColor = computedStyle.backgroundColor;
-              htmlEl.style.borderColor = computedStyle.borderColor;
-            });
-          }
-        },
-      });
+  //     const canvas = await html2canvas(element, {
+  //       scale: 2,
+  //       useCORS: true,
+  //       logging: false,
+  //       backgroundColor: '#ffffff',
+  //       onclone: (clonedDoc) => {
+  //         const clonedElement = clonedDoc.querySelector('[data-pdf-content]') as HTMLElement;
+  //         if (clonedElement) {
+  //           clonedElement.querySelectorAll('*').forEach((el) => {
+  //             const htmlEl = el as HTMLElement;
+  //             const computedStyle = window.getComputedStyle(htmlEl);
+  //             htmlEl.style.color = computedStyle.color;
+  //             htmlEl.style.backgroundColor = computedStyle.backgroundColor;
+  //             htmlEl.style.borderColor = computedStyle.borderColor;
+  //           });
+  //         }
+  //       },
+  //     });
 
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
-      });
+  //     const imgData = canvas.toDataURL('image/png');
+  //     const pdf = new jsPDF({
+  //       orientation: 'portrait',
+  //       unit: 'mm',
+  //       format: 'a4',
+  //     });
 
-      const imgWidth = 210;
-      const pageHeight = 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 0;
+  //     const imgWidth = 210;
+  //     const pageHeight = 297;
+  //     const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  //     let heightLeft = imgHeight;
+  //     let position = 0;
 
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+  //     pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+  //     heightLeft -= pageHeight;
 
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
+  //     while (heightLeft > 0) {
+  //       position = heightLeft - imgHeight;
+  //       pdf.addPage();
+  //       pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+  //       heightLeft -= pageHeight;
+  //     }
 
-      pdf.save(`${brandName || genericName || 'drug'}_card.pdf`);
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      alert('Error generating PDF. Please try again or use your browser\'s print function (Ctrl/Cmd + P).');
-    }
-  };
+  //     pdf.save(`${brandName || genericName || 'drug'}_card.pdf`);
+  //   } catch (error) {
+  //     console.error('Error generating PDF:', error);
+  //     alert('Error generating PDF. Please try again or use your browser\'s print function (Ctrl/Cmd + P).');
+  //   }
+  // };
 
   const Section = ({ title, content, warning = false }: { title: string; content?: string[] | string; warning?: boolean }) => {
     if (!content || (Array.isArray(content) && content.length === 0)) return null;
