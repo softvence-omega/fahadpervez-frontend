@@ -1,6 +1,7 @@
 import App from "@/App";
 import Home from "@/pages/Home";
 import Pricing from "@/pages/Pricing";
+import DrugSearchCard from "@/pages/DrugSearchCard";
 
 const homeRoutes = {
   path: "/",
@@ -13,6 +14,10 @@ const homeRoutes = {
     {
       path: "pricing",
       element: <Pricing />,
+    },
+    {
+      path: "drug-search",
+      element: <DrugSearchCard />,
     },
     // {
     //   path: "/about",

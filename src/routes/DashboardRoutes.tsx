@@ -35,6 +35,7 @@ import PracticeMCQ from "@/pages/dashboard/mcqBank/PracticeMCQ";
 // import DiagramDetails from "@/components/dashboard/diagram/DiagramDetails";
 // import OSCE from "@/pages/dashboard/OSCE";
 import DrugCard from "@/pages/dashboard/DrugCard";
+import DrugSearchCard from "@/pages/DrugSearchCard";
 import YourDrugCard from "@/components/dashboard/drug card/YourDrugCard";
 import MakeDecesion from "@/components/dashboard/clinical-case/MakeDecesion";
 import CreateNewDiscussion from "@/components/dashboard/community-event/forums/CreateNewDiscussion";
@@ -314,9 +315,13 @@ const dashboardRoutes = {
       path: "weekly-plan/:id",
       element: <WeeklyPlan />,
     },
+    // {
+    //   path: "drug-cards",
+    //   element: <DrugCard />,
+    // },
     {
       path: "drug-cards",
-      element: <DrugCard />,
+      element: <DrugSearchCard />,
     },
     {
       path: "your-drug-cards",

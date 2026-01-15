@@ -37,7 +37,7 @@ export default function MyStudyPlanCard({ plan }: MyStudyPlanCardProps) {
         <div className="p-7 border border-slate-300 rounded-[8px]">
             <div className="flex justify-between items-start gap-4">
                 <h3 className="text-lg font-semibold text-slate-800 line-clamp-2">{plan.plan_summary}</h3>
-                <p className="text-lg text-white font-semibold bg-green-700 rounded-full pt-0.5 px-2.5 whitespace-nowrap">Active</p>
+                {/* <p className="text-lg text-white font-semibold bg-green-700 rounded-full pt-0.5 px-2.5 whitespace-nowrap">Active</p> */}
             </div>
             <p className="text-slate-600 mt-3">Total Days: {plan.total_days}</p>
             <p className="flex items-center gap-3 text-slate-600 mt-12"><Clock /> {totalHours} hours total</p>
