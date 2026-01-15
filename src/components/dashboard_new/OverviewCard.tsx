@@ -22,7 +22,7 @@ const OverviewCard: React.FC<OverviewCardProps> = ({
           <img src={icon} className="w-full h-full" alt="alt" />
         </div>
         <div>
-          <div className="text-2xl font-semibold text-gray-900">{parseFloat(title).toFixed(2)}</div>
+          <div className="text-2xl font-semibold text-gray-900">{title}</div>
           {subtitle && <div className="text-sm text-gray-600">{subtitle}</div>}
         </div>
       </div>
@@ -31,7 +31,13 @@ const OverviewCard: React.FC<OverviewCardProps> = ({
           {stats.map((s, i) => (
             <div key={i}>
               <div className="font-semibold text-gray-900 text-nowrap text-center">
-                {parseFloat(s.value).toFixed(2)}
+                {/* {typeof s.value === "number"
+            ? Math.round(s.value) // rounds to nearest integer
+            : (() => {
+                const num = parseFloat(s.value);
+                return Number.isInteger(num) ? num : num.toFixed(2);
+              })()} */}
+                {s.value}
               </div>
               <div className="text-gray-600 text-nowrap text-center">
                 {s.label}
@@ -39,7 +45,7 @@ const OverviewCard: React.FC<OverviewCardProps> = ({
             </div>
           ))}
         </div>
-      )}
+      )}{" "}
     </div>
   );
 };

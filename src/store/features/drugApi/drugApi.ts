@@ -20,10 +20,23 @@ export const drugApi = createApi({
         `https://rxnav.nlm.nih.gov/REST/rxcui/${rxcui}/properties.json`,
     }),
     searchOpenFda: builder.query<any, { name: string; rxcui: string }>({
-      query: ({ name }) =>
-        `https://api.fda.gov/drug/label.json?search=brand_name:${encodeURIComponent(
-          name
-        )} OR generic_name:${encodeURIComponent(name)}&limit=1`,
+      query: ({ name }) => {
+        const searchQuery = encodeURIComponent(name.replace(/\[|\]/g, ""));
+        // Using the comprehensive search pattern provided
+        return `https://api.fda.gov/drug/label.json?search=openfda.brand_name:"${searchQuery}"+openfda.generic_name:"${searchQuery}"+openfda.substance_name:"${searchQuery}"&limit=1`;
+      },
+    }),
+    getAdverseEvents: builder.query<any, string>({
+      query: (name) => {
+        const searchQuery = encodeURIComponent(name.replace(/\[|\]/g, ""));
+        return `https://api.fda.gov/drug/event.json?search=patient.drug.medicinalproduct:"${searchQuery}"&limit=20`;
+      },
+    }),
+    getRecalls: builder.query<any, string>({
+      query: (name) => {
+        const searchQuery = encodeURIComponent(name.replace(/\[|\]/g, ""));
+        return `https://api.fda.gov/drug/enforcement.json?search=product_description:"${searchQuery}"+openfda.brand_name:"${searchQuery}"+openfda.generic_name:"${searchQuery}"&limit=5`;
+      },
     }),
   }),
 });
@@ -33,4 +46,6 @@ export const {
   useGetDrugDetailsQuery,
   useLazyGetDrugDetailsQuery,
   useSearchOpenFdaQuery,
+  useGetAdverseEventsQuery,
+  useGetRecallsQuery,
 } = drugApi;

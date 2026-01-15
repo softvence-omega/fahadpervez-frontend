@@ -134,9 +134,9 @@ export default function WeeklyPlan() {
             className="mt-12 mb-12 space-y-1"
           />
         </div>
-        <p className="text-lg text-white font-semibold bg-green-700 rounded-full pt-0.5 px-2.5">
+        {/* <p className="text-lg text-white font-semibold bg-green-700 rounded-full pt-0.5 px-2.5">
           Active
-        </p>
+        </p> */}
       </div>
 
       {/* <div className="flex items-center gap-3 px-7 py-3 border border-blue-500 bg-blue-50 rounded-[8px] my-12">
@@ -177,28 +177,27 @@ export default function WeeklyPlan() {
             <CardContent>
               {/* Day Status Summary */}
               <div className="grid grid-cols-7 gap-2 mb-10">
-                {studyPlan.daily_plan.slice(0).map((dayPlan) => {
-                  const total = dayPlan.hourly_breakdown.length;
-                  const completed = 0; // This would come from backend status tracking
+                {studyPlan.daily_plan.map((dayPlan) => {
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
+                  const planDate = new Date(dayPlan.date);
+                  planDate.setHours(0, 0, 0, 0);
+
+                  const isToday = planDate.getTime() === today.getTime();
+                  const isPast = planDate.getTime() < today.getTime();
 
                   let statusIcon;
                   let colorClass = "";
-                  // if (total === 0) { statusIcon = <MinusCircle className="w-4 h-4" />; colorClass = "text-gray-400 border-gray-300"; }
-                  // else if (completed === total && total > 0) { statusIcon = <CheckCircle className="w-4 h-4" />; colorClass = "text-green-600 border-green-500"; }
-                  // else if (completed > 0) { statusIcon = <Clock className="w-4 h-4" />; colorClass = "text-orange-500 border-orange-400"; }
-                  // else { statusIcon = <XCircle className="w-4 h-4" />; colorClass = "text-red-500 border-red-400"; }
-                  if (total === 0) {
-                    statusIcon = <MinusCircle className="w-4 h-4" />;
-                    colorClass = "text-gray-400 border-gray-300";
-                  } else if (completed === total && total > 0) {
+
+                  if (isPast) {
                     statusIcon = <CheckCircle className="w-4 h-4" />;
-                    colorClass = "text-green-600 border-green-500";
-                  } else if (completed > 0) {
+                    colorClass = "text-green-600 border-green-500 bg-green-50";
+                  } else if (isToday) {
                     statusIcon = <Clock className="w-4 h-4" />;
-                    colorClass = "text-orange-500 border-orange-400";
+                    colorClass = "text-yellow-500 border-yellow-400 bg-yellow-50";
                   } else {
                     statusIcon = <MinusCircle className="w-4 h-4" />;
-                    colorClass = "text-gray-500 border-gray-400";
+                    colorClass = "text-gray-400 border-gray-300 bg-gray-50";
                   }
 
                   return (
