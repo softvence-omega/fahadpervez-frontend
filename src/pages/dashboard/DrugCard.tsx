@@ -240,12 +240,12 @@ import {
   useGetDrugDetailsQuery,
   useSearchDrugQuery,
   useSearchOpenFdaQuery,
-//   useLazyGetDrugDetailsQuery,
+  useGetAdverseEventsQuery,
+  useGetRecallsQuery,
 } from "@/store/features/drugApi/drugApi";
-// import { useLazyGetDrugDetailsQuery } from "@/store/features/drugApi/drugApi"; // Fixed import path if needed, or rely on the one above
-import { Search, ClipboardList } from "lucide-react";
+import { Search, ClipboardList, AlertTriangle, Activity } from "lucide-react";
 import { FaBookmark, FaShare } from "react-icons/fa";
-import drugImg from "@/assets/dashboard/AI Recommendation.png"; // Using existing image import
+import drugImg from "@/assets/dashboard/AI Recommendation.png";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types";
@@ -260,47 +260,52 @@ export default function DrugCard() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRxcui, setSelectedRxcui] = useState<string | null>(null);
+  const [activeDrugName, setActiveDrugName] = useState("");
 
-  // Auto-search on type (debounced by API slice or manually if needed, utilizing caching)
+  // Search suggestions
   const { data: searchResults, isLoading: searchLoading } = useSearchDrugQuery(
     searchTerm,
-    {
-      skip: !searchTerm,
-    }
+    { skip: !searchTerm }
   );
 
-  // Get details when RxCUI selected
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-//   const [getDetails] = useLazyGetDrugDetailsQuery();
+  // Core drug details
   const { data: drugDetails, isLoading: detailsLoading } =
-    useGetDrugDetailsQuery(selectedRxcui!, {
-      skip: !selectedRxcui,
-    });
+    useGetDrugDetailsQuery(selectedRxcui!, { skip: !selectedRxcui });
 
-  // Get OpenFDA data
+  // OpenFDA Label data
   const { data: openFdaData, isLoading: fdaLoading } = useSearchOpenFdaQuery(
-    { name: searchTerm, rxcui: selectedRxcui! },
-    {
-      skip: !selectedRxcui || !searchTerm,
-    }
+    { name: activeDrugName, rxcui: selectedRxcui! },
+    { skip: !selectedRxcui || !activeDrugName }
   );
 
-  // Map API → UI data
+  // Adverse Events data
+  const { data: adverseEvents, isLoading: eventsLoading } = useGetAdverseEventsQuery(
+    activeDrugName,
+    { skip: !activeDrugName || !selectedRxcui }
+  );
+
+  // Recalls data
+  const { data: recalls, isLoading: recallsLoading } = useGetRecallsQuery(
+    activeDrugName,
+    { skip: !activeDrugName || !selectedRxcui }
+  );
+
   const drugData = drugDetails
-    ? mapApiToDrugCard(drugDetails, searchTerm, openFdaData)
+    ? mapApiToDrugCard(drugDetails, activeDrugName, openFdaData)
     : null;
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-    setSelectedRxcui(null); // Reset
+    setSelectedRxcui(null);
   };
 
   const handleSelectDrug = (rxcui: string, name: string) => {
     setSelectedRxcui(rxcui);
     setSearchTerm(name);
+    setActiveDrugName(name);
   };
 
-  const isLoading = searchLoading || detailsLoading || fdaLoading;
+  const isLoading = searchLoading || detailsLoading || fdaLoading || eventsLoading || recallsLoading;
 
   return (
     <div className="my-6">
@@ -476,15 +481,48 @@ export default function DrugCard() {
 
           {/* Right Section */}
           <div className="space-y-6">
-            {/* Related Insulin Types - Keeping static for now or could also come from API if available */}
-            <div className="bg-white rounded-xl shadow p-6">
-              <h2 className="text-lg font-semibold text-[#111827] mb-3">
-                Related Information
-              </h2>
-              <p className="text-sm text-gray-500">
-                No related drugs found in this context.
-              </p>
-            </div>
+            {/* Safety Recalls Section */}
+            {recalls?.results?.length > 0 && (
+              <div className="bg-red-50 rounded-xl shadow p-6 border border-red-200">
+                <div className="flex items-center gap-2 text-red-700 mb-4">
+                  <AlertTriangle size={20} />
+                  <h2 className="text-lg font-semibold">Safety Recalls</h2>
+                </div>
+                <div className="space-y-4">
+                  {recalls.results.slice(0, 3).map((recall: any, i: number) => (
+                    <div key={i} className="text-sm border-b border-red-100 last:border-0 pb-2">
+                      <p className="font-medium text-red-900">{recall.classification}</p>
+                      <p className="text-red-700 line-clamp-2">{recall.reason_for_recall}</p>
+                      <p className="text-xs text-red-500 mt-1">Date: {recall.recall_initiation_date}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Adverse Events Aggregated */}
+            {adverseEvents?.results?.length > 0 && (
+              <div className="bg-white rounded-xl shadow p-6 border border-slate-100">
+                <div className="flex items-center gap-2 text-slate-800 mb-4">
+                  <Activity size={20} className="text-blue-500" />
+                  <h2 className="text-lg font-semibold">Reported Reactions</h2>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {/* Extract common reactions (simplified processAdverseEvents) */}
+                  {Array.from(new Set(adverseEvents.results
+                    .flatMap((e: any) => e.patient?.reaction?.map((r: any) => r.reactionmeddrapt))
+                    .filter(Boolean)
+                  )).slice(0, 8).map((reaction: any, i: number) => (
+                    <span key={i} className="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-full">
+                      {reaction}
+                    </span>
+                  ))}
+                </div>
+                <p className="text-xs text-slate-400 mt-4">
+                  *Based on {adverseEvents.meta?.results?.total || adverseEvents.results.length} FDA reports
+                </p>
+              </div>
+            )}
 
             {/* AI Recommendations */}
             <div className="bg-gradient-to-r from-[#FAF5FF] to-[#FDF2F8] rounded-xl shadow p-6">
@@ -499,7 +537,6 @@ export default function DrugCard() {
                 </h2>
               </div>
               <div className="space-y-3">
-                {/* Static recommendations for demo */}
                 <div className="p-3 bg-white rounded-lg border border-[#E9D5FF] shadow-sm hover:shadow-md transition">
                   <h3 className="font-medium text-[#6B21A8]">
                     Skill Review Needed
