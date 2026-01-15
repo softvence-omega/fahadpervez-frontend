@@ -502,7 +502,7 @@ export default function DrugDetails({ drug, onBack, onSave, isSaved }: DrugDetai
             {isSaved ? 'Saved' : 'Save'}
           </button>
 
-          <button
+          {/* <button
             onClick={handleDownload}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all"
           >
@@ -516,7 +516,7 @@ export default function DrugDetails({ drug, onBack, onSave, isSaved }: DrugDetai
           >
             <Printer className="h-4 w-4" />
             Print
-          </button>
+          </button> */}
         </div>
       </div>
 
