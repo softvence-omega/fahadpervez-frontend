@@ -8,13 +8,13 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistor, store } from "./store/store.ts";
 import { Toaster } from "sonner";
-// import SocketTracker from "./common/SocketTracker.tsx";
+import SocketTracker from "./common/SocketTracker.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        {/* <SocketTracker /> */}
+        <SocketTracker />
         <RouterProvider router={routes} />
       </PersistGate>
       <Toaster richColors position="top-right" />

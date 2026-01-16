@@ -1,93 +1,107 @@
 import { useEffect, useRef } from "react";
 import { useAppSelector } from "@/store/hook";
 import { selectToken, selectUser } from "@/store/features/auth/auth.slice";
+import { io, Socket } from "socket.io-client";
 
 const SocketTracker = () => {
   const token = useAppSelector(selectToken);
   const user = useAppSelector(selectUser);
-  const socketRef = useRef<WebSocket | null>(null);
+  const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
     const role = user?.account?.role;
     const isEligible = role === "STUDENT" || role === "PROFESSIONAL";
 
-    // Only connect if we have a token and the user is a STUDENT or PROFESSIONAL
-    if (token && isEligible) {
-      const currentToken = token;
+    // Helper to establish connection
+    const connectSocket = () => {
+      // If already connected, do nothing
+      if (socketRef.current?.connected) {
+        return;
+      }
+
+      // If socket instance exists but disconnected, try to reconnect
+      if (socketRef.current) {
+        console.log("Visibility changed: Reconnecting Socket.IO...");
+        socketRef.current.connect();
+        return;
+      }
+
+      console.log(`Initializing Socket.IO Tracker for ${role}...`);
       
-      // We'll try the root host first as requested, but we construct it carefully.
-      // If the backend has an /api prefix for REST, it MIGHT need it for WS too.
-      // For now, sticking to the user's provided string.
-      const socketUrl = `wss://api.zyura-e.com?token=${currentToken}`;
+      const socket = io("https://api.zyura-e.com", {
+        query: {
+          token: token
+        },
+        transports: ["websocket"],
+        reconnection: true,
+        reconnectionAttempts: Infinity,
+        reconnectionDelay: 1000,
+      });
 
-      const connect = () => {
-        // Prevent multiple connections
-        if (socketRef.current) {
-          if (
-            socketRef.current.readyState === WebSocket.OPEN ||
-            socketRef.current.readyState === WebSocket.CONNECTING
-          ) {
-            return;
-          }
-          socketRef.current.close();
+      socketRef.current = socket;
+
+      socket.on("connect", () => {
+        console.log("Socket.IO connection established for tracking.");
+      });
+
+      socket.on("disconnect", (reason) => {
+        console.log("Socket.IO disconnected:", reason);
+        if (reason === "io server disconnect") {
+          socket.connect();
         }
+      });
 
-        console.log(`Connecting to WebSocket Tracker for ${role}...`);
-        try {
-          const socket = new WebSocket(socketUrl);
-          socketRef.current = socket;
+      socket.on("connect_error", (error) => {
+        console.error("Socket.IO connection error:", error);
+      });
+    };
 
-          socket.onopen = () => {
-            console.log("WebSocket connection established for tracking.");
-          };
+    // Helper to disconnect
+    const disconnectSocket = () => {
+      if (socketRef.current) {
+        console.log("Visibility changed/Unmount: Disconnecting Socket.IO...");
+        socketRef.current.disconnect();
+        // We don't nullify socketRef here immediately if we want to reuse the instance for quick reconnects, 
+        // but for safety/cleanliness on unmount we will nullify it in the cleanup return.
+        // For visibility toggles, keeping the instance is fine, but disconnect() stops the active connection.
+      }
+    };
 
-          socket.onmessage = (event) => {
-            try {
-              const data = JSON.parse(event.data);
-              console.log("WebSocket message received:", data);
-            } catch (e) {
-              console.log("WebSocket message received (raw):", event.data);
-            }
-          };
-
-          socket.onerror = (error) => {
-            console.error("WebSocket connection error. This might be due to server configuration or an incorrect endpoint URL.");
-            // We log the error object but browsers often hide details for security
-            console.debug("WS Error Object:", error);
-          };
-
-          socket.onclose = (event) => {
-            console.log(
-              "WebSocket connection closed:",
-              event.code,
-              event.reason || "No reason provided"
-            );
-            socketRef.current = null;
-
-            // Reconnect if it wasn't a normal close (1000) or intended closure
-            if (event.code !== 1000 && event.code !== 1001) {
-              console.log("Attempting to reconnect in 5 seconds...");
-              setTimeout(connect, 5000);
-            }
-          };
-        } catch (err) {
-          console.error("Failed to initiate WebSocket connection:", err);
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // User switched tabs or minimized -> Stop tracking
+        disconnectSocket();
+      } else {
+        // User is back -> Start tracking
+        if (isEligible && token) {
+          connectSocket();
         }
-      };
+      }
+    };
 
-      connect();
+    if (token && isEligible) {
+      // Only connect initially if the page is visible
+      if (!document.hidden) {
+        connectSocket();
+      }
+
+      // Add visibility listener
+      document.addEventListener("visibilitychange", handleVisibilityChange);
 
       return () => {
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
         if (socketRef.current) {
-          console.log("Closing WebSocket connection due to unmount or status change.");
-          socketRef.current.close(1000, "Component unmounted");
+          console.log("Cleanup: Disconnecting Socket.IO...");
+          socketRef.current.disconnect();
           socketRef.current = null;
         }
       };
-    } else if (socketRef.current) {
-      console.log("Closing WebSocket: User is not STUDENT/PROFESSIONAL or logged out.");
-      socketRef.current.close(1000, "Ineligible role or logout");
-      socketRef.current = null;
+    } else {
+      // Not eligible or logged out
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
     }
   }, [token, user?.account?.role]);
 
