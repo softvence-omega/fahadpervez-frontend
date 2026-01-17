@@ -7,8 +7,13 @@ import signupImage from "../../assets/signUp/signUpImage.png";
 // import logo from "../../assets/signUp/logo.png";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import { useRegisterUserMutation } from "@/store/features/auth/auth.api";
+import { useRegisterUserMutation, useSignInWithGoogleMutation, useLazyGetMeQuery } from "@/store/features/auth/auth.api";
 import { toast } from "sonner";
+import { auth, googleProvider } from "@/config/firebase.config";
+import { signInWithPopup } from "firebase/auth";
+import Cookies from "js-cookie";
+import { useAppDispatch } from "@/store/hook";
+import { setUser } from "@/store/features/auth/auth.slice";
 
 const signupSchema = z.object({
   email: z.string().nonempty("Email is required").email("Invalid email format"),
@@ -22,6 +27,9 @@ type SignupFormInputs = z.infer<typeof signupSchema>;
 
 const Signup = () => {
   const [registerUser, { isLoading }] = useRegisterUserMutation();
+  const [signInWithGoogle, { isLoading: isSocialLoading }] = useSignInWithGoogleMutation();
+  const [getMeTrigger] = useLazyGetMeQuery();
+  const dispatch = useAppDispatch();
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -34,6 +42,29 @@ const Signup = () => {
   });
 
   const navigate = useNavigate();
+
+  const handleAuthSuccess = async (accessToken: string) => {
+    Cookies.set("accessToken", accessToken);
+    const meData = await getMeTrigger(undefined, false).unwrap();
+    const user = meData?.data;
+    const role = user?.account?.role;
+    
+    dispatch(
+      setUser({
+        accessToken,
+        user,
+      })
+    );
+
+    const roleRoutes: Record<string, string> = {
+      ADMIN: "/admin",
+      MENTOR: "/mentor",
+      STUDENT: "/dashboard",
+      PROFESSIONAL: "/dashboard",
+    };
+
+    navigate(roleRoutes[role] || "/", { replace: true });
+  };
 
   // Email signup
   const onSubmit = async (data: SignupFormInputs) => {
@@ -66,9 +97,27 @@ const Signup = () => {
     }
   };
 
-  const handleGoogleSignup = () => {
-    console.log("Google signup triggered");
-    // Later: integrate Firebase/Auth0/NextAuth/etc.
+  const handleGoogleSignup = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      
+      const res = await signInWithGoogle({
+        email: user.email || "",
+        name: user.displayName || "",
+        photo: user.photoURL || "",
+      }).unwrap();
+      
+      if (res?.success) {
+        await handleAuthSuccess(res.data.accessToken);
+        toast.success("Signed up successfully with Google");
+      }
+    } catch (err: any) {
+      console.error("Google signup error:", err);
+      if (err.code !== 'auth/popup-closed-by-user') {
+        toast.error(err?.data?.message || "Google signup failed");
+      }
+    }
   };
 
   return (
@@ -143,10 +192,10 @@ const Signup = () => {
             {/* Sign up button */}
             <button
               type="submit"
-              className="w-full bg-blue-main text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-blue-600 cursor-pointer"
-              disabled={isSubmitting || isLoading}
+              className="w-full bg-blue-main text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-blue-600 cursor-pointer disabled:opacity-50"
+              disabled={isSubmitting || isLoading || isSocialLoading}
             >
-              {isSubmitting || isLoading ? "Loading..." : "Sign up with Email"}
+              {isSubmitting || isLoading || isSocialLoading ? "Loading..." : "Sign up with Email"}
             </button>
           </form>
 
@@ -162,10 +211,11 @@ const Signup = () => {
           {/* Google button */}
           <button
             onClick={handleGoogleSignup}
-            className="w-full flex items-center justify-center text-sm text-[#3F3F46] font-medium border border-[#D2D6DB] p-[8px] rounded-lg hover:bg-gray-100 cursor-pointer"
+            disabled={isSubmitting || isLoading || isSocialLoading}
+            className="w-full flex items-center justify-center text-sm text-[#3F3F46] font-medium border border-[#D2D6DB] p-[8px] rounded-lg hover:bg-gray-100 cursor-pointer disabled:opacity-50"
           >
             <FcGoogle className="mr-2 text-xl" />
-            Google
+            {isSocialLoading ? "Connecting..." : "Google"}
           </button>
 
           {/* Terms + Sign in */}

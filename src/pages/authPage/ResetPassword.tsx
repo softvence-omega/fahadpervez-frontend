@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -5,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import signupImage from "../../assets/signUp/signUpImage.png";
 import logo from "../../assets/signUp/logo.png";
 import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
 import { useResetPasswordMutation } from "@/store/features/auth/auth.api";
 
 // Schema
@@ -19,6 +21,7 @@ const resetPasswordSchema = z.object({
 type ResetPasswordInputs = z.infer<typeof resetPasswordSchema>;
 
 const ResetPassword = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -39,13 +42,13 @@ const ResetPassword = () => {
     }
 
     try {
-      const result = await resetPassword({
+      await resetPassword({
         email,
         otp: formData.otp,
         newPassword: formData.newPassword,
       }).unwrap();
 
-      toast.success(result.message || "Password reset successful!");
+      // toast.success(result.message || "Password reset successful!");
       localStorage.removeItem("resetEmail"); // ✅ Clear local storage
       navigate("/login"); // Redirect to login
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -107,14 +110,22 @@ const ResetPassword = () => {
               <h3 className="text-sm text-[#020617] font-medium mb-2 mt-4">
                 New Password
               </h3>
-              <input
-                type="password"
-                placeholder="Enter new password"
-                {...register("newPassword")}
-                className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter new password"
+                  {...register("newPassword")}
+                  className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-black pr-10"
+                />
+                <div
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute top-1/2 -translate-y-1/2 right-3 cursor-pointer text-gray-500 hover:text-gray-700 select-none"
+                >
+                  {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+                </div>
+              </div>
               {errors.newPassword && (
-                <p className="text-red-500 text-sm">
+                <p className="text-red-500 text-sm mt-1">
                   {errors.newPassword.message}
                 </p>
               )}
