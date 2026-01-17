@@ -33,6 +33,7 @@ type FormValues = {
   hospitalOrInstitute?: string;
   specialty?: string;
   postgraduateDegree?: string;
+  otherSubRole?: string;
 };
 
 export default function ProfileSetupTab({
@@ -57,15 +58,21 @@ export default function ProfileSetupTab({
   const studentTypes = studentType?.data || [];
   const professionalTypes = professionalType?.data || [];
 
-  const studentOptions = studentTypes.map((type: any) => ({
-    value: type.typeName,
-    label: type.typeName,
-  }));
+  const studentOptions = [
+    ...studentTypes.map((type: any) => ({
+      value: type.typeName,
+      label: type.typeName,
+    })),
+    { value: "Other", label: "Other" },
+  ];
 
-  const professionalOptions = professionalTypes.map((type: any) => ({
-    value: type.typeName,
-    label: type.typeName,
-  }));
+  const professionalOptions = [
+    ...professionalTypes.map((type: any) => ({
+      value: type.typeName,
+      label: type.typeName,
+    })),
+    { value: "Other", label: "Other" },
+  ];
 
   const countriesOptions = countries.map((c) => ({
     value: c,
@@ -114,7 +121,12 @@ export default function ProfileSetupTab({
   }, [role, setValue]);
 
   const onSubmit = (data: FormValues) => {
-    onNext(data as ProfileSetupData);
+    const finalData = { ...data };
+    if (data.subRole === "Other" && data.otherSubRole) {
+      finalData.subRole = data.otherSubRole;
+    }
+    delete (finalData as any).otherSubRole;
+    onNext(finalData as ProfileSetupData);
   };
 
   return (
@@ -170,8 +182,8 @@ export default function ProfileSetupTab({
                 value={watch("subRole")}
                 onChange={(val) => {
                   setValue("subRole", val);
-                  if (val && errors.subRole) {
-                    // clear error logic if needed
+                  if (val !== "Other") {
+                    setValue("otherSubRole", undefined);
                   }
                 }}
                 placeholder={
@@ -181,6 +193,26 @@ export default function ProfileSetupTab({
                 }
                 error={errors.subRole?.message}
               />
+
+              {watch("subRole") === "Other" && (
+                <div className="mt-4">
+                  <label className="mb-2 block text-slate-950 font-medium">
+                    Please specify your {role === "student" ? "student" : "professional"} type
+                  </label>
+                  <input
+                    {...register("otherSubRole", {
+                      required: watch("subRole") === "Other",
+                    })}
+                    placeholder="Enter your type"
+                    className="w-full p-3 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-main outline-none"
+                  />
+                  {errors.otherSubRole && (
+                    <p className="text-red-500 text-sm mt-1">
+                      Please specify your type
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
@@ -256,6 +288,9 @@ export default function ProfileSetupTab({
                   <option value="2">Year 2</option>
                   <option value="3">Year 3</option>
                   <option value="4">Year 4</option>
+                  <option value="5">Year 5</option>
+                  <option value="6">Year 6</option>
+                  <option value="7">Year 7</option>
                 </select>
                 {errors.academicYear && (
                   <p className="text-red-500 text-sm mt-1">

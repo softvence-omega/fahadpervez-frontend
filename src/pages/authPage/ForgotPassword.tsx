@@ -29,9 +29,9 @@ const ForgotPassword = () => {
   // Form submit
   const onSubmit = async (formData: ForgotPasswordInputs) => {
     try {
-      const result = await forgotPassword({ email: formData.email }).unwrap();
+      await forgotPassword({ email: formData.email }).unwrap();
 
-      toast.success(result.message || "Password reset OTP sent!");
+      // toast.success(result.message || "Password reset OTP sent!");
       localStorage.setItem("resetEmail", formData.email); // ✅ Save email for reset
       navigate("/reset-password"); // Redirect to reset page
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

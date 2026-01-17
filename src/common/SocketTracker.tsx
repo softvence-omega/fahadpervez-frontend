@@ -2,11 +2,45 @@ import { useEffect, useRef } from "react";
 import { useAppSelector } from "@/store/hook";
 import { selectToken, selectUser } from "@/store/features/auth/auth.slice";
 import { io, Socket } from "socket.io-client";
+import { useLocation } from "react-router-dom";
 
 const SocketTracker = () => {
   const token = useAppSelector(selectToken);
   const user = useAppSelector(selectUser);
+  const { pathname } = useLocation();
   const socketRef = useRef<Socket | null>(null);
+
+  // Define route mappings for feature keys
+  const getFeatureKey = (path: string): string | null => {
+    if (
+      path.includes("/dashboard/mcq-bank") ||
+      path.includes("/dashboard/practice-mcq") ||
+      path.includes("/dashboard/test") ||
+      path.includes("/dashboard/quiz-generator") ||
+      path.includes("/dashboard/quiz-page") ||
+      path.includes("/dashboard/quiz-collection") ||
+      path.includes("/dashboard/all-generated-quiz") ||
+      path.includes("/dashboard/quiz/") ||
+      path.includes("/dashboard/quiz-answer-overview")
+    ) {
+      return "mcq";
+    }
+    if (
+      path.includes("/dashboard/clinical-case-generator") ||
+      path.includes("/dashboard/clinical-case")
+    ) {
+      return "clinical_case";
+    }
+    if (path.includes("/dashboard/osce") || 
+        path.includes("/dashboard/practice-with-checklist") || 
+        path.includes("/dashboard/osce-tutorial") || 
+        path.includes("/dashboard/check-list-result")) {
+      return "osce";
+    }
+    return null;
+  };
+
+  const featureKey = getFeatureKey(pathname);
 
   useEffect(() => {
     const role = user?.account?.role;
@@ -14,24 +48,32 @@ const SocketTracker = () => {
 
     // Helper to establish connection
     const connectSocket = () => {
-      // If already connected, do nothing
-      if (socketRef.current?.connected) {
-        return;
-      }
-
-      // If socket instance exists but disconnected, try to reconnect
       if (socketRef.current) {
-        console.log("Visibility changed: Reconnecting Socket.IO...");
-        socketRef.current.connect();
-        return;
+        // If the key in the current socket matches our current featureKey, do nothing
+        const socketQuery = socketRef.current.io.opts.query as Record<string, string>;
+        if (socketQuery?.key === (featureKey || undefined)) {
+          if (socketRef.current.connected) return;
+          // If not connected, try to connect it
+          socketRef.current.connect();
+          return;
+        }
+        // Key changed, disconnect and nullify to create new instance
+        socketRef.current.disconnect();
+        socketRef.current = null;
       }
 
-      console.log(`Initializing Socket.IO Tracker for ${role}...`);
+      console.log(`Initializing Socket.IO Tracker for ${role} with key: ${featureKey || "none"}...`);
+      
+      const queryParams: Record<string, string> = {
+        token: token || "",
+      };
+      
+      if (featureKey) {
+        queryParams.key = featureKey;
+      }
       
       const socket = io("https://api.zyura-e.com", {
-        query: {
-          token: token
-        },
+        query: queryParams,
         transports: ["websocket"],
         reconnection: true,
         reconnectionAttempts: Infinity,
@@ -103,7 +145,7 @@ const SocketTracker = () => {
         socketRef.current = null;
       }
     }
-  }, [token, user?.account?.role]);
+  }, [token, user?.account?.role, featureKey]);
 
   return null;
 };

@@ -5,15 +5,12 @@ import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import {
-  Clock10,
-  Cog,
   FileText,
   Filter,
   Plus,
   Search,
-  Target,
 } from "lucide-react";
-import TestOverviewCard from "@/components/reusable/TestOverviewCard";
+// import TestOverviewCard from "@/components/reusable/TestOverviewCard";
 import { useGllMCQBankQuery } from "@/store/features/MCQBank/MCQBank.api";
 import GlobalLoader from "@/common/GlobalLoader";
 import { TMCQBank } from "@/types";
@@ -109,7 +106,7 @@ const McqBank = () => {
         {/* </Link> */}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <TestOverviewCard
           icon={Target}
           iconColor="text-blue-700"
@@ -138,7 +135,7 @@ const McqBank = () => {
           topText="04"
           bottomText="Session Created"
         />
-      </div>
+      </div> */}
 
       {/* <div className="md:flex justify-between items-end">
         <DashboardHeading

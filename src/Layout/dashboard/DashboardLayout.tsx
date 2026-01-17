@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import StudentDashboardHeader from "./StudentDashboardHeader";
 import DashboardSidebar from "./DashboardSidebar";
+import SocketTracker from "@/common/SocketTracker";
 
 const DashboardLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -10,6 +11,7 @@ const DashboardLayout: React.FC = () => {
 
   return (
     <div className="w-full min-h-screen bg-slate-50">
+      <SocketTracker />
       {/* Top Header with Hamburger */}
       <StudentDashboardHeader onMenuClick={() => setSidebarOpen(true)} />
 

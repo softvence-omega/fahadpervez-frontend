@@ -9,11 +9,16 @@ import signupImage from "../../assets/signUp/signUpImage.png";
 import {
   useLazyGetMeQuery,
   useLoginMutation,
+  useSignInWithGoogleMutation,
 } from "@/store/features/auth/auth.api";
 import { toast } from "sonner";
 import Cookies from "js-cookie";
 import { useAppDispatch } from "@/store/hook";
 import { setUser } from "@/store/features/auth/auth.slice";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
+import { auth, googleProvider } from "@/config/firebase.config";
+import { signInWithPopup } from "firebase/auth";
 
 const loginSchema = z.object({
   email: z.string().nonempty("Email is required").email("Invalid email format"),
@@ -26,6 +31,7 @@ const loginSchema = z.object({
 type LoginFormInputs = z.infer<typeof loginSchema>;
 
 const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -35,10 +41,33 @@ const Login = () => {
   });
 
   const [login, { isLoading }] = useLoginMutation();
+  const [signInWithGoogle, { isLoading: isSocialLoading }] = useSignInWithGoogleMutation();
   const [getMeTrigger] = useLazyGetMeQuery(); // lazy query trigger
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  // const location = useLocation();
+
+  const handleAuthSuccess = async (accessToken: string) => {
+    Cookies.set("accessToken", accessToken);
+    const meData = await getMeTrigger(undefined, false).unwrap();
+    const user = meData?.data;
+    const role = user?.account?.role;
+    
+    dispatch(
+      setUser({
+        accessToken,
+        user,
+      })
+    );
+
+    const roleRoutes: Record<string, string> = {
+      ADMIN: "/admin",
+      MENTOR: "/mentor",
+      STUDENT: "/dashboard",
+      PROFESSIONAL: "/dashboard",
+    };
+
+    navigate(roleRoutes[role] || "/", { replace: true });
+  };
 
   const onSubmit = async (loginFormData: LoginFormInputs) => {
     try {
@@ -48,36 +77,7 @@ const Login = () => {
       }).unwrap();
 
       if (res?.success) {
-        const { accessToken } = res.data;
-        Cookies.set("accessToken", accessToken);
-
-        const meData = await getMeTrigger(undefined, false).unwrap();
-
-        const user = meData?.data;
-        const role = user?.account?.role;
-        console.log(user, role);
-        dispatch(
-          setUser({
-            accessToken,
-            user,
-          })
-        );
-
-        // const from = location.state?.from?.pathname;
-
-        const roleRoutes: Record<string, string> = {
-          ADMIN: "/admin",
-          MENTOR: "/mentor",
-          STUDENT: "/dashboard",
-          PROFESSIONAL: "/dashboard",
-        };
-
-        navigate(roleRoutes[role] || "/", { replace: true });
-        // if (from) {
-        //   navigate(from, { replace: true });
-        // } else {
-        //   navigate(roleRoutes[role] || "/", { replace: true });
-        // }
+        await handleAuthSuccess(res.data.accessToken);
       } else {
         toast.error(res?.error?.data?.message || "Login failed");
       }
@@ -88,8 +88,27 @@ const Login = () => {
       );
     }
   };
-  const handleGoogleSignup = () => {
-    console.log("Google signup triggered");
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      
+      const res = await signInWithGoogle({
+        email: user.email || "",
+        name: user.displayName || "",
+        photo: user.photoURL || "",
+      }).unwrap();
+      
+      if (res?.success) {
+        await handleAuthSuccess(res.data.accessToken);
+        toast.success("Logged in successfully with Google");
+      }
+    } catch (err: any) {
+      console.error("Google login error:", err);
+      if (err.code !== 'auth/popup-closed-by-user') {
+        toast.error(err?.data?.message || "Google login failed");
+      }
+    }
   };
 
   return (
@@ -155,13 +174,22 @@ const Login = () => {
                   Forgot your password?
                 </button>
               </div>
-              <input
-                type="password"
-                {...register("password")}
-                className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  {...register("password")}
+                  placeholder="********"
+                  className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-black pr-10"
+                />
+                <div
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute top-1/2 -translate-y-1/2 right-3 cursor-pointer text-gray-500 hover:text-gray-700 select-none"
+                >
+                  {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+                </div>
+              </div>
               {errors.password && (
-                <p className="text-red-500 text-sm">
+                <p className="text-red-500 text-sm mt-1">
                   {errors.password.message}
                 </p>
               )}
@@ -169,19 +197,19 @@ const Login = () => {
 
             <button
               type="submit"
-              disabled={isSubmitting || isLoading}
+              disabled={isSubmitting || isLoading || isSocialLoading}
               className="w-full bg-blue-main text-sm font-medium text-[#FAFAFA] p-3 rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
-              {isSubmitting || isLoading ? "Loading..." : "Login"}
+              {isSubmitting || isLoading || isSocialLoading ? "Loading..." : "Login"}
             </button>
           </form>
-
           <button
-            onClick={handleGoogleSignup}
-            className="w-full flex items-center justify-center text-sm text-[#3F3F46] font-medium border border-[#D2D6DB] p-[8px] rounded-lg hover:bg-gray-100 mt-2 cursor-pointer"
+            onClick={handleGoogleLogin}
+            disabled={isSubmitting || isLoading || isSocialLoading}
+            className="w-full flex items-center justify-center text-sm text-[#3F3F46] font-medium border border-[#D2D6DB] p-[8px] rounded-lg hover:bg-gray-100 mt-2 cursor-pointer disabled:opacity-50"
           >
             <FcGoogle className="mr-2 text-xl" />
-            Google
+            {isSocialLoading ? "Connecting..." : "Google"}
           </button>
 
           <p className="text-sm text-center text-[#020617] mt-4">
