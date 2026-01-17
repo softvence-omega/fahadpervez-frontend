@@ -10,12 +10,12 @@ const OverviewSection: React.FC = () => {
   const overallAccuracy = overviewData?.data?.progress?.overall ?? 0;
   // const totalStudyTime = overviewData?.data?.timeCount?.todayStudy ?? 0;
   // sum up all time counts for total study time
-  const totalStudyTime = overviewData?.data?.timeCount
-    ? Object.values(overviewData.data.timeCount).reduce(
-        (a: number, b: number) => a + b,
-        0
-      )
-    : 0;
+  // const totalStudyTime = overviewData?.data?.timeCount
+  //   ? Object.values(overviewData.data.timeCount).reduce(
+  //       (a: number, b: number) => a + b,
+  //       0
+  //     )
+  //   : 0;
   const currentStreak = overviewData?.data?.steak ?? 0;
 
   const dynamicOverview = [
@@ -41,7 +41,7 @@ const OverviewSection: React.FC = () => {
       ], },
     {
       icon: "/image/dashboard_new/Background1.svg",
-      title: `${(totalStudyTime / 60).toFixed(1)} hrs`, // assuming api returns minutes? If hours, remove /60. Usually "timeCount" is seconds or minutes. Assuming minutes for now based on "30 minutes" in dummy.
+      title:  `${overviewData?.data?.timeCount?.todayStudy ?? 0} hrs`,//`${(totalStudyTime / 60).toFixed(1)} hrs`, // assuming api returns minutes? If hours, remove /60. Usually "timeCount" is seconds or minutes. Assuming minutes for now based on "30 minutes" in dummy.
       subtitle: "Total Study Time",
       stats: [
         {
