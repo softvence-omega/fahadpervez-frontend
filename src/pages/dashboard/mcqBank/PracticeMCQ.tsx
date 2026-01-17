@@ -6,8 +6,8 @@ import { useGetSingleMCQQuery } from "@/store/features/MCQBank/MCQBank.api";
 import { useUpdateProgressMcqFlashcardClinicalCaseMutation } from "@/store/features/goal/goal.api";
 import { McqQuestion } from "@/types";
 import { ArrowLeft, CircleAlert, Copy, Plus } from "lucide-react";
-import { useState } from "react";
-import { Link, useParams, useNavigate, useBlocker } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useParams, useNavigate, useBlocker, useSearchParams } from "react-router-dom";
 import QuizReportModal from "../quizGenerator/QuizReportModal";
 import { toast } from "sonner";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
@@ -33,13 +33,45 @@ export default function PracticeMCQ() {
     { name: "Practice MCQ", link: `/dashboard/practice-mcq/${id}` },
   ];
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const limit = 1;
+
+  // Deriving currentPage directly from URL search params or localStorage
+  const currentPage = (() => {
+    const page = searchParams.get("page");
+    if (page) return parseInt(page);
+    const saved = localStorage.getItem(`lastPage_${id}`);
+    return saved ? parseInt(saved) : 1;
+  })();
+
+  // Ensure URL is in sync with the derived page on initial load
+  useEffect(() => {
+    if (!searchParams.get("page")) {
+      setSearchParams({ page: currentPage.toString(), limit: limit.toString() }, { replace: true });
+    }
+  }, []);
+
+  // Sync last viewed page to localStorage whenever it changes in URL
+  useEffect(() => {
+    const page = searchParams.get("page");
+    if (page) {
+      localStorage.setItem(`lastPage_${id}`, page);
+    }
+  }, [searchParams, id]);
+
   const [skip, setSkip] = useState<number | undefined>(undefined);
   const [jumpQuestion, setJumpQuestion] = useState("");
 
+  const storageKey = `mcq_practice_data_${id}`;
+
   // Track correctness of each question: { [qId]: boolean } (true=correct, false=incorrect)
-  const [results, setResults] = useState<{ [key: string]: boolean }>({});
+  const [results, setResults] = useState<{ [key: string]: boolean }>(() => {
+    const saved = localStorage.getItem(storageKey);
+    return saved ? JSON.parse(saved).results : {};
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+
 
   // Block navigation if user has started answering but hasn't submitted
   const hasStarted = Object.keys(results).length > 0;
@@ -51,7 +83,7 @@ export default function PracticeMCQ() {
       currentLocation.pathname !== nextLocation.pathname
   );
 
-  const limit = 1;
+
 
   const { data, isLoading } = useGetSingleMCQQuery({
     id: id as string,
@@ -60,22 +92,63 @@ export default function PracticeMCQ() {
     skip,
   });
 
+  // Keep a local copy of data to prevent UI from disappearing during pagination fetches
+  const [displayData, setDisplayData] = useState<any>(null);
+
+  useEffect(() => {
+    if (data) {
+      setDisplayData(data);
+    }
+  }, [data]);
+
+  // Reset display data when switching to a different MCQ bank
+  useEffect(() => {
+    setDisplayData(null);
+  }, [id]);
+
   const [updateProgress] = useUpdateProgressMcqFlashcardClinicalCaseMutation();
 
-  const meta = data?.meta;
+  const meta = data?.meta || displayData?.meta;
+  const mcqData = data?.data || displayData?.data;
+  const questions = mcqData?.mcqs || [];
+
+  const isInitialLoading = isLoading && !displayData;
 
   const [selected, setSelected] = useState<{ [key: string]: number | null }>(
-    {}
+    () => {
+      const saved = localStorage.getItem(storageKey);
+      return saved ? JSON.parse(saved).selected : {};
+    }
   );
-  const [showAnswer, setShowAnswer] = useState<{ [key: string]: boolean }>({});
+  const [showAnswer, setShowAnswer] = useState<{ [key: string]: boolean }>(
+    () => {
+      const saved = localStorage.getItem(storageKey);
+      return saved ? JSON.parse(saved).showAnswer : {};
+    }
+  );
   const [lockedQuestions, setLockedQuestions] = useState<{
     [key: string]: boolean;
-  }>({});
+  }>(() => {
+    const saved = localStorage.getItem(storageKey);
+    return saved ? JSON.parse(saved).lockedQuestions : {};
+  });
+
+  useEffect(() => {
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        selected,
+        showAnswer,
+        lockedQuestions,
+        results,
+      })
+    );
+  }, [selected, showAnswer, lockedQuestions, results, storageKey]);
+
   const [openReportModal, setOpenReportModal] = useState(false);
   const [mcqId, setMcqId] = useState("");
 
-  const mcqData = data?.data;
-  const questions = mcqData?.mcqs || [];
+
 
   const handleSelect = (qId: string, index: number) => {
     // Prevent changing option if already locked
@@ -108,8 +181,8 @@ export default function PracticeMCQ() {
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-      setSkip(undefined); // Reset skip when using standard pagination
+      setSearchParams({ page: page.toString(), limit: limit.toString() });
+      setSkip(undefined);
     }
   };
 
@@ -125,8 +198,8 @@ export default function PracticeMCQ() {
     } else if (questionNum > total) {
       toast.warning(`Question number exceeds total questions (${total})`);
     } else {
-      setSkip(questionNum - 1); // skip is 0-indexed question offset
-      setCurrentPage(Math.ceil(questionNum / limit)); // Sync page if needed (though API uses skip)
+      setSearchParams({ page: questionNum.toString(), limit: limit.toString() });
+      setSkip(undefined);
     }
   };
 
@@ -210,7 +283,7 @@ export default function PracticeMCQ() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {isLoading ? (
+      {isInitialLoading ? (
         <GlobalLoader />
       ) : (
         <div className="p-6 space-y-8">

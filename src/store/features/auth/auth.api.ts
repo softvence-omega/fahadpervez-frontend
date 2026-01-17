@@ -96,6 +96,15 @@ export const userAPI = baseAPI.injectEndpoints({
       }),
     }),
 
+
+    signInWithGoogle: build.mutation({
+      query: (data: { email: string; name: string; photo: string }) => ({
+        url: "/auth/sign-in-with-google",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
     // end
   }),
 });
@@ -113,4 +122,5 @@ export const {
   useUpdateProfileMutation,
   useGetAllStudentTypeQuery,
   useGetAllProfessionalTypeQuery,
+  useSignInWithGoogleMutation,
 } = userAPI;
