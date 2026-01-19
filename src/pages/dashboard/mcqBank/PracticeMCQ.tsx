@@ -7,8 +7,9 @@ import { useUpdateProgressMcqFlashcardClinicalCaseMutation } from "@/store/featu
 import { McqQuestion } from "@/types";
 import { ArrowLeft, CircleAlert, Copy, Plus } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Link, useParams, useNavigate, useBlocker, useSearchParams } from "react-router-dom";
+import { Link, useParams, useNavigate, useBlocker, useSearchParams, useLocation } from "react-router-dom";
 import QuizReportModal from "../quizGenerator/QuizReportModal";
+import { useSaveStudyPlanProgressMutation } from "@/store/features/studyPlan/studyPlan.api";
 import { toast } from "sonner";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { PracticeQuizModal } from "./PracticeQuizModal";
@@ -26,7 +27,11 @@ import {
 export default function PracticeMCQ() {
   const [openQuizModal, setOpenQuizModal] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [navigationState] = useState(location.state);
   const { id } = useParams();
+
+  // console.log("PracticeMCQ Navigation State (Saved):", navigationState);
 
   const breadcrumbs: BreadcrumbItem[] = [
     { name: "Dashboard", link: "/dashboard" },
@@ -106,7 +111,12 @@ export default function PracticeMCQ() {
     setDisplayData(null);
   }, [id]);
 
+  useEffect(() => {
+    setDisplayData(null);
+  }, [id]);
+
   const [updateProgress] = useUpdateProgressMcqFlashcardClinicalCaseMutation();
+  const [saveStudyPlanProgress] = useSaveStudyPlanProgressMutation();
 
   const meta = data?.meta || displayData?.meta;
   const mcqData = data?.data || displayData?.data;
@@ -230,8 +240,27 @@ export default function PracticeMCQ() {
         bankId: mcqData?._id,
       }).unwrap();
 
+      // Check if we came from WeeklyPlan and update study plan progress
+      // console.log("Submitting MCQ. Saved Navigation State:", navigationState);
+      
+      if (navigationState?.from === "weekly-plan" && navigationState?.planId) {
+        try {
+          await saveStudyPlanProgress({
+            planId: navigationState.planId,
+            day: navigationState.day,
+            suggest_content: navigationState.suggest_content,
+          }).unwrap();
+        } catch (error) {
+          console.error("Failed to save study plan progress:", error);
+        }
+      }
+
       //toast.success("Progress saved successfully!");
-      navigate("/dashboard/mcq-bank");
+      if (navigationState?.from === "weekly-plan") {
+        navigate(-1);
+      } else {
+        navigate("/dashboard/mcq-bank");
+      }
     } catch (error) {
       console.error("Failed to save progress:", error);
       toast.error("Failed to save progress");
@@ -308,9 +337,18 @@ export default function PracticeMCQ() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             {/* Left Section */}
             <div className="flex items-center gap-3">
-              <Link to={"/dashboard/mcq-bank"} className=" sm:mb-0">
+              <div
+                onClick={() => {
+                   if (navigationState?.from === "weekly-plan") {
+                     navigate(-1);
+                   } else {
+                     navigate("/dashboard/mcq-bank");
+                   }
+                }}
+                className="cursor-pointer sm:mb-0"
+              >
                 <ArrowLeft className="mb-7" />
-              </Link>
+              </div>
               <DashboardHeading
                 title={mcqData?.title}
                 titleSize="text-xl"

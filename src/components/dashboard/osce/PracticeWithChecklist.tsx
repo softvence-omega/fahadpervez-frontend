@@ -6,7 +6,9 @@ import { useEffect, useRef, useState } from "react";
 import type { JSX } from "react";
 // import { BsQuestionLg } from "react-icons/bs";
 // import { FaBoxArchive } from "react-icons/fa6";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
+import { useSaveStudyPlanProgressMutation } from "@/store/features/studyPlan/studyPlan.api";
+// import { toast } from "sonner";
 
 /**
  * Types
@@ -136,6 +138,7 @@ type ChecklistState = Record<string, ChecklistItem[]>;
 export default function PracticeWithChecklist(): JSX.Element {
   const { id: osceId } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     data: apiResponse,
@@ -260,6 +263,7 @@ export default function PracticeWithChecklist(): JSX.Element {
 
   // Mutation for progress update
   const [updateProgressOsce] = useUpdateProgressOsceMutation();
+  const [saveStudyPlanProgress] = useSaveStudyPlanProgressMutation();
 
   const handleComplete = async () => {
     if (!pageData) return;
@@ -289,6 +293,20 @@ export default function PracticeWithChecklist(): JSX.Element {
         await updateProgressOsce({ osceId }).unwrap();
       }
 
+      // Check if we came from WeeklyPlan and update study plan progress
+      if (location.state?.from === "weekly-plan" && location.state?.planId) {
+        try {
+          await saveStudyPlanProgress({
+            planId: location.state.planId,
+            day: location.state.day,
+            suggest_content: location.state.suggest_content,
+          }).unwrap();
+          // toast.success("Study plan progress saved!");
+        } catch (error) {
+          console.error("Failed to save study plan progress:", error);
+        }
+      }
+
       const res = await fetch("/api/complete-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -297,7 +315,11 @@ export default function PracticeWithChecklist(): JSX.Element {
 
       if (!res.ok) throw new Error(await res.text());
       setSubmitResult("Session submitted successfully!");
-      navigate("/dashboard/check-list-result");
+      if (location.state?.from === "weekly-plan") {
+         navigate(-1);
+      } else {
+         navigate("/dashboard/check-list-result"); 
+      }
     } catch (err: any) {
       setSubmitResult(err.message || "Submission failed");
     } finally {
@@ -356,11 +378,20 @@ export default function PracticeWithChecklist(): JSX.Element {
 
       {/* Left Panel */}
       <div className="w-2/3 p-6 space-y-6 overflow-y-auto left-panel">
-        <Link to="/dashboard/osce" className="sm:mb-0">
+        <div
+            onClick={() => {
+                if (location.state?.from === "weekly-plan") {
+                    navigate(-1);
+                } else {
+                    navigate("/dashboard/osce");
+                }
+            }} 
+            className="sm:mb-0 inline-block w-auto"
+        >
           <button className="flex items-center gap-1 border border-gray-300 px-3 py-2 rounded mb-2 cursor-pointer">
             <ArrowLeft className="w-5 h-4" /> Back
           </button>
-        </Link>
+        </div>
 
         {/* Title & Description */}
         <div className="bg-white p-4 rounded-lg shadow">

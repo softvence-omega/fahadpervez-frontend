@@ -50,15 +50,19 @@ export default function WeeklyPlan() {
   const navigate = useNavigate();
 
   // Try to get plan from route state first, otherwise fetch all and filter
-  const planFromState = location.state?.plan as StudyPlanData | undefined;
-  const { data, isLoading } = useGetStudyPlanQuery(
-    {},
-    { skip: !!planFromState }
-  );
+  // Always fetch latest data to ensure status updates are reflected
+  const { data, isLoading } = useGetStudyPlanQuery({});
 
-  // Use state plan if available, otherwise find from all plans
+  // Use state plan only as initial placeholder, preferring fresh data
+  const planFromState = location.state?.plan as StudyPlanData | undefined;
+  
   const studyPlan: StudyPlanData | undefined =
-    planFromState || data?.data?.find((p: StudyPlanData) => p._id === id);
+    data?.data?.find((p: StudyPlanData) => p._id === id) || planFromState;
+
+  // Refetch on mount/focus to ensure sync
+  // useEffect(() => {
+  //   refetch();
+  // }, [refetch]);
 
   const getDayName = (dayNumber: number) => {
     return `Day ${dayNumber}`;
@@ -70,26 +74,46 @@ export default function WeeklyPlan() {
 
 
 
-  const handleStartClick = (session: HourlyBreakdown) => {
+  const handleStartClick = (session: HourlyBreakdown, dayNumber: number) => {
     const contentId = session.suggest_content;
     const taskType = session.task_type.toLowerCase();
-    console.log(session);
-
+    // console.log("Task Start - Session:", session);
+    // console.log("Task Start - StudyPlan:", studyPlan);
+    
     if (!contentId) {
       toast.warning("Content is not available for this task");
       return;
     }
 
+    const navigationState = {
+      planId: studyPlan?._id,
+      day: dayNumber,
+      suggest_content: contentId,
+      from: "weekly-plan",
+    };
+    
+    console.log("Navigating with state:", navigationState);
+
     if (taskType === "mcqs" || taskType === "mcq") {
-      navigate(`/dashboard/practice-mcq/${contentId}`);
+      navigate(`/dashboard/practice-mcq/${contentId}`, {
+        state: navigationState,
+      });
     } else if (taskType === "flashcards" || taskType === "flashcard") {
-      navigate(`/dashboard/solve-flash-card/${contentId}`);
+      navigate(`/dashboard/solve-flash-card/${contentId}`, {
+        state: navigationState,
+      });
     } else if (taskType === "clinical case" || taskType === "clinical_case") {
-      navigate(`/dashboard/clinical-case/${contentId}`);
+      navigate(`/dashboard/clinical-case/${contentId}`, {
+        state: navigationState,
+      });
     } else if (taskType === "osce") {
-      navigate(`/dashboard/practice-with-checklist/${contentId}`);
+      navigate(`/dashboard/practice-with-checklist/${contentId}`, {
+        state: navigationState,
+      });
     } else if (taskType === "notes" || taskType === "note") {
-      navigate(`/dashboard/notes/${contentId}`);
+      navigate(`/dashboard/notes/${contentId}`, {
+        state: navigationState,
+      });
     } else {
       // Default fallback - you can adjust this based on your needs
       console.log("Unknown task type:", taskType);
@@ -279,6 +303,8 @@ export default function WeeklyPlan() {
                             // Hourly item styling
                             const sessionBgClass = isSessionCompleted
                               ? "bg-green-100 border-green-200"
+                              : isToday
+                              ? "bg-yellow-100 border-yellow-200"
                               : "bg-[#F9FAFB] border-0";
 
                             return (
@@ -300,7 +326,7 @@ export default function WeeklyPlan() {
                                   {isSessionCompleted ? (
                                     <Button
                                         size="sm"
-                                        onClick={() => handleStartClick(session)}
+                                        onClick={() => handleStartClick(session, dayPlan.day_number)}
                                         className="bg-green-600 text-white hover:bg-green-700 cursor-pointer"
                                     >
                                         Review
@@ -308,9 +334,9 @@ export default function WeeklyPlan() {
                                   ) : (
                                     <Button
                                       size="sm"
-                                      disabled={isFuture}
-                                      onClick={() => handleStartClick(session)}
-                                      className={`bg-transparent border border-slate-300 rounded text-[#0A0A0A] hover:bg-slate-100 cursor-pointer ${
+                                      // disabled={isFuture}
+                                      onClick={() => handleStartClick(session, dayPlan.day_number)}
+                                      className={`bg-transparent border border-slate-300 rounded text-[#0A0A0A] hover:bg-slate-100 cursor-pointer bg-white ${
                                         isFuture ? "opacity-50 cursor-not-allowed" : ""
                                       }`}
                                     >
