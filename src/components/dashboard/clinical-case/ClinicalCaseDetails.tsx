@@ -13,6 +13,7 @@ import {
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import {
   Link,
+  useLocation,
   useNavigate,
   useParams,
   useSearchParams,
@@ -21,6 +22,7 @@ import {
   useGetSingleClinicalCaseQuery,
   useGetSingleGeneratedClinicalCaseQuery,
 } from "@/store/features/clinicalCase/clinicalCase.api";
+// import { useSaveStudyPlanProgressMutation } from "@/store/features/studyPlan/studyPlan.api";
 import GlobalLoader from "@/common/GlobalLoader";
 import { ClinicalCaseData } from "@/types/clinicalCase";
 // import { ClinicalCaseData } from "@/types/clinicalCase.types";
@@ -88,7 +90,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
   const clinicalCase = (
     isGenerated ? generatedData?.data : standardData?.data
   ) as ClinicalCaseData;
-
+  const location = useLocation();
   const navigate = useNavigate();
 
   const scrollToSection = (
@@ -113,7 +115,8 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
     navigate(
       `/dashboard/clinical-case/${id}/make-decision${
         isGenerated ? "?type=generated" : ""
-      }`
+      }`,
+      { state: location.state }
     );
   };
 
@@ -260,8 +263,19 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
 
   if (error || !clinicalCase) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        Error loading clinical case
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        {/* <CircleAlert className="w-16 h-16 text-red-500" /> */}
+        <h2 className="text-xl font-semibold text-slate-700">
+          No Clinical Case Found
+        </h2>
+        <p className="text-slate-500">
+          The clinical case you are looking for does not exist or has been removed.
+        </p>
+        <Link to="/dashboard/clinical-case-generator">
+          <PrimaryButton className="bg-blue-main hover:bg-blue-main/90">
+            Back to Cases
+          </PrimaryButton>
+        </Link>
       </div>
     );
   }
@@ -339,13 +353,18 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
               <div className="flex items-center justify-between no-print">
                 <div className="flex items-center gap-4">
                   <button
-                    onClick={onBack}
+                    onClick={() => {
+                        if (location.state?.from === "weekly-plan") {
+                            navigate(-1);
+                        } else if (onBack) {
+                            onBack();
+                        } else {
+                            navigate("/dashboard/clinical-case-generator");
+                        }
+                    }}
                     className="flex items-center text-gray-600 hover:text-gray-800"
                   >
-                    <Link to={"/dashboard/clinical-case-generator"}>
-                      {" "}
                       <ArrowLeft size={20} />
-                    </Link>
                     <span className="ml-2 font-medium">Clinical Case</span>
                   </button>
                 </div>

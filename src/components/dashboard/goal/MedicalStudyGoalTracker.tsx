@@ -258,10 +258,10 @@ const MedicalStudyGoalTracker: React.FC = () => {
     try {
       if (isEditMode) {
         await updateGoal(goalDataToSend).unwrap();
-        toast.success("Goal updated successfully! ✅");
+        // toast.success("Goal updated successfully! ✅");
       } else {
         await createGoal(goalDataToSend).unwrap();
-        toast.success("Goal created successfully! ✅");
+        // toast.success("Goal created successfully! ✅");
       }
     } catch (error: any) {
       console.error("Goal operation error:", error);

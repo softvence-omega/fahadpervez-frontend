@@ -1,7 +1,7 @@
 // components/WeeklyPlan.tsx
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+
 import {
   ArrowLeft,
   CheckCircle,
@@ -14,14 +14,16 @@ import DashboardHeading from "@/components/reusable/DashboardHeading";
 // import image1 from "@/assets/dashboard/planImage.png";
 import { useGetStudyPlanQuery } from "@/store/features/studyPlan/studyPlan.api";
 import GlobalLoader2 from "@/common/GlobalLoader2";
+import { toast } from "sonner";
 
-type SessionStatus = "pending" | "active" | "complete" | "missed";
+
 
 interface HourlyBreakdown {
   task_type: string;
   description: string;
   duration_hours: number;
   suggest_content: string;
+  isCompleted?: boolean;
 }
 
 interface DailyPlan {
@@ -30,6 +32,7 @@ interface DailyPlan {
   total_hours: number;
   topics: string[];
   hourly_breakdown: HourlyBreakdown[];
+  isCompleted?: boolean;
 }
 
 interface StudyPlanData {
@@ -47,15 +50,19 @@ export default function WeeklyPlan() {
   const navigate = useNavigate();
 
   // Try to get plan from route state first, otherwise fetch all and filter
-  const planFromState = location.state?.plan as StudyPlanData | undefined;
-  const { data, isLoading } = useGetStudyPlanQuery(
-    {},
-    { skip: !!planFromState }
-  );
+  // Always fetch latest data to ensure status updates are reflected
+  const { data, isLoading } = useGetStudyPlanQuery({});
 
-  // Use state plan if available, otherwise find from all plans
+  // Use state plan only as initial placeholder, preferring fresh data
+  const planFromState = location.state?.plan as StudyPlanData | undefined;
+  
   const studyPlan: StudyPlanData | undefined =
-    planFromState || data?.data?.find((p: StudyPlanData) => p._id === id);
+    data?.data?.find((p: StudyPlanData) => p._id === id) || planFromState;
+
+  // Refetch on mount/focus to ensure sync
+  // useEffect(() => {
+  //   refetch();
+  // }, [refetch]);
 
   const getDayName = (dayNumber: number) => {
     return `Day ${dayNumber}`;
@@ -65,26 +72,48 @@ export default function WeeklyPlan() {
     return `D${dayNumber}`;
   };
 
-  const getStatusForSession = (_session: HourlyBreakdown): SessionStatus => {
-    // For now, all sessions are pending - this can be extended based on backend status tracking
-    return "pending";
-  };
 
-  const handleStartClick = (session: HourlyBreakdown) => {
+
+  const handleStartClick = (session: HourlyBreakdown, dayNumber: number) => {
     const contentId = session.suggest_content;
     const taskType = session.task_type.toLowerCase();
-    console.log(session);
+    // console.log("Task Start - Session:", session);
+    // console.log("Task Start - StudyPlan:", studyPlan);
+    
+    if (!contentId) {
+      toast.warning("Content is not available for this task");
+      return;
+    }
+
+    const navigationState = {
+      planId: studyPlan?._id,
+      day: dayNumber,
+      suggest_content: contentId,
+      from: "weekly-plan",
+    };
+    
+    console.log("Navigating with state:", navigationState);
 
     if (taskType === "mcqs" || taskType === "mcq") {
-      navigate(`/dashboard/practice-mcq/${contentId}`);
+      navigate(`/dashboard/practice-mcq/${contentId}`, {
+        state: navigationState,
+      });
     } else if (taskType === "flashcards" || taskType === "flashcard") {
-      navigate(`/dashboard/solve-flash-card/${contentId}`);
+      navigate(`/dashboard/solve-flash-card/${contentId}`, {
+        state: navigationState,
+      });
     } else if (taskType === "clinical case" || taskType === "clinical_case") {
-      navigate(`/dashboard/clinical-case/${contentId}`);
+      navigate(`/dashboard/clinical-case/${contentId}`, {
+        state: navigationState,
+      });
     } else if (taskType === "osce") {
-      navigate(`/dashboard/practice-with-checklist/${contentId}`);
+      navigate(`/dashboard/practice-with-checklist/${contentId}`, {
+        state: navigationState,
+      });
     } else if (taskType === "notes" || taskType === "note") {
-      navigate(`/dashboard/notes/${contentId}`);
+      navigate(`/dashboard/notes/${contentId}`, {
+        state: navigationState,
+      });
     } else {
       // Default fallback - you can adjust this based on your needs
       console.log("Unknown task type:", taskType);
@@ -180,7 +209,9 @@ export default function WeeklyPlan() {
                 {studyPlan.daily_plan.map((dayPlan) => {
                   const today = new Date();
                   today.setHours(0, 0, 0, 0);
-                  const planDate = new Date(dayPlan.date);
+                  // Ensure date is treated as local time by appending T00:00:00 if it's just a date string
+                  const dateStr = dayPlan.date.includes('T') ? dayPlan.date : `${dayPlan.date}T00:00:00`;
+                  const planDate = new Date(dateStr);
                   planDate.setHours(0, 0, 0, 0);
 
                   const isToday = planDate.getTime() === today.getTime();
@@ -189,12 +220,15 @@ export default function WeeklyPlan() {
                   let statusIcon;
                   let colorClass = "";
 
-                  if (isPast) {
+                  if (dayPlan.isCompleted) {
                     statusIcon = <CheckCircle className="w-4 h-4" />;
                     colorClass = "text-green-600 border-green-500 bg-green-50";
                   } else if (isToday) {
                     statusIcon = <Clock className="w-4 h-4" />;
                     colorClass = "text-yellow-500 border-yellow-400 bg-yellow-50";
+                  } else if (isPast) {
+                    statusIcon = <XCircle className="w-4 h-4" />;
+                    colorClass = "text-red-500 border-red-400 bg-red-50";
                   } else {
                     statusIcon = <MinusCircle className="w-4 h-4" />;
                     colorClass = "text-gray-400 border-gray-300 bg-gray-50";
@@ -227,71 +261,100 @@ export default function WeeklyPlan() {
                 </div>
                 {/* Detailed Plan */}
                 <div className="space-y-6">
-                  {studyPlan.daily_plan.map((dayPlan) => (
-                    <div
-                      key={dayPlan.day_number}
-                      className="space-y-3 border border-slate-300 p-4 rounded-[8px]"
-                    >
-                      <h3 className="text-lg font-semibold">
-                        {getDayName(dayPlan.day_number)} -{" "}
-                        {new Date(dayPlan.date).toLocaleDateString()}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        Topics: {dayPlan.topics.join(", ")} | Total Hours:{" "}
-                        {dayPlan.total_hours}
-                      </p>
-                      {dayPlan.hourly_breakdown.length > 0 ? (
-                        dayPlan.hourly_breakdown.map((session, idx) => {
-                          const status = getStatusForSession(session);
-                          return (
-                            <Card
-                              key={idx}
-                              className="p-4 bg-[#F9FAFB] border-0"
-                            >
-                              <div className="flex justify-between items-center">
-                                <div>
-                                  <h4 className="font-semibold">
-                                    {" "}
-                                    {session.description}
-                                  </h4>
-                                  <p className="text-sm text-gray-600">
-                                    {session.task_type} •{" "}
-                                    {session.duration_hours}h
-                                  </p>
-                                </div>
-                                {status === "complete" ? (
-                                  <div className="flex items-center gap-1 text-green-600 font-medium">
-                                    <CheckCircle className="w-4 h-4" />{" "}
-                                    Completed
-                                  </div>
-                                ) : status === "active" ? (
-                                  <Badge className="bg-blue-500 text-white">
-                                    Active
-                                  </Badge>
-                                ) : status === "missed" ? (
-                                  <div className="flex items-center gap-1 text-red-500 font-medium">
-                                    <XCircle className="w-4 h-4" /> Missed
-                                  </div>
-                                ) : (
-                                  <Button
-                                    size="sm"
-                                    onClick={() => handleStartClick(session)}
-                                    className="bg-transparent border border-slate-300 rounded text-[#0A0A0A] hover:text-white cursor-pointer"
-                                  >
-                                    Start
-                                  </Button>
-                                )}
-                              </div>
-                            </Card>
-                          );
-                        })
-                      ) : (
-                        <p className="text-gray-500 text-sm">
-                          No tasks for this day
+                  {studyPlan.daily_plan.map((dayPlan) => {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    // Ensure date is treated as local time
+                    const dateStr = dayPlan.date.includes('T') ? dayPlan.date : `${dayPlan.date}T00:00:00`;
+                    const planDate = new Date(dateStr);
+                    planDate.setHours(0, 0, 0, 0);
+
+                    const isToday = planDate.getTime() === today.getTime();
+                    const isPast = planDate.getTime() < today.getTime();
+                    const isFuture = planDate.getTime() > today.getTime();
+
+                    let sectionBgClass = "bg-white border-slate-300";
+
+                    if (dayPlan.isCompleted) {
+                      sectionBgClass = "bg-green-50 border-green-200";
+                    } else if (isToday) {
+                      sectionBgClass = "bg-yellow-50 border-yellow-200";
+                    } else if (isPast && !dayPlan.isCompleted) {
+                      sectionBgClass = "bg-red-50 border-red-200";
+                    }
+
+                    return (
+                      <div
+                        key={dayPlan.day_number}
+                        className={`space-y-3 border p-4 rounded-[8px] ${sectionBgClass}`}
+                      >
+                        <h3 className="text-lg font-semibold">
+                          {getDayName(dayPlan.day_number)} -{" "}
+                          {new Date(dayPlan.date).toLocaleDateString()}
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          Topics: {dayPlan.topics.join(", ")} | Total Hours:{" "}
+                          {dayPlan.total_hours}
                         </p>
-                      )}
-                    </div>
-                  ))}
+                        {dayPlan.hourly_breakdown.length > 0 ? (
+                          dayPlan.hourly_breakdown.map((session, idx) => {
+                            const isSessionCompleted = session.isCompleted;
+                            
+                            // Hourly item styling
+                            const sessionBgClass = isSessionCompleted
+                              ? "bg-green-100 border-green-200"
+                              : isToday
+                              ? "bg-yellow-100 border-yellow-200"
+                              : "bg-[#F9FAFB] border-0";
+
+                            return (
+                              <Card
+                                key={idx}
+                                className={`p-4 ${sessionBgClass} shadow-sm`}
+                              >
+                                <div className="flex justify-between items-center">
+                                  <div>
+                                    <h4 className="font-semibold">
+                                      {" "}
+                                      {session.description}
+                                    </h4>
+                                    <p className="text-sm text-gray-600">
+                                      {session.task_type} •{" "}
+                                      {session.duration_hours}h
+                                    </p>
+                                  </div>
+                                  {isSessionCompleted ? (
+                                    <Button
+                                        size="sm"
+                                        onClick={() => handleStartClick(session, dayPlan.day_number)}
+                                        className="bg-green-600 text-white hover:bg-green-700 cursor-pointer"
+                                    >
+                                        Review
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      size="sm"
+                                      // disabled={isFuture}
+                                      onClick={() => handleStartClick(session, dayPlan.day_number)}
+                                      className={`bg-transparent border border-slate-300 rounded text-[#0A0A0A] hover:bg-slate-100 cursor-pointer bg-white ${
+                                        isFuture ? "opacity-50 cursor-not-allowed" : ""
+                                      }`}
+                                    >
+                                        {isFuture ? "Locked" : "Start"}
+                                    </Button>
+                                  )}
+                                </div>
+                              </Card>
+                            );
+                          })
+                        ) : (
+                          <p className="text-gray-500 text-sm">
+                            No tasks for this day
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </CardContent>

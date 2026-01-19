@@ -27,6 +27,15 @@ const studyPlanAPI = baseAPI.injectEndpoints({
       providesTags: ["StudyPlan"],
     }),
 
+    saveStudyPlanProgress: build.mutation({
+      query: (data) => ({
+        url: "/study_planner/save-progress",
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["StudyPlan"],
+    }),
+
     //end
   }),
 });
@@ -35,4 +44,5 @@ export const {
   useCreateStudyPlanMutation,
   useGetStudyPlanQuery,
   useGetSingleStudyPlanQuery,
+  useSaveStudyPlanProgressMutation,
 } = studyPlanAPI;

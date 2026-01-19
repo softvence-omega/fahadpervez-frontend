@@ -1,9 +1,11 @@
 import { ArrowLeft, Loader2 } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import {
   useGetSingleNoteByIdQuery,
   useIncrementNoteDownloadCountMutation,
 } from "@/store/features/note/NoteAPI";
+import { useSaveStudyPlanProgressMutation } from "@/store/features/studyPlan/studyPlan.api";
+// import { toast } from "sonner"; // If not installed, I might need to check, but assumed available based on other files.
 import { useState, useEffect } from "react";
 import NoteCard from "@/components/reusable/NoteCard";
 
@@ -41,7 +43,10 @@ export default function SingleNoteView() {
     error,
   } = useGetSingleNoteByIdQuery(id);
   const [incrementDownloadCount] = useIncrementNoteDownloadCountMutation();
+  const [saveStudyPlanProgress] = useSaveStudyPlanProgressMutation();
   const [pageCount, setPageCount] = useState<number>(0);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const note = noteResponse?.data;
 
@@ -53,8 +58,21 @@ export default function SingleNoteView() {
   }, [note]);
 
   // Open PDF in new tab
-  const handleViewPdf = () => {
+  const handleViewPdf = async () => {
     if (note?.notes?.[0]?.fileUrl) {
+      // Check if we came from WeeklyPlan and update study plan progress
+      if (location.state?.from === "weekly-plan" && location.state?.planId) {
+        try {
+          await saveStudyPlanProgress({
+            planId: location.state.planId,
+            day: location.state.day,
+            suggest_content: location.state.suggest_content,
+          }).unwrap();
+          // toast.success("Study plan progress saved!");
+        } catch (error) {
+          console.error("Failed to save study plan progress:", error);
+        }
+      }
       window.open(note.notes[0].fileUrl, "_blank");
     }
   };
@@ -66,6 +84,20 @@ export default function SingleNoteView() {
     try {
       // Increment download count via API
       await incrementDownloadCount(note._id).unwrap();
+
+      // Check if we came from WeeklyPlan and update study plan progress
+      if (location.state?.from === "weekly-plan" && location.state?.planId) {
+        try {
+          await saveStudyPlanProgress({
+            planId: location.state.planId,
+            day: location.state.day,
+            suggest_content: location.state.suggest_content,
+          }).unwrap();
+          // toast.success("Study plan progress saved!");
+        } catch (error) {
+          console.error("Failed to save study plan progress:", error);
+        }
+      }
 
       // Convert Cloudinary URL to download URL
       const downloadUrl = note.notes[0].fileUrl.replace(
@@ -127,12 +159,18 @@ export default function SingleNoteView() {
   return (
     <div className="w-full max-w-5xl mx-auto mb-3">
       <div className="flex items-center gap-3 mb-8 mt-4">
-        <Link
-          to="/dashboard/download-notes"
-          className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+        <div
+            onClick={() => {
+                if (location.state?.from === "weekly-plan") {
+                    navigate(-1);
+                } else {
+                    navigate("/dashboard/download-notes");
+                }
+            }}
+          className="p-2 hover:bg-slate-100 rounded-full transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-5 h-5 text-gray-700" />
-        </Link>
+        </div>
         <div className="flex-1">
           <h1 className="text-2xl font-bold text-slate-900">
             {note.title || "Note"}
