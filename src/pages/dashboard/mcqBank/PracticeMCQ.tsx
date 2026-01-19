@@ -7,8 +7,9 @@ import { useUpdateProgressMcqFlashcardClinicalCaseMutation } from "@/store/featu
 import { McqQuestion } from "@/types";
 import { ArrowLeft, CircleAlert, Copy, Plus } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Link, useParams, useNavigate, useBlocker, useSearchParams } from "react-router-dom";
+import { Link, useParams, useNavigate, useBlocker, useSearchParams, useLocation } from "react-router-dom";
 import QuizReportModal from "../quizGenerator/QuizReportModal";
+import { useSaveStudyPlanProgressMutation } from "@/store/features/studyPlan/studyPlan.api";
 import { toast } from "sonner";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { PracticeQuizModal } from "./PracticeQuizModal";
@@ -26,7 +27,11 @@ import {
 export default function PracticeMCQ() {
   const [openQuizModal, setOpenQuizModal] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [navigationState] = useState(location.state);
   const { id } = useParams();
+
+  // console.log("PracticeMCQ Navigation State (Saved):", navigationState);
 
   const breadcrumbs: BreadcrumbItem[] = [
     { name: "Dashboard", link: "/dashboard" },
@@ -106,7 +111,12 @@ export default function PracticeMCQ() {
     setDisplayData(null);
   }, [id]);
 
+  useEffect(() => {
+    setDisplayData(null);
+  }, [id]);
+
   const [updateProgress] = useUpdateProgressMcqFlashcardClinicalCaseMutation();
+  const [saveStudyPlanProgress] = useSaveStudyPlanProgressMutation();
 
   const meta = data?.meta || displayData?.meta;
   const mcqData = data?.data || displayData?.data;
@@ -227,11 +237,30 @@ export default function PracticeMCQ() {
         totalIncorrect,
         totalAttempted,
         key: "mcq",
-        bankId: mcqData._id,
+        bankId: mcqData?._id,
       }).unwrap();
 
+      // Check if we came from WeeklyPlan and update study plan progress
+      // console.log("Submitting MCQ. Saved Navigation State:", navigationState);
+      
+      if (navigationState?.from === "weekly-plan" && navigationState?.planId) {
+        try {
+          await saveStudyPlanProgress({
+            planId: navigationState.planId,
+            day: navigationState.day,
+            suggest_content: navigationState.suggest_content,
+          }).unwrap();
+        } catch (error) {
+          console.error("Failed to save study plan progress:", error);
+        }
+      }
+
       //toast.success("Progress saved successfully!");
-      navigate("/dashboard/mcq-bank");
+      if (navigationState?.from === "weekly-plan") {
+        navigate(-1);
+      } else {
+        navigate("/dashboard/mcq-bank");
+      }
     } catch (error) {
       console.error("Failed to save progress:", error);
       toast.error("Failed to save progress");
@@ -285,16 +314,41 @@ export default function PracticeMCQ() {
 
       {isInitialLoading ? (
         <GlobalLoader />
+      ) : !mcqData ? (
+        <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+          <CircleAlert className="w-16 h-16 text-red-500" />
+          <h2 className="text-xl font-semibold text-slate-700">
+            No MCQ Found
+          </h2>
+          <p className="text-slate-500">
+            The MCQ you are looking for does not exist or has been removed.
+          </p>
+          <Link to="/dashboard/mcq-bank">
+            <PrimaryButton className="bg-blue-main hover:bg-blue-main/90">
+              Back to MCQ Bank
+            </PrimaryButton>
+          </Link>
+        </div>
       ) : (
+        <>
         <div className="p-6 space-y-8">
           <Breadcrumb breadcrumbs={breadcrumbs} />
 
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             {/* Left Section */}
             <div className="flex items-center gap-3">
-              <Link to={"/dashboard/mcq-bank"} className=" sm:mb-0">
+              <div
+                onClick={() => {
+                   if (navigationState?.from === "weekly-plan") {
+                     navigate(-1);
+                   } else {
+                     navigate("/dashboard/mcq-bank");
+                   }
+                }}
+                className="cursor-pointer sm:mb-0"
+              >
                 <ArrowLeft className="mb-7" />
-              </Link>
+              </div>
               <DashboardHeading
                 title={mcqData?.title}
                 titleSize="text-xl"
@@ -480,10 +534,9 @@ export default function PracticeMCQ() {
             open={openReportModal}
             setOpen={setOpenReportModal}
             mcqId={mcqId}
-            questionBankId={mcqData._id}
+            questionBankId={mcqData?._id}
           />
         </div>
-      )}
       {/* Pagination */}
       <div className="mt-16 mb-32 flex justify-center space-x-5 ">
         <button
@@ -562,6 +615,8 @@ export default function PracticeMCQ() {
           </button>
         </div>
       </div>
+      </>
+      )}
 
       <PracticeQuizModal
         open={openQuizModal}

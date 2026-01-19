@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, BadgeHelp } from "lucide-react";
+import { ArrowLeft, BadgeHelp, CircleAlert } from "lucide-react";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
 import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types";
 import { Link, useLocation, useParams } from "react-router-dom";
@@ -8,6 +8,7 @@ import {
   useGetSingleFlashCardQuery,
   useGetSingleGeneratedFlashCardQuery,
 } from "@/store/features/flashCard/flashCard.api";
+import { useSaveStudyPlanProgressMutation } from "@/store/features/studyPlan/studyPlan.api";
 import { useUpdateProgressMcqFlashcardClinicalCaseMutation } from "@/store/features/goal/goal.api";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import GlobalLoader2 from "@/common/GlobalLoader2";
@@ -40,6 +41,7 @@ export default function SolveFlashCard() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [updateProgress] = useUpdateProgressMcqFlashcardClinicalCaseMutation();
+  const [saveStudyPlanProgress] = useSaveStudyPlanProgressMutation();
 
   // Block navigation if user has started but hasn't submitted
   const blocker = useBlocker(
@@ -103,7 +105,22 @@ export default function SolveFlashCard() {
     !flashCardData.flashCards ||
     flashCardData.flashCards.length === 0
   ) {
-    return <p>No flashcards found.</p>;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <CircleAlert className="w-16 h-16 text-red-500" />
+        <h2 className="text-xl font-semibold text-slate-700">
+          No Flashcards Found
+        </h2>
+        <p className="text-slate-500">
+          The flashcard set you are looking for does not exist or has been removed.
+        </p>
+        <Link to="/dashboard/flashcard-page">
+          <Button className="bg-blue-main hover:bg-blue-main/90">
+            Back to Flashcards
+          </Button>
+        </Link>
+      </div>
+    );
   }
 
   // Convert API/state data into usable format
@@ -147,7 +164,25 @@ export default function SolveFlashCard() {
         bankId: flashCardData._id,
       }).unwrap();
 
-      navigate("/dashboard/flashcard-page");
+      // Check if we came from WeeklyPlan and update study plan progress
+      if (location.state?.from === "weekly-plan" && location.state?.planId) {
+        try {
+          await saveStudyPlanProgress({
+            planId: location.state.planId,
+            day: location.state.day,
+            suggest_content: location.state.suggest_content,
+          }).unwrap();
+          // toast.success("Study plan progress saved!");
+        } catch (error) {
+          console.error("Failed to save study plan progress:", error);
+        }
+      }
+
+      if (location.state?.from === "weekly-plan") {
+        navigate(-1);
+      } else {
+        navigate("/dashboard/flashcard-page");
+      }
     } catch (error) {
       console.error("Failed to save progress:", error);
       toast.error("Failed to save progress");
@@ -211,9 +246,18 @@ export default function SolveFlashCard() {
       </div>
 
       <div className="flex items-start gap-3 mb-4">
-        <Link to={"/dashboard/flashcard-page"} className="mt-0.5">
+        <div
+          onClick={() => {
+            if (location.state?.from === "weekly-plan") {
+              navigate(-1);
+            } else {
+              navigate("/dashboard/flashcard-page");
+            }
+          }}
+          className="mt-0.5 cursor-pointer"
+        >
           <ArrowLeft />
-        </Link>
+        </div>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4">
           <DashboardHeading
             title={flashCardData?.title}

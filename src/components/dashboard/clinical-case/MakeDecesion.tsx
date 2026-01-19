@@ -1,11 +1,13 @@
 // import { Button } from "@/components/ui/button";
 // import { FilePlus2 } from "lucide-react";
 import ClinicalCaseFlow from "./ClinicalCaseFlow";
-import { useParams, useSearchParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import {
   useGetSingleClinicalCaseQuery,
   useGetSingleGeneratedClinicalCaseQuery,
 } from "@/store/features/clinicalCase/clinicalCase.api";
+import { CircleAlert } from "lucide-react";
+import PrimaryButton from "@/components/reusable/PrimaryButton";
 import GlobalLoader from "@/common/GlobalLoader";
 import { ClinicalCaseData } from "@/types/clinicalCase";
 // import { ClinicalCaseData } from "@/types/clinicalCase.types";
@@ -44,8 +46,19 @@ const MakeDecision = () => {
 
   if (error || !clinicalCase) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        Error loading clinical case
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <CircleAlert className="w-16 h-16 text-red-500" />
+        <h2 className="text-xl font-semibold text-slate-700">
+          No Clinical Case Found
+        </h2>
+        <p className="text-slate-500">
+          The clinical case you are looking for does not exist or has been removed.
+        </p>
+        <Link to="/dashboard/clinical-case-generator">
+          <PrimaryButton className="bg-blue-main hover:bg-blue-main/90">
+            Back to Cases
+          </PrimaryButton>
+        </Link>
       </div>
     );
   }

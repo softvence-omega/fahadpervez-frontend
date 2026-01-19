@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import DecisionPoint from "./DecisionPoint";
 import EvidenceReview from "./EvidenceReview";
 import { Progress } from "@/components/ui/progress";
 import { ClinicalCaseData } from "@/types/clinicalCase";
 import ClinicalCaseMCQ from "./ClinicalCaseMCQ";
 import { useUpdateProgressMcqFlashcardClinicalCaseMutation } from "@/store/features/goal/goal.api";
+import { useSaveStudyPlanProgressMutation } from "@/store/features/studyPlan/studyPlan.api";
 import {
   Dialog,
   DialogContent,
@@ -37,7 +38,9 @@ console.log(isConfirmed)
   // API
   const [updateProgress, { isLoading: isUpdating }] =
     useUpdateProgressMcqFlashcardClinicalCaseMutation();
+  const [saveStudyPlanProgress] = useSaveStudyPlanProgressMutation();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const mcqs = clinicalCase?.mcqs || [];
   const totalMCQs = mcqs.length;
@@ -76,6 +79,21 @@ console.log(isConfirmed)
         bankId: clinicalCase._id,
       }).unwrap();
 
+      
+            // Check if we came from WeeklyPlan and update study plan progress
+      if (location.state?.from === "weekly-plan" && location.state?.planId) {
+        try {
+          await saveStudyPlanProgress({
+            planId: location.state.planId,
+            day: location.state.day,
+            suggest_content: location.state.suggest_content,
+          }).unwrap();
+          // toast.success("Study plan progress saved!");
+        } catch (error) {
+          console.error("Failed to save study plan progress:", error);
+        }
+      }
+
       setShowSuccessModal(true);
     } catch (err) {
       console.error("Failed to update progress", err);
@@ -94,6 +112,14 @@ console.log(isConfirmed)
       };
     }
     if (currentStep === 2) {
+      // If there are no MCQs, we finish the case directly from here
+      if (totalMCQs === 0) {
+        return {
+          label: isUpdating ? "Finishing..." : "Finish Case",
+          disabled: isUpdating,
+          onClick: handleFinishQuiz,
+        };
+      }
       return {
         label: "Start Quiz",
         disabled: false,
@@ -193,14 +219,28 @@ console.log(isConfirmed)
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col items-center justify-center py-4 space-y-2">
-            <p className="text-lg font-medium">Your Score</p>
-            <div className="text-4xl font-bold text-blue-600">
-              {correctAnswers} / {totalMCQs}
-            </div>
+            {totalMCQs > 0 ? (
+              <>
+                <p className="text-lg font-medium">Your Score</p>
+                <div className="text-4xl font-bold text-blue-600">
+                  {correctAnswers} / {totalMCQs}
+                </div>
+              </>
+            ) : (
+              <p className="text-lg text-slate-600">
+                You have reviewed the case successfully.
+              </p>
+            )}
           </div>
           <DialogFooter className="sm:justify-center">
             <PrimaryButton
-              onClick={() => navigate("/dashboard/clinical-case-generator")}
+              onClick={() => {
+                if (location.state?.from === "weekly-plan") {
+                   navigate(-1);
+                } else {
+                   navigate("/dashboard/clinical-case-generator");
+                }
+              }}
               className="w-full sm:w-auto"
             >
               Back to Cases
