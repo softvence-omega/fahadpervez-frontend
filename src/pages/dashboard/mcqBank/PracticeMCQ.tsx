@@ -227,7 +227,7 @@ export default function PracticeMCQ() {
         totalIncorrect,
         totalAttempted,
         key: "mcq",
-        bankId: mcqData._id,
+        bankId: mcqData?._id,
       }).unwrap();
 
       //toast.success("Progress saved successfully!");
@@ -285,7 +285,23 @@ export default function PracticeMCQ() {
 
       {isInitialLoading ? (
         <GlobalLoader />
+      ) : !mcqData ? (
+        <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+          <CircleAlert className="w-16 h-16 text-red-500" />
+          <h2 className="text-xl font-semibold text-slate-700">
+            No MCQ Found
+          </h2>
+          <p className="text-slate-500">
+            The MCQ you are looking for does not exist or has been removed.
+          </p>
+          <Link to="/dashboard/mcq-bank">
+            <PrimaryButton className="bg-blue-main hover:bg-blue-main/90">
+              Back to MCQ Bank
+            </PrimaryButton>
+          </Link>
+        </div>
       ) : (
+        <>
         <div className="p-6 space-y-8">
           <Breadcrumb breadcrumbs={breadcrumbs} />
 
@@ -480,10 +496,9 @@ export default function PracticeMCQ() {
             open={openReportModal}
             setOpen={setOpenReportModal}
             mcqId={mcqId}
-            questionBankId={mcqData._id}
+            questionBankId={mcqData?._id}
           />
         </div>
-      )}
       {/* Pagination */}
       <div className="mt-16 mb-32 flex justify-center space-x-5 ">
         <button
@@ -562,6 +577,8 @@ export default function PracticeMCQ() {
           </button>
         </div>
       </div>
+      </>
+      )}
 
       <PracticeQuizModal
         open={openQuizModal}
