@@ -3,13 +3,9 @@ import {
   MessageCircle,
   HelpCircle,
   Brain,
-  Layers,
-  CreditCard,
-  Activity,
-  Microscope,
+
   Pill,
   GraduationCap,
-  FolderOpen,
   Settings,
   Globe,
   SquareUserRound,
@@ -21,13 +17,21 @@ import {
   Crown,
 } from "lucide-react";
 
+import flashcardIcon from "@/assets/navIcon/Flashcard.png";
+import diagramIcon from "@/assets/navIcon/diagram.png";
+import osceIcon from "@/assets/navIcon/osce.png";
+import resourceIcon from "@/assets/navIcon/resource.png";
+
 export interface SidebarItem {
-  icon: React.ElementType;
+  icon: React.ElementType | string;
   label: string;
   path: string;
   section: string;
   iconColor?: string;
   iconBgColor?: string;
+  fieldBg?: string;
+  isImageIcon?: boolean;
+  disabled?: boolean;
 }
 
 export const sidebarItems: SidebarItem[] = [
@@ -54,7 +58,8 @@ export const sidebarItems: SidebarItem[] = [
     path: "/dashboard/mentorship",
     section: "main",
     iconColor: "text-gray-700",
-    iconBgColor: "bg-gray-100",
+    // iconBgColor: "bg-gray-100",
+    disabled: true,
   },
   {
     icon: MessageCircle,
@@ -62,7 +67,7 @@ export const sidebarItems: SidebarItem[] = [
     path: "/dashboard/community-event",
     section: "main",
     iconColor: "text-gray-700",
-    iconBgColor: "bg-gray-100",
+    // iconBgColor: "bg-gray-100",
   },
   {
     icon: HelpCircle,
@@ -80,7 +85,8 @@ export const sidebarItems: SidebarItem[] = [
     path: "/dashboard/ai-tutor",
     section: "AI Tools",
     iconColor: "text-red-700",
-    iconBgColor: "bg-purple-50",
+    // iconBgColor: "bg-purple-50",
+    fieldBg: "bg-zinc-50",
   },
   {
     icon: Brain,
@@ -88,7 +94,8 @@ export const sidebarItems: SidebarItem[] = [
     path: "/dashboard/quiz-page",
     section: "AI Tools",
     iconColor: "text-lime-700",
-    iconBgColor: "bg-yellow-50",
+    // iconBgColor: "bg-yellow-50",
+    fieldBg: "bg-zinc-50",
   },
   {
     icon: CalendarRange,
@@ -97,14 +104,17 @@ export const sidebarItems: SidebarItem[] = [
     section: "AI Tools",
     iconColor: "text-lime-700",
     iconBgColor: "bg-indigo-50",
+    fieldBg: "bg-zinc-50",
   },
   {
-    icon: Layers,
+    icon: flashcardIcon,
     label: "Flashcard Generator",
     path: "/dashboard/flashcard-generator",
     section: "AI Tools",
     iconColor: "text-orange-600",
-    iconBgColor: "bg-orange-50",
+    // iconBgColor: "bg-orange-50",
+    fieldBg: "bg-zinc-50",
+    isImageIcon: true,
   },
 
   // Study Materials
@@ -114,15 +124,18 @@ export const sidebarItems: SidebarItem[] = [
     path: "/dashboard/mcq-bank",
     section: "Study Materials",
     iconColor: "text-lime-700",
-    iconBgColor: "bg-green-50",
+    // iconBgColor: "bg-green-50",
+    fieldBg: "bg-lime-50",
   },
   {
-    icon: CreditCard,
+    icon: flashcardIcon,
     label: "Flash Cards",
     path: "/dashboard/flashcard-page",
     section: "Study Materials",
     iconColor: "text-orange-600",
-    iconBgColor: "bg-orange-50",
+    // iconBgColor: "bg-orange-50",
+    fieldBg: "bg-orange-50",
+    isImageIcon: true,
   },
   {
     icon: TestTubeDiagonal,
@@ -131,6 +144,7 @@ export const sidebarItems: SidebarItem[] = [
     section: "Study Materials",
     iconColor: "text-blue-600",
     iconBgColor: "bg-blue-50",
+    fieldBg: "bg-blue-50",
   },
   {
     icon: NotebookText,
@@ -138,23 +152,28 @@ export const sidebarItems: SidebarItem[] = [
     path: "/dashboard/download-notes",
     section: "Study Materials",
     iconColor: "text-emerald-500",
-    iconBgColor: "bg-amber-50",
+    // iconBgColor: "bg-amber-50",
+    fieldBg: "bg-emerald-50",
   },
   {
-    icon: Activity,
+    icon: osceIcon,
     label: "OSCE",
     path: "/dashboard/osce",
     section: "Study Materials",
     iconColor: "text-red-600",
-    iconBgColor: "bg-red-50",
+    // iconBgColor: "bg-red-50",
+    fieldBg: "bg-indigo-50",
+    isImageIcon: true,
   },
   {
-    icon: Microscope,
+    icon: diagramIcon,
     label: "Diagram",
     path: "/dashboard/bio-digital",
     section: "Study Materials",
     iconColor: "text-cyan-600",
-    iconBgColor: "bg-cyan-50",
+    // iconBgColor: "bg-cyan-50",
+    fieldBg: "bg-zinc-50",
+    isImageIcon: true,
   },
   {
     icon: Pill,
@@ -162,7 +181,8 @@ export const sidebarItems: SidebarItem[] = [
     path: "/dashboard/drug-cards",
     section: "Study Materials",
     iconColor: "text-fuchsia-600",
-    iconBgColor: "bg-pink-50",
+    // iconBgColor: "bg-pink-50",
+    fieldBg: "bg-fuchsia-50",
   },
   {
     icon: GraduationCap,
@@ -170,15 +190,19 @@ export const sidebarItems: SidebarItem[] = [
     path: "/dashboard/courses",
     section: "Study Materials",
     iconColor: "text-cyan-600",
-    iconBgColor: "bg-violet-50",
+    // iconBgColor: "bg-violet-50",
+    fieldBg: "bg-cyan-50",
+    disabled: true,
   },
   {
-    icon: FolderOpen,
+    icon: resourceIcon,
     label: "Resources",
     path: "/dashboard/resources",
     section: "Study Materials",
     iconColor: "text-yellow-600",
-    iconBgColor: "bg-teal-50",
+    // iconBgColor: "bg-teal-50",
+    fieldBg: "bg-yellow-50",
+    isImageIcon: true,
   },
   {
     icon: Crown,
@@ -186,7 +210,8 @@ export const sidebarItems: SidebarItem[] = [
     path: "/pricing",
     section: "Study Materials",
     iconColor: "text-lime-600",
-    iconBgColor: "bg-teal-50",
+    // iconBgColor: "bg-teal-50",
+    fieldBg: "bg-lime-50",
   },
 
   // Bottom Items
