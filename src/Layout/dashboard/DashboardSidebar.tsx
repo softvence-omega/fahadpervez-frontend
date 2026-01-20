@@ -16,25 +16,36 @@ const DashboardSidebar: FC<SidebarProps> = ({
   onToggleCollapse,
   onLinkClick,
 }) => {
-  const groupedItems = sidebarItems.reduce((acc, item) => {
-    if (!acc[item.section]) acc[item.section] = [];
-    acc[item.section].push(item);
-    return acc;
-  }, {} as Record<string, SidebarItem[]>);
+  const groupedItems = sidebarItems.reduce(
+    (acc, item) => {
+      if (!acc[item.section]) acc[item.section] = [];
+      acc[item.section].push(item);
+      return acc;
+    },
+    {} as Record<string, SidebarItem[]>,
+  );
 
   const renderNavItem = (item: SidebarItem) => (
     <NavLink
       key={item.path}
       to={item.path}
       end={item.path === "/dashboard"}
-      onClick={onLinkClick}
+      onClick={(e) => {
+        if (item.disabled) {
+          e.preventDefault();
+          return;
+        }
+        onLinkClick?.();
+      }}
       className={({ isActive }) =>
         cn(
-          "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative",
+          `flex items-center gap-3 px-1.5 py-2 rounded-lg transition-all duration-200 group relative ${item.fieldBg}`,
           collapsed ? "justify-center" : "",
-          isActive
-            ? "bg-blue-50 text-blue-700 font-medium"
-            : "text-gray-700 hover:bg-gray-50"
+          item.disabled && "opacity-50 cursor-not-allowed hover:bg-transparent",
+          !item.disabled &&
+            (isActive
+              ? "bg-blue-50 text-blue-700 font-medium"
+              : "text-gray-700 hover:bg-gray-50"),
         )
       }
     >
@@ -44,16 +55,27 @@ const DashboardSidebar: FC<SidebarProps> = ({
             className={cn(
               "flex items-center justify-center rounded-lg transition-colors",
               collapsed ? "w-9 h-9" : "w-8 h-8",
-              isActive ? "bg-blue-100" : item.iconBgColor
+              isActive ? "bg-blue-100" : item.iconBgColor,
             )}
           >
-            <item.icon
-              className={cn(
-                "flex-shrink-0",
-                collapsed ? "h-6 w-6" : "h-6 w-6",
-                isActive ? "text-blue-700" : item.iconColor
-              )}
-            />
+            {item.isImageIcon ? (
+              <img
+                src={item.icon as string}
+                alt={item.label}
+                className={cn(
+                  "shrink-0 object-contain",
+                  collapsed ? "h-6 w-6" : "h-6 w-6",
+                )}
+              />
+            ) : (
+              <item.icon
+                className={cn(
+                  "shrink-0",
+                  collapsed ? "h-6 w-6" : "h-6 w-6",
+                  isActive ? "text-blue-700" : item.iconColor,
+                )}
+              />
+            )}
           </div>
           {!collapsed && <span className="text-sm truncate">{item.label}</span>}
 
@@ -72,7 +94,7 @@ const DashboardSidebar: FC<SidebarProps> = ({
     <aside
       className={cn(
         "fixed top-0 left-0 h-screen bg-white border-r border-gray-200 transition-all duration-300 z-30",
-        collapsed ? "w-20" : "w-[280px]"
+        collapsed ? "w-20" : "w-[280px]",
       )}
     >
       <div className="flex flex-col h-full">
@@ -80,7 +102,7 @@ const DashboardSidebar: FC<SidebarProps> = ({
         <div
           className={cn(
             "flex items-center border-b border-gray-200",
-            collapsed ? "justify-center px-2 h-16" : "px-4 h-16"
+            collapsed ? "justify-center px-2 h-16" : "px-4 h-16",
           )}
         >
           {!collapsed && <img src="/logo.svg" alt="Logo" className="h-10" />}
@@ -122,7 +144,7 @@ const DashboardSidebar: FC<SidebarProps> = ({
           {collapsed && <div className="border-t border-gray-200 my-3" />}
           <div className="space-y-1 mb-6">
             {groupedItems["Study Materials"]?.map((item) =>
-              renderNavItem(item)
+              renderNavItem(item),
             )}
           </div>
         </div>

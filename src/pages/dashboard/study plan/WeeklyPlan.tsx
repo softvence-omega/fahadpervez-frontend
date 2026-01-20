@@ -334,7 +334,7 @@ export default function WeeklyPlan() {
                                   ) : (
                                     <Button
                                       size="sm"
-                                      // disabled={isFuture}
+                                      disabled={isFuture}
                                       onClick={() => handleStartClick(session, dayPlan.day_number)}
                                       className={`bg-transparent border border-slate-300 rounded text-[#0A0A0A] hover:bg-slate-100 cursor-pointer bg-white ${
                                         isFuture ? "opacity-50 cursor-not-allowed" : ""

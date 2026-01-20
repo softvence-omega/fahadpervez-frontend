@@ -20,9 +20,9 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-8">
+    <div className="rounded-lg shadow-sm p-6 bg-[#EFF6FF99] border border-[#93C5FD66]">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-2xl font-semibold text-black">
           {getGreeting()}, {user?.profile?.firstName}
         </h1>
         <button
@@ -40,8 +40,8 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
           <Target className="w-8 h-8 text-gray-500" />
           {/* </div> */}
           <div>
-            <div className="text-sm text-gray-600">Your goal:</div>
-            <div className="font-semibold">{goal.goalName}</div>
+            <div className="font-medium text-gray-500">Your goal:</div>
+            <div className="font-medium">{goal.goalName}</div>
           </div>
         </div>
 
@@ -50,8 +50,8 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
           <CalendarRange className="w-8 h-8 text-gray-500" />
           {/* </div> */}
           <div>
-            <div className="text-sm text-gray-600">Time Left</div>
-            <div className="font-semibold">
+            <div className="font-medium text-gray-500">Time Left</div>
+            <div className="font-medium">
               {goal.daysLeft} {goal.daysLeft === 1 ? "day" : "days"} (
               {goal.remainingHours} hrs) remaining
             </div>
@@ -63,33 +63,31 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
           <Clock className="w-8 h-8 text-gray-500" />
           {/* </div> */}
           <div>
-            <div className="text-sm text-gray-600">Daily Target</div>
-            <div className="font-semibold">{goal.studyHoursPerDay} hrs</div>
+            <div className="font-medium text-gray-500">Daily Target</div>
+            <div className="font-medium">{goal.studyHoursPerDay} hrs</div>
           </div>
         </div>
       </div>
 
       <div className="mb-4">
         <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-medium text-gray-700">
-            Completion Progress
-          </span>
+          <span className="font-medium text-zinc-700">Progress %</span>
           <div className="flex gap-4 text-sm">
             <span className="flex items-center gap-1.5">
               <span className="w-3 h-3 bg-blue-600 rounded-full"></span>
-              <span className="text-gray-600">
+              <span className="font-medium text-zinc-700">
                 Accuracy {(goal.accuracy || 0).toFixed(2)}%
               </span>
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-3 h-3 bg-blue-400 rounded-full"></span>
-              <span className="text-gray-600">
+              <span className="font-medium text-zinc-700">
                 Completed {(goal.complete || 0).toFixed(2)}%
               </span>
             </span>
           </div>
         </div>
-        <div className="w-full bg-gray-100 rounded-full h-4 overflow-hidden shadow-inner border border-gray-200">
+        <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden shadow-inner border border-gray-200">
           <div className="h-full flex transition-all duration-500">
             {/* Sequential Display: Smaller metric value first, then the extra portion of the larger metric. */}
             {(goal.accuracy || 0) < (goal.complete || 0) ? (
