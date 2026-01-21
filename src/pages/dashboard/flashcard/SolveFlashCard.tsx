@@ -267,7 +267,7 @@ export default function SolveFlashCard() {
             descColor="text-[#4A5565]"
             descSize="text-sm"
           />
-          <Button
+          {/* <Button
             onClick={handleSubmit}
             disabled={isSubmitting || currentQuestion === 0}
             className={`cursor-pointer ${
@@ -277,36 +277,11 @@ export default function SolveFlashCard() {
             }`}
           >
             {isSubmitting ? "Submitting..." : "Submit Progress"}
-          </Button>
+          </Button> */}
         </div>
       </div>
 
       <div className="flex flex-col md:flex-row gap-4">
-        {/* Sidebar */}
-        {/* <div className="w-full md:w-1/4 bg-white p-4 rounded-lg shadow overflow-y-auto">
-          <h2 className="font-semibold mb-2">{flashCardData?.title}</h2>
-          <p className="text-sm text-gray-600 mb-4">
-            {questions.length} Flashcards • {flashCardData?.subject}
-          </p>
-
-          {questions.map((q: any, index: number) => (
-            <div
-              key={q?.id}
-              className={`p-2 mb-2 rounded cursor-pointer ${
-                index === currentQuestion
-                  ? "bg-blue-100 text-blue-600"
-                  : "text-gray-600"
-              }`}
-              onClick={() => {
-                setIsFlipped(false);
-                setCurrentQuestion(index);
-              }}
-            >
-              Card {index + 1}
-            </div>
-          ))}
-        </div> */}
-
         <div
           className={`bg-white rounded-lg shadow transition-all duration-300
   ${isSidebarOpen ? "w-full md:w-1/6" : "w-10"}

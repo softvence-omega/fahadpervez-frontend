@@ -1,3 +1,4 @@
+import React from "react";
 import { CalendarRange, Clock, PencilLine, Target } from "lucide-react";
 import { DashboardProps } from "./type";
 import { useSelector } from "react-redux";
@@ -64,7 +65,7 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
           {/* </div> */}
           <div>
             <div className="font-medium text-gray-500">Daily Target</div>
-            <div className="font-medium">{goal.studyHoursPerDay} hrs</div>
+            <div className="font-medium">{goal?.todayStudyHours} hrs / {goal.studyHoursPerDay} hrs</div>
           </div>
         </div>
       </div>

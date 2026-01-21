@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 // Types
 export interface Subject {
   name: string;
@@ -18,6 +20,7 @@ export interface FormData {
 }
 
 export interface Goal {
+  todayStudyHours: ReactNode;
   _id: string;
   goalName: string;
   studyHoursPerDay: number;
@@ -56,7 +59,7 @@ export interface ModalProps {
   showModal: boolean;
   currentStep: number;
   onClose: () => void;
-  children: React.ReactNode;
+  children: ReactNode;
   isEditMode?: boolean;
 }
 

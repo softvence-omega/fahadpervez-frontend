@@ -91,7 +91,7 @@ const SmartStudyPlan: React.FC = () => {
     // console.log("dailyPlanEntry :", dailyPlanEntry);
   }
   const handleStartClick = (task: any) => {
-    const contentId = task.suggest_content;
+    const contentId = task.suggest_content?.[0];
     const taskType = task.task_type.toLowerCase();
 
     if (taskType === "mcqs" || taskType === "mcq") {
@@ -186,9 +186,9 @@ const SmartStudyPlan: React.FC = () => {
                     </div>
                     <h5
                       className="font-semibold text-gray-900 mb-3 line-clamp-2"
-                      title={task.description}
+                      title={task.description || task.task_type}
                     >
-                      {task.description}
+                      {task.description || task.task_type}
                     </h5>
                     <div className="flex flex-wrap flex-col sm:flex-row sm:items-center gap-4 text-sm text-gray-600 mb-4">
                       <span className="flex items-center gap-1 text-nowrap text-sm">

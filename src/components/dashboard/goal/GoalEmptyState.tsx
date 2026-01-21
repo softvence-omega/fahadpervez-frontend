@@ -1,3 +1,4 @@
+import React from "react";
 import { Target } from "lucide-react";
 import { EmptyStateProps } from "./type";
 import { useSelector } from "react-redux";
