@@ -20,7 +20,7 @@ export interface FormData {
 }
 
 export interface Goal {
-  todayStudyHours: ReactNode;
+  todayStudyHours: number;
   _id: string;
   goalName: string;
   studyHoursPerDay: number;

@@ -1,14 +1,19 @@
 import React from "react";
-import { CalendarRange, Clock, PencilLine, Target } from "lucide-react";
+import { CalendarRange, PencilLine, Target } from "lucide-react";
 import { DashboardProps } from "./type";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/features/auth/auth.slice";
+import { useGetGoalOverviewQuery } from "@/store/features/goal/goal.api";
 
 // Dashboard Component
 export const GoalDashboard: React.FC<DashboardProps> = ({
   goal,
   onChangeGoal,
 }) => {
+
+  const { data: overviewData } = useGetGoalOverviewQuery();
+  const accuracy = Number(overviewData?.data?.progress?.overall || 0);
+  const completed = Number(goal?.progressPercentage || 0);
   const user = useSelector(selectUser);
 
   const getGreeting = () => {
@@ -60,14 +65,29 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
         </div>
 
         <div className="flex items-center gap-3">
-          {/* <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center"> */}
+          <CircularProgress
+            value={goal?.todayStudyHours || 0}
+            max={goal?.studyHoursPerDay || 1}
+          />
+
+          <div>
+            <div className="font-medium text-gray-500">Daily Target</div>
+            <div className="font-medium">
+              {goal?.todayStudyHours} hrs / {goal.studyHoursPerDay} hrs
+            </div>
+          </div>
+        </div>
+
+
+        {/* <div className="flex items-center gap-3">
+          <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
           <Clock className="w-8 h-8 text-gray-500" />
-          {/* </div> */}
+          </div>
           <div>
             <div className="font-medium text-gray-500">Daily Target</div>
             <div className="font-medium">{goal?.todayStudyHours} hrs / {goal.studyHoursPerDay} hrs</div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="mb-4">
@@ -77,13 +97,13 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
             <span className="flex items-center gap-1.5">
               <span className="w-3 h-3 bg-blue-600 rounded-full"></span>
               <span className="font-medium text-zinc-700">
-                Accuracy {(goal.accuracy || 0).toFixed(2)}%
+                Accuracy {(accuracy || 0).toFixed(2)}%
               </span>
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-3 h-3 bg-blue-400 rounded-full"></span>
               <span className="font-medium text-zinc-700">
-                Completed {(goal.complete || 0).toFixed(2)}%
+                Completed {(completed || 0).toFixed(2)}%
               </span>
             </span>
           </div>
@@ -91,21 +111,21 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
         <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden shadow-inner border border-gray-200">
           <div className="h-full flex transition-all duration-500">
             {/* Sequential Display: Smaller metric value first, then the extra portion of the larger metric. */}
-            {(goal.accuracy || 0) < (goal.complete || 0) ? (
+            {(accuracy || 0) < (completed || 0) ? (
               <>
                 {/* Accuracy is smaller; show it first (Blue-600) then extra completion (Blue-400) */}
                 <div
                   className="bg-blue-600 h-full transition-all duration-500"
-                  style={{ width: `${goal.accuracy || 0}%` }}
-                  title={`Accuracy: ${(goal.accuracy || 0).toFixed(2)}%`}
+                  style={{ width: `${accuracy || 0}%` }}
+                  title={`Accuracy: ${(accuracy || 0).toFixed(2)}%`}
                 ></div>
                 <div
                   className="bg-blue-400 h-full transition-all duration-500"
                   style={{
-                    width: `${(goal.complete || 0) - (goal.accuracy || 0)}%`,
+                    width: `${(completed || 0) - (accuracy || 0)}%`,
                   }}
                   title={`Extra Completion: ${(
-                    (goal.complete || 0) - (goal.accuracy || 0)
+                    (completed || 0) - (accuracy || 0)
                   ).toFixed(2)}%`}
                 ></div>
               </>
@@ -114,16 +134,16 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
                 {/* Completion is smaller; show it first (Blue-400) then extra accuracy (Blue-600) */}
                 <div
                   className="bg-blue-400 h-full transition-all duration-500"
-                  style={{ width: `${goal.complete || 0}%` }}
-                  title={`Completed: ${(goal.complete || 0).toFixed(2)}%`}
+                  style={{ width: `${completed || 0}%` }}
+                  title={`Completed: ${(completed || 0).toFixed(2)}%`}
                 ></div>
                 <div
                   className="bg-blue-600 h-full transition-all duration-500"
                   style={{
-                    width: `${(goal.accuracy || 0) - (goal.complete || 0)}%`,
+                    width: `${(accuracy || 0) - (completed || 0)}%`,
                   }}
                   title={`Extra Accuracy: ${(
-                    (goal.accuracy || 0) - (goal.complete || 0)
+                    (accuracy || 0) - (completed || 0)
                   ).toFixed(2)}%`}
                 ></div>
               </>
@@ -132,5 +152,52 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
         </div>
       </div>
     </div>
+  );
+};
+
+
+interface CircularProgressProps {
+  value: number;
+  max: number;
+  size?: number;
+  strokeWidth?: number;
+}
+
+const CircularProgress: React.FC<CircularProgressProps> = ({
+  value,
+  max,
+  size = 48,
+  strokeWidth = 6,
+}) => {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const progress = Math.min(value / max, 1);
+  const offset = circumference - progress * circumference;
+
+  return (
+    <svg width={size} height={size} className="rotate-[-90deg]">
+      {/* Background circle */}
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        stroke="#e5e7eb"
+        strokeWidth={strokeWidth}
+        fill="transparent"
+      />
+
+      {/* Progress circle */}
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        stroke="#22c55e"
+        strokeWidth={strokeWidth}
+        fill="transparent"
+        strokeDasharray={circumference}
+        strokeDashoffset={offset}
+        strokeLinecap="round"
+      />
+    </svg>
   );
 };
