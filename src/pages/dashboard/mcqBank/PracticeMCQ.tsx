@@ -111,10 +111,6 @@ export default function PracticeMCQ() {
     setDisplayData(null);
   }, [id]);
 
-  useEffect(() => {
-    setDisplayData(null);
-  }, [id]);
-
   const [updateProgress] = useUpdateProgressMcqFlashcardClinicalCaseMutation();
   const [saveStudyPlanProgress] = useSaveStudyPlanProgressMutation();
 
@@ -191,7 +187,7 @@ export default function PracticeMCQ() {
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
-      setSearchParams({ page: page.toString(), limit: limit.toString() });
+      setSearchParams({ page: page.toString(), limit: limit.toString() }, { replace: true });
       setSkip(undefined);
     }
   };
@@ -208,7 +204,7 @@ export default function PracticeMCQ() {
     } else if (questionNum > total) {
       toast.warning(`Question number exceeds total questions (${total})`);
     } else {
-      setSearchParams({ page: questionNum.toString(), limit: limit.toString() });
+      setSearchParams({ page: questionNum.toString(), limit: limit.toString() }, { replace: true });
       setSkip(undefined);
     }
   };
@@ -225,9 +221,16 @@ export default function PracticeMCQ() {
   const handleSubmit = async () => {
     if (!mcqData?._id) return;
 
+    const totalAttempted = Object.keys(results).length;
+    const totalQuestions = meta?.total || 0;
+
+    if (totalAttempted < totalQuestions) {
+      toast.warning("Please answer all questions before submitting.");
+      return;
+    }
+
     setIsSubmitting(true);
 
-    const totalAttempted = Object.keys(results).length;
     const totalCorrect = Object.values(results).filter(Boolean).length;
     const totalIncorrect = totalAttempted - totalCorrect;
 
@@ -241,8 +244,6 @@ export default function PracticeMCQ() {
       }).unwrap();
 
       // Check if we came from WeeklyPlan and update study plan progress
-      // console.log("Submitting MCQ. Saved Navigation State:", navigationState);
-      
       if (navigationState?.from === "weekly-plan" && navigationState?.planId) {
         try {
           await saveStudyPlanProgress({
@@ -255,7 +256,8 @@ export default function PracticeMCQ() {
         }
       }
 
-      //toast.success("Progress saved successfully!");
+      // localStorage.removeItem(storageKey);
+      // localStorage.removeItem(`lastPage_${id}`);
       if (navigationState?.from === "weekly-plan") {
         navigate(-1);
       } else {
@@ -288,26 +290,53 @@ export default function PracticeMCQ() {
               progress before leaving?
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
+          <AlertDialogFooter className="flex flex-col sm:flex-row gap-2 justify-center w-full">
             <AlertDialogCancel
+              className="mt-0"
               onClick={() => blocker.state === "blocked" && blocker.reset()}
             >
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              className="bg-blue-main hover:bg-blue-main/90"
-              onClick={async () => {
+              className="bg-red-500 hover:bg-red-600 text-white border-none"
+              onClick={() => {
                 if (blocker.state === "blocked") {
-                  await handleSubmit();
-                  // handleSubmit will navigate, so we don't necessarily need blocker.proceed()
-                  // but if it fails, we want to stay. The navigate() in handleSubmit()
-                  // might conflict with blocker logic if not handled carefully.
-                  // However, setIsSubmitting(true) in handleSubmit should allow it.
+                  localStorage.removeItem(storageKey);
+                  localStorage.removeItem(`lastPage_${id}`);
+                  blocker.proceed();
                 }
               }}
             >
-              Submit & Leave
+              Discard & Leave
             </AlertDialogAction>
+            <AlertDialogAction
+              className="bg-blue-main hover:bg-blue-main/90"
+              onClick={() => {
+                if (blocker.state === "blocked") {
+                  // Simply proceed with leaving; progress is already saved to storage via useEffect
+                  blocker.proceed();
+                }
+              }}
+            >
+              Save & Exit
+            </AlertDialogAction>
+            {/* <AlertDialogAction
+              className="bg-[#059669] hover:bg-[#059669]/90 text-white"
+              onClick={async () => {
+                if (blocker.state === "blocked") {
+                  const totalAttempted = Object.keys(results).length;
+                  const totalQuestions = meta?.total || 0;
+
+                  if (totalAttempted < totalQuestions) {
+                    toast.warning("Please complete all questions before submitting final results.");
+                    return;
+                  }
+                  await handleSubmit();
+                }
+              }}
+            >
+              Submit Final Result
+            </AlertDialogAction> */}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -361,15 +390,16 @@ export default function PracticeMCQ() {
             {/* Right Section */}
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               <PrimaryButton
-                disabled={isSubmitting || !hasStarted}
-                className={`h-10 w-full sm:w-auto cursor-pointer ${
-                  isSubmitting || !hasStarted
-                    ? "bg-gray-300 pointer-events-none"
-                    : "bg-[#059669] hover:bg-[#059669]/90"
-                }`}
-                onClick={handleSubmit}
+                className="h-10 w-full sm:w-auto cursor-pointer bg-slate-600 hover:bg-slate-700"
+                onClick={() => {
+                   if (navigationState?.from === "weekly-plan") {
+                     navigate(-1);
+                   } else {
+                     navigate("/dashboard/mcq-bank");
+                   }
+                }}
               >
-                {isSubmitting ? "Submitting..." : "Submit Progress"}
+                Save & Exit
               </PrimaryButton>
               <PrimaryButton
                 style={{
@@ -561,7 +591,7 @@ export default function PracticeMCQ() {
                 : "bg-blue-main text-white hover:bg-blue-main/90"
             }`}
           >
-            {isSubmitting ? "Submitting..." : "Submit"}
+            {isSubmitting ? "Submitting..." : "Submit Final Result"}
           </button>
         ) : (
           <div className="flex gap-4">
@@ -579,41 +609,44 @@ export default function PracticeMCQ() {
               Next
             </button>
             <button
-              onClick={handleSubmit}
-              disabled={isSubmitting || !hasStarted}
-              className={`px-6 py-2 rounded border font-medium cursor-pointer bg-white text-gray-700 hover:bg-gray-50 ${
-                isSubmitting || !hasStarted
-                  ? "opacity-50 pointer-events-none"
-                  : ""
-              }`}
+              onClick={() => {
+                   if (navigationState?.from === "weekly-plan") {
+                     navigate(-1);
+                   } else {
+                     navigate("/dashboard/mcq-bank");
+                   }
+              }}
+              className="px-6 py-2 rounded border font-medium cursor-pointer bg-white text-gray-700 hover:bg-gray-50"
             >
-              Finish & Submit
+              Save & Exit
             </button>
           </div>
         )}
 
-        <div className="flex items-center gap-2 ml-4">
-          <input
-            type="number"
-            min="1"
-            max={meta?.total || 1}
-            value={jumpQuestion}
-            onChange={(e) => setJumpQuestion(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleJump();
-              }
-            }}
-            placeholder="Go to question"
-            className="w-32 px-3 py-2 border rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-main"
-          />
-          <button
-            onClick={handleJump}
-            className="px-4 py-2 bg-blue-main text-white rounded text-sm font-medium hover:bg-blue-main/90 cursor-pointer"
-          >
-            Jump
-          </button>
-        </div>
+        {navigationState?.from !== "weekly-plan" && (
+          <div className="flex items-center gap-2 ml-4">
+            <input
+              type="number"
+              min="1"
+              max={meta?.total || 1}
+              value={jumpQuestion}
+              onChange={(e) => setJumpQuestion(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleJump();
+                }
+              }}
+              placeholder="Go to question"
+              className="w-32 px-3 py-2 border rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-main"
+            />
+            <button
+              onClick={handleJump}
+              className="px-4 py-2 bg-blue-main text-white rounded text-sm font-medium hover:bg-blue-main/90 cursor-pointer"
+            >
+              Jump
+            </button>
+          </div>
+        )}
       </div>
       </>
       )}
