@@ -20,10 +20,9 @@ import { toast } from "sonner";
 
 interface HourlyBreakdown {
   task_type: string;
-  description: string;
   duration_hours: number;
-  suggest_content: string;
-  isCompleted?: boolean;
+  suggest_content: string[];
+  isCompleted: boolean;
 }
 
 interface DailyPlan {
@@ -74,14 +73,11 @@ export default function WeeklyPlan() {
 
 
 
-  const handleStartClick = (session: HourlyBreakdown, dayNumber: number) => {
-    const contentId = session.suggest_content;
-    const taskType = session.task_type.toLowerCase();
-    // console.log("Task Start - Session:", session);
-    // console.log("Task Start - StudyPlan:", studyPlan);
+  const handleStartWithContent = (taskTypeStr: string, contentId: string, dayNumber: number) => {
+    const taskType = taskTypeStr.toLowerCase();
     
     if (!contentId) {
-      toast.warning("Content is not available for this task");
+      toast.warning("Content ID is not available");
       return;
     }
 
@@ -316,33 +312,32 @@ export default function WeeklyPlan() {
                                   <div>
                                     <h4 className="font-semibold">
                                       {" "}
-                                      {session.description}
+                                      {session.task_type}
                                     </h4>
                                     <p className="text-sm text-gray-600">
                                       {session.task_type} •{" "}
                                       {session.duration_hours}h
                                     </p>
                                   </div>
-                                  {isSessionCompleted ? (
-                                    <Button
+                                  <div className="flex flex-col gap-2">
+                                    {session.suggest_content.map((contentId, sIdx) => (
+                                      <Button
+                                        key={sIdx}
                                         size="sm"
-                                        onClick={() => handleStartClick(session, dayPlan.day_number)}
-                                        className="bg-green-600 text-white hover:bg-green-700 cursor-pointer"
-                                    >
-                                        Review
-                                    </Button>
-                                  ) : (
-                                    <Button
-                                      size="sm"
-                                      disabled={isFuture}
-                                      onClick={() => handleStartClick(session, dayPlan.day_number)}
-                                      className={`bg-transparent border border-slate-300 rounded text-[#0A0A0A] hover:bg-slate-100 cursor-pointer bg-white ${
-                                        isFuture ? "opacity-50 cursor-not-allowed" : ""
-                                      }`}
-                                    >
-                                        {isFuture ? "Locked" : "Start"}
-                                    </Button>
-                                  )}
+                                        disabled={!isSessionCompleted && isFuture}
+                                        onClick={() => handleStartWithContent(session.task_type, contentId, dayPlan.day_number)}
+                                        className={`${
+                                          isSessionCompleted 
+                                            ? "bg-green-600 text-white hover:bg-green-700" 
+                                            : isFuture 
+                                              ? "bg-white border border-slate-300 text-[#0A0A0A] opacity-50 cursor-not-allowed" 
+                                              : "bg-white border border-slate-300 text-[#0A0A0A] hover:bg-slate-100"
+                                        } cursor-pointer`}
+                                      >
+                                        {isSessionCompleted ? `Review ${sIdx + 1}` : isFuture ? "Locked" : `Start ${sIdx + 1}`}
+                                      </Button>
+                                    ))}
+                                  </div>
                                 </div>
                               </Card>
                             );

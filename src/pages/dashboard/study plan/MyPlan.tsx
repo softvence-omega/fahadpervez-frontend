@@ -68,9 +68,9 @@ export default function MyPlan() {
                 topics: string[];
                 hourly_breakdown: {
                   task_type: string;
-                  description: string;
                   duration_hours: number;
-                  suggest_content: string;
+                  suggest_content: string[];
+                  isCompleted: boolean;
                 }[];
               }[];
             }) => (
