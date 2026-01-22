@@ -216,10 +216,10 @@ export default function SolveFlashCard() {
       <AlertDialog open={blocker.state === "blocked"}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Save your progress?</AlertDialogTitle>
+            <AlertDialogTitle>Are you sure you want to leave?</AlertDialogTitle>
             <AlertDialogDescription>
-              You are in the middle of a session. Would you like to submit your
-              progress before leaving?
+              You are in the middle of a session. If you leave now, your current
+              progress will not be saved.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -229,14 +229,14 @@ export default function SolveFlashCard() {
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              className="bg-blue-main hover:bg-blue-main/90"
-              onClick={async () => {
+              className="bg-red-500 hover:bg-red-600 text-white border-none"
+              onClick={() => {
                 if (blocker.state === "blocked") {
-                  await handleSubmit();
+                  blocker.proceed();
                 }
               }}
             >
-              Submit & Leave
+              Leave
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -267,7 +267,7 @@ export default function SolveFlashCard() {
             descColor="text-[#4A5565]"
             descSize="text-sm"
           />
-          <Button
+          {/* <Button
             onClick={handleSubmit}
             disabled={isSubmitting || currentQuestion === 0}
             className={`cursor-pointer ${
@@ -277,39 +277,14 @@ export default function SolveFlashCard() {
             }`}
           >
             {isSubmitting ? "Submitting..." : "Submit Progress"}
-          </Button>
+          </Button> */}
         </div>
       </div>
 
       <div className="flex flex-col md:flex-row gap-4">
-        {/* Sidebar */}
-        {/* <div className="w-full md:w-1/4 bg-white p-4 rounded-lg shadow overflow-y-auto">
-          <h2 className="font-semibold mb-2">{flashCardData?.title}</h2>
-          <p className="text-sm text-gray-600 mb-4">
-            {questions.length} Flashcards • {flashCardData?.subject}
-          </p>
-
-          {questions.map((q: any, index: number) => (
-            <div
-              key={q?.id}
-              className={`p-2 mb-2 rounded cursor-pointer ${
-                index === currentQuestion
-                  ? "bg-blue-100 text-blue-600"
-                  : "text-gray-600"
-              }`}
-              onClick={() => {
-                setIsFlipped(false);
-                setCurrentQuestion(index);
-              }}
-            >
-              Card {index + 1}
-            </div>
-          ))}
-        </div> */}
-
         <div
           className={`bg-white rounded-lg shadow transition-all duration-300
-  ${isSidebarOpen ? "w-full md:w-1/6" : "w-10"}
+  ${isSidebarOpen ? "w-full md:w-1/6" : "w-14"}
   `}
         >
           {/* Header */}
@@ -334,8 +309,8 @@ export default function SolveFlashCard() {
 
           {/* Scrollable List */}
           <div
-            className={`overflow-y-auto transition-all
-    ${isSidebarOpen ? "max-h-[500px] p-4" : "max-h-[500px] p-2"}
+            className={`overflow-y-auto transition-all thin-scrollbar
+    ${isSidebarOpen ? "max-h-[500px] p-4" : "max-h-[500px] p-2 no-scrollbar"}
     `}
           >
             {questions.map((q: any, index: number) => (
@@ -360,11 +335,11 @@ export default function SolveFlashCard() {
 
         {/* Flashcard Box */}
         <div
-          className={`flex flex-col items-center border border-slate-300 rounded-[8px] pb-7 px-5 transition-all duration-300
+          className={`flex flex-col items-center border border-slate-300 rounded-[8px] px-5 transition-all duration-300
   ${isSidebarOpen ? "w-full md:w-5/6" : "w-full md:w-[calc(100%-2.5rem)]"}
   `}
         >
-          <div className="w-full max-w-2xl mt-7 mb-12 border border-slate-300 py-2 px-4 rounded-[8px]">
+          <div className="w-full max-w-2xl mt-7 mb-12 border border-slate-300 px-4 rounded-[8px]">
             <h3 className="font-medium text-slate-900">
               Review your Flashcard
             </h3>
@@ -430,7 +405,7 @@ export default function SolveFlashCard() {
           </div>
 
           {/* Navigation */}
-          <div className="flex items-center justify-end gap-3 w-full mt-6">
+          <div className="flex items-center justify-end gap-3 w-full mt-6 mb-3">
             {currentQuestion > 0 ? (
               <Button variant="outline" onClick={handlePrevious}>
                 Previous

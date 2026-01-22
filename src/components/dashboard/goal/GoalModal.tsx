@@ -1,3 +1,4 @@
+import React from "react";
 import { GoalStepIndicator } from "./GoalStepIndicator";
 import {
   ModalProps,

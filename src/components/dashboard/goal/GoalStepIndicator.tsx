@@ -1,3 +1,4 @@
+import React from "react";
 import { StepIndicatorProps } from "./type";
 
 // Step Indicator Component

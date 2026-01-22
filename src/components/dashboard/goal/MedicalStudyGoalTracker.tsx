@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
+import React, { useState } from "react";
 import { SelectedSubject, Subject, FormData as GoalFormData } from "./type";
 import { GoalModal, Step1, Step2, Step3 } from "./GoalModal";
 import { GoalEmptyState } from "./GoalEmptyState";
@@ -12,101 +12,6 @@ import {
 import { toast } from "sonner";
 import GlobalLoader from "@/common/GlobalLoader";
 import { useGetMCQBankTreeQuery } from "@/store/features/MCQBank/MCQBank.api";
-
-/* 
-const availableSubjects: Subject[] = [
-  {
-    name: "Pathology",
-    systems: [
-      "General Pathology",
-      "Systemic Pathology",
-      "Clinical Pathology",
-      "Hematology",
-      "Immunology",
-      "Genetics",
-      "Neoplasia",
-      "Inflammation",
-      "Cell Injury",
-      "Hemodynamics",
-    ],
-  },
-  {
-    name: "Pharmacology",
-    systems: [
-      "General Pharmacology",
-      "Autonomic Drugs",
-      "CNS Drugs",
-      "Cardiovascular Drugs",
-      "Antibiotics",
-      "Chemotherapy",
-      "Endocrine Drugs",
-      "GI Drugs",
-      "Respiratory Drugs",
-      "Toxicology",
-    ],
-  },
-  {
-    name: "Microbiology",
-    systems: [
-      "Bacteriology",
-      "Virology",
-      "Mycology",
-      "Parasitology",
-      "Immunology",
-      "Infection Control",
-      "Gram Positive",
-      "Gram Negative",
-      "Anaerobes",
-      "Mycobacteria",
-    ],
-  },
-  {
-    name: "Biochemistry",
-    systems: [
-      "Carbohydrates",
-      "Proteins",
-      "Lipids",
-      "Nucleic Acids",
-      "Enzymes",
-      "Vitamins",
-      "Minerals",
-      "Metabolism",
-      "Clinical Biochemistry",
-      "Molecular Biology",
-    ],
-  },
-  {
-    name: "Anatomy",
-    systems: [
-      "Cardiovascular",
-      "Respiratory",
-      "Digestive",
-      "Urinary",
-      "Reproductive",
-      "Endocrine",
-      "Nervous",
-      "Musculoskeletal",
-      "Lymphatic",
-      "Integumentary",
-    ],
-  },
-  {
-    name: "Physiology",
-    systems: [
-      "Cardiovascular",
-      "Respiratory",
-      "Nervous",
-      "Digestive",
-      "Renal",
-      "Endocrine",
-      "Reproductive",
-      "Musculoskeletal",
-      "Blood",
-      "Special Senses",
-    ],
-  },
-];
-*/
 
 // Main Component
 const MedicalStudyGoalTracker: React.FC = () => {
