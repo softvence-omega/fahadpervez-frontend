@@ -3,10 +3,11 @@ import React from "react";
 import OverviewSection from "@/components/dashboard_new/OverviewSection";
 import SmartStudyPlan from "@/components/dashboard_new/SmartStudyPlan";
 // import DailyChallenge from "@/components/dashboard_new/DailyChallenge";
-import PerformanceBySubject from "@/components/dashboard_new/PerformanceBySubject";
+// import PerformanceBySubject from "@/components/dashboard_new/PerformanceBySubject";
 import WeeklyLeaderboard from "@/components/dashboard_new/WeeklyLeaderboard";
 import WeeklyHighlights from "@/components/dashboard_new/WeeklyHighlights";
 import MedicalStudyGoalTracker from "@/components/dashboard/goal/MedicalStudyGoalTracker";
+import DailyChallenge from "@/components/dashboard_new/DailyChallenge";
 // import MedicalStudyGoalTracker from "./MedicalStudyGoalTracker";
 // import ChatInterface from "@/components/dashboard_new/message";
 
@@ -23,12 +24,12 @@ const Dashboard: React.FC = () => {
       {/* Smart Study Plan + Daily Challenge */}
       <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols- gap-6 mb-6">
         <SmartStudyPlan />
-        {/* <DailyChallenge /> */}
       </div>
 
       {/* Performance by Subject + Weekly Leaderboard */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <PerformanceBySubject />
+        {/* <PerformanceBySubject /> */}
+        <DailyChallenge />
         <WeeklyLeaderboard />
       </div>
 
