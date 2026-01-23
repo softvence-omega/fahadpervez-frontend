@@ -73,7 +73,7 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
           <div>
             <div className="font-medium text-gray-500">Daily Target</div>
             <div className="font-medium">
-              {goal?.todayStudyHours} hrs / {goal.studyHoursPerDay} hrs
+              {goal?.todayStudyHours || 0} hrs / {goal.studyHoursPerDay || 0} hrs
             </div>
           </div>
         </div>

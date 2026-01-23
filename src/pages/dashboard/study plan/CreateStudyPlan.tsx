@@ -209,6 +209,12 @@ export default function CreateStudyPlan() {
   const [topic, setTopic] = useState("");
   const [subTopic, setSubTopic] = useState("");
 
+  const [errors, setErrors] = useState<string[]>([]);
+
+  const clearError = (field: string) => {
+    setErrors((prev) => prev.filter((item) => item !== field));
+  };
+
   // Derived lists
   const selectedSubjectObj = subjects.find((s) => s.subjectName === subject);
   const systemList = selectedSubjectObj?.systems || [];
@@ -222,6 +228,7 @@ export default function CreateStudyPlan() {
     setSystem("");
     setTopic("");
     setSubTopic("");
+    if (subject) clearError("subject");
   }, [subject]);
 
   useEffect(() => {
@@ -236,7 +243,15 @@ export default function CreateStudyPlan() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!examName || !dailyTime || !examDate || !examType || !subject) {
+    const newErrors = [];
+    if (!examName) newErrors.push("examName");
+    if (!dailyTime) newErrors.push("dailyTime");
+    if (!examDate) newErrors.push("examDate");
+    if (!examType) newErrors.push("examType");
+    if (!subject) newErrors.push("subject");
+
+    if (newErrors.length > 0) {
+      setErrors(newErrors);
       toast.error("Please fill in all required fields");
       return;
     }
@@ -299,38 +314,82 @@ export default function CreateStudyPlan() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 py-4">
             <div className="grid gap-2 col-span-1 lg:col-span-2">
-              <Label>Exam Name</Label>
+              <Label className={errors.includes("examName") ? "text-red-500" : ""}>
+                Exam Name
+              </Label>
               <Input
                 value={examName}
-                onChange={(e) => setExamName(e.target.value)}
+                onChange={(e) => {
+                  setExamName(e.target.value);
+                  clearError("examName");
+                }}
                 placeholder="e.g., Gastroenterology & Hepatology Block Exam"
+                className={`transition-all duration-300 ${
+                  errors.includes("examName")
+                    ? "border-red-500 bg-red-50 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
             </div>
 
             <div className="grid gap-2">
-              <Label>Daily Study Time (hours)</Label>
+              <Label className={errors.includes("dailyTime") ? "text-red-500" : ""}>
+                Daily Study Time (hours)
+              </Label>
               <Input
                 type="number"
                 min="0"
                 value={dailyTime}
-                onChange={(e) => setDailyTime(e.target.value)}
+                onChange={(e) => {
+                  setDailyTime(e.target.value);
+                  clearError("dailyTime");
+                }}
                 placeholder="e.g., 3"
+                className={`transition-all duration-300 ${
+                  errors.includes("dailyTime")
+                    ? "border-red-500 bg-red-50 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
             </div>
 
             <div className="grid gap-2">
-              <Label>Exam Date</Label>
+              <Label className={errors.includes("examDate") ? "text-red-500" : ""}>
+                Exam Date
+              </Label>
               <Input
                 type="date"
                 value={examDate}
-                onChange={(e) => setExamDate(e.target.value)}
+                onChange={(e) => {
+                  setExamDate(e.target.value);
+                  clearError("examDate");
+                }}
+                className={`transition-all duration-300 ${
+                  errors.includes("examDate")
+                    ? "border-red-500 bg-red-50 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
             </div>
 
             <div className="grid gap-2 col-span-1 lg:col-span-2">
-              <Label>Exam Type</Label>
-              <Select value={examType} onValueChange={setExamType}>
-                <SelectTrigger>
+              <Label className={errors.includes("examType") ? "text-red-500" : ""}>
+                Exam Type
+              </Label>
+              <Select
+                value={examType}
+                onValueChange={(val) => {
+                  setExamType(val);
+                  clearError("examType");
+                }}
+              >
+                <SelectTrigger
+                  className={`transition-all duration-300 ${
+                    errors.includes("examType")
+                      ? "border-red-500 bg-red-50 focus:ring-red-500"
+                      : ""
+                  }`}
+                >
                   <SelectValue placeholder="Select Exam Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -353,17 +412,37 @@ export default function CreateStudyPlan() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 py-4">
             {/* Subject Dropdown */}
             <div className="grid gap-2">
-              <Label>Subject</Label>
-              <Select value={subject} onValueChange={setSubject}>
-                <SelectTrigger>
+              <Label className={errors.includes("subject") ? "text-red-500" : ""}>
+                Subject
+              </Label>
+              <Select
+                value={subject}
+                onValueChange={(val) => {
+                  setSubject(val);
+                  clearError("subject");
+                }}
+              >
+                <SelectTrigger
+                  className={`transition-all duration-300 ${
+                    errors.includes("subject")
+                      ? "border-red-500 bg-red-50 focus:ring-red-500"
+                      : ""
+                  }`}
+                >
                   <SelectValue placeholder="Select Subject" />
                 </SelectTrigger>
                 <SelectContent>
-                  {subjects.map((sub) => (
-                    <SelectItem key={sub._id} value={sub.subjectName}>
-                      {sub.subjectName}
-                    </SelectItem>
-                  ))}
+                  {subjects.length > 0 ? (
+                    subjects.map((sub) => (
+                      <SelectItem key={sub._id} value={sub.subjectName}>
+                        {sub.subjectName}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <div className="p-4 text-center text-sm text-gray-500">
+                      No Subjects found
+                    </div>
+                  )}
                 </SelectContent>
               </Select>
             </div>
@@ -380,11 +459,17 @@ export default function CreateStudyPlan() {
                   <SelectValue placeholder="Select System" />
                 </SelectTrigger>
                 <SelectContent>
-                  {systemList.map((sys) => (
-                    <SelectItem key={sys.name} value={sys.name}>
-                      {sys.name}
-                    </SelectItem>
-                  ))}
+                  {systemList.length > 0 ? (
+                    systemList.map((sys) => (
+                      <SelectItem key={sys.name} value={sys.name}>
+                        {sys.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <div className="p-4 text-center text-sm text-gray-500">
+                      No Systems found
+                    </div>
+                  )}
                 </SelectContent>
               </Select>
             </div>
@@ -397,11 +482,17 @@ export default function CreateStudyPlan() {
                   <SelectValue placeholder="Select Topic" />
                 </SelectTrigger>
                 <SelectContent>
-                  {topicList.map((t) => (
-                    <SelectItem key={t.topicName} value={t.topicName}>
-                      {t.topicName}
-                    </SelectItem>
-                  ))}
+                  {topicList.length > 0 ? (
+                    topicList.map((t) => (
+                      <SelectItem key={t.topicName} value={t.topicName}>
+                        {t.topicName}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <div className="p-4 text-center text-sm text-gray-500">
+                      No Topics found
+                    </div>
+                  )}
                 </SelectContent>
               </Select>
             </div>
@@ -418,11 +509,17 @@ export default function CreateStudyPlan() {
                   <SelectValue placeholder="Select Sub-Topic" />
                 </SelectTrigger>
                 <SelectContent>
-                  {subTopicList.map((st) => (
-                    <SelectItem key={st} value={st}>
-                      {st}
-                    </SelectItem>
-                  ))}
+                  {subTopicList.length > 0 ? (
+                    subTopicList.map((st) => (
+                      <SelectItem key={st} value={st}>
+                        {st}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <div className="p-4 text-center text-sm text-gray-500">
+                      No Sub-Topics found
+                    </div>
+                  )}
                 </SelectContent>
               </Select>
             </div>
