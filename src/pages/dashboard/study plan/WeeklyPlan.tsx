@@ -21,8 +21,12 @@ import { toast } from "sonner";
 interface HourlyBreakdown {
   task_type: string;
   duration_hours: number;
-  suggest_content: string[];
+  suggest_content: { // Updated to object
+    contentId: string;
+    limit: number;
+  };
   isCompleted: boolean;
+  description: string; // Added description
 }
 
 interface DailyPlan {
@@ -251,7 +255,7 @@ export default function WeeklyPlan() {
               <div className="border border-slate-300 p-7 rounded-[8px] bg-white shadow">
                 <div className="flex justify-between items-center mb-7">
                   <p>Study Plan Overview</p>
-                  <p className="text-white bg-green-600 px-3 py-1 rounded">
+                  <p className="text-white bg-green-600 px-1.5 sm:px-3 py-1 text-sm sm:text-base rounded">
                     Active
                   </p>
                 </div>
@@ -288,60 +292,53 @@ export default function WeeklyPlan() {
                           {getDayName(dayPlan.day_number)} -{" "}
                           {new Date(dayPlan.date).toLocaleDateString()}
                         </h3>
-                        <p className="text-sm text-gray-500">
+                        {/* <p className="text-sm text-gray-500">
                           Topics: {dayPlan.topics.join(", ")} | Total Hours:{" "}
                           {dayPlan.total_hours}
-                        </p>
+                        </p> */}
                         {dayPlan.hourly_breakdown.length > 0 ? (
-                          dayPlan.hourly_breakdown.map((session, idx) => {
-                            const isSessionCompleted = session.isCompleted;
-                            
-                            // Hourly item styling
-                            const sessionBgClass = isSessionCompleted
-                              ? "bg-green-100 border-green-200"
-                              : isToday
-                              ? "bg-yellow-100 border-yellow-200"
-                              : "bg-[#F9FAFB] border-0";
+                          <div className="space-y-3">
+                            {dayPlan.hourly_breakdown.map((session, idx) => {
+                              const isSessionCompleted = session.isCompleted;
+                              
+                              // Use the day's Topic as the title, fallback to description or task type
+                              // Trying to match the "clean" title from the image
+                              const rowTitle = dayPlan.topics.length > 0 ? dayPlan.topics[0] : session.description;
 
-                            return (
-                              <Card
-                                key={idx}
-                                className={`p-4 ${sessionBgClass} shadow-sm`}
-                              >
-                                <div className="flex justify-between items-center">
-                                  <div>
-                                    <h4 className="font-semibold">
-                                      {" "}
-                                      {session.task_type}
+                              return (
+                                <div
+                                  key={idx}
+                                  className={`flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 rounded-md border border-slate-300 ${
+                                    isSessionCompleted ? "bg-green-100 border border-green-200" : "bg-white"
+                                  }`}
+                                >
+                                  <div className="mb-2 sm:mb-0">
+                                    <h4 className="font-semibold text-gray-900 text-base">
+                                      {rowTitle}
                                     </h4>
-                                    <p className="text-sm text-gray-600">
-                                      {session.task_type} •{" "}
-                                      {session.duration_hours}h
+                                    <p className="text-sm text-gray-500 mt-0.5">
+                                      {session.task_type} • {session.duration_hours}h
                                     </p>
                                   </div>
-                                  <div className="flex flex-col gap-2">
-                                    {session.suggest_content.map((contentId, sIdx) => (
-                                      <Button
-                                        key={sIdx}
-                                        size="sm"
-                                        disabled={!isSessionCompleted && isFuture}
-                                        onClick={() => handleStartWithContent(session.task_type, contentId, dayPlan.day_number)}
-                                        className={`${
-                                          isSessionCompleted 
-                                            ? "bg-green-600 text-white hover:bg-green-700" 
-                                            : isFuture 
-                                              ? "bg-white border border-slate-300 text-[#0A0A0A] opacity-50 cursor-not-allowed" 
-                                              : "bg-white border border-slate-300 text-[#0A0A0A] hover:bg-slate-100"
-                                        } cursor-pointer`}
-                                      >
-                                        {isSessionCompleted ? `Review ${sIdx + 1}` : isFuture ? "Locked" : `Start ${sIdx + 1}`}
-                                      </Button>
-                                    ))}
-                                  </div>
+                                  
+                                  <Button
+                                    size="sm"
+                                    disabled={!isSessionCompleted && isFuture}
+                                    onClick={() => handleStartWithContent(session.task_type, session.suggest_content.contentId, dayPlan.day_number)}
+                                    className={`${
+                                      isSessionCompleted 
+                                        ? "bg-green-600 text-white hover:bg-green-700 border border-green-200" 
+                                        : isFuture
+                                          ? "bg-white text-gray-400 border border-gray-200 cursor-not-allowed"
+                                          : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
+                                    } min-w-[80px] font-medium shadow-none transition-colors`}
+                                  >
+                                    {isSessionCompleted ? "complete" : isFuture ? "Locked" : "Start"}
+                                  </Button>
                                 </div>
-                              </Card>
-                            );
-                          })
+                              );
+                            })}
+                          </div>
                         ) : (
                           <p className="text-gray-500 text-sm">
                             No tasks for this day
