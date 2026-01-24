@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import GlobalLoader from "@/common/GlobalLoader";
 import { BreadcrumbItem } from "@/components/dashboard/gamified-learning/types";
 import Breadcrumb from "@/components/reusable/CommonBreadcrumb";
@@ -360,7 +361,7 @@ export default function PracticeMCQ() {
         </div>
       ) : (
         <>
-        <div className="p-6 space-y-8">
+        <div className="p-1 md:p-6 space-y-8">
           <Breadcrumb breadcrumbs={breadcrumbs} />
 
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -568,7 +569,7 @@ export default function PracticeMCQ() {
           />
         </div>
       {/* Pagination */}
-      <div className="mt-16 mb-32 flex justify-center space-x-5 ">
+      <div className="mt-16 mb-32 flex justify-center flex-wrap gap-4 space-x-5 ">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
