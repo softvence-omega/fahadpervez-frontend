@@ -1,3 +1,4 @@
+import { SelectedNode } from "@/components/AdminDashboard/Content&Resources/content/medical/studyMode/StudyMode";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type ContentFor = "student" | "professional";
@@ -27,6 +28,7 @@ interface StudentState {
   uploadIntoBank: boolean;
   bankId?: string;
   type: ContentModeType;
+  universalSelectNode: SelectedNode;
 }
 
 const initialState: StudentState = {
@@ -37,6 +39,12 @@ const initialState: StudentState = {
   type: "study",
   uploadIntoBank: false,
   bankId: "",
+  universalSelectNode: {
+    subject: "",
+    system: "",
+    topic: "",
+    subtopic: "",
+  },
 };
 
 const staticContentSlice = createSlice({
@@ -67,6 +75,9 @@ const staticContentSlice = createSlice({
     setBankId: (state, action: PayloadAction<string>) => {
       state.bankId = action.payload;
     },
+    setUniversalSelectNode: (state, action: PayloadAction<SelectedNode>) => {
+      state.universalSelectNode = action.payload;
+    },
   },
 });
 
@@ -79,6 +90,7 @@ export const {
   setContentModeType,
   setUploadIntoBank,
   setBankId,
+  setUniversalSelectNode,
 } = staticContentSlice.actions;
 
 export default staticContentSlice.reducer;

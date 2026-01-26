@@ -14,6 +14,7 @@ import {
 import {
   ContentType,
   setContentType,
+  setUniversalSelectNode,
 } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
@@ -38,7 +39,7 @@ const StudyMode = () => {
   //manage  key
   const dispatch = useAppDispatch();
   const { contentType, contentFor, profileType } = useAppSelector(
-    (state: RootState) => state.staticContent
+    (state: RootState) => state.staticContent,
   );
   const [isSubjectModalOpen, setIsSubjectModalOpen] = useState(false);
   const [selectedNode, setSelectedNode] = useState<SelectedNode>({
@@ -73,7 +74,7 @@ const StudyMode = () => {
 
   const { data: mcqBank, isLoading } = useGetStudyModeAllContentQuery(
     queryArg,
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
   const [bankId, setBankId] = useState<string>("");
@@ -96,6 +97,7 @@ const StudyMode = () => {
           setSelectedNode={(node) => {
             setSelectedNode(node);
             setBankId("");
+            dispatch(setUniversalSelectNode(node));
           }}
           selectedNode={selectedNode}
           initialContent={initialContent}

@@ -1,12 +1,16 @@
+import CommonButton from "@/common/button/CommonButton";
 import { SingleOsceResponse } from "@/store/features/adminDashboard/ContentResources/Osce/types/singleOsce";
 
 interface osceData {
   data: SingleOsceResponse;
+  setBankId: (id: string) => void;
 }
-const SingleOsce: React.FC<osceData> = ({ data }) => {
+const SingleOsce: React.FC<osceData> = ({ data, setBankId }) => {
   const content = data?.data ?? [];
 
-  // useUpdateClinicalCaseMutation,
+  const handleBack = () => {
+    setBankId("");
+  };
   return (
     <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
       {/* Header */}
@@ -61,6 +65,15 @@ const SingleOsce: React.FC<osceData> = ({ data }) => {
           </a>
         </div>
       )}
+      <div className="flex justify-end">
+        <CommonButton
+          type="button"
+          className=" bg-blue-500 hover:bg-blue-600 text-white "
+          onClick={handleBack}
+        >
+          Back
+        </CommonButton>
+      </div>
     </div>
   );
 };

@@ -27,7 +27,7 @@ const NotesBank: React.FC<Props> = ({ mcqBank, bankId, setBankId }) => {
       .unwrap()
 
       .catch((error) =>
-        console.error("Failed to delete Clinical Case:", error)
+        console.error("Failed to delete Clinical Case:", error),
       );
   };
   return (
@@ -77,7 +77,9 @@ const NotesBank: React.FC<Props> = ({ mcqBank, bankId, setBankId }) => {
           ))}
         </div>
       ) : (
-        singleNotes && <SingleNote data={singleNotes} />
+        singleNotes?.data && (
+          <SingleNote data={singleNotes} setBankId={setBankId} />
+        )
       )}
     </div>
   );

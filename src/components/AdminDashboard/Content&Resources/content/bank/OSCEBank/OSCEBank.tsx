@@ -24,7 +24,7 @@ const OSCEBank: React.FC<Props> = ({ mcqBank, bankId, setBankId }) => {
 
   const handleDelete = async (id: string) => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this Clinical Case?"
+      "Are you sure you want to delete this Clinical Case?",
     );
     if (!confirmDelete) return;
     await id;
@@ -32,7 +32,7 @@ const OSCEBank: React.FC<Props> = ({ mcqBank, bankId, setBankId }) => {
       .unwrap()
 
       .catch((error) =>
-        console.error("Failed to delete Clinical Case:", error)
+        console.error("Failed to delete Clinical Case:", error),
       );
   };
   return (
@@ -66,7 +66,7 @@ const OSCEBank: React.FC<Props> = ({ mcqBank, bankId, setBankId }) => {
           ))}
         </div>
       ) : (
-        singleOsce && <SingleOsce data={singleOsce} />
+        singleOsce && <SingleOsce data={singleOsce} setBankId={setBankId} />
       )}
     </div>
   );
