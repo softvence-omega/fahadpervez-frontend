@@ -56,15 +56,15 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
   handleBreadcrumb,
   setIsContentCreation,
 }) => {
-  const { contentFor, profileType, type } = useAppSelector(
-    (state: RootState) => state.staticContent
+  const { contentFor, profileType, type, universalSelectNode } = useAppSelector(
+    (state: RootState) => state.staticContent,
   );
   const dispatch = useDispatch<AppDispatch>();
   const { data: allStudyModeData } = useGetStudyModeTreeQuery(
     { contentFor, profileType },
     {
       refetchOnMountOrArgChange: true,
-    }
+    },
   );
   const backendData = allStudyModeData?.data || [];
 
@@ -78,13 +78,10 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
     resolver: zodResolver(createContentSchema),
     defaultValues: {
       title: "",
-      subject: "",
-      system: "",
-      topic: "",
-      subtopic: "",
-      // type: "study",
-      // profileType: "",
-      // contentFor: "student",
+      subject: universalSelectNode.subject || "",
+      system: universalSelectNode.system || "",
+      topic: universalSelectNode.topic || "",
+      subtopic: universalSelectNode.subtopic || "",
     },
   });
 
@@ -99,11 +96,11 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
       backendData
         .map((item: SubjectData) => item.subjectName)
         .filter((name) => name && name.trim() !== ""),
-    [backendData]
+    [backendData],
   );
 
   const selectedSubjectData = backendData.find(
-    (item: SubjectData) => item.subjectName === subject
+    (item: SubjectData) => item.subjectName === subject,
   );
 
   const systems = selectedSubjectData
@@ -113,7 +110,7 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
     : [];
 
   const selectedSystemData = selectedSubjectData?.systems.find(
-    (sys: System) => sys.name === system
+    (sys: System) => sys.name === system,
   );
 
   const topics = selectedSystemData
@@ -123,7 +120,7 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
     : [];
 
   const selectedTopicData = selectedSystemData?.topics.find(
-    (t: Topic) => t.topicName === topic
+    (t: Topic) => t.topicName === topic,
   );
 
   const subtopics = selectedTopicData
@@ -195,7 +192,7 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
     setIsContentCreation(true);
   };
   const { contentType } = useAppSelector(
-    (state: RootState) => state.staticContent
+    (state: RootState) => state.staticContent,
   );
   const navigate = useNavigate();
 
@@ -211,7 +208,7 @@ const ContentSelectionForm: React.FC<CreateMCQStudyProps> = ({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <CommonBorderWrapper className="space-y-6">
-        <CommonHeader className=" !text-[0A0A0A] mb-7.5">
+        <CommonHeader className=" text-[0A0A0A]! mb-7.5">
           Select Content Type and Hierarchy
         </CommonHeader>
 

@@ -20,9 +20,13 @@ export const inputClass = {
 
 interface ClinicalCaseData {
   data: SingleClinicalCaseResponse;
+  setBankId: (id: string) => void;
 }
 
-const SingleClinicalCase: React.FC<ClinicalCaseData> = ({ data }) => {
+const SingleClinicalCase: React.FC<ClinicalCaseData> = ({
+  data,
+  setBankId,
+}) => {
   const ClinicalBank = data?.data;
   const [updateClinicalCase, { isLoading: isUpdating }] =
     useUpdateClinicalCaseMutation();
@@ -32,7 +36,7 @@ const SingleClinicalCase: React.FC<ClinicalCaseData> = ({ data }) => {
 
   // General input change
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -41,7 +45,7 @@ const SingleClinicalCase: React.FC<ClinicalCaseData> = ({ data }) => {
   const handleLabChange = (
     index: number,
     field: keyof LaboratoryResult,
-    value: string
+    value: string,
   ) => {
     const labs = [...formData.laboratoryResults];
     labs[index][field] = value;
@@ -64,7 +68,7 @@ const SingleClinicalCase: React.FC<ClinicalCaseData> = ({ data }) => {
   const handleDiagnosisOptionChange = (
     index: number,
     field: keyof DiagnosisOption,
-    value: string
+    value: string,
   ) => {
     const options = [...formData.diagnosisQuestion.diagnosisOptions];
     if (field === "supportingEvidence" || field === "refutingEvidence") {
@@ -101,7 +105,7 @@ const SingleClinicalCase: React.FC<ClinicalCaseData> = ({ data }) => {
 
   const removeDiagnosisOption = (index: number) => {
     const options = formData.diagnosisQuestion.diagnosisOptions.filter(
-      (_, i) => i !== index
+      (_, i) => i !== index,
     );
     setFormData({
       ...formData,
@@ -122,7 +126,7 @@ const SingleClinicalCase: React.FC<ClinicalCaseData> = ({ data }) => {
     mcqIndex: number,
     optionIndex: number,
     field: keyof MCQ["options"][0],
-    value: string
+    value: string,
   ) => {
     const mcqs = [...formData.mcqs];
     mcqs[mcqIndex].options[optionIndex][field] = value;
@@ -156,7 +160,7 @@ const SingleClinicalCase: React.FC<ClinicalCaseData> = ({ data }) => {
   const removeMcqOption = (mcqIndex: number, optionIndex: number) => {
     const mcqs = [...formData.mcqs];
     mcqs[mcqIndex].options = mcqs[mcqIndex].options.filter(
-      (_, i) => i !== optionIndex
+      (_, i) => i !== optionIndex,
     );
     setFormData({ ...formData, mcqs });
   };
@@ -166,7 +170,9 @@ const SingleClinicalCase: React.FC<ClinicalCaseData> = ({ data }) => {
     await updateClinicalCase({ id: ClinicalBank._id, data: rest });
     setIsModalOpen(false);
   };
-
+  const handleBack = () => {
+    setBankId("");
+  };
   return (
     <div>
       {/* Card */}
@@ -198,6 +204,15 @@ const SingleClinicalCase: React.FC<ClinicalCaseData> = ({ data }) => {
         <p className="text-sm text-gray-600 mb-1">
           <strong>Imaging:</strong> {ClinicalBank.imaging}
         </p>
+        <div className="flex justify-end">
+          <CommonButton
+            type="button"
+            className=" bg-blue-500 hover:bg-blue-600 text-white "
+            onClick={handleBack}
+          >
+            Back
+          </CommonButton>
+        </div>
       </div>
 
       {/* Modal */}
@@ -330,7 +345,7 @@ const SingleClinicalCase: React.FC<ClinicalCaseData> = ({ data }) => {
                         handleDiagnosisOptionChange(
                           idx,
                           "optionName",
-                          e.target.value
+                          e.target.value,
                         )
                       }
                       className={`${inputClass.input} !w-1/4`}
@@ -342,7 +357,7 @@ const SingleClinicalCase: React.FC<ClinicalCaseData> = ({ data }) => {
                         handleDiagnosisOptionChange(
                           idx,
                           "optionValue",
-                          e.target.value
+                          e.target.value,
                         )
                       }
                       className={`${inputClass.input} !w-3/4`}
@@ -425,7 +440,7 @@ const SingleClinicalCase: React.FC<ClinicalCaseData> = ({ data }) => {
                               mcqIdx,
                               optIdx,
                               "option",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           className={`${inputClass.input} !w-1/6`}
@@ -438,7 +453,7 @@ const SingleClinicalCase: React.FC<ClinicalCaseData> = ({ data }) => {
                               mcqIdx,
                               optIdx,
                               "optionText",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           className={`${inputClass.input} !w-4/6`}
@@ -451,7 +466,7 @@ const SingleClinicalCase: React.FC<ClinicalCaseData> = ({ data }) => {
                               mcqIdx,
                               optIdx,
                               "explanation",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           className={`${inputClass.input} !w-1/6`}

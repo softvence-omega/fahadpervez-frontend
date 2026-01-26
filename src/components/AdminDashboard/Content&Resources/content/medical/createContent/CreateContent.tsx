@@ -23,11 +23,8 @@ export const steps = [
 ];
 
 const CreateContent = () => {
-  const contentType = useSelector(
-    (state: RootState) => state.staticContent.contentType
-  );
-  const studentTypeName = useSelector(
-    (state: RootState) => state.staticContent.profileType
+  const { profileType, contentType } = useSelector(
+    (state: RootState) => state.staticContent,
   );
   const dispatch = useAppDispatch();
 
@@ -58,7 +55,7 @@ const CreateContent = () => {
       ) : (
         <div>
           <DashboardTopSection
-            title={`Add New Content - ${studentTypeName}`}
+            title={`Add New Content - ${profileType}`}
             description="Step 1 of 2 - Study Mode"
             descriptionClassName="!text-[#717182]"
           />

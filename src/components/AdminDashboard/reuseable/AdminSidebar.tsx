@@ -121,11 +121,14 @@ const sidebarItems: SidebarItem[] = [
 ];
 
 const AdminSidebar: FC<SidebarProps> = ({ sidebarOpen, onLinkClick }) => {
-  const groupedItems = sidebarItems.reduce((acc, item) => {
-    if (!acc[item.section]) acc[item.section] = [];
-    acc[item.section].push(item);
-    return acc;
-  }, {} as Record<string, SidebarItem[]>);
+  const groupedItems = sidebarItems.reduce(
+    (acc, item) => {
+      if (!acc[item.section]) acc[item.section] = [];
+      acc[item.section].push(item);
+      return acc;
+    },
+    {} as Record<string, SidebarItem[]>,
+  );
 
   return (
     <aside
@@ -156,7 +159,7 @@ const AdminSidebar: FC<SidebarProps> = ({ sidebarOpen, onLinkClick }) => {
                   onClick={onLinkClick}
                   key={item.label}
                   to={item.path}
-                  end
+                  end={item.path === "/admin"}
                   className={({ isActive }) =>
                     `flex items-center gap-3 w-full h-10 px-2 rounded ${
                       isActive
