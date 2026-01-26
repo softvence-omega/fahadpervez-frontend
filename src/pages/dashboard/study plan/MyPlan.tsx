@@ -13,7 +13,7 @@ export default function MyPlan() {
   console.log("data :", allStudyPlans);
 
   return (
-    <div className="px-2">
+    <div className="px-1 md:px-2">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
           {/* <Link to={"/dashboard/smart-study"} className="mb-7">
@@ -55,7 +55,7 @@ export default function MyPlan() {
       {isLoading ? (
         <GlobalLoader2 />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-9">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 mb-3">
           {allStudyPlans.map(
             (plan: {
               _id: string;
