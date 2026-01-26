@@ -29,12 +29,12 @@ const inputClass = {
 const activeStep = 2;
 
 const defaultValues: OsceFormValues = {
-  name: "Shortness of Breath OSCE",
-  description: "Shortness of Breath OSCE",
-  scenario: "Shortness of Breath OSCE",
-  timeLimit: "8 minutes",
-  candidateInstruction: "You are asked to assess the patient's breathing.",
-  patientInstruction: "Act as someone experiencing breathlessness.",
+  name: "",
+  description: "",
+  scenario: "",
+  timeLimit: "",
+  candidateInstruction: "",
+  patientInstruction: "",
   tasks: [
     {
       taskName: "History Taking",
@@ -72,7 +72,7 @@ const OSCEUpload: React.FC<{ breadcrumb: string }> = ({ breadcrumb }) => {
     const currentTasks = tasks || [];
     setValue(
       "tasks",
-      currentTasks.filter((_, i) => i !== index)
+      currentTasks.filter((_, i) => i !== index),
     );
   };
 
@@ -85,12 +85,12 @@ const OSCEUpload: React.FC<{ breadcrumb: string }> = ({ breadcrumb }) => {
     const currentTutorial = tutorial || [];
     setValue(
       "tutorial",
-      currentTutorial.filter((_, i) => i !== index)
+      currentTutorial.filter((_, i) => i !== index),
     );
   };
 
   const { formData, contentType } = useAppSelector(
-    (state: RootState) => state.staticContent
+    (state: RootState) => state.staticContent,
   );
 
   const [createOsce, { isLoading }] = useCreateOsceMutation();

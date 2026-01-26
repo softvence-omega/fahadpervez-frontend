@@ -149,11 +149,11 @@ const ClinicalCaseUpload: React.FC<{ breadcrumb: string }> = ({
   } = useForm<ClinicalCaseForm>({
     resolver: zodResolver(ClinicalCaseSchema) as Resolver<ClinicalCaseForm>,
     defaultValues: {
-      caseTitle: "Test Case Title",
-      patientPresentation: "Test patient presentation",
-      historyOfPresentIllness: "Test history",
-      physicalExamination: "Test examination",
-      imaging: "Test imaging",
+      caseTitle: "",
+      patientPresentation: "",
+      historyOfPresentIllness: "",
+      physicalExamination: "",
+      imaging: "",
       laboratoryResults: [{ name: "Test Lab", value: "100" }],
       diagnosisQuestion: {
         question: "What is the most likely diagnosis?",
@@ -192,7 +192,7 @@ const ClinicalCaseUpload: React.FC<{ breadcrumb: string }> = ({
 
   const [createClinicalCase, { isLoading }] = useCreateClinicalCaseMutation();
   const { formData, contentType } = useAppSelector(
-    (state: RootState) => state.staticContent
+    (state: RootState) => state.staticContent,
   );
   const onSubmit: SubmitHandler<ClinicalCaseForm> = async (data) => {
     if (formData) {
@@ -298,7 +298,7 @@ const ClinicalCaseUpload: React.FC<{ breadcrumb: string }> = ({
                 <div className="flex-1">
                   <input
                     {...register(
-                      `diagnosisQuestion.diagnosisOptions.${idx}.optionValue` as const
+                      `diagnosisQuestion.diagnosisOptions.${idx}.optionValue` as const,
                     )}
                     type="text"
                     placeholder={`Option ${String.fromCharCode(65 + idx)}`}
@@ -307,14 +307,14 @@ const ClinicalCaseUpload: React.FC<{ breadcrumb: string }> = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                     <textarea
                       {...register(
-                        `diagnosisQuestion.diagnosisOptions.${idx}.supportingEvidence.0` as const
+                        `diagnosisQuestion.diagnosisOptions.${idx}.supportingEvidence.0` as const,
                       )}
                       placeholder="Supporting Evidence"
                       className={inputClass.input}
                     />
                     <textarea
                       {...register(
-                        `diagnosisQuestion.diagnosisOptions.${idx}.refutingEvidence.0` as const
+                        `diagnosisQuestion.diagnosisOptions.${idx}.refutingEvidence.0` as const,
                       )}
                       placeholder="Refuting Evidence"
                       className={inputClass.input}
@@ -420,14 +420,14 @@ const ClinicalCaseUpload: React.FC<{ breadcrumb: string }> = ({
                     <div className="flex-1 space-y-2">
                       <input
                         {...register(
-                          `mcqs.${qIndex}.options.${oIndex}.optionText` as const
+                          `mcqs.${qIndex}.options.${oIndex}.optionText` as const,
                         )}
                         placeholder={`Option ${opt.option}`}
                         className={`${inputClass.input} flex-1`}
                       />
                       <textarea
                         {...register(
-                          `mcqs.${qIndex}.options.${oIndex}.explanation` as const
+                          `mcqs.${qIndex}.options.${oIndex}.explanation` as const,
                         )}
                         placeholder="Explanation (optional)"
                         className={`${inputClass.input} resize-none`}

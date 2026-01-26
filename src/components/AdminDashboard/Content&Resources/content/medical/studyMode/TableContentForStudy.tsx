@@ -85,20 +85,20 @@ const mapBackendToTOC = (data: Subject[]): TOCItem[] => {
                       _id: typeof sub === "object" ? sub._id : undefined,
                       title:
                         typeof sub === "string" ? sub : sub.subtopicName || "",
-                    }))
+                    })),
                   )
                 : undefined,
-            }))
+            })),
           ),
-        }))
+        })),
       ),
-    }))
+    })),
   );
 };
 
 interface TableContentProps {
   openModal: () => void;
-  setSelectedNode: React.Dispatch<React.SetStateAction<SelectedNode>>;
+  setSelectedNode: (node: SelectedNode) => void;
   initialContent: TOCItem | null;
   setInitialContent: React.Dispatch<React.SetStateAction<TOCItem | null>>;
   selectedNode: SelectedNode;
@@ -112,11 +112,11 @@ const TableContentForStudy: React.FC<TableContentProps> = ({
   selectedNode,
 }) => {
   const { profileType, contentFor } = useAppSelector(
-    (state: RootState) => state.staticContent
+    (state: RootState) => state.staticContent,
   );
   const { data: allStudyModeData } = useGetStudyModeTreeQuery(
     { profileType, contentFor },
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
   const tocDataFromBackend: TOCItem[] = allStudyModeData
