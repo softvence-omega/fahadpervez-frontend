@@ -5,5 +5,4 @@ export interface UpdateNotesResponse {
   system: string;
   topic: string;
   subtopic: string;
-  studentType: string;
 }

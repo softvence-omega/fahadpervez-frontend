@@ -1,11 +1,9 @@
-"use client";
-
 import ButtonWithLoading from "@/common/button/ButtonWithLoading";
 import CommonButton from "@/common/button/CommonButton";
 import CommonSelect from "@/common/custom/CommonSelect";
 import FormHeader from "@/components/AdminDashboard/reuseable/FormHeader";
 import ModalCloseButton from "@/components/AdminDashboard/reuseable/ModalCloseButton";
-import { DifficultyLevel } from "@/types";
+import { ANSWER_OPTIONS, CorrectAnswerOption, DifficultyLevel } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FC, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -25,12 +23,16 @@ export interface BackendMCQData {
   optionB: string;
   optionC: string;
   optionD: string;
+  optionE?: string;
+  optionF?: string;
 
-  correctOption: "A" | "B" | "C" | "D";
+  correctOption: CorrectAnswerOption;
   explanationA?: string;
   explanationB?: string;
   explanationC?: string;
   explanationD?: string;
+  explanationE?: string;
+  explanationF?: string;
 }
 
 // Zod schema
@@ -41,12 +43,16 @@ const UpdateMCQSchema = z.object({
   optionB: z.string().min(1, "Option B is required"),
   optionC: z.string().min(1, "Option C is required"),
   optionD: z.string().min(1, "Option D is required"),
+  optionE: z.string().optional(),
+  optionF: z.string().optional(),
 
-  correctOption: z.enum(["A", "B", "C", "D"]),
+  correctOption: z.enum(ANSWER_OPTIONS),
   explanationA: z.string().optional(),
   explanationB: z.string().optional(),
   explanationC: z.string().optional(),
   explanationD: z.string().optional(),
+  explanationE: z.string().optional(),
+  explanationF: z.string().optional(),
 });
 
 type UpdateMCQFormValues = z.infer<typeof UpdateMCQSchema>;
@@ -54,12 +60,12 @@ type UpdateMCQFormValues = z.infer<typeof UpdateMCQSchema>;
 const inputClass = {
   label: "block text-sm font-normal text-[#020617] font-inter mb-2",
   input:
-    "w-full border border-[#CBD5E1] bg-white rounded-md p-3 outline-none text-[#94A3B8] text-xs ",
+    "w-full border border-[#CBD5E1] bg-white rounded-md p-3 outline-none text-black text-xs ",
   error: "text-red-500 text-sm mt-1",
 };
 
 // Options and types
-const options = ["A", "B", "C", "D"] as const;
+const options = ["A", "B", "C", "D", "E", "F"] as const;
 type OptionKey = (typeof options)[number];
 
 const correctAnswerOptions = options.map((o) => ({ label: o, value: o }));
@@ -83,7 +89,13 @@ const UpdateMcqModal: FC<UpdateMCQModalProps> = ({
     formState: { errors },
   } = useForm<UpdateMCQFormValues>({
     resolver: zodResolver(UpdateMCQSchema),
-    defaultValues: data,
+    defaultValues: {
+      ...data,
+      optionE: data.optionE ?? "",
+      optionF: data.optionF ?? "",
+      explanationE: data.explanationE ?? "",
+      explanationF: data.explanationF ?? "",
+    },
   });
 
   useEffect(() => {
@@ -126,7 +138,7 @@ const UpdateMcqModal: FC<UpdateMCQModalProps> = ({
                 />
                 <textarea
                   {...register(
-                    `explanation${opt}` as `explanation${OptionKey}`
+                    `explanation${opt}` as `explanation${OptionKey}`,
                   )}
                   rows={2}
                   className={`${inputClass.input} mt-2 resize-none`}

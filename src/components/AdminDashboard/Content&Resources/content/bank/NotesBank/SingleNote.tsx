@@ -25,11 +25,6 @@ const SingleNote: React.FC<ClinicalCaseData> = ({ data, setBankId }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    subject: "",
-    system: "",
-    topic: "",
-    subtopic: "",
-    studentType: "",
   });
 
   useEffect(() => {
@@ -37,11 +32,6 @@ const SingleNote: React.FC<ClinicalCaseData> = ({ data, setBankId }) => {
       setFormData({
         title: item.title ?? "",
         description: item.description ?? "",
-        subject: item.subject ?? "",
-        system: item.system ?? "",
-        topic: item.topic ?? "",
-        subtopic: item.subtopic ?? "",
-        studentType: item.studentType ?? "",
       });
     }
   }, [item]);
@@ -67,15 +57,7 @@ const SingleNote: React.FC<ClinicalCaseData> = ({ data, setBankId }) => {
     }
   };
 
-  const fields: (keyof typeof formData)[] = [
-    "title",
-    "description",
-    "subject",
-    "system",
-    "topic",
-    "subtopic",
-    "studentType",
-  ];
+  const fields: (keyof typeof formData)[] = ["title", "description"];
 
   const handleBack = () => {
     setBankId("");
@@ -110,11 +92,14 @@ const SingleNote: React.FC<ClinicalCaseData> = ({ data, setBankId }) => {
           <p>
             <span className="font-semibold">Topic:</span> {item.topic}
           </p>
+
+          {item.subtopic && (
+            <p>
+              <span className="font-semibold">Subtopic:</span> {item.subtopic}
+            </p>
+          )}
           <p>
-            <span className="font-semibold">Subtopic:</span> {item.subtopic}
-          </p>
-          <p>
-            <span className="font-semibold">Student:</span> {item.studentType}
+            <span className="font-semibold">Student:</span> {item.profileType}
           </p>
         </div>
 
@@ -163,12 +148,22 @@ const SingleNote: React.FC<ClinicalCaseData> = ({ data, setBankId }) => {
                   <label className="block text-sm font-medium capitalize">
                     {field}
                   </label>
-                  <input
-                    name={field}
-                    value={formData[field]}
-                    onChange={handleChange}
-                    className={inputClass.input}
-                  />
+                  {field === "description" ? (
+                    <textarea
+                      name={field}
+                      value={formData[field]}
+                      onChange={handleChange}
+                      rows={4}
+                      className={inputClass.input}
+                    />
+                  ) : (
+                    <input
+                      name={field}
+                      value={formData[field]}
+                      onChange={handleChange}
+                      className={inputClass.input}
+                    />
+                  )}
                 </div>
               ))}
             </div>

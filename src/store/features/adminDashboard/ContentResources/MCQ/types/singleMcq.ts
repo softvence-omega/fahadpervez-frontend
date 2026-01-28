@@ -1,4 +1,4 @@
-import { DifficultyLevel } from "@/types";
+import { CorrectAnswerOption, DifficultyLevel } from "@/types";
 
 export interface McqOption {
   option: string;
@@ -43,9 +43,13 @@ export type SingleMCQUpdatePayload = {
   optionB: string;
   optionC: string;
   optionD: string;
-  correctOption: "A" | "B" | "C" | "D";
+  optionE?: string;
+  optionF?: string;
+  correctOption: CorrectAnswerOption;
   explanationA?: string;
   explanationB?: string;
   explanationC?: string;
   explanationD?: string;
+  explanationE?: string;
+  explanationF?: string;
 };

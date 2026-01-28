@@ -9,7 +9,7 @@ import {
 import { setUploadIntoBank } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
 import { useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
-import { correctAnswerOptions, difficultyOptions } from "@/types";
+import { correctAnswerOptions } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
@@ -24,13 +24,38 @@ const MCQOptionSchema = z.object({
   explanation: z.string().optional(),
 });
 
-const MCQSchema = z.object({
-  difficulty: z.enum(["Basic", "Intermediate", "Advance"]),
-  question: z.string().min(1, { message: "Question is required" }),
-  imageDescription: z.string().url().optional().or(z.literal("")),
-  options: z.array(MCQOptionSchema).length(4),
-  correctOption: z.string(),
-});
+const MCQSchema = z
+  .object({
+    difficulty: z.enum(["Basic", "Intermediate", "Advance"]),
+    question: z.string().min(1, { message: "Question is required" }),
+    imageDescription: z.string().url().optional().or(z.literal("")),
+    options: z.array(MCQOptionSchema).min(4).max(6),
+    correctOption: z.enum(["A", "B", "C", "D", "E", "F"]),
+  })
+  .superRefine((data, ctx) => {
+    // A–D must have text
+    data.options.forEach((opt, index) => {
+      if (
+        ["A", "B", "C", "D"].includes(opt.option) &&
+        (!opt.optionText || opt.optionText.trim() === "")
+      ) {
+        ctx.addIssue({
+          path: ["options", index, "optionText"],
+          message: `Option ${opt.option} is required`,
+          code: z.ZodIssueCode.custom,
+        });
+      }
+    });
+    const correct = data.options.find((o) => o.option === data.correctOption);
+
+    if (!correct?.optionText?.trim()) {
+      ctx.addIssue({
+        path: ["correctOption"],
+        message: "Correct answer must have text",
+        code: z.ZodIssueCode.custom,
+      });
+    }
+  });
 
 const FinalSchema = z.object({
   mcqs: z.array(MCQSchema).min(1),
@@ -41,13 +66,13 @@ type MCQFormValues = z.infer<typeof FinalSchema>;
 const inputClass = {
   label: "block text-sm font-normal text-[#020617] font-inter mb-2",
   input:
-    "w-full border border-[#CBD5E1] bg-white rounded-md p-3 outline-none text-[#94A3B8] text-xs ",
+    "w-full border border-[#CBD5E1] bg-white rounded-md p-3 outline-none text-black text-xs ",
   error: "text-red-500 text-sm mt-1",
 };
 
 const AddMCQForm = () => {
   const { formData, contentType, uploadIntoBank, bankId } = useAppSelector(
-    (state: RootState) => state.staticContent
+    (state: RootState) => state.staticContent,
   );
   const [uploadManualMcq, { isLoading: isUploading }] =
     useUploadManualMcqMutation();
@@ -60,7 +85,14 @@ const AddMCQForm = () => {
     { option: "B", optionText: "", explanation: "" },
     { option: "C", optionText: "", explanation: "" },
     { option: "D", optionText: "", explanation: "" },
+    { option: "E", optionText: "", explanation: "" },
+    { option: "F", optionText: "", explanation: "" },
   ];
+  const difficultyOptions = [
+    { label: "Basic", value: "Basic" },
+    { label: "Intermediate", value: "Intermediate" },
+    { label: "Advance", value: "Advance" },
+  ] as const;
 
   const {
     register,
@@ -93,7 +125,7 @@ const AddMCQForm = () => {
     useUploadSingleImageMutation();
 
   const [imagePreviews, setImagePreviews] = useState<Record<number, string>>(
-    {}
+    {},
   );
 
   const handleUploadImage = async (file: File, qIndex: number) => {
@@ -238,10 +270,10 @@ const AddMCQForm = () => {
                       <input
                         type="text"
                         placeholder={`Enter option ${String.fromCharCode(
-                          65 + index
+                          65 + index,
                         )}`}
                         {...register(
-                          `mcqs.${qIndex}.options.${index}.optionText` as const
+                          `mcqs.${qIndex}.options.${index}.optionText` as const,
                         )}
                         className={inputClass.input}
                       />
@@ -259,7 +291,7 @@ const AddMCQForm = () => {
                         placeholder="Explanation (optional)"
                         rows={2}
                         {...register(
-                          `mcqs.${qIndex}.options.${index}.explanation` as const
+                          `mcqs.${qIndex}.options.${index}.explanation` as const,
                         )}
                         className={`${inputClass.input} resize-none mt-2`}
                       />

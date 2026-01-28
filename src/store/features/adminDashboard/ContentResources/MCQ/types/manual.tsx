@@ -1,3 +1,4 @@
+import { CorrectAnswerOption } from "@/types";
 import { ContentFor } from "../../../staticContent/staticContentSlice";
 
 interface MCQOption {
@@ -11,7 +12,7 @@ interface MCQ {
   question: string;
   imageDescription?: string;
   options: MCQOption[];
-  correctOption: string;
+  correctOption: CorrectAnswerOption;
 }
 
 export interface ManualMCQBank {
