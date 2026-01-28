@@ -47,7 +47,7 @@ interface Props {
 
 const McqBankCardForAdmin: FC<Props> = ({ data, setMcqBankId }) => {
   const { contentType, uploadIntoBank } = useAppSelector(
-    (state: RootState) => state.staticContent
+    (state: RootState) => state.staticContent,
   );
 
   const [deleteMcqBankApi, { isLoading }] = useDeleteMcqBankApiMutation();
@@ -90,8 +90,11 @@ const McqBankCardForAdmin: FC<Props> = ({ data, setMcqBankId }) => {
           <TableBody>
             {data.map((data) => (
               <TableRow key={data._id} className={tableDesign.bodyRow}>
-                <TableCell className={tableDesign.cell}>{data.title}</TableCell>
-
+                <TableCell
+                  className={`max-w-[100px] break-words whitespace-normal text-left ${tableDesign.cell}`}
+                >
+                  {data.title}
+                </TableCell>
                 <TableCell
                   className={`hidden xl:table-cell ${tableDesign.cell}`}
                 >
@@ -102,17 +105,18 @@ const McqBankCardForAdmin: FC<Props> = ({ data, setMcqBankId }) => {
                 >
                   {data.system}
                 </TableCell>
+
                 <TableCell
                   className={`hidden 2xl:table-cell ${tableDesign.cell}`}
                 >
                   {data.topic || "-"}
                 </TableCell>
+
                 <TableCell
                   className={`hidden 2xl:table-cell ${tableDesign.cell}`}
                 >
                   {data.subtopic || "-"}
                 </TableCell>
-
                 <TableCell className={tableDesign.cell}>
                   <CommonButton
                     onClick={() => handleAddMore(data._id)}

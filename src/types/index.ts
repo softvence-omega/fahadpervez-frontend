@@ -90,4 +90,9 @@ export const correctAnswerOptions = [
   { label: "Option B", value: "B" },
   { label: "Option C", value: "C" },
   { label: "Option D", value: "D" },
+  { label: "Option E", value: "E" },
+  { label: "Option F", value: "F" },
 ] as const;
+
+export type CorrectAnswerOption = "A" | "B" | "C" | "D" | "E" | "F";
+export const ANSWER_OPTIONS = ["A", "B", "C", "D", "E", "F"] as const;
