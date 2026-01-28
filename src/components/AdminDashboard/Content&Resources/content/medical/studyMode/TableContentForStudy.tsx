@@ -126,10 +126,10 @@ const TableContentForStudy: React.FC<TableContentProps> = ({
   return (
     <div className="w-[400px] min-h-[400px] bg-white rounded-2xl shadow p-4 ">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 gap-[1px]">
         <div className="flex items-center gap-2">
           <img src={preview} className="w-5 h-5" alt="alt" />
-          <CommonHeader className="text-[#0A0A0A] font-arial!">
+          <CommonHeader className="text-[#0A0A0A] font-arial! line-clamp-1">
             Subject for {profileType}
           </CommonHeader>
         </div>
