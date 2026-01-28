@@ -73,7 +73,7 @@ export const mapCorrectOption = (option: string): "A" | "B" | "C" | "D" => {
 };
 
 export const mapDifficulty = (
-  difficulty: string
+  difficulty: string,
 ): "Basics" | "Intermediate" | "Advance" => {
   switch (difficulty) {
     case "Basics":
@@ -100,14 +100,14 @@ export const countLeafNodes = (node: any): number => {
   if (node.systems) {
     return node.systems.reduce(
       (acc: number, sys: System) => acc + countLeafNodes(sys),
-      0
+      0,
     );
   }
   // For System
   if (node.topics) {
     return node.topics.reduce(
       (acc: number, topic: Topic) => acc + countLeafNodes(topic),
-      0
+      0,
     );
   }
   // For Topic
@@ -117,3 +117,10 @@ export const countLeafNodes = (node: any): number => {
   // For SubTopic or leaf node
   return 1;
 };
+
+export const urlFixer = (text: string) =>
+  text
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");

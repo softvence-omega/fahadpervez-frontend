@@ -1,5 +1,5 @@
 import CommonHeader from "@/common/header/CommonHeader";
-import { toSlug } from "@/help/help";
+import { urlFixer } from "@/help/help";
 import { ProfileType } from "@/store/features/adminDashboard/ContentResources/MCQ/types/student";
 import { setProfileType } from "@/store/features/adminDashboard/staticContent/staticContentSlice";
 import { BookOpen, GraduationCap } from "lucide-react";
@@ -55,7 +55,7 @@ const StudentTypeCard: FC<CardProps> = ({ data, className, index }) => {
         <div className=" flex justify-between items-center  border-t border-black/10 pt-3">
           <CommonHeader
             onClick={() => {
-              navigate(`dashboard/${toSlug(data.typeName)}`);
+              navigate(`dashboard/${urlFixer(data.typeName)}`);
               dispatch(setProfileType(data.typeName));
             }}
             className="w-full flex items-center gap-2 cursor-pointer   !text-sm !font-inter !text-[#030213] !font-medium"
