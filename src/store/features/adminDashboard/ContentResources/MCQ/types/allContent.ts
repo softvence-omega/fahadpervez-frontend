@@ -1,3 +1,8 @@
+import {
+  ContentFor,
+  ContentModeType,
+} from "../../../staticContent/staticContentSlice";
+
 export type Meta = {
   page: number;
   limit: number;
@@ -135,11 +140,11 @@ export interface OsceTreeResponse {
 
 // notes tree response
 
-export interface NotesTreeResponse {
-  success: boolean;
-  message: string;
-  data: NotesTreeItem[];
-  meta: Meta;
+export interface NoteFile {
+  fileId: string;
+  fileType: string;
+  fileUrl: string;
+  fileName: string;
 }
 
 export interface NotesTreeItem {
@@ -150,19 +155,27 @@ export interface NotesTreeItem {
   system: string;
   topic: string;
   subtopic: string;
-  slug: string;
-  studentType: string;
-  type: string;
+  contentFor: ContentFor;
+  profileType: string;
+  type: ContentModeType;
   uploadedBy: string;
-  notes: Note[];
+  notes: NoteFile[];
   downloadCount: number;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface Note {
-  fileId: string;
-  fileType: string;
-  fileUrl: string;
-  fileName: string;
+// Pagination meta
+export interface PaginationMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface NotesTreeResponse {
+  success: boolean;
+  message: string;
+  data: NotesTreeItem[];
+  meta: PaginationMeta;
 }

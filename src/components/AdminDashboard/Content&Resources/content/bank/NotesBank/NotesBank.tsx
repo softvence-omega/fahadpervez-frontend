@@ -14,6 +14,8 @@ interface Props {
 const NotesBank: React.FC<Props> = ({ mcqBank, bankId, setBankId }) => {
   const notesBank = mcqBank?.data ?? [];
 
+  console.log("mcqBank", mcqBank);
+
   // single clinical case
   const { data: singleNotes } = useGetNotesQuery(bankId, {
     skip: bankId === "",
@@ -30,6 +32,7 @@ const NotesBank: React.FC<Props> = ({ mcqBank, bankId, setBankId }) => {
         console.error("Failed to delete Clinical Case:", error),
       );
   };
+  console.log("notesBank", singleNotes);
   return (
     <div>
       {bankId === "" ? (
@@ -51,13 +54,16 @@ const NotesBank: React.FC<Props> = ({ mcqBank, bankId, setBankId }) => {
                 <p>
                   <span className="font-semibold">Topic:</span> {item.topic}
                 </p>
-                <p>
-                  <span className="font-semibold">Subtopic:</span>{" "}
-                  {item.subtopic}
-                </p>
+                {item.subtopic && (
+                  <p>
+                    <span className="font-semibold">Subtopic:</span>{" "}
+                    {item.subtopic}
+                  </p>
+                )}
+
                 <p>
                   <span className="font-semibold">Student:</span>{" "}
-                  {item.studentType}
+                  {item.profileType}
                 </p>
               </div>
 

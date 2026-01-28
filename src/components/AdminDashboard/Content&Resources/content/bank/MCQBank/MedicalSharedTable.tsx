@@ -1,5 +1,3 @@
-"use client";
-
 import Spinner from "@/common/button/Spinner";
 import Pagination from "@/common/custom/Pagination";
 import { useDebounce } from "@/common/custom/useDebounce";
@@ -210,11 +208,21 @@ const MedicalSharedTable: React.FC<MedicalSharedTableProps> = ({
             optionB: selectedMCQ.options[1]?.optionText || "",
             optionC: selectedMCQ.options[2]?.optionText || "",
             optionD: selectedMCQ.options[3]?.optionText || "",
-            correctOption: selectedMCQ.correctOption as "A" | "B" | "C" | "D",
+            optionE: selectedMCQ.options[4]?.optionText || "",
+            optionF: selectedMCQ.options[5]?.optionText || "",
+            correctOption: selectedMCQ.correctOption as
+              | "A"
+              | "B"
+              | "C"
+              | "D"
+              | "E"
+              | "F",
             explanationA: selectedMCQ.options[0]?.explanation || "",
             explanationB: selectedMCQ.options[1]?.explanation || "",
             explanationC: selectedMCQ.options[2]?.explanation || "",
             explanationD: selectedMCQ.options[3]?.explanation || "",
+            explanationE: selectedMCQ.options[4]?.explanation || "",
+            explanationF: selectedMCQ.options[5]?.explanation || "",
           }}
           onClose={() => setIsUpdateModalOpen(false)}
           onSubmit={handleUpdate}

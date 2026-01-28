@@ -16,7 +16,7 @@ export const notesApi = baseAPI.injectEndpoints({
       { id: string; data: Partial<UpdateNotesResponse> }
     >({
       query: ({ id, data }) => ({
-        url: `/notes/download/${id}`,
+        url: `/notes/update/${id}`,
         method: "PUT",
         body: data,
       }),
