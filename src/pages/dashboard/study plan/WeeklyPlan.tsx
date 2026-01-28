@@ -307,7 +307,8 @@ export default function WeeklyPlan() {
 
                               // Use the day's Topic as the title, fallback to description or task type
                               // Trying to match the "clean" title from the image
-                              const rowTitle = dayPlan.topics.length > 0 ? dayPlan.topics[0] : session.description;
+                              // const rowTitle = dayPlan.topics.length > 0 ? dayPlan.topics[0] : session.description;
+                              const rowTitle = session.description;
 
                               return (
                                 <div
@@ -329,10 +330,10 @@ export default function WeeklyPlan() {
                                     disabled={!isSessionCompleted && isFuture}
                                     onClick={() => handleStartWithContent(session.task_type, session.suggest_content.contentId, dayPlan.day_number)}
                                     className={`${isSessionCompleted
-                                        ? "bg-green-600 text-white hover:bg-green-700 border border-green-200"
-                                        : isFuture
-                                          ? "bg-white text-gray-400 border border-gray-200 cursor-not-allowed"
-                                          : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
+                                      ? "bg-green-600 text-white hover:bg-green-700 border border-green-200"
+                                      : isFuture
+                                        ? "bg-white text-gray-400 border border-gray-200 cursor-not-allowed"
+                                        : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
                                       } min-w-[80px] font-medium shadow-none transition-colors`}
                                   >
                                     {isSessionCompleted ? "complete" : isFuture ? "Locked" : "Start"}

@@ -25,6 +25,17 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
     return "Good Night";
   };
 
+  const hhmmToHours = (time: string | number | undefined): number => {
+    if (!time) return 0;
+    if (typeof time === "number") return time;
+
+    const [hh, mm] = time.split(":").map(Number);
+    return (hh || 0) + (mm || 0) / 60;
+  };
+
+  const todayHours = hhmmToHours(goal?.todayStudyHours);
+  const dailyTarget = goal?.studyHoursPerDay ?? 1;
+
   return (
     <div className="rounded-lg shadow-sm p-6 bg-[#EFF6FF99] border border-[#93C5FD66]">
       <div className="flex justify-between items-center mb-8">
@@ -64,7 +75,7 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        {/* <div className="flex items-center gap-3">
           <CircularProgress
             value={goal?.todayStudyHours || 0}
             max={goal?.studyHoursPerDay || 1}
@@ -74,6 +85,20 @@ export const GoalDashboard: React.FC<DashboardProps> = ({
             <div className="font-medium text-gray-500">Daily Target</div>
             <div className="font-medium">
               {goal?.todayStudyHours || 0} hrs / {goal.studyHoursPerDay || 0} hrs
+            </div>
+          </div>
+        </div> */}
+
+        <div className="flex items-center gap-3">
+          <CircularProgress
+            value={todayHours}
+            max={dailyTarget}
+          />
+
+          <div>
+            <div className="font-medium text-gray-500">Daily Target</div>
+            <div className="font-medium">
+              {goal?.todayStudyHours || "00:00"} hrs / {dailyTarget} hrs
             </div>
           </div>
         </div>
