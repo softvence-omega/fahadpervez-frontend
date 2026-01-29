@@ -303,7 +303,7 @@ export default function CreateStudyPlan() {
 
       <form
         onSubmit={handleSubmit}
-        className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5x mx-auto p-6"
+        className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5x mx-auto p-1 md:p-6"
       >
         {/* Left Side: Exam Information */}
         <div className="p-6 border rounded-xl border-black/10 bg-white">

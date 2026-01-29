@@ -20,7 +20,7 @@ export interface FormData {
 }
 
 export interface Goal {
-  todayStudyHours: number;
+  todayStudyHours: string | number;
   _id: string;
   goalName: string;
   studyHoursPerDay: number;
