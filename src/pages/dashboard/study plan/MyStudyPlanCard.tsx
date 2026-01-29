@@ -34,8 +34,9 @@ export default function MyStudyPlanCard({ plan }: MyStudyPlanCardProps) {
     };
 
     return (
-        <div className="p-7 border border-slate-300 rounded-[8px]">
-            <div className="flex justify-between items-start gap-4">
+        <div className="flex flex-col justify-between p-5 border border-slate-300 rounded-[8px]">
+            <div>
+                <div className="flex justify-between items-start gap-4">
                 <h3 className="text-lg font-semibold text-slate-800 line-clamp-2">{plan.plan_summary}</h3>
                 {/* <p className="text-lg text-white font-semibold bg-green-700 rounded-full pt-0.5 px-2.5 whitespace-nowrap">Active</p> */}
             </div>
@@ -49,6 +50,7 @@ export default function MyStudyPlanCard({ plan }: MyStudyPlanCardProps) {
                 {allTopics.length > 2 && (
                     <p className="border border-slate-300 rounded-full text-sm text-[#0A0A0A] pt-0.5 px-2.5">+{allTopics.length - 2} more</p>
                 )}
+            </div>
             </div>
 
             <PrimaryButton className="w-full mt-7" onClick={handleViewPlan}>View Plan</PrimaryButton>
