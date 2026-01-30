@@ -19,10 +19,10 @@ const QuizPage = () => {
     }
   }, [location.state, id]);
 
-  const tabs = [
-    { id: "overview", label: "Overview" },
-    // { id: "myQuiz", label: "My Quiz" },
-  ];
+  // const tabs = [
+  //   { id: "overview", label: "Overview" },
+  //   // { id: "myQuiz", label: "My Quiz" },
+  // ];
 
   return (
     <div>
@@ -34,7 +34,7 @@ const QuizPage = () => {
           description="Create custom quizzes from your images and prompts using AI"
           descColor="text-[#4A5565]"
           descFont="text-sm"
-          className="mt-12 mb-8"
+          className="mt-5 mb-3"
         />
         <Link to={"/dashboard/quiz-generator"}>
           <PrimaryButton
@@ -54,7 +54,7 @@ const QuizPage = () => {
         <div>
           <div>
             {/* Tab Buttons */}
-            <div className="flex gap-4 my-2">
+            {/* <div className="flex gap-4 my-2">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
@@ -69,7 +69,7 @@ const QuizPage = () => {
                   {tab.label}
                 </button>
               ))}
-            </div>
+            </div> */}
 
             {/* Tab Content */}
             <div className="">
