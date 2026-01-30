@@ -174,7 +174,7 @@ const SmartStudyPlan: React.FC = () => {
               return (
                 <div
                   key={i}
-                  className="border border-gray-200 rounded-lg p-4 flex flex-col justify-between"
+                  className={`${config.color} border border-gray-200 rounded-lg p-4 flex flex-col justify-between`}
                 >
                   <div>
                     <div className="flex flex-wrap items-center gap-2 mb-3">
@@ -185,7 +185,7 @@ const SmartStudyPlan: React.FC = () => {
                       </span>
                     </div>
                     <h5
-                      className="font-semibold text-gray-900 mb-3 line-clamp-2"
+                      className="font-semibold text-gray-90 mb-3 line-clamp-2"
                       title={task.description || task.task_type}
                     >
                       {task.description || task.task_type}

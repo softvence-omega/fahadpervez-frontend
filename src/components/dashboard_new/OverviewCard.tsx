@@ -1,11 +1,13 @@
 import React from "react";
-// import { Clock } from "lucide-react";
 
 interface OverviewCardProps {
-  icon?: string;
+  icon?: React.ReactNode;
   title: string;
   subtitle?: string;
   stats?: { label: string; value: string }[];
+  footerText?: string;
+  variant?: "purple" | "orange" | "green";
+  className?: string;
 }
 
 const OverviewCard: React.FC<OverviewCardProps> = ({
@@ -13,41 +15,89 @@ const OverviewCard: React.FC<OverviewCardProps> = ({
   title,
   subtitle,
   stats,
+  footerText,
+  variant = "purple",
+  className = "",
 }) => {
+
+
+  const themes = {
+    purple: {
+      bg: "bg-purple-50",
+      border: "border-purple-200",
+      iconBg: "bg-purple-100",
+      labelColor: "text-[#4A5565]",
+    },
+    orange: {
+      bg: "bg-orange-50",
+      border: "border-orange-200",
+      iconBg: "bg-orange-100",
+      labelColor: "text-[#4A5565]",
+    },
+    green: {
+      bg: "bg-green-50",
+      border: "border-green-200",
+      iconBg: "bg-green-100",
+      labelColor: "text-[#4A5565]",
+    },
+  };
+
+  const theme = themes[variant];
+
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center">
-          {/* {icon || <div className="w-6 h-6 bg-blue-500 rounded-full"></div>} */}
-          <img src={icon} className="w-full h-full" alt="alt" />
-        </div>
-        <div>
-          <div className="text-2xl font-semibold text-gray-900">{title}</div>
-          {subtitle && <div className="text-sm text-gray-600">{subtitle}</div>}
+    <div
+      className={`flex flex-col rounded-2xl overflow-hidden border-[1.5px] ${theme.border} h-full transition-all duration-300 hover:shadow-md ${className}`}
+    >
+
+      {/* Top Section */}
+      <div className={`${theme.bg} p-5 flex-1`}>
+        <div className="flex items-center gap-4">
+          <div
+            className={`w-12 h-12 rounded-[8px] ${theme.iconBg} flex items-center justify-center shadow-sm text-xl`}
+          >
+            {icon}
+          </div>
+
+          <div>
+            <p className={`text-sm font-normal ${theme.labelColor} mb-0.5`}>
+              {subtitle}
+            </p>
+            <h4 className="text-lg font-medium text-[#0A0A0A] leading-tight text-nowrap">
+              {title}
+            </h4>
+          </div>
         </div>
       </div>
-      {stats && (
-        <div className="grid grid-cols-3 gap-4 text-sm">
-          {stats.map((s, i) => (
-            <div key={i}>
-              <div className="font-semibold text-gray-900 text-nowrap text-center">
-                {/* {typeof s.value === "number"
-            ? Math.round(s.value) // rounds to nearest integer
-            : (() => {
-                const num = parseFloat(s.value);
-                return Number.isInteger(num) ? num : num.toFixed(2);
-              })()} */}
-                {s.value}
+
+      {/* Bottom Section */}
+      <div className="bg-white p-5 border-t rounded-2xl border-inherit min-h-[85px] flex items-center">
+        {stats ? (
+          <div className="grid grid-cols-3 w-full">
+            {stats.map((stat, idx) => (
+              <div
+                key={idx}
+                className={`text-center flex flex-col justify-center`}
+              >
+                <p className="text-[14px] font-medium text-[#0A0A0A]">
+                  {stat.value}
+                </p>
+                <p className="text-[12px] font-normal text-[#4A5565] whitespace-nowrap mt-0.5">
+                  {stat.label}
+                </p>
               </div>
-              <div className="text-gray-600 text-nowrap text-center">
-                {s.label}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}{" "}
+            ))}
+          </div>
+        ) : (
+          <div className="w-full">
+            <p className="text-[13px] text-[#475467] text-center leading-relaxed px-2">
+              {footerText}
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
 export default OverviewCard;
+
