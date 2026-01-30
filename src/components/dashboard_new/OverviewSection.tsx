@@ -1,6 +1,6 @@
 import React from "react";
 import OverviewCard from "./OverviewCard";
-
+import { Target, Clock, Flame } from "lucide-react";
 import { useGetGoalOverviewQuery } from "@/store/features/goal/goal.api";
 
 const OverviewSection: React.FC = () => {
@@ -8,19 +8,12 @@ const OverviewSection: React.FC = () => {
 
   // dynamic data mapping
   const overallAccuracy = overviewData?.data?.progress?.overall ?? 0;
-  // const totalStudyTime = overviewData?.data?.timeCount?.todayStudy ?? 0;
-  // sum up all time counts for total study time
-  // const totalStudyTime = overviewData?.data?.timeCount
-  //   ? Object.values(overviewData.data.timeCount).reduce(
-  //       (a: number, b: number) => a + b,
-  //       0
-  //     )
-  //   : 0;
   const currentStreak = overviewData?.data?.steak ?? 0;
 
   const dynamicOverview = [
     {
-      icon: "/image/dashboard_new/Background.svg",
+      variant: "purple" as const,
+      icon: <Target className="w-6 h-6 text-[#7F56D9]" />,
       title: `${Math.round(overallAccuracy)}%`,
       subtitle: "Overall Accuracy",
       stats: [
@@ -38,39 +31,50 @@ const OverviewSection: React.FC = () => {
           label: "OSCE",
           value: `${Math.round(overviewData?.data?.progress?.osce ?? 0)}%`,
         },
-      ], },
+      ],
+    },
     {
-      icon: "/image/dashboard_new/Background1.svg",
-      title:  `${overviewData?.data?.timeCount?.todayStudy ?? 0} hrs`,//`${(totalStudyTime / 60).toFixed(1)} hrs`, // assuming api returns minutes? If hours, remove /60. Usually "timeCount" is seconds or minutes. Assuming minutes for now based on "30 minutes" in dummy.
+      variant: "orange" as const,
+      icon: <Clock className="w-6 h-6 text-[#D97706]" />,
+      title: `${overviewData?.data?.timeCount?.todayStudy ?? 0} hrs`,
       subtitle: "Total Study Time",
       stats: [
         {
           label: "Quiz Test",
-          value: `${overviewData?.data?.timeCount?.mcq ?? 0} hrs`,
+          value: `${overviewData?.data?.timeCount?.mcq ?? 0} minutes`,
         },
         {
           label: "Clinical Case",
-          value: `${overviewData?.data?.timeCount?.clinicalCase ?? 0} hrs`,
+          value: `${overviewData?.data?.timeCount?.clinicalCase ?? 0} minutes`,
         },
         {
           label: "OSCE",
-          value: `${overviewData?.data?.timeCount?.osce ?? 0} hrs`,
+          value: `${overviewData?.data?.timeCount?.osce ?? 0} minutes`,
         },
       ],
     },
     {
-      icon: "/image/dashboard_new/Background2.svg",
+      variant: "green" as const,
+      icon: <Flame className="w-6 h-6 text-[#16A34A]" />,
       title: `${currentStreak < 10 ? `0${currentStreak}` : currentStreak}`,
       subtitle: "Current Streak",
+      footerText:
+        "Study every day to build your streak and create a powerful learning habit",
     },
   ];
+
+
 
   return (
     <div className="mb-8">
       <h3 className="text-xl font-semibold text-gray-900 mb-5">Overview</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {dynamicOverview.map((card, i) => (
-          <OverviewCard key={i} {...card} />
+          <OverviewCard
+            key={i}
+            {...card}
+            className={i === 2 ? "md:col-span-2 lg:col-span-1 xl:col-span-2" : ""}
+          />
         ))}
       </div>
     </div>
@@ -78,3 +82,4 @@ const OverviewSection: React.FC = () => {
 };
 
 export default OverviewSection;
+

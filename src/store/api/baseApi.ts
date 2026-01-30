@@ -107,6 +107,8 @@ export const baseAPI = createApi({
     "Tracking",
     "Leaderboard",
     "Sessions",
+    "DailyChallenge",
   ],
+
   endpoints: () => ({}),
 });

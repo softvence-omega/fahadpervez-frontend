@@ -31,7 +31,9 @@ import MyPlan from "@/pages/dashboard/study plan/MyPlan";
 import WeeklyPlan from "@/pages/dashboard/study plan/WeeklyPlan";
 import EditStudentProfile from "@/pages/dashboard/student profile/EditStudentProfile";
 import DailyChallenge from "@/pages/dashboard/gamifiedLearning/DailyChallenge";
+import DailyChallengeQuiz from "@/pages/dashboard/gamifiedLearning/DailyChallengeQuiz";
 import PracticeMCQ from "@/pages/dashboard/mcqBank/PracticeMCQ";
+
 // import DiagramDetails from "@/components/dashboard/diagram/DiagramDetails";
 // import OSCE from "@/pages/dashboard/OSCE";
 // import DrugCard from "@/pages/dashboard/DrugCard";
@@ -202,6 +204,11 @@ const dashboardRoutes = {
       path: "gamified-learning/daily-challenges",
       element: <DailyChallenge />,
     },
+    {
+      path: "daily-challenge-quiz/:id",
+      element: <DailyChallengeQuiz />,
+    },
+
     // {
     //   path: "osce",
     //   element: <OSCE />,
