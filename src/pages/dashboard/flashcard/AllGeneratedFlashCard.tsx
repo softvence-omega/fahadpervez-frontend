@@ -28,7 +28,7 @@ export default function AllGeneratedFlashCard({
               <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900"></div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4">
               {flashcardBanks?.length > 0 ? (
                 flashcardBanks.map((flashcard: IFlashcardBank, idx: number) => (
                   <FlashCard key={idx} source="all" {...flashcard} />

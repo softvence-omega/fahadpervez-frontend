@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import {
   BookOpen,
@@ -75,8 +76,8 @@ const SmartStudyPlan: React.FC = () => {
     const activePlan =
       allStudyPlans.find((plan: any) =>
         plan.daily_plan.some(
-          (d: any) => d.date && d.date.split("T")[0] === todayStr
-        )
+          (d: any) => d.date && d.date.split("T")[0] === todayStr,
+        ),
       ) || allStudyPlans[0]; // Fallback to the first (most recent) plan
 
     // currentPlanSummary = activePlan.plan_summary;
@@ -84,14 +85,14 @@ const SmartStudyPlan: React.FC = () => {
 
     const dailyPlanEntry =
       activePlan.daily_plan.find(
-        (d: any) => d.date && d.date.split("T")[0] === todayStr
+        (d: any) => d.date && d.date.split("T")[0] === todayStr,
       ) || activePlan.daily_plan[0]; // Fallback to day 1 if today not found
 
     todayTasks = dailyPlanEntry?.hourly_breakdown || [];
     // console.log("dailyPlanEntry :", dailyPlanEntry);
   }
   const handleStartClick = (task: any) => {
-    const contentId = task.suggest_content?.[0];
+    const contentId = task.suggest_content?.contentId;
     const taskType = task.task_type.toLowerCase();
 
     if (taskType === "mcqs" || taskType === "mcq") {
