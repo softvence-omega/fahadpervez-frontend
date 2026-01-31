@@ -14,6 +14,7 @@ import { useSaveStudyPlanProgressMutation } from "@/store/features/studyPlan/stu
 import { toast } from "sonner";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { PracticeQuizModal } from "./PracticeQuizModal";
+import CircularProgress from "@/components/quizOverview/CircularProgress";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,6 +32,7 @@ export default function PracticeMCQ() {
   const location = useLocation();
   const [navigationState] = useState(location.state);
   const { id } = useParams();
+  const [showResult, setShowResult] = useState(false);
 
   // console.log("PracticeMCQ Navigation State (Saved):", navigationState);
 
@@ -259,17 +261,24 @@ export default function PracticeMCQ() {
 
       // localStorage.removeItem(storageKey);
       // localStorage.removeItem(`lastPage_${id}`);
-      if (navigationState?.from === "weekly-plan") {
-        navigate(-1);
-      } else {
-        navigate("/dashboard/mcq-bank");
-      }
+      setShowResult(true);
+      // if (navigationState?.from === "weekly-plan") {
+      //   navigate(-1);
+      // } else {
+      //   navigate("/dashboard/mcq-bank");
+      // }
     } catch (error) {
       console.error("Failed to save progress:", error);
       toast.error("Failed to save progress");
       setIsSubmitting(false); // Enable blocker again if failed
     }
   };
+
+  const totalAttempted = Object.keys(results).length;
+  const totalCorrect = Object.values(results).filter(Boolean).length;
+  const totalIncorrect = totalAttempted - totalCorrect;
+  const correctPercentage = totalAttempted > 0 ? (totalCorrect / totalAttempted) * 100 : 0;
+  const incorrectPercentage = totalAttempted > 0 ? (totalIncorrect / totalAttempted) * 100 : 0;
 
   const currentQuestion = questions[0];
   const currentQId = currentQuestion
@@ -341,8 +350,102 @@ export default function PracticeMCQ() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      {showResult ? (
+        <div className="p-6 space-y-8">
+          <Breadcrumb breadcrumbs={breadcrumbs} />
 
-      {isInitialLoading ? (
+          <div className="flex items-start gap-1">
+            <div
+              onClick={() => {
+                if (navigationState?.from === "weekly-plan") {
+                  navigate(-1);
+                } else {
+                  navigate("/dashboard/mcq-bank");
+                }
+              }}
+              className="cursor-pointer sm:mb-0"
+            >
+              <ArrowLeft className="mt-0.5" />
+            </div>
+
+            <DashboardHeading
+              title="Performance Analysis"
+              titleSize="text-xl"
+              titleColor="text-[#0A0A0A]"
+              description="Analyze quiz performance, track user progress from detailed results"
+              descColor="text-[#4A5565]"
+              descFont="text-sm"
+              className="mb-5"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 w-full">
+            <div className="bg-purple-100 p-4 rounded-lg shadow text-center border border-purple-300 px-2 py-3">
+              <p className="text-purple-600 font-semibold">{totalAttempted}</p>
+              <p className="text-sm text-gray-600">Completed</p>
+            </div>
+            <div className="bg-green-100 p-4 rounded-lg shadow text-center border border-green-300 px-2 py-3">
+              <p className="text-green-600 font-semibold">{totalCorrect}</p>
+              <p className="text-sm text-gray-600">Correct</p>
+            </div>
+            <div className="bg-red-100 p-4 rounded-lg shadow text-center border border-red-300 px-2 py-3">
+              <p className="text-red-600 font-semibold">{totalIncorrect}</p>
+              <p className="text-sm text-gray-600">Wrong</p>
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 max-w-2xl mx-auto">
+            <h2 className="text-xl font-bold mb-8 text-[#1A1C1E] font-inter text-center">
+              {mcqData?.title}
+            </h2>
+
+            <div className="mb-10 flex justify-center">
+              <CircularProgress
+                correctPercentage={correctPercentage}
+                incorrectPercentage={incorrectPercentage}
+                label="Session Performance"
+              />
+            </div>
+
+            <div className="text-center mt-4">
+              <p className="text-lg">
+                You completed {totalAttempted}/{meta?.total || 0} questions. You
+                answered:
+              </p>
+              <div className="mt-4 flex flex-col items-center space-y-2">
+                <span className="flex items-center bg-green-50 px-4 py-2 rounded-lg">
+                  <div className="w-4 h-4 rounded-sm bg-green-500 mr-2"></div>
+                  <span className="font-medium text-green-700">
+                    {Math.round(correctPercentage)}% correctly ({totalCorrect}{" "}
+                    questions)
+                  </span>
+                </span>
+                <span className="flex items-center bg-red-50 px-4 py-2 rounded-lg">
+                  <div className="w-4 h-4 rounded-sm bg-red-500 mr-2"></div>
+                  <span className="font-medium text-red-700">
+                    {Math.round(100 - correctPercentage)}% incorrectly (
+                    {totalIncorrect} questions)
+                  </span>
+                </span>
+              </div>
+              <div className="flex justify-center mt-8">
+                <PrimaryButton
+                  onClick={() => {
+                    if (navigationState?.from === "weekly-plan") {
+                      navigate(-1);
+                    } else {
+                      navigate("/dashboard/mcq-bank");
+                    }
+                  }}
+                  className="bg-blue-main hover:bg-blue-main/90"
+                >
+                  Back to MCQ Bank
+                </PrimaryButton>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : isInitialLoading ? (
         <GlobalLoader />
       ) : !mcqData ? (
         <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
@@ -361,295 +464,292 @@ export default function PracticeMCQ() {
         </div>
       ) : (
         <>
-        <div className="p-1 md:p-6 space-y-8">
-          <Breadcrumb breadcrumbs={breadcrumbs} />
+          <div className="p-1 md:p-6 space-y-8">
+            <Breadcrumb breadcrumbs={breadcrumbs} />
 
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            {/* Left Section */}
-            <div className="flex items-center gap-3">
-              <div
-                onClick={() => {
-                   if (navigationState?.from === "weekly-plan") {
-                     navigate(-1);
-                   } else {
-                     navigate("/dashboard/mcq-bank");
-                   }
-                }}
-                className="cursor-pointer sm:mb-0"
-              >
-                <ArrowLeft className="mb-7" />
-              </div>
-              <DashboardHeading
-                title={mcqData?.title}
-                titleSize="text-xl"
-                description={`${meta?.total || 0} Questions 
-                `}
-                className="space-y-1"
-              />
-            </div>
-
-            {/* Right Section */}
-            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-              <PrimaryButton
-                className="h-10 w-full sm:w-auto cursor-pointer bg-slate-600 hover:bg-slate-700"
-                onClick={() => {
-                   if (navigationState?.from === "weekly-plan") {
-                     navigate(-1);
-                   } else {
-                     navigate("/dashboard/mcq-bank");
-                   }
-                }}
-              >
-                Save & Exit
-              </PrimaryButton>
-              <PrimaryButton
-                style={{
-                  background:
-                    "linear-gradient(103deg, #0076F5 6.94%, #0058B8 99.01%)",
-                }}
-                bgType="solid"
-                iconPosition="left"
-                icon={<Plus />}
-                className="h-10 w-full sm:w-auto hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer"
-                onClick={() => setOpenQuizModal(true)}
-              >
-                Start Quiz
-              </PrimaryButton>
-            </div>
-          </div>
-
-          {/* Render questions */}
-          {questions.map((q: McqQuestion, idx: number) => {
-            // Use unique mcqId from backend as the key
-            const qId = q?.mcqId || `question-${idx}`;
-
-            // Calculate global question number across all pages
-            const globalQuestionNumber = (currentPage - 1) * limit + idx + 1;
-
-            const selectedIndex = selected[qId];
-
-            return (
-              <div
-                key={qId}
-                className="border border-slate-300 rounded-lg p-5 space-y-4"
-              >
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              {/* Left Section */}
+              <div className="flex items-center gap-3">
                 <div
-                  onClick={() => handleCopy(qId)}
-                  className="flex items-center gap-2 cursor-pointer"
-                >
-                  <Copy className="w-5 h-5" />
-                  <p className="text-slate-700 text-sm font-normal">{qId}</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-5">
-                    <p className="text-slate-700 text-sm font-normal">
-                      Question {globalQuestionNumber} of {meta?.total || 0}
-                    </p>
-                    {mcqData?.subtopic && (
-                      <p className="bg-[#D97706] text-xs font-normal px-3 py-1 text-white rounded-full">
-                        {mcqData?.subtopic}
-                      </p>
-                    )}
-                    {q.difficulty && (
-                      <p className="text-xs font-normal px-3 py-1 bg-white rounded-full border border-slate-200">
-                        {q.difficulty}
-                      </p>
-                    )}
-                  </div>
-                  <div
-                    className="flex items-center gap-1.5 text-[#F61F1F] cursor-pointer"
-                    onClick={() => {
-                      setMcqId(q?.mcqId);
-                      setOpenReportModal(true);
-                    }}
-                  >
-                    <p className="text-sm font-semibold">Report</p>
-                    <CircleAlert />
-                  </div>
-                </div>
-
-                <p className="text-slate-900 font-medium">{q.question}</p>
-                {q.imageDescription && (
-                  <img
-                    src={q.imageDescription}
-                    alt="Question Image"
-                    className="mt-4 max-w-full h-auto rounded-lg max-h-96 object-contain"
-                  />
-                )}
-
-                <div className="space-y-2">
-                  {q.options.map((opt: any, optionIdx: number) => {
-                    const isSelected = selectedIndex === optionIdx;
-                    const isCorrect = opt.option === q.correctOption;
-                    const show = showAnswer[qId];
-
-                    // styles
-                    let borderClass = "border-none";
-                    let bgClass = "";
-                    let textClass = "text-slate-800";
-
-                    if (show) {
-                      if (isSelected && isCorrect) {
-                        borderClass = "border-green-500";
-                        bgClass = "bg-green-50";
-                        textClass = "text-green-700 font-medium";
-                      } else if (isSelected && !isCorrect) {
-                        borderClass = "border-red-500";
-                        bgClass = "bg-red-50";
-                        textClass = "text-red-700 font-medium";
-                      } else if (!isSelected && isCorrect) {
-                        borderClass = "border-green-500";
-                        bgClass = "bg-green-50";
-                        textClass = "text-green-700 font-medium";
-                      }
-                    } else if (isSelected) {
-                      borderClass = "border-blue-500";
-                      bgClass = "bg-blue-50";
+                  onClick={() => {
+                    if (navigationState?.from === "weekly-plan") {
+                      navigate(-1);
+                    } else {
+                      navigate("/dashboard/mcq-bank");
                     }
-
-                    return (
-                      <label
-                        key={optionIdx}
-                        className={`block p-2 border rounded cursor-pointer ${borderClass} ${bgClass}`}
-                      >
-                        <input
-                          type="radio"
-                          name={`question-${qId}`}
-                          className="mr-2"
-                          onChange={() => handleSelect(qId, optionIdx)}
-                          checked={isSelected}
-                          disabled={lockedQuestions[qId]}
-                        />
-                        <span className={textClass}>
-                          {opt.option}. {opt.optionText}
-                        </span>
-                      </label>
-                    );
-                  })}
+                  }}
+                  className="cursor-pointer sm:mb-0"
+                >
+                  <ArrowLeft className="mb-7" />
                 </div>
+                <DashboardHeading
+                  title={mcqData?.title}
+                  titleSize="text-xl"
+                  description={`${meta?.total || 0} Questions 
+                `}
+                  className="space-y-1"
+                />
+              </div>
 
-                {selectedIndex !== undefined && selectedIndex !== null && (
-                  <button
-                    onClick={() => toggleAnswer(qId)}
-                    className="px-4 py-2 border rounded text-sm font-medium bg-blue-main text-white hover:bg-blue-main/85 cursor-pointer"
+              {/* Right Section */}
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                <PrimaryButton
+                  className="h-10 w-full sm:w-auto cursor-pointer bg-slate-600 hover:bg-slate-700"
+                  onClick={() => {
+                    if (navigationState?.from === "weekly-plan") {
+                      navigate(-1);
+                    } else {
+                      navigate("/dashboard/mcq-bank");
+                    }
+                  }}
+                >
+                  Save & Exit
+                </PrimaryButton>
+                <PrimaryButton
+                  style={{
+                    background:
+                      "linear-gradient(103deg, #0076F5 6.94%, #0058B8 99.01%)",
+                  }}
+                  bgType="solid"
+                  iconPosition="left"
+                  icon={<Plus />}
+                  className="h-10 w-full sm:w-auto hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer"
+                  onClick={() => setOpenQuizModal(true)}
+                >
+                  Start Quiz
+                </PrimaryButton>
+              </div>
+            </div>
+
+            {/* Render questions */}
+            {questions.map((q: McqQuestion, idx: number) => {
+              // Use unique mcqId from backend as the key
+              const qId = q?.mcqId || `question-${idx}`;
+
+              // Calculate global question number across all pages
+              const globalQuestionNumber = (currentPage - 1) * limit + idx + 1;
+
+              const selectedIndex = selected[qId];
+
+              return (
+                <div
+                  key={qId}
+                  className="border border-slate-300 rounded-lg p-5 space-y-4"
+                >
+                  <div
+                    onClick={() => handleCopy(qId)}
+                    className="flex items-center gap-2 cursor-pointer"
                   >
-                    {showAnswer[qId] ? "Hide Answer" : "Show Answer"}
-                  </button>
-                )}
-                {showAnswer[qId] && (
-                  <div className="mt-4 p-4 bg-slate-100 rounded-lg">
-                    <h4 className="text-lg font-medium mb-2">Explanation</h4>
-                    {q.options.map((option: any) => {
-                      const isOptionCorrect = option.option === q.correctOption;
+                    <Copy className="w-5 h-5" />
+                    <p className="text-slate-700 text-sm font-normal">{qId}</p>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-5">
+                      <p className="text-slate-700 text-sm font-normal">
+                        Question {globalQuestionNumber} of {meta?.total || 0}
+                      </p>
+                      {mcqData?.subtopic && (
+                        <p className="bg-[#D97706] text-xs font-normal px-3 py-1 text-white rounded-full">
+                          {mcqData?.subtopic}
+                        </p>
+                      )}
+                      {q.difficulty && (
+                        <p className="text-xs font-normal px-3 py-1 bg-white rounded-full border border-slate-200">
+                          {q.difficulty}
+                        </p>
+                      )}
+                    </div>
+                    <div
+                      className="flex items-center gap-1.5 text-[#F61F1F] cursor-pointer"
+                      onClick={() => {
+                        setMcqId(q?.mcqId);
+                        setOpenReportModal(true);
+                      }}
+                    >
+                      <p className="text-sm font-semibold">Report</p>
+                      <CircleAlert />
+                    </div>
+                  </div>
+
+                  <p className="text-slate-900 font-medium">{q.question}</p>
+                  {q.imageDescription && (
+                    <img
+                      src={q.imageDescription}
+                      alt="Question Image"
+                      className="mt-4 max-w-full h-auto rounded-lg max-h-96 object-contain"
+                    />
+                  )}
+
+                  <div className="space-y-2">
+                    {q.options.map((opt: any, optionIdx: number) => {
+                      const isSelected = selectedIndex === optionIdx;
+                      const isCorrect = opt.option === q.correctOption;
+                      const show = showAnswer[qId];
+
+                      // styles
+                      let borderClass = "border-none";
+                      let bgClass = "";
+                      let textClass = "text-slate-800";
+
+                      if (show) {
+                        if (isSelected && isCorrect) {
+                          borderClass = "border-green-500";
+                          bgClass = "bg-green-50";
+                          textClass = "text-green-700 font-medium";
+                        } else if (isSelected && !isCorrect) {
+                          borderClass = "border-red-500";
+                          bgClass = "bg-red-50";
+                          textClass = "text-red-700 font-medium";
+                        } else if (!isSelected && isCorrect) {
+                          borderClass = "border-green-500";
+                          bgClass = "bg-green-50";
+                          textClass = "text-green-700 font-medium";
+                        }
+                      } else if (isSelected) {
+                        borderClass = "border-blue-500";
+                        bgClass = "bg-blue-50";
+                      }
+
                       return (
-                        <div key={option.option} className="mb-3">
-                          {isOptionCorrect ? (
-                            <p className="font-medium text-green-600">
-                              [Correct - Choice {option.option}]
-                            </p>
-                          ) : (
-                            <p className="font-medium text-red-600">
-                              [Choice {option.option}]
-                            </p>
-                          )}
-                          <p className="text-gray-800">{option.explanation}</p>
-                        </div>
+                        <label
+                          key={optionIdx}
+                          className={`block p-2 border rounded cursor-pointer ${borderClass} ${bgClass}`}
+                        >
+                          <input
+                            type="radio"
+                            name={`question-${qId}`}
+                            className="mr-2"
+                            onChange={() => handleSelect(qId, optionIdx)}
+                            checked={isSelected}
+                            disabled={lockedQuestions[qId]}
+                          />
+                          <span className={textClass}>
+                            {opt.option}. {opt.optionText}
+                          </span>
+                        </label>
                       );
                     })}
                   </div>
-                )}
-              </div>
-            );
-          })}
-          <QuizReportModal
-            open={openReportModal}
-            setOpen={setOpenReportModal}
-            mcqId={mcqId}
-            questionBankId={mcqData?._id}
-          />
-        </div>
-      {/* Pagination */}
-      <div className="mt-16 mb-32 flex justify-center flex-wrap gap-4 space-x-5 ">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className={`px-6 py-2 rounded border font-medium cursor-pointer ${
-            currentPage === 1
-              ? "cursor-not-allowed bg-gray-200 text-gray-400"
-              : "bg-white hover:bg-gray-100 text-gray-700"
-          }`}
-        >
-          Previous
-        </button>
 
-        {currentPage === totalPages ? (
-          <button
-            onClick={handleSubmit}
-            disabled={isSubmitting || !isCurrentQuestionAnswered}
-            className={`px-6 py-2 rounded border font-medium cursor-pointer ${
-              isSubmitting || !isCurrentQuestionAnswered
-                ? "bg-blue-300 cursor-not-allowed"
-                : "bg-blue-main text-white hover:bg-blue-main/90"
-            }`}
-          >
-            {isSubmitting ? "Submitting..." : "Submit Final Result"}
-          </button>
-        ) : (
-          <div className="flex gap-4">
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={
-                currentPage === totalPages || !isCurrentQuestionAnswered
-              }
-              className={`px-6 py-2 rounded border font-medium cursor-pointer ${
-                currentPage === totalPages || !isCurrentQuestionAnswered
-                  ? "cursor-not-allowed bg-gray-200 text-gray-400"
-                  : "bg-blue-main text-white hover:bg-blue-main/90"
-              }`}
-            >
-              Next
-            </button>
-            <button
-              onClick={() => {
-                   if (navigationState?.from === "weekly-plan") {
-                     navigate(-1);
-                   } else {
-                     navigate("/dashboard/mcq-bank");
-                   }
-              }}
-              className="px-6 py-2 rounded border font-medium cursor-pointer bg-white text-gray-700 hover:bg-gray-50"
-            >
-              Save & Exit
-            </button>
-          </div>
-        )}
-
-        {navigationState?.from !== "weekly-plan" && (
-          <div className="flex items-center gap-2 ml-4">
-            <input
-              type="number"
-              min="1"
-              max={meta?.total || 1}
-              value={jumpQuestion}
-              onChange={(e) => setJumpQuestion(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleJump();
-                }
-              }}
-              placeholder="Go to question"
-              className="w-32 px-3 py-2 border rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-main"
+                  {selectedIndex !== undefined && selectedIndex !== null && (
+                    <button
+                      onClick={() => toggleAnswer(qId)}
+                      className="px-4 py-2 border rounded text-sm font-medium bg-blue-main text-white hover:bg-blue-main/85 cursor-pointer"
+                    >
+                      {showAnswer[qId] ? "Hide Answer" : "Show Answer"}
+                    </button>
+                  )}
+                  {showAnswer[qId] && (
+                    <div className="mt-4 p-4 bg-slate-100 rounded-lg">
+                      <h4 className="text-lg font-medium mb-2">Explanation</h4>
+                      {q.options.map((option: any) => {
+                        const isOptionCorrect = option.option === q.correctOption;
+                        return (
+                          <div key={option.option} className="mb-3">
+                            {isOptionCorrect ? (
+                              <p className="font-medium text-green-600">
+                                [Correct - Choice {option.option}]
+                              </p>
+                            ) : (
+                              <p className="font-medium text-red-600">
+                                [Choice {option.option}]
+                              </p>
+                            )}
+                            <p className="text-gray-800">{option.explanation}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            <QuizReportModal
+              open={openReportModal}
+              setOpen={setOpenReportModal}
+              mcqId={mcqId}
+              questionBankId={mcqData?._id}
             />
-            <button
-              onClick={handleJump}
-              className="px-4 py-2 bg-blue-main text-white rounded text-sm font-medium hover:bg-blue-main/90 cursor-pointer"
-            >
-              Jump
-            </button>
           </div>
-        )}
-      </div>
-      </>
+          {/* Pagination */}
+          <div className="mt-16 mb-32 flex justify-center flex-wrap gap-4 space-x-5 ">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`px-6 py-2 rounded border font-medium cursor-pointer ${currentPage === 1
+                ? "cursor-not-allowed bg-gray-200 text-gray-400"
+                : "bg-white hover:bg-gray-100 text-gray-700"
+                }`}
+            >
+              Previous
+            </button>
+
+            {currentPage === totalPages ? (
+              <button
+                onClick={handleSubmit}
+                disabled={isSubmitting || !isCurrentQuestionAnswered}
+                className={`px-6 py-2 rounded border font-medium cursor-pointer ${isSubmitting || !isCurrentQuestionAnswered
+                  ? "bg-blue-300 cursor-not-allowed"
+                  : "bg-blue-main text-white hover:bg-blue-main/90"
+                  }`}
+              >
+                {isSubmitting ? "Submitting..." : "Submit Final Result"}
+              </button>
+            ) : (
+              <div className="flex gap-4">
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={
+                    currentPage === totalPages || !isCurrentQuestionAnswered
+                  }
+                  className={`px-6 py-2 rounded border font-medium cursor-pointer ${currentPage === totalPages || !isCurrentQuestionAnswered
+                    ? "cursor-not-allowed bg-gray-200 text-gray-400"
+                    : "bg-blue-main text-white hover:bg-blue-main/90"
+                    }`}
+                >
+                  Next
+                </button>
+                <button
+                  onClick={() => {
+                    if (navigationState?.from === "weekly-plan") {
+                      navigate(-1);
+                    } else {
+                      navigate("/dashboard/mcq-bank");
+                    }
+                  }}
+                  className="px-6 py-2 rounded border font-medium cursor-pointer bg-white text-gray-700 hover:bg-gray-50"
+                >
+                  Save & Exit
+                </button>
+              </div>
+            )}
+
+            {navigationState?.from !== "weekly-plan" && (
+              <div className="flex items-center gap-2 ml-4">
+                <input
+                  type="number"
+                  min="1"
+                  max={meta?.total || 1}
+                  value={jumpQuestion}
+                  onChange={(e) => setJumpQuestion(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleJump();
+                    }
+                  }}
+                  placeholder="Go to question"
+                  className="w-32 px-3 py-2 border rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-main"
+                />
+                <button
+                  onClick={handleJump}
+                  className="px-4 py-2 bg-blue-main text-white rounded text-sm font-medium hover:bg-blue-main/90 cursor-pointer"
+                >
+                  Jump
+                </button>
+              </div>
+            )}
+          </div>
+        </>
       )}
 
       <PracticeQuizModal
