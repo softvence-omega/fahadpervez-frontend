@@ -165,7 +165,7 @@ export default function DailyChallengeQuiz() {
                             </div>
                             <div className="flex justify-between items-center py-2 border-b border-gray-50">
                                 <span className="text-gray-600">Reward</span>
-                                <span className="text-blue-600 font-medium">+50 pts</span>
+                                <span className="text-blue-600 font-medium">+10 pts</span>
                             </div>
                         </div>
                     </div>
