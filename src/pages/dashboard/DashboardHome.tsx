@@ -8,14 +8,10 @@ import WeeklyLeaderboard from "@/components/dashboard_new/WeeklyLeaderboard";
 import WeeklyHighlights from "@/components/dashboard_new/WeeklyHighlights";
 import MedicalStudyGoalTracker from "@/components/dashboard/goal/MedicalStudyGoalTracker";
 import DailyChallenge from "@/components/dashboard_new/DailyChallenge";
-import { selectUser } from "@/store/features/auth/auth.slice";
-import { useAppSelector } from "@/store/hook";
 // import MedicalStudyGoalTracker from "./MedicalStudyGoalTracker";
 // import ChatInterface from "@/components/dashboard_new/message";
 
 const Dashboard: React.FC = () => {
-  const user = useAppSelector(selectUser);
-  console.log(user?.account?.role);
 
   return (
     <div className="my-6 md:my-10">
@@ -39,11 +35,9 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Highlights of the Week */}
-      {user?.account?.role === "STUDENT" && (
         <div className="mb-6">
           <WeeklyHighlights />
         </div>
-      )}
     </div>
   );
 };
