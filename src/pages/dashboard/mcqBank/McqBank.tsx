@@ -61,7 +61,7 @@ const McqBankCard = ({ mcq }: { mcq: any }) => {
     actionText = "Continue";
   }
 
-  const hierarchy = [mcq.subject, mcq.system, mcq.topic].filter(Boolean).join(" → ");
+  // const hierarchy = [mcq.subject, mcq.system, mcq.topic].filter(Boolean).join(" → ");
 
   return (
     <div className={`group relative ${cardBg} border rounded-[24px] p-5 transition-all duration-300 flex flex-col h-full min-h-[160px]`}>
