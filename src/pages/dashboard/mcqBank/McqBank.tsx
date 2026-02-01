@@ -44,18 +44,18 @@ const McqBankCard = ({ mcq }: { mcq: any }) => {
   // Display count logic: if completed, show full count. Else show local storage count.
   const displayCount = isCompleted ? mcq.totalMcq : localCompletedCount;
 
-  let cardBg = "bg-white border-slate-200 hover:border-blue-200";
+  let cardBg = "bg-white border-slate-300 hover:border-blue-300";
   let badgeClasses = "bg-white text-black border border-slate-100";
   let statusText = `Not Started _ / ${mcq.totalMcq}`;
   let actionText = "Start";
 
   if (isCompleted) {
-    cardBg = "bg-green-100 border-green-200";
+    cardBg = "bg-green-100 border-green-300";
     badgeClasses = "bg-green-600 text-white transition-all";
     statusText = `Completed ${mcq.totalMcq}/${mcq.totalMcq}`;
     actionText = "Start Again";
   } else if (inProgress) {
-    cardBg = "bg-blue-100 border-blue-200";
+    cardBg = "bg-blue-100 border-blue-300";
     badgeClasses = "bg-blue-500 text-white transition-all";
     statusText = `In Progress ${displayCount}/${mcq.totalMcq}`;
     actionText = "Continue";
@@ -64,17 +64,17 @@ const McqBankCard = ({ mcq }: { mcq: any }) => {
   // const hierarchy = [mcq.subject, mcq.system, mcq.topic].filter(Boolean).join(" → ");
 
   return (
-    <div className={`group relative ${cardBg} border rounded-[24px] p-5 transition-all duration-300 flex flex-col h-full min-h-[160px]`}>
+    <div className={`group relative ${cardBg} border rounded-[16px] p-4 transition-all duration-300 flex flex-col h-full min-h-[160px]`}>
       <div className="flex justify-between items-start mb-3">
         {/* Top Badges */}
         <div className="flex flex-wrap gap-2">
           {mcq.profileType && (
-            <span className="px-2 py-0.5 bg-white text-slate-600 text-[10px] font-bold rounded-md uppercase tracking-tight border border-slate-200">
+            <span className="px-2 py-0.5 bg-white text-slate-600 text-[10px] font-bold rounded-full uppercase tracking-tight border border-slate-200">
               {mcq.profileType}
             </span>
           )}
           {mcq.type && (
-            <span className="px-2 py-0.5 bg-white text-blue-500 text-[10px] font-bold rounded-md uppercase tracking-tight border border-blue-100">
+            <span className="px-2 py-0.5 bg-white text-violet-500 text-[10px] font-bold rounded-full uppercase tracking-tight border border-violet-300">
               {mcq.type}
             </span>
           )}
@@ -165,7 +165,7 @@ const McqBank = () => {
           bgType="solid"
           iconPosition="left"
           bgColor="bg-blue-600"
-          className="h-11 hover:bg-blue-700 shadow-md hover:shadow-lg transition-all rounded-xl cursor-pointer w-full sm:w-auto px-6 font-bold"
+          className="h-11 hover:bg-blue-700 shadow-md hover:shadow-lg transition-all rounded-[8px] cursor-pointer w-full sm:w-auto px-6 font-bold"
           onClick={() => setOpenModal(true)}
         >
           Create Custom Quiz
@@ -178,7 +178,7 @@ const McqBank = () => {
             <input
               type="text"
               placeholder="Search by condition, subject or keyword..."
-              className="w-full h-12 pl-12 pr-4 bg-white border border-slate-200 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-slate-400"
+              className="w-full h-12 pl-12 pr-4 bg-white border border-slate-200 rounded-[8px] shadow-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-slate-400"
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
@@ -193,10 +193,10 @@ const McqBank = () => {
         </div>
         <button
           onClick={() => setIsFilterOpen(true)}
-          className="flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 px-6 py-2 h-12 rounded-xl cursor-pointer hover:bg-slate-50 hover:border-slate-300 transition-all w-full lg:w-auto font-bold shadow-sm"
+          className="flex items-center justify-center gap-2 bg-blue-600 border border-slate-200 text-white px-6 py-2 h-12 rounded-[8px] cursor-pointer hover:bg-blue-700 hover:border-slate-300 transition-all w-full lg:w-auto font-bold shadow-sm"
         >
-          <Filter className="w-4 h-4 text-slate-500" />
-          Filter Content
+          <Filter className="w-4 h-4 text-white" />
+          Filter
         </button>
       </div>
 

@@ -58,14 +58,14 @@ export default function CreateNotes() {
   return (
     <div className="w-full">
       <div className="flex items-center gap-3">
-        <Link to={"/dashboard/download-notes"} className="mb-7">
+        <Link to={"/dashboard/download-notes"} className="mb-3">
           <ArrowLeft />
         </Link>
         <DashboardHeading
           title="Create Notes"
           titleSize="text-xl"
           description="Builds confidence through repeated practice."
-          className="mt-12 mb-12 space-y-1"
+          className="mt-4 space-y-1"
         />
       </div>
 
@@ -75,7 +75,7 @@ export default function CreateNotes() {
           className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5x mx-auto p-6"
         >
           {/* Uploader */}
-          <div className="p-6 border rounded-xl border-black/10">
+          <div className="p-6 border rounded-xl border-black/10 bg-slate-50">
             <h3 className="flex items-center gap-2 text-lg font-semibold mb-2">
               <Upload className="w-5 h-5 mb-1" /> Upload Media
             </h3>
@@ -85,17 +85,26 @@ export default function CreateNotes() {
             <FileUploader
               onFilesChange={(newFiles) => setFiles([...files, ...newFiles])}
             />
+
+            {
+              files.length > 0 && (
+                <div className="mt-4">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold">Recent Uploads</h3>
+                    <p className="text-sm text-gray-500">
+                      Your uploaded files ready for note generation
+                    </p>
+                  </div>
+                  {/* Preview List */}
+                  <FilePreviewList files={files} onRemove={handleRemoveFile} />
+                </div>
+              )
+            }
           </div>
 
           {/* Right side */}
           <div className="p-6 border rounded-xl border-black/10 space-y-4 ">
-            <h3 className="text-lg font-semibold">Recent Uploads</h3>
-            <p className="text-sm text-gray-500">
-              Your uploaded files ready for quiz generation
-            </p>
-
-            {/* Preview List */}
-            <FilePreviewList files={files} onRemove={handleRemoveFile} />
+            <p className="text-sm font-medium text-gray-500 mb-4">Give prompt for note generation</p>
 
             {/* Note Textarea */}
             <textarea

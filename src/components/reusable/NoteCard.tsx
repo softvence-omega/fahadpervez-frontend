@@ -92,11 +92,11 @@ const NoteCard: React.FC<NoteCardProps> = ({
   };
 
   return (
-    <div className="flex flex-col justify-between p-6 border border-gray-300 rounded-2xl">
+    <div className="flex flex-col justify-between p-5 bg-emerald-50 border border-emerald-300 rounded-2xl">
       {/* Tag + PDF Icon */}
       <div>
         <div className="flex justify-between items-center mb-3">
-          <p className="text-sm text-yellow-800 font-medium bg-yellow-100 px-3 py-2 rounded-2xl">
+          <p className="text-sm text-yellow-800 font-medium bg-yellow-100 border border-yellow-300 px-3 py-2 rounded-full">
             {tag}
           </p>
           <FaFilePdf className="text-[var(--color-blue-btn-1)] w-6 h-6" />
@@ -104,7 +104,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
 
         {/* Title & Description */}
         <h2 className="text-2xl font-semibold">{title}</h2>
-        <p className="text-base text-slate-700 mt-2 mb-9">{description}</p>
+        <p className="text-base text-slate-700 mt-2 mb-9">{description.slice(0, 200).concat("...")}</p>
 
         {/* Meta Info */}
         <div className="flex flex-wrap gap-14">
@@ -138,7 +138,7 @@ const NoteCard: React.FC<NoteCardProps> = ({
           <Button
             onClick={handleDownloadClick}
             disabled={isDownloading}
-            className="bg-green-900 hover:bg-green-800 text-white rounded-[6px] cursor-pointer py-2 h-auto flex items-center justify-center gap-2"
+            className="bg-emerald-900 hover:bg-emerald-800 text-white rounded-[6px] cursor-pointer py-2 h-auto flex items-center justify-center gap-2"
           >
             {isDownloading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
