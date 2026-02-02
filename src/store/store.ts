@@ -28,19 +28,18 @@ const staticContentPersistConfig = {
     "contentType",
     "contentFor",
     "type",
-
     "bankId",
   ],
 };
 const persistedReducer = persistReducer(persistConfig, authReducer);
 const persistedStaticContentReducer = persistReducer(
   staticContentPersistConfig,
-  staticContentSlice
+  staticContentSlice,
 );
 
 import { bioDigitalExternalAPI } from "./features/bioDigital/bioDigitalExternal.api";
-import quizReducer from "./features/MCQBank/quizSlice";
 import { drugApi } from "./features/drugApi/drugApi";
+import quizReducer from "./features/MCQBank/quizSlice";
 
 export const store = configureStore({
   reducer: {

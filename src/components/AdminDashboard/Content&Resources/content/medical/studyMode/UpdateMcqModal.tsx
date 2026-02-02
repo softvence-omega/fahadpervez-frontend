@@ -99,7 +99,13 @@ const UpdateMcqModal: FC<UpdateMCQModalProps> = ({
   });
 
   useEffect(() => {
-    reset(data);
+    reset({
+      ...data,
+      optionE: data.optionE ?? "",
+      optionF: data.optionF ?? "",
+      explanationE: data.explanationE ?? "",
+      explanationF: data.explanationF ?? "",
+    });
   }, [data, reset]);
 
   const handleFormSubmit = (formData: UpdateMCQFormValues) => {
