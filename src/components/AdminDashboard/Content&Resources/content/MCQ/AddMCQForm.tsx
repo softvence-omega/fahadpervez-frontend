@@ -20,7 +20,7 @@ import ActionButtons from "../ActionButtons";
 
 const MCQOptionSchema = z.object({
   option: z.string(),
-  optionText: z.string().min(1, { message: "Option text is required" }),
+  optionText: z.string().optional(),
   explanation: z.string().optional(),
 });
 
@@ -33,7 +33,7 @@ const MCQSchema = z
     correctOption: z.enum(["A", "B", "C", "D", "E", "F"]),
   })
   .superRefine((data, ctx) => {
-    // A–D must have text
+    // A–D must have text (E and F are optional)
     data.options.forEach((opt, index) => {
       if (
         ["A", "B", "C", "D"].includes(opt.option) &&
@@ -46,8 +46,9 @@ const MCQSchema = z
         });
       }
     });
-    const correct = data.options.find((o) => o.option === data.correctOption);
 
+    // Check if correct answer has text
+    const correct = data.options.find((o) => o.option === data.correctOption);
     if (!correct?.optionText?.trim()) {
       ctx.addIssue({
         path: ["correctOption"],
@@ -148,9 +149,24 @@ const AddMCQForm = () => {
   const dispatch = useDispatch();
   const onSubmit = async (data: MCQFormValues) => {
     try {
+      // Filter out empty optional options (E and F) and ensure type safety
+      const processedMcqs = data.mcqs.map((mcq) => ({
+        ...mcq,
+        options: mcq.options
+          .filter((opt) => {
+            // Only keep options that have text
+            return opt.optionText && opt.optionText.trim() !== "";
+          })
+          .map((opt) => ({
+            option: opt.option,
+            optionText: opt.optionText!.trim(), // Use non-null assertion since we filtered
+            explanation: opt.explanation?.trim() || "",
+          })),
+      }));
+
       if (uploadIntoBank && bankId) {
         const fd = new FormData();
-        fd.append("data", JSON.stringify(data.mcqs));
+        fd.append("data", JSON.stringify(processedMcqs));
 
         await addMoreMcqToMcqBank({
           mcqBankId: bankId,
@@ -162,7 +178,7 @@ const AddMCQForm = () => {
         if (formData) {
           const formattedPayload = {
             ...formData,
-            mcqs: data.mcqs,
+            mcqs: processedMcqs,
           };
           await uploadManualMcq(formattedPayload).unwrap();
         }
@@ -264,6 +280,11 @@ const AddMCQForm = () => {
                   >
                     <span className={inputClass.label}>
                       {String.fromCharCode(65 + index)}
+                      {index >= 4 && (
+                        <span className="text-gray-400 text-xs ml-1">
+                          (optional)
+                        </span>
+                      )}
                     </span>
 
                     <div className="flex-1">
@@ -271,7 +292,7 @@ const AddMCQForm = () => {
                         type="text"
                         placeholder={`Enter option ${String.fromCharCode(
                           65 + index,
-                        )}`}
+                        )}${index >= 4 ? " (optional)" : ""}`}
                         {...register(
                           `mcqs.${qIndex}.options.${index}.optionText` as const,
                         )}
@@ -315,6 +336,11 @@ const AddMCQForm = () => {
                   />
                 )}
               />
+              {errors.mcqs?.[qIndex]?.correctOption && (
+                <p className={inputClass.error}>
+                  {errors.mcqs[qIndex]?.correctOption?.message}
+                </p>
+              )}
             </div>
 
             <div>
