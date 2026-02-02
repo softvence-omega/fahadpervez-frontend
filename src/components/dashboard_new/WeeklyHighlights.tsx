@@ -9,15 +9,16 @@ interface HighlightItem {
 }
 
 interface HighlightsData {
-  mcqBank?: HighlightItem[];
-  flashcard?: HighlightItem[];
-  clinicalCase?: HighlightItem[];
-  osce?: HighlightItem[];
+  mcqBank?: HighlightItem;
+  flashcard?: HighlightItem;
+  clinicalCase?: HighlightItem;
+  osce?: HighlightItem;
+  note?: HighlightItem;
 }
 
 interface HighlightCard {
   id: string;
-  type: "mcq" | "flashcard" | "clinicalCase" | "osce";
+  type: "mcq" | "flashcard" | "clinicalCase" | "osce" | "note";
   title: string;
   description: string;
   buttonText: string;
@@ -38,8 +39,8 @@ const WeeklyHighlights: React.FC = () => {
     const cards: HighlightCard[] = [];
 
     // MCQ Bank
-    if (highlights.mcqBank && highlights.mcqBank.length > 0) {
-      const mcq = highlights.mcqBank[0];
+    if (highlights.mcqBank) {
+      const mcq = highlights.mcqBank;
       cards.push({
         id: mcq._id,
         type: "mcq",
@@ -72,8 +73,8 @@ const WeeklyHighlights: React.FC = () => {
     }
 
     // Clinical Case
-    if (highlights.clinicalCase && highlights.clinicalCase.length > 0) {
-      const clinicalCase = highlights.clinicalCase[0];
+    if (highlights.clinicalCase) {
+      const clinicalCase = highlights.clinicalCase;
       cards.push({
         id: clinicalCase._id,
         type: "clinicalCase",
@@ -89,8 +90,8 @@ const WeeklyHighlights: React.FC = () => {
     }
 
     // OSCE
-    if (highlights.osce && highlights.osce.length > 0) {
-      const osce = highlights.osce[0];
+    if (highlights.osce) {
+      const osce = highlights.osce;
       cards.push({
         id: osce._id,
         type: "osce",
@@ -102,6 +103,22 @@ const WeeklyHighlights: React.FC = () => {
         img: "/image/dashboard_new/User.svg",
         cardCss: "bg-gradient-to-br from-violet-50 to-violet-100 border-violet-200",
         btnCss: "bg-violet-700/90 text-white py-2 px-4 rounded-lg font-medium hover:bg-violet-800 transition-colors cursor-pointer",
+      });
+    }
+
+    if (highlights.note) {
+      const note = highlights.note;
+      cards.push({
+        id: note._id,
+        type: "note",
+        title: "Note of the Week",
+        description:
+          "Master key concepts with this week's featured note",
+        buttonText: "Study Now",
+        route: `/dashboard/notes/${note?._id}`,
+        img: "/image/dashboard_new/Frame.svg",
+        cardCss: "bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200",
+        btnCss: "bg-emerald-700/90 text-white py-2 px-4 rounded-lg font-medium hover:bg-emerald-800 transition-colors cursor-pointer",
       });
     }
 

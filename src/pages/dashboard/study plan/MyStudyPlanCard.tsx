@@ -34,7 +34,7 @@ export default function MyStudyPlanCard({ plan }: MyStudyPlanCardProps) {
     };
 
     return (
-        <div className="flex flex-col justify-between p-5 bg-indigo-100 border border-indigo-300 rounded-[8px]">
+        <div className="flex flex-col justify-between p-5 bg-indigo-50 border border-indigo-300 rounded-[8px]">
             <div>
                 <div className="flex justify-between items-start gap-4">
                 <h3 className="text-lg font-semibold text-slate-800 line-clamp-2">{plan.plan_summary}</h3>
@@ -53,7 +53,7 @@ export default function MyStudyPlanCard({ plan }: MyStudyPlanCardProps) {
             </div>
             </div>
 
-            <PrimaryButton className="w-full mt-7 bg-indigo-700" onClick={handleViewPlan}>View Plan</PrimaryButton>
+            <PrimaryButton className="w-full mt-7 bg-indigo-500 hover:bg-indigo-600" onClick={handleViewPlan}>View Plan</PrimaryButton>
         </div>
     )
 }

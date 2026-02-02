@@ -18,51 +18,51 @@ const taskTypeConfig: Record<
 > = {
   mcqs: {
     icon: <BookOpen className="w-4 h-4" />,
-    color: "bg-lime-50 border border-lime-300",
+    color: "bg-lime-50/60 border border-lime-200",
     buttonText: "Start quiz",
-    buttonBgColor: "bg-lime-700/90 hover:bg-lime-800/90",
+    buttonBgColor: "bg-lime-700/90 hover:bg-lime-700",
   },
   mcq: {
     icon: <BookOpen className="w-4 h-4" />,
-    color: "bg-lime-50 border border-lime-300",
+    color: "bg-lime-50/60 border border-lime-200",
     buttonText: "Start quiz",
-    buttonBgColor: "bg-lime-700/90 hover:bg-lime-800/90",
+    buttonBgColor: "bg-lime-700/90 hover:bg-lime-700",
   },
   flashcards: {
     icon: <RotateCcw className="w-4 h-4" />,
-    color: "bg-orange-50 border border-orange-300",
+    color: "bg-orange-50/60 border border-orange-200",
     buttonText: "Review",
-    buttonBgColor: "bg-orange-700/90 hover:bg-orange-800/90",
+    buttonBgColor: "bg-orange-700/90 hover:bg-orange-700",
   },
   flashcard: {
     icon: <RotateCcw className="w-4 h-4" />,
-    color: "bg-orange-50 border border-orange-300",
+    color: "bg-orange-50/60 border border-orange-200",
     buttonText: "Review",
-    buttonBgColor: "bg-orange-700/90 hover:bg-orange-800/90",
+    buttonBgColor: "bg-orange-700/90 hover:bg-orange-700",
   },
   notes: {
     icon: <FileText className="w-4 h-4" />,
-    color: "bg-green-50 border border-green-300",
+    color: "bg-green-50/60 border border-green-200",
     buttonText: "Read Notes",
-    buttonBgColor: "bg-green-700/90 hover:bg-green-800/90",
+    buttonBgColor: "bg-green-700/90 hover:bg-green-700",
   },
   "clinical cases": {
     icon: <Briefcase className="w-4 h-4" />,
-    color: "bg-blue-50 border border-blue-300",
+    color: "bg-blue-50/60 border border-blue-200",
     buttonText: "View Case",
-    buttonBgColor: "bg-blue-700/90 hover:bg-blue-800/90",
+    buttonBgColor: "bg-blue-700/90 hover:bg-blue-700",
   },
   "clinical case": {
     icon: <Briefcase className="w-4 h-4" />,
-    color: "bg-blue-50 border border-blue-300",
+    color: "bg-blue-50/60 border border-blue-200",
     buttonText: "View Case",
-    buttonBgColor: "bg-blue-700/90 hover:bg-blue-800/90",
+    buttonBgColor: "bg-blue-700/90 hover:bg-blue-700",
   },
   osce: {
     icon: <ClipboardCheck className="w-4 h-4" />,
-    color: "bg-teal-50 border border-teal-300",
+    color: "bg-teal-50/60 border border-teal-200",
     buttonText: "Practice",
-    buttonBgColor: "bg-teal-700/90 hover:bg-teal-800/90",
+    buttonBgColor: "bg-teal-700/90 hover:bg-teal-700",
   },
 };
 
@@ -183,7 +183,7 @@ const SmartStudyPlan: React.FC = () => {
               return (
                 <div
                   key={i}
-                  className={`${config.color} rounded-lg p-4 flex flex-col justify-between`}
+                  className={`border border-gray-200 bg-white/40 rounded-lg p-4 flex flex-col justify-between`}
                 >
                   <div>
                     <div className="flex flex-wrap items-center gap-2 mb-3">

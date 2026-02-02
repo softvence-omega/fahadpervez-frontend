@@ -20,7 +20,7 @@ export default function FlashCard({
   };
 
   return (
-    <div className="flex flex-col justify-between p-4 bg-orange-50 border border-orange-300 rounded-[12px] h-full">
+    <div className="flex flex-col justify-between p-4 bg-orange-50 border border-orange-200 rounded-[12px] h-full">
       <div className="mb-10 flex justify-between items-start gap-2">
         <div>
           <div className="flex items-center gap-1">
@@ -59,7 +59,7 @@ export default function FlashCard({
       </div>
       <button
         onClick={() => handleQuiz(flashcard?._id)}
-        className={`w-full rounded-[4px] py-3 flex justify-center gap-1 items-center text-white cursor-pointer mt-auto ${flashcard?.isComplete ? "bg-green-800 hover:bg-green-900" : "bg-orange-800 hover:bg-orange-900"}`}
+        className={`w-full rounded-[4px] py-3 flex justify-center gap-1 items-center text-white cursor-pointer mt-auto ${flashcard?.isComplete ? "bg-green-800 hover:bg-green-900" : "bg-orange-800/90 hover:bg-orange-900/80"}`}
       >
         <Play className="w-4 h-4" /> View Card
       </button>
