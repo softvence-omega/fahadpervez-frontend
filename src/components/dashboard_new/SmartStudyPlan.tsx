@@ -14,47 +14,55 @@ import GlobalLoader2 from "@/common/GlobalLoader2";
 
 const taskTypeConfig: Record<
   string,
-  { icon: React.ReactNode; color: string; buttonText: string }
+  { icon: React.ReactNode; color: string; buttonText: string; buttonBgColor: string }
 > = {
   mcqs: {
     icon: <BookOpen className="w-4 h-4" />,
-    color: "bg-orange-100 text-orange-700",
+    color: "bg-lime-50 border border-lime-300",
     buttonText: "Start quiz",
+    buttonBgColor: "bg-lime-700/90 hover:bg-lime-800/90",
   },
   mcq: {
     icon: <BookOpen className="w-4 h-4" />,
-    color: "bg-orange-100 text-orange-700",
+    color: "bg-lime-50 border border-lime-300",
     buttonText: "Start quiz",
+    buttonBgColor: "bg-lime-700/90 hover:bg-lime-800/90",
   },
   flashcards: {
     icon: <RotateCcw className="w-4 h-4" />,
-    color: "bg-blue-100 text-blue-700",
+    color: "bg-orange-50 border border-orange-300",
     buttonText: "Review",
+    buttonBgColor: "bg-orange-700/90 hover:bg-orange-800/90",
   },
   flashcard: {
     icon: <RotateCcw className="w-4 h-4" />,
-    color: "bg-blue-100 text-blue-700",
+    color: "bg-orange-50 border border-orange-300",
     buttonText: "Review",
+    buttonBgColor: "bg-orange-700/90 hover:bg-orange-800/90",
   },
   notes: {
     icon: <FileText className="w-4 h-4" />,
-    color: "bg-green-100 text-green-700",
+    color: "bg-green-50 border border-green-300",
     buttonText: "Read Notes",
+    buttonBgColor: "bg-green-700/90 hover:bg-green-800/90",
   },
   "clinical cases": {
     icon: <Briefcase className="w-4 h-4" />,
-    color: "bg-purple-100 text-purple-700",
+    color: "bg-blue-50 border border-blue-300",
     buttonText: "View Case",
+    buttonBgColor: "bg-blue-700/90 hover:bg-blue-800/90",
   },
   "clinical case": {
     icon: <Briefcase className="w-4 h-4" />,
-    color: "bg-purple-100 text-purple-700",
+    color: "bg-blue-50 border border-blue-300",
     buttonText: "View Case",
+    buttonBgColor: "bg-blue-700/90 hover:bg-blue-800/90",
   },
   osce: {
     icon: <ClipboardCheck className="w-4 h-4" />,
-    color: "bg-teal-100 text-teal-700",
+    color: "bg-teal-50 border border-teal-300",
     buttonText: "Practice",
+    buttonBgColor: "bg-teal-700/90 hover:bg-teal-800/90",
   },
 };
 
@@ -121,7 +129,7 @@ const SmartStudyPlan: React.FC = () => {
     );
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6 h-full flex flex-col">
+    <div className="bg-white rounded-lg shadow-sm p-6 h-full flex flex-col border border-slate-200">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold text-gray-900">
           Smart Study Plan
@@ -175,18 +183,18 @@ const SmartStudyPlan: React.FC = () => {
               return (
                 <div
                   key={i}
-                  className={`${config.color} border border-gray-200 rounded-lg p-4 flex flex-col justify-between`}
+                  className={`${config.color} rounded-lg p-4 flex flex-col justify-between`}
                 >
                   <div>
                     <div className="flex flex-wrap items-center gap-2 mb-3">
                       <span
-                        className={`${config.color} text-nowrap px-2 py-1 rounded text-xs font-medium`}
+                        className={`border border-gray-200 bg-white/40 text-nowrap px-2 py-1 rounded text-xs font-medium`}
                       >
                         {task.task_type}
                       </span>
                     </div>
                     <h5
-                      className="font-semibold text-gray-90 mb-3 line-clamp-2"
+                      className="font-semibold text-black/80 mb-3 line-clamp-2"
                       title={task.description || task.task_type}
                     >
                       {task.description || task.task_type}
@@ -201,7 +209,7 @@ const SmartStudyPlan: React.FC = () => {
 
                   <button
                     onClick={() => handleStartClick(task)}
-                    className="mt-auto w-full bg-gray-800 text-white py-2.5 rounded-lg font-medium hover:bg-gray-700 transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                    className={`mt-auto w-full ${config.buttonBgColor} text-white py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer`}
                   >
                     {config.icon}
                     <span className="text-sm">{config.buttonText}</span>

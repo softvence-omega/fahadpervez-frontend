@@ -33,7 +33,7 @@ const DailyChallenge: React.FC = () => {
   const labels = [challenge.subject, challenge.system].filter(Boolean);
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6 h-full">
+    <div className="bg-lime-50 border border-lime-300 rounded-lg p-6 h-full">
       <div className="flex justify-between items-start mb-4">
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -52,7 +52,7 @@ const DailyChallenge: React.FC = () => {
         </div>
       </div>
 
-      <div className="border border-gray-200 rounded-lg p-6">
+      <div className="border border-lime-300 rounded-lg p-6">
         <div className="flex flex-nowrap sm:items-center justify-between mb-4">
           <div className="flex flex-wrap items-center gap-2">
             {labels.map((label, i) => (
@@ -83,7 +83,7 @@ const DailyChallenge: React.FC = () => {
         </div>
         <button 
           onClick={handleStartChallenge}
-          className="w-full bg-green-500 text-white py-3 rounded-lg font-medium hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
+          className="w-full bg-lime-700/90 text-white py-3 rounded-lg font-medium hover:bg-lime-800/90 transition-colors flex items-center justify-center gap-2 cursor-pointer"
         >
           <span className="text-sm">▶</span> Start Challenge
         </button>
