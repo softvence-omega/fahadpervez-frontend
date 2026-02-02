@@ -129,6 +129,31 @@ const AddMCQForm = () => {
     {},
   );
 
+  // Track number of options for each question (default 4 = A-D)
+  const [optionCounts, setOptionCounts] = useState<Record<number, number>>({
+    0: 4,
+  });
+
+  const addOption = (qIndex: number) => {
+    setOptionCounts((prev) => ({
+      ...prev,
+      [qIndex]: Math.min((prev[qIndex] || 4) + 1, 6),
+    }));
+  };
+
+  const removeLastOption = (qIndex: number) => {
+    setOptionCounts((prev) => ({
+      ...prev,
+      [qIndex]: Math.max((prev[qIndex] || 4) - 1, 4),
+    }));
+    // Clear the data for the removed option
+    const currentCount = optionCounts[qIndex] || 4;
+    if (currentCount > 4) {
+      setValue(`mcqs.${qIndex}.options.${currentCount - 1}.optionText`, "");
+      setValue(`mcqs.${qIndex}.options.${currentCount - 1}.explanation`, "");
+    }
+  };
+
   const handleUploadImage = async (file: File, qIndex: number) => {
     const formData = new FormData();
     formData.append("image", file);
@@ -209,7 +234,14 @@ const AddMCQForm = () => {
             {fields.length > 1 && (
               <CommonButton
                 type="button"
-                onClick={() => remove(qIndex)}
+                onClick={() => {
+                  remove(qIndex);
+                  setOptionCounts((prev) => {
+                    const newCounts = { ...prev };
+                    delete newCounts[qIndex];
+                    return newCounts;
+                  });
+                }}
                 className="text-red-500 "
               >
                 Remove Question
@@ -273,52 +305,78 @@ const AddMCQForm = () => {
               </label>
 
               <div className="space-y-3">
-                {defaultOptions.map((_, index) => (
-                  <div
-                    key={index}
-                    className="flex gap-3 items-start rounded-md border border-[#CBD5E1] bg-[#EFF6FF]/60 p-4"
-                  >
-                    <span className={inputClass.label}>
-                      {String.fromCharCode(65 + index)}
-                      {index >= 4 && (
-                        <span className="text-gray-400 text-xs ml-1">
-                          (optional)
-                        </span>
-                      )}
-                    </span>
-
-                    <div className="flex-1">
-                      <input
-                        type="text"
-                        placeholder={`Enter option ${String.fromCharCode(
-                          65 + index,
-                        )}${index >= 4 ? " (optional)" : ""}`}
-                        {...register(
-                          `mcqs.${qIndex}.options.${index}.optionText` as const,
+                {defaultOptions
+                  .slice(0, optionCounts[qIndex] || 4)
+                  .map((_, index) => (
+                    <div
+                      key={index}
+                      className="flex gap-3 items-start rounded-md border border-[#CBD5E1] bg-[#EFF6FF]/60 p-4"
+                    >
+                      <span className={inputClass.label}>
+                        {String.fromCharCode(65 + index)}
+                        {index >= 4 && (
+                          <span className="text-gray-400 text-xs ml-1">
+                            (optional)
+                          </span>
                         )}
-                        className={inputClass.input}
-                      />
+                      </span>
 
-                      {errors.mcqs?.[qIndex]?.options?.[index]?.optionText && (
-                        <p className={inputClass.error}>
-                          {
-                            errors.mcqs[qIndex]?.options?.[index]?.optionText
-                              ?.message
-                          }
-                        </p>
-                      )}
+                      <div className="flex-1">
+                        <input
+                          type="text"
+                          placeholder={`Enter option ${String.fromCharCode(
+                            65 + index,
+                          )}${index >= 4 ? " (optional)" : ""}`}
+                          {...register(
+                            `mcqs.${qIndex}.options.${index}.optionText` as const,
+                          )}
+                          className={inputClass.input}
+                        />
 
-                      <textarea
-                        placeholder="Explanation (optional)"
-                        rows={2}
-                        {...register(
-                          `mcqs.${qIndex}.options.${index}.explanation` as const,
+                        {errors.mcqs?.[qIndex]?.options?.[index]
+                          ?.optionText && (
+                          <p className={inputClass.error}>
+                            {
+                              errors.mcqs[qIndex]?.options?.[index]?.optionText
+                                ?.message
+                            }
+                          </p>
                         )}
-                        className={`${inputClass.input} resize-none mt-2`}
-                      />
+
+                        <textarea
+                          placeholder="Explanation (optional)"
+                          rows={2}
+                          {...register(
+                            `mcqs.${qIndex}.options.${index}.explanation` as const,
+                          )}
+                          className={`${inputClass.input} resize-none mt-2`}
+                        />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+              </div>
+
+              <div className="flex gap-2 mt-3">
+                {(optionCounts[qIndex] || 4) < 6 && (
+                  <CommonButton
+                    type="button"
+                    onClick={() => addOption(qIndex)}
+                    className="!text-blue-600 text-sm"
+                  >
+                    + Add Option{" "}
+                    {String.fromCharCode(65 + (optionCounts[qIndex] || 4))}
+                  </CommonButton>
+                )}
+                {(optionCounts[qIndex] || 4) > 4 && (
+                  <CommonButton
+                    type="button"
+                    onClick={() => removeLastOption(qIndex)}
+                    className="!text-red-500 text-sm"
+                  >
+                    - Remove Option{" "}
+                    {String.fromCharCode(64 + (optionCounts[qIndex] || 4))}
+                  </CommonButton>
+                )}
               </div>
             </div>
 
@@ -364,15 +422,20 @@ const AddMCQForm = () => {
       <div className="mb-6 flex items-center justify-between ">
         <CommonButton
           type="button"
-          onClick={() =>
+          onClick={() => {
+            const newIndex = fields.length;
             append({
               question: "",
               difficulty: "Basic",
               correctOption: "A",
               options: defaultOptions,
               imageDescription: "",
-            })
-          }
+            });
+            setOptionCounts((prev) => ({
+              ...prev,
+              [newIndex]: 4,
+            }));
+          }}
           className=" !text-blue-600  "
         >
           + Add Another Question
