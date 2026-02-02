@@ -141,12 +141,12 @@ const AllClinicalCases: React.FC = () => {
     };
 
     return (
-      <div className="flex flex-col justify-between bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
+      <div className="flex flex-col justify-between bg-blue-50 rounded-lg border border-blue-300 p-6 hover:shadow-md transition-shadow">
         <div>
           <div className="flex justify-between items-start mb-3">
             <div className="flex items-center gap-3">
-              <span className="px-2 py-1 rounded-full text-xs font-semibold bg-slate-100 border border-slate-200 text-slate-800">
-                {caseData.topic || "General"}
+              <span className="px-2 py-1 rounded-full text-xs font-semibold bg-slate-100 border border-slate-200 text-slate-600">
+                {caseData?.topic}
               </span>
               {caseData?.difficultyLevel && (
                 <span className="px-2 py-1 text-xs font-medium border rounded-full text-purple-600">
@@ -177,7 +177,7 @@ const AllClinicalCases: React.FC = () => {
             )}
           </div>
 
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-4">
             {caseData.caseTitle}
           </h3>
           <p className="text-gray-600 text-sm mb-4 line-clamp-2">
@@ -187,10 +187,10 @@ const AllClinicalCases: React.FC = () => {
 
         <PrimaryButton
           onClick={handleStartCase}
-          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded text-sm font-medium flex items-center gap-2"
+          className={`px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded text-sm font-medium flex items-center gap-2 ${caseData?.isComplete ? "bg-green-800 hover:bg-green-900" : ""}`}
           icon={<ArrowRight className="w-4 h-4" />}
         >
-          Start Case
+          {caseData?.isComplete ? "View Case" : "Start Case"}
         </PrimaryButton>
       </div>
     );

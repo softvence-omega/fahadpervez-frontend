@@ -21,7 +21,7 @@ const GeneratedNoteCard: React.FC<GeneratedNoteCardProps> = ({
   isDeleting = false,
 }) => {
   return (
-    <div className="flex flex-col justify-between p-6 border border-gray-300 rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow">
+    <div className="flex flex-col justify-between p-6 border border-violet-300 rounded-2xl bg-violet-50 shadow-sm hover:shadow-md transition-shadow">
       <div>
         <div className="flex justify-between items-start mb-3">
           <p className="text-xs text-blue-700 font-medium bg-blue-50 px-3 py-1.5 rounded-full">

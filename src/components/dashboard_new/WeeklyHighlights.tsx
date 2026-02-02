@@ -9,20 +9,23 @@ interface HighlightItem {
 }
 
 interface HighlightsData {
-  mcqBank?: HighlightItem[];
-  flashcard?: HighlightItem[];
-  clinicalCase?: HighlightItem[];
-  osce?: HighlightItem[];
+  mcqBank?: HighlightItem;
+  flashcard?: HighlightItem;
+  clinicalCase?: HighlightItem;
+  osce?: HighlightItem;
+  note?: HighlightItem;
 }
 
 interface HighlightCard {
   id: string;
-  type: "mcq" | "flashcard" | "clinicalCase" | "osce";
+  type: "mcq" | "flashcard" | "clinicalCase" | "osce" | "note";
   title: string;
   description: string;
   buttonText: string;
   route: string;
   img: string;
+  cardCss: string;
+  btnCss: string;
 }
 
 const WeeklyHighlights: React.FC = () => {
@@ -36,8 +39,8 @@ const WeeklyHighlights: React.FC = () => {
     const cards: HighlightCard[] = [];
 
     // MCQ Bank
-    if (highlights.mcqBank && highlights.mcqBank.length > 0) {
-      const mcq = highlights.mcqBank[0];
+    if (highlights.mcqBank) {
+      const mcq = highlights.mcqBank;
       cards.push({
         id: mcq._id,
         type: "mcq",
@@ -47,6 +50,8 @@ const WeeklyHighlights: React.FC = () => {
         buttonText: "Answer Now",
         route: `/dashboard/practice-mcq/${mcq._id}`,
         img: "/image/dashboard_new/Frame1.svg",
+        cardCss: "bg-gradient-to-br from-lime-50 to-lime-100 border-lime-200",
+        btnCss: "bg-lime-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-lime-700 transition-colors cursor-pointer",
       });
     }
 
@@ -62,12 +67,14 @@ const WeeklyHighlights: React.FC = () => {
         buttonText: "Study Now",
         route: `/dashboard/solve-flash-card/${flashcard._id}`,
         img: "/image/dashboard_new/Frame.svg",
+        cardCss: "bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200",
+        btnCss: "bg-orange-700/90 text-white py-2 px-4 rounded-lg font-medium hover:bg-orange-800 transition-colors cursor-pointer",
       });
     }
 
     // Clinical Case
-    if (highlights.clinicalCase && highlights.clinicalCase.length > 0) {
-      const clinicalCase = highlights.clinicalCase[0];
+    if (highlights.clinicalCase) {
+      const clinicalCase = highlights.clinicalCase;
       cards.push({
         id: clinicalCase._id,
         type: "clinicalCase",
@@ -77,12 +84,14 @@ const WeeklyHighlights: React.FC = () => {
         buttonText: "Solve Case",
         route: `/dashboard/clinical-case/${clinicalCase._id}`,
         img: "/image/dashboard_new/Frame.svg",
+        cardCss: "bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200",
+        btnCss: "bg-blue-700/90 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-800 transition-colors cursor-pointer",
       });
     }
 
     // OSCE
-    if (highlights.osce && highlights.osce.length > 0) {
-      const osce = highlights.osce[0];
+    if (highlights.osce) {
+      const osce = highlights.osce;
       cards.push({
         id: osce._id,
         type: "osce",
@@ -92,6 +101,24 @@ const WeeklyHighlights: React.FC = () => {
         buttonText: "Practice Now",
         route: `/dashboard/practice-with-checklist/${osce._id}`,
         img: "/image/dashboard_new/User.svg",
+        cardCss: "bg-gradient-to-br from-violet-50 to-violet-100 border-violet-200",
+        btnCss: "bg-violet-700/90 text-white py-2 px-4 rounded-lg font-medium hover:bg-violet-800 transition-colors cursor-pointer",
+      });
+    }
+
+    if (highlights.note) {
+      const note = highlights.note;
+      cards.push({
+        id: note._id,
+        type: "note",
+        title: "Note of the Week",
+        description:
+          "Master key concepts with this week's featured note",
+        buttonText: "Study Now",
+        route: `/dashboard/notes/${note?._id}`,
+        img: "/image/dashboard_new/Frame.svg",
+        cardCss: "bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200",
+        btnCss: "bg-emerald-700/90 text-white py-2 px-4 rounded-lg font-medium hover:bg-emerald-800 transition-colors cursor-pointer",
       });
     }
 
@@ -135,7 +162,7 @@ const WeeklyHighlights: React.FC = () => {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="bg-white rounded-lg p-6 border border-slate-200">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl font-semibold text-gray-900">
           Highlights of the Week
@@ -146,7 +173,7 @@ const WeeklyHighlights: React.FC = () => {
         {highlightCards.map((card) => (
           <div
             key={card.id}
-            className="border shadow-sm border-gray-200 rounded-lg p-6 flex flex-col md:flex-row items-start gap-4"
+            className={`border shadow-sm rounded-lg p-6 flex flex-col md:flex-row items-start gap-4 ${card.cardCss}`}
           >
             {/* Image */}
             <img
@@ -166,7 +193,7 @@ const WeeklyHighlights: React.FC = () => {
 
               <button
                 onClick={() => handleCardClick(card.route)}
-                className="mt-auto w-full md:w-auto bg-gray-900 text-white py-2 px-4 rounded-lg font-medium hover:bg-gray-800 transition-colors"
+                className={`${card.btnCss} mt-auto w-full md:w-auto text-white py-2 px-4 rounded-lg font-medium transition-colors `}
               >
                 {card.buttonText}
               </button>
