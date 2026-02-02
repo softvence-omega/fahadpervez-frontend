@@ -36,7 +36,7 @@ const WeeklyLeaderboard: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6">
+    <div className="bg-white rounded-lg p-6 border border-slate-200">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
         Weekly Leaderboard
       </h3>

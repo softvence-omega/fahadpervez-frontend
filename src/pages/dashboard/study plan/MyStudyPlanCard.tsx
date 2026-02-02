@@ -34,7 +34,7 @@ export default function MyStudyPlanCard({ plan }: MyStudyPlanCardProps) {
     };
 
     return (
-        <div className="flex flex-col justify-between p-5 border border-slate-300 rounded-[8px]">
+        <div className="flex flex-col justify-between p-5 bg-indigo-50 border border-indigo-300 rounded-[8px]">
             <div>
                 <div className="flex justify-between items-start gap-4">
                 <h3 className="text-lg font-semibold text-slate-800 line-clamp-2">{plan.plan_summary}</h3>
@@ -45,15 +45,15 @@ export default function MyStudyPlanCard({ plan }: MyStudyPlanCardProps) {
             <p className="flex items-center gap-3 text-slate-600 mt-5"><BookOpen /> {allTopics.length} topic{allTopics.length !== 1 ? 's' : ''}</p>
             <div className="flex flex-wrap items-center gap-2 mt-3">
                 {allTopics.slice(0, 2).map((topic, index) => (
-                    <p key={index} className="border border-slate-300 rounded-full text-sm text-[#0A0A0A] pt-0.5 px-2.5">{topic}</p>
+                    <p key={index} className="border border-slate-300 rounded-full text-sm text-slate-700 pt-0.5 px-2.5">{topic}</p>
                 ))}
                 {allTopics.length > 2 && (
-                    <p className="border border-slate-300 rounded-full text-sm text-[#0A0A0A] pt-0.5 px-2.5">+{allTopics.length - 2} more</p>
+                    <p className="border border-slate-300 rounded-full text-sm text-slate-700 pt-0.5 px-2.5">+{allTopics.length - 2} more</p>
                 )}
             </div>
             </div>
 
-            <PrimaryButton className="w-full mt-7" onClick={handleViewPlan}>View Plan</PrimaryButton>
+            <PrimaryButton className="w-full mt-7 bg-indigo-500 hover:bg-indigo-600" onClick={handleViewPlan}>View Plan</PrimaryButton>
         </div>
     )
 }

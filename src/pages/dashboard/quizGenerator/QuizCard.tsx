@@ -34,7 +34,7 @@ export default function QuizCard({
 
   return (
     <div>
-      <div className="p-5 border border-slate-300 rounded-[12px] h-full flex flex-col justify-between">
+      <div className="p-5 bg-lime-50 border border-lime-200 rounded-[12px] h-full flex flex-col justify-between">
         <div className="mb-10 flex justify-between items-start gap-2">
           <div>
             <div className="flex items-start gap-2">
@@ -70,11 +70,10 @@ export default function QuizCard({
         </div>
         <button
           onClick={() => handleQuiz(id)}
-          className={`w-full rounded-[4px] py-3 flex justify-center gap-1 items-center transition-colors text-white cursor-pointer mt-auto ${
-            isCompleted
-              ? "bg-blue-600 hover:bg-blue-700"
-              : "bg-emerald-800 hover:bg-emerald-900"
-          }`}
+          className={`w-full rounded-[4px] py-3 flex justify-center gap-1 items-center transition-colors text-white cursor-pointer mt-auto ${isCompleted
+            ? "bg-emerald-800 hover:bg-emerald-800"
+            : "bg-lime-600 hover:bg-lime-700"
+            }`}
         >
           {isCompleted ? (
             <>View Analysis</>
