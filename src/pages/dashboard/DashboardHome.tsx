@@ -35,9 +35,9 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Highlights of the Week */}
-        <div className="mb-6">
-          <WeeklyHighlights />
-        </div>
+      <div className="mb-6">
+        <WeeklyHighlights />
+      </div>
     </div>
   );
 };
