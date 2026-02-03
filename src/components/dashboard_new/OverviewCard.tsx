@@ -23,20 +23,20 @@ const OverviewCard: React.FC<OverviewCardProps> = ({
 
   const themes = {
     purple: {
-      bg: "bg-purple-50",
-      border: "border-purple-200",
+      bg: "bg-purple-100",
+      border: "border-purple-300",
       iconBg: "bg-purple-100",
       labelColor: "text-[#4A5565]",
     },
     orange: {
-      bg: "bg-orange-50",
-      border: "border-orange-200",
+      bg: "bg-orange-100",
+      border: "border-orange-300",
       iconBg: "bg-orange-100",
       labelColor: "text-[#4A5565]",
     },
     green: {
-      bg: "bg-green-50",
-      border: "border-green-200",
+      bg: "bg-green-100",
+      border: "border-green-300",
       iconBg: "bg-green-100",
       labelColor: "text-[#4A5565]",
     },
@@ -46,11 +46,11 @@ const OverviewCard: React.FC<OverviewCardProps> = ({
 
   return (
     <div
-      className={`flex flex-col rounded-2xl overflow-hidden border-[1.5px] ${theme.border} h-full transition-all duration-300 hover:shadow-md ${className}`}
+      className={`flex flex-col rounded-2xl overflow-hidden border-[1.5px] ${theme.border} ${theme.bg} h-full transition-all duration-300 hover:shadow-md ${className}`}
     >
 
       {/* Top Section */}
-      <div className={`${theme.bg} p-5 flex-1`}>
+      <div className={`p-5 flex-1`}>
         <div className="flex items-center gap-4">
           <div
             className={`w-12 h-12 rounded-[8px] ${theme.iconBg} flex items-center justify-center shadow-sm text-xl`}

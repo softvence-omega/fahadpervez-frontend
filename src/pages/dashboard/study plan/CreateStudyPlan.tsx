@@ -328,7 +328,7 @@ export default function CreateStudyPlan() {
                   errors.includes("examName")
                     ? "border-red-500 bg-red-50 focus-visible:ring-red-500"
                     : ""
-                }`}
+                  }`}
               />
             </div>
 
@@ -345,11 +345,10 @@ export default function CreateStudyPlan() {
                   clearError("dailyTime");
                 }}
                 placeholder="e.g., 3"
-                className={`transition-all duration-300 ${
-                  errors.includes("dailyTime")
+                className={`transition-all duration-300 ${errors.includes("dailyTime")
                     ? "border-red-500 bg-red-50 focus-visible:ring-red-500"
                     : ""
-                }`}
+                  }`}
               />
             </div>
 
@@ -359,16 +358,16 @@ export default function CreateStudyPlan() {
               </Label>
               <Input
                 type="date"
+                min={new Date().toISOString().split("T")[0]}
                 value={examDate}
                 onChange={(e) => {
                   setExamDate(e.target.value);
                   clearError("examDate");
                 }}
-                className={`transition-all duration-300 ${
-                  errors.includes("examDate")
+                className={`transition-all duration-300 ${errors.includes("examDate")
                     ? "border-red-500 bg-red-50 focus-visible:ring-red-500"
                     : ""
-                }`}
+                  }`}
               />
             </div>
 
@@ -384,11 +383,10 @@ export default function CreateStudyPlan() {
                 }}
               >
                 <SelectTrigger
-                  className={`transition-all duration-300 ${
-                    errors.includes("examType")
+                  className={`transition-all duration-300 ${errors.includes("examType")
                       ? "border-red-500 bg-red-50 focus:ring-red-500"
                       : ""
-                  }`}
+                    }`}
                 >
                   <SelectValue placeholder="Select Exam Type" />
                 </SelectTrigger>
@@ -423,11 +421,10 @@ export default function CreateStudyPlan() {
                 }}
               >
                 <SelectTrigger
-                  className={`transition-all duration-300 ${
-                    errors.includes("subject")
+                  className={`transition-all duration-300 ${errors.includes("subject")
                       ? "border-red-500 bg-red-50 focus:ring-red-500"
                       : ""
-                  }`}
+                    }`}
                 >
                   <SelectValue placeholder="Select Subject" />
                 </SelectTrigger>

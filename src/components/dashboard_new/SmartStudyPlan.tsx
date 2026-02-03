@@ -18,51 +18,51 @@ const taskTypeConfig: Record<
 > = {
   mcqs: {
     icon: <BookOpen className="w-4 h-4" />,
-    color: "bg-lime-50/60 border border-lime-200",
+    color: "bg-lime-100 border border-lime-200",
     buttonText: "Start quiz",
-    buttonBgColor: "bg-lime-700/90 hover:bg-lime-700",
+    buttonBgColor: "bg-slate-700 hover:bg-slate-700",
   },
   mcq: {
     icon: <BookOpen className="w-4 h-4" />,
-    color: "bg-lime-50/60 border border-lime-200",
+    color: "bg-lime-100 border border-lime-200",
     buttonText: "Start quiz",
-    buttonBgColor: "bg-lime-700/90 hover:bg-lime-700",
+    buttonBgColor: "bg-slate-700 hover:bg-slate-700",
   },
   flashcards: {
     icon: <RotateCcw className="w-4 h-4" />,
-    color: "bg-orange-50/60 border border-orange-200",
+    color: "bg-orange-100 border border-orange-200",
     buttonText: "Review",
-    buttonBgColor: "bg-orange-700/90 hover:bg-orange-700",
+    buttonBgColor: "bg-slate-700 hover:bg-slate-700",
   },
   flashcard: {
     icon: <RotateCcw className="w-4 h-4" />,
-    color: "bg-orange-50/60 border border-orange-200",
+    color: "bg-orange-100 border border-orange-200",
     buttonText: "Review",
-    buttonBgColor: "bg-orange-700/90 hover:bg-orange-700",
+    buttonBgColor: "bg-slate-700 hover:bg-slate-700",
   },
   notes: {
     icon: <FileText className="w-4 h-4" />,
-    color: "bg-green-50/60 border border-green-200",
+    color: "bg-green-100 border border-green-200",
     buttonText: "Read Notes",
-    buttonBgColor: "bg-green-700/90 hover:bg-green-700",
+    buttonBgColor: "bg-slate-700 hover:bg-slate-700",
   },
   "clinical cases": {
     icon: <Briefcase className="w-4 h-4" />,
-    color: "bg-blue-50/60 border border-blue-200",
+    color: "bg-blue-100 border border-blue-200",
     buttonText: "View Case",
-    buttonBgColor: "bg-blue-700/90 hover:bg-blue-700",
+    buttonBgColor: "bg-slate-700 hover:bg-slate-700",
   },
   "clinical case": {
     icon: <Briefcase className="w-4 h-4" />,
-    color: "bg-blue-50/60 border border-blue-200",
+    color: "bg-blue-100 border border-blue-200",
     buttonText: "View Case",
-    buttonBgColor: "bg-blue-700/90 hover:bg-blue-700",
+    buttonBgColor: "bg-slate-700 hover:bg-slate-700",
   },
   osce: {
     icon: <ClipboardCheck className="w-4 h-4" />,
-    color: "bg-teal-50/60 border border-teal-200",
+    color: "bg-teal-100 border border-teal-200",
     buttonText: "Practice",
-    buttonBgColor: "bg-teal-700/90 hover:bg-teal-700",
+    buttonBgColor: "bg-slate-700 hover:bg-slate-700",
   },
 };
 
@@ -73,7 +73,7 @@ const SmartStudyPlan: React.FC = () => {
   const allStudyPlans = data?.data ?? [];
 
   // Logic to find today's or nearest upcoming plan
-  const todayStr = new Date().toISOString().split("T")[0];
+  // const todayStr = new Date().toISOString().split("T")[0];
 
   let todayTasks: any[] = [];
   // let currentPlanSummary = "Your Plan";
@@ -81,22 +81,23 @@ const SmartStudyPlan: React.FC = () => {
 
   if (allStudyPlans.length > 0) {
     // Try to find a plan that has today's date in daily_plan
-    const activePlan =
-      allStudyPlans.find((plan: any) =>
-        plan.daily_plan.some(
-          (d: any) => d.date && d.date.split("T")[0] === todayStr,
-        ),
-      ) || allStudyPlans[0]; // Fallback to the first (most recent) plan
+    // const activePlan =
+    //   allStudyPlans.find((plan: any) =>
+    //     plan.daily_plan.some(
+    //       (d: any) => d.date && d.date.split("T")[0] === todayStr,
+    //     ),
+    //   ) || allStudyPlans[0]; // Fallback to the first (most recent) plan
 
     // currentPlanSummary = activePlan.plan_summary;
     // currentPlanId = activePlan._id;
 
-    const dailyPlanEntry =
-      activePlan.daily_plan.find(
-        (d: any) => d.date && d.date.split("T")[0] === todayStr,
-      ) || activePlan.daily_plan[0]; // Fallback to day 1 if today not found
+    // const dailyPlanEntry =
+    //   activePlan.daily_plan.find(
+    //     (d: any) => d.date && d.date.split("T")[0] === todayStr,
+    //   ) || activePlan.daily_plan[0]; // Fallback to day 1 if today not found
 
-    todayTasks = dailyPlanEntry?.hourly_breakdown || [];
+    // todayTasks = dailyPlanEntry?.hourly_breakdown || [];
+    todayTasks = allStudyPlans[0]?.daily_plan[0]?.hourly_breakdown || [];
     // console.log("dailyPlanEntry :", dailyPlanEntry);
   }
   const handleStartClick = (task: any) => {
@@ -129,7 +130,7 @@ const SmartStudyPlan: React.FC = () => {
     );
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6 h-full flex flex-col border border-slate-200">
+    <div className="bg-blue-50 rounded-lg shadow-sm p-6 h-full flex flex-col border border-slate-200">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold text-gray-900">
           Smart Study Plan
@@ -151,7 +152,7 @@ const SmartStudyPlan: React.FC = () => {
 
       <div className="flex justify-between items-center mb-4">
         <div>
-          <h4 className="font-medium text-gray-900">Today's Plan</h4>
+          {/* <h4 className="font-medium text-gray-900">Today's Plan</h4> */}
           {/* <p
             className="text-xs text-gray-500 truncate max-w-[200px]"
             title={currentPlanSummary}
@@ -183,7 +184,7 @@ const SmartStudyPlan: React.FC = () => {
               return (
                 <div
                   key={i}
-                  className={`border border-gray-200 bg-white/40 rounded-lg p-4 flex flex-col justify-between`}
+                  className={`${config.color} rounded-lg p-4 flex flex-col justify-between`}
                 >
                   <div>
                     <div className="flex flex-wrap items-center gap-2 mb-3">

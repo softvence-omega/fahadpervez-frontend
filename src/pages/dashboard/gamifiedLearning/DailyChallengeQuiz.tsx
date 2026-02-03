@@ -28,7 +28,7 @@ export default function DailyChallengeQuiz() {
 
     const breadcrumbs = [
         { name: "Dashboard", link: "/dashboard" },
-        { name: "Daily Challenge", link: "/dashboard/gamified-learning/daily-challenges" },
+        { name: "Daily Challenge", link: "#" },
         { name: challenge?.title || "Quiz", link: "#" },
     ];
 
@@ -92,9 +92,9 @@ export default function DailyChallengeQuiz() {
 
         return (
             <div className="p-6 max-w-6xl mx-auto space-y-8">
-                <div className="flex items-center gap-1">
-                    <button onClick={() => navigate("/dashboard")} className="sm:mb-0">
-                        <ArrowLeft className="mt-0.5" />
+                <div className="flex items-start gap-1">
+                    <button onClick={() => navigate("/dashboard")} className="sm:mb-0 cursor-pointer">
+                        <ArrowLeft />
                     </button>
                     <DashboardHeading
                         title="Performance Analysis"
@@ -103,15 +103,16 @@ export default function DailyChallengeQuiz() {
                         description="Analyze challenge performance from detailed results"
                         descColor="text-[#4A5565]"
                         descFont="text-sm"
-                        className="mb-5"
+                        className=""
                     />
                 </div>
 
                 <StatsRow stats={stats as any} />
 
                 <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6">
-                    <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center">
-                        <h2 className="text-xl font-bold mb-8 text-[#1A1C1E] self-start">
+                    {/* Performance Card */}
+                    <div className="bg-blue-50 p-8 rounded-xl shadow-sm border border-blue-200 flex flex-col items-center">
+                        <h2 className="text-xl font-bold mb-8 text-blue-900 self-start">
                             {challenge.title}
                         </h2>
 
@@ -122,19 +123,27 @@ export default function DailyChallengeQuiz() {
                         />
 
                         <div className="text-center mt-10 space-y-4">
-                            <p className="text-lg text-gray-700">
-                                You completed <span className="font-bold">{totalQuestions}/{totalQuestions}</span> questions.
+                            <p className="text-lg text-blue-800">
+                                You completed{" "}
+                                <span className="font-bold">
+                                    {totalQuestions}/{totalQuestions}
+                                </span>{" "}
+                                questions.
                             </p>
+
                             <div className="flex flex-col items-center space-y-2">
+                                {/* Correct */}
                                 <span className="flex items-center">
-                                    <div className="w-4 h-4 rounded-sm bg-green-500 mr-2"></div>
+                                    <div className="w-4 h-4 rounded-sm bg-green-500 mr-2" />
                                     <span className="font-medium text-green-700">
                                         {correctPercent}% correctly ({results.correct} questions)
                                     </span>
                                 </span>
+
+                                {/* Incorrect */}
                                 <span className="flex items-center">
-                                    <div className="w-4 h-4 rounded-sm bg-gray-300 mr-2"></div>
-                                    <span className="font-medium text-gray-500">
+                                    <div className="w-4 h-4 rounded-sm bg-red-500 mr-2" />
+                                    <span className="font-medium text-red-700">
                                         {wrongPercent}% incorrectly ({results.wrong} questions)
                                     </span>
                                 </span>
@@ -142,34 +151,49 @@ export default function DailyChallengeQuiz() {
                         </div>
 
                         <div className="mt-10">
-                            <PrimaryButton onClick={() => navigate("/dashboard")} className="px-10 py-3 h-auto">
+                            <PrimaryButton
+                                onClick={() => navigate("/dashboard")}
+                                className="px-10 py-3 h-auto"
+                            >
                                 Back to Dashboard
                             </PrimaryButton>
                         </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
-                        <h3 className="text-lg font-bold text-gray-900 mb-4">Summary</h3>
+                    {/* Summary Card */}
+                    <div className="bg-blue-50 p-6 rounded-xl shadow-sm border border-blue-200 h-fit">
+                        <h3 className="text-lg font-bold text-blue-900 mb-4">Summary</h3>
+
                         <div className="space-y-4">
-                            <div className="flex justify-between items-center py-2 border-b border-gray-50">
-                                <span className="text-gray-600">Subject</span>
-                                <span className="font-medium">{challenge.subject}</span>
+                            <div className="flex justify-between items-center py-2 border-b border-blue-200">
+                                <span className="text-blue-600">Subject</span>
+                                <span className="font-medium text-blue-800">
+                                    {challenge.subject}
+                                </span>
                             </div>
-                            <div className="flex justify-between items-center py-2 border-b border-gray-50">
-                                <span className="text-gray-600">System</span>
-                                <span className="font-medium">{challenge.system}</span>
+
+                            <div className="flex justify-between items-center py-2 border-b border-slate-200">
+                                <span className="text-slate-600">System</span>
+                                <span className="font-medium text-slate-800">
+                                    {challenge.system}
+                                </span>
                             </div>
-                            <div className="flex justify-between items-center py-2 border-b border-gray-50">
-                                <span className="text-gray-600">Topic</span>
-                                <span className="font-medium">{challenge.topic}</span>
+
+                            <div className="flex justify-between items-center py-2 border-b border-slate-200">
+                                <span className="text-slate-600">Topic</span>
+                                <span className="font-medium text-slate-800">
+                                    {challenge.topic}
+                                </span>
                             </div>
-                            <div className="flex justify-between items-center py-2 border-b border-gray-50">
-                                <span className="text-gray-600">Reward</span>
-                                <span className="text-blue-600 font-medium">+10 pts</span>
+
+                            <div className="flex justify-between items-center py-2">
+                                <span className="text-slate-600">Reward</span>
+                                <span className="text-blue-600 font-semibold">+10 pts</span>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         );
     }
