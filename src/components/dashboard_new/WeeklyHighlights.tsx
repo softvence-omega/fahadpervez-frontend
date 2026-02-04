@@ -2,6 +2,7 @@ import React from "react";
 import { Lightbulb } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useGetWeeklyHighlightsQuery } from "@/store/features/goal/goal.api";
+import { motion } from "framer-motion";
 
 interface HighlightItem {
   _id: string;
@@ -129,6 +130,29 @@ const WeeklyHighlights: React.FC = () => {
     navigate(route);
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring" as const,
+        stiffness: 100,
+        damping: 15,
+      },
+    },
+  };
+
   if (isLoading) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6">
@@ -162,24 +186,40 @@ const WeeklyHighlights: React.FC = () => {
   }
 
   return (
-    <div className="bg-white rounded-lg p-6 border border-slate-200">
+    <div className="bg-white rounded-lg p-6 border border-slate-200 min-h-75">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl font-semibold text-gray-900">
           Highlights of the Week
         </h3>
-        <Lightbulb className="w-6 h-6 text-blue-500" />
+        <motion.div
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          <Lightbulb className="w-6 h-6 text-blue-500" />
+        </motion.div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-50px" }}
+      >
         {highlightCards.map((card) => (
-          <div
+          <motion.div
             key={card.id}
-            className={`border shadow-sm rounded-lg p-6 flex flex-col md:flex-row items-start gap-4 ${card.cardCss}`}
+            variants={cardVariants}
+            whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            className={`border shadow-sm rounded-lg p-6 flex flex-col md:flex-row items-start gap-4 ${card.cardCss} hover:shadow-md transition-shadow`}
           >
             {/* Image */}
-            <img
+            <motion.img
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, delay: 0.3 }}
               src={card.img}
               alt={card.title}
-              className="w-16 h-16 rounded-full object-cover flex-shrink-0"
+              className="w-16 h-16 rounded-full object-cover shrink-0"
             />
 
             {/* Content */}
@@ -191,16 +231,17 @@ const WeeklyHighlights: React.FC = () => {
                 <p className="text-sm text-gray-600 mb-4">{card.description}</p>
               </div>
 
-              <button
+              <motion.button
+                whileTap={{ scale: 0.98 }}
                 onClick={() => handleCardClick(card.route)}
-                className={`${card.btnCss} mt-auto w-full md:w-auto text-white py-2 px-4 rounded-lg font-medium transition-colors `}
+                className={`${card.btnCss} mt-auto w-full md:w-auto text-white py-2 px-4 rounded-lg font-medium transition-colors shadow-sm`}
               >
                 {card.buttonText}
-              </button>
+              </motion.button>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 };
