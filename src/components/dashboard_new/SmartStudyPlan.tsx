@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import {
   BookOpen,
@@ -11,6 +10,7 @@ import {
 import { useGetStudyPlanQuery } from "@/store/features/studyPlan/studyPlan.api";
 import { useNavigate } from "react-router-dom";
 import GlobalLoader2 from "@/common/GlobalLoader2";
+import { motion } from "framer-motion";
 
 const taskTypeConfig: Record<
   string,
@@ -98,8 +98,8 @@ const SmartStudyPlan: React.FC = () => {
 
     // todayTasks = dailyPlanEntry?.hourly_breakdown || [];
     todayTasks = allStudyPlans[0]?.daily_plan[0]?.hourly_breakdown || [];
-    // console.log("dailyPlanEntry :", dailyPlanEntry);
   }
+
   const handleStartClick = (task: any) => {
     const contentId = task.suggest_content?.contentId;
     const taskType = task.task_type.toLowerCase();
@@ -117,9 +117,31 @@ const SmartStudyPlan: React.FC = () => {
     } else if (taskType === "osce") {
       navigate(`/dashboard/practice-with-checklist/${contentId}`);
     } else if (taskType === "notes") {
-      // Assuming notes might navigate to a specific note page
       navigate(`/dashboard/notes/${contentId}`);
     }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { x: -20, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: {
+        type: "spring" as const,
+        stiffness: 100,
+        damping: 15,
+      },
+    },
   };
 
   if (isLoading)
@@ -130,7 +152,7 @@ const SmartStudyPlan: React.FC = () => {
     );
 
   return (
-    <div className="bg-blue-50 rounded-lg shadow-sm p-6 h-full flex flex-col border border-slate-200">
+    <div className="bg-blue-50 rounded-lg shadow-sm p-6 h-full flex flex-col border border-slate-200 overflow-hidden">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold text-gray-900">
           Smart Study Plan
@@ -170,60 +192,67 @@ const SmartStudyPlan: React.FC = () => {
         )} */}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-50px" }}
+      >
         {todayTasks.length > 0 ? (
-          todayTasks
-            // .slice(0, 2)
-            .map((task, i) => {
-              const config = taskTypeConfig[task.task_type.toLowerCase()] || {
-                icon: <BookOpen className="w-4 h-4" />,
-                color: "bg-gray-100 text-gray-700",
-                buttonText: "Start",
-              };
+          todayTasks.map((task, i) => {
+            const config = taskTypeConfig[task.task_type.toLowerCase()] || {
+              icon: <BookOpen className="w-4 h-4" />,
+              color: "bg-gray-100 text-gray-700",
+              buttonText: "Start",
+            };
 
-              return (
-                <div
-                  key={i}
-                  className={`${config.color} rounded-lg p-4 flex flex-col justify-between`}
-                >
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2 mb-3">
-                      <span
-                        className={`border border-gray-200 bg-white/40 text-nowrap px-2 py-1 rounded text-xs font-medium`}
-                      >
-                        {task.task_type}
-                      </span>
-                    </div>
-                    <h5
-                      className="font-semibold text-black/80 mb-3 line-clamp-2"
-                      title={task.description || task.task_type}
+            return (
+              <motion.div
+                key={i}
+                variants={cardVariants}
+                whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                className={`${config.color} rounded-lg p-4 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow`}
+              >
+                <div>
+                  <div className="flex flex-wrap items-center gap-2 mb-3">
+                    <span
+                      className={`border border-gray-200 bg-white/40 text-nowrap px-2 py-1 rounded text-xs font-medium`}
                     >
-                      {task.description || task.task_type}
-                    </h5>
-                    <div className="flex flex-wrap flex-col sm:flex-row sm:items-center gap-4 text-sm text-gray-600 mb-4">
-                      <span className="flex items-center gap-1 text-nowrap text-sm">
-                        <Clock className="w-4 h-4" />
-                        {task.duration_hours}h
-                      </span>
-                    </div>
+                      {task.task_type}
+                    </span>
                   </div>
-
-                  <button
-                    onClick={() => handleStartClick(task)}
-                    className={`mt-auto w-full ${config.buttonBgColor} text-white py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer`}
+                  <h5
+                    className="font-semibold text-black/80 mb-3 line-clamp-2"
+                    title={task.description || task.task_type}
                   >
-                    {config.icon}
-                    <span className="text-sm">{config.buttonText}</span>
-                  </button>
+                    {task.description || task.task_type}
+                  </h5>
+                  <div className="flex flex-wrap flex-col sm:flex-row sm:items-center gap-4 text-sm text-gray-600 mb-4">
+                    <span className="flex items-center gap-1 text-nowrap text-sm">
+                      <Clock className="w-4 h-4" />
+                      {task.duration_hours}h
+                    </span>
+                  </div>
                 </div>
-              );
-            })
+
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => handleStartClick(task)}
+                  className={`mt-auto w-full ${config.buttonBgColor} text-white py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer`}
+                >
+                  {config.icon}
+                  <span className="text-sm">{config.buttonText}</span>
+                </motion.button>
+              </motion.div>
+            );
+          })
         ) : (
-          <div className="text-center py-10 text-gray-500">
+          <div className="text-center py-10 text-gray-500 col-span-full">
             No tasks scheduled for today.
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 };
