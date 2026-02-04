@@ -449,13 +449,13 @@ export default function SolveFlashCard() {
                         </p>
                       </div>
 
-                      <motion.div
+                      {/* <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         className="absolute bottom-8 text-white/40 text-[10px] uppercase font-bold tracking-widest"
                       >
                         Click to Reveal Answer
-                      </motion.div>
+                      </motion.div> */}
                     </div>
 
                     {/* Back */}
