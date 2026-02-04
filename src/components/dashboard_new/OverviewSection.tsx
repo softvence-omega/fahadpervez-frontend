@@ -2,6 +2,7 @@ import React from "react";
 import OverviewCard from "./OverviewCard";
 import { Target, Clock, Flame } from "lucide-react";
 import { useGetGoalOverviewQuery } from "@/store/features/goal/goal.api";
+import { motion } from "framer-motion";
 
 const OverviewSection: React.FC = () => {
   const { data: overviewData } = useGetGoalOverviewQuery();
@@ -63,20 +64,49 @@ const OverviewSection: React.FC = () => {
     },
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
 
+  const cardVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring" as const,
+        stiffness: 100,
+        damping: 15,
+      },
+    },
+  };
 
   return (
     <div className="mb-8">
       <h3 className="text-xl font-semibold text-gray-900 mb-5">Overview</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-50px" }}
+      >
         {dynamicOverview.map((card, i) => (
-          <OverviewCard
+          <motion.div
             key={i}
-            {...card}
+            variants={cardVariants}
             className={i === 2 ? "md:col-span-2 lg:col-span-1 xl:col-span-2" : ""}
-          />
+          >
+            <OverviewCard {...card} />
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 };
