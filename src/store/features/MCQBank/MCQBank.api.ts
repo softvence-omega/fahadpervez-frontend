@@ -111,6 +111,17 @@ export const mcqBankAPI = baseAPI.injectEndpoints({
       ],
     }),
 
+    generateRecommendation: build.mutation({
+      query: ({ contentId, wrongAnswers }: { contentId: string; wrongAnswers: any[] }) => ({
+        url: `/ai_part/generate-recommendation/${contentId}`,
+        method: "POST",
+        body: wrongAnswers,
+      }),
+      invalidatesTags: (_, __, { contentId }) => [
+        { type: "GeneratedMCQ", id: contentId },
+      ],
+    }),
+
     // end
   }),
 });
@@ -125,4 +136,5 @@ export const {
   useGetGeneratedMCQQuery,
   useGenerateMCQMutation,
   useUpdateQuizTrackingMutation,
+  useGenerateRecommendationMutation,
 } = mcqBankAPI;

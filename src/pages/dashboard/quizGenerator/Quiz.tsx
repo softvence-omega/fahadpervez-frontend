@@ -16,6 +16,7 @@ import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import {
   useGetGeneratedMCQQuery,
   useUpdateQuizTrackingMutation,
+  useGenerateRecommendationMutation,
 } from "@/store/features/MCQBank/MCQBank.api";
 // import { setQuizResults } from "@/store/features/MCQBank/quizSlice";
 // import { useDispatch } from "react-redux";
@@ -180,8 +181,9 @@ const Quiz = () => {
       }
     }
   };
-  
+
   const [updateTracking] = useUpdateQuizTrackingMutation();
+  const [generateRecommendation] = useGenerateRecommendationMutation();
 
   // Submit answers
   const handleSubmit = async () => {
@@ -203,41 +205,49 @@ const Quiz = () => {
       timeTaken: formatTime(timeElapsed),
     };
 
+    const wrongAnswers = questions
+      .map((q: any, index: number) => {
+        if (answers[index] === q.correctAnswer) return null;
+
+        const originalQ = rawQuestions[index];
+
+        return {
+          mcqId: originalQ?.mcqId || q.id,
+          difficulty: originalQ?.difficulty || "Basic",
+          question: q.text,
+          options: q.options.map((opt: any) => ({
+            option: opt.value,
+            optionText: opt.label,
+            explanation: opt.explanation,
+          })),
+          correctOption: q.correctAnswer,
+          userSelectedOption: answers[index],
+        };
+      })
+      .filter(Boolean);
+
     try {
       if (id && id !== "generated") {
         await updateTracking({ id, data: trackingData }).unwrap();
-      }
 
-      // REDUX PERSISTENCE (COMMENTED OUT AS REQUESTED)
-      /*
-      const results = questions.map((q, index) => ({
-        questionId: q.id,
-        selectedOption: answers[index] || "",
-        isCorrect: answers[index] === q.correctAnswer
-      }));
-      dispatch(setQuizResults(results));
-      */
+        // Call recommendation API for wrong answers
+        if (wrongAnswers.length > 0) {
+          generateRecommendation({ contentId: id, wrongAnswers });
+        }
+      }
 
       // Save final answers to sessionStorage for review
       if (id) {
         sessionStorage.setItem(`quiz_answers_${id}`, JSON.stringify(answers));
       }
 
-      // Redirect to quiz-page analysis tab
-      // navigate(`/dashboard/quiz-page/${id || "generated"}`, {
-      //   state: { activeTab: "myQuiz", justSubmitted: true },
-      // });
       navigate(`/dashboard/quiz-analysis/${id}`, {
-        // state: { activeTab: "myQuiz", justSubmitted: true },
+        state: { isGeneratingRecommendation: wrongAnswers.length > 0 },
       });
     } catch (error) {
       console.error("Failed to update tracking:", error);
-      // Fallback redirection even if update fails
-      // navigate(`/dashboard/quiz-page/${id || "generated"}`, {
-      //   state: { activeTab: "myQuiz", justSubmitted: true },
-      // });
       navigate(`/dashboard/quiz-analysis/${id}`, {
-        // state: { activeTab: "myQuiz", justSubmitted: true },
+        state: { isGeneratingRecommendation: wrongAnswers.length > 0 },
       });
     }
   };
@@ -328,13 +338,12 @@ const Quiz = () => {
               <div
                 key={q.id}
                 className={`p-2 mb-2 rounded cursor-pointer flex items-center justify-between text-sm
-        ${
-          index === currentQuestion
-            ? "bg-blue-100 text-blue-600"
-            : answers[index] || isReviewMode
-            ? "bg-gray-50"
-            : "text-gray-600 hover:bg-gray-100"
-        }`}
+        ${index === currentQuestion
+                    ? "bg-blue-100 text-blue-600"
+                    : answers[index] || isReviewMode
+                      ? "bg-gray-50"
+                      : "text-gray-600 hover:bg-gray-100"
+                  }`}
                 onClick={() => {
                   if (
                     isReviewMode ||
@@ -379,11 +388,11 @@ const Quiz = () => {
               onClick={
                 isReviewMode
                   ? () => {
-                      if (id) sessionStorage.removeItem(`quiz_answers_${id}`);
-                      navigate(`/dashboard/quiz-page/${id}`, {
-                        // state: { activeTab: "myQuiz" },
-                      });
-                    }
+                    if (id) sessionStorage.removeItem(`quiz_answers_${id}`);
+                    navigate(`/dashboard/quiz-page/${id}`, {
+                      // state: { activeTab: "myQuiz" },
+                    });
+                  }
                   : handleSubmit
               }
               disabled={!isReviewMode && Object.keys(answers).length === 0}
@@ -414,15 +423,14 @@ const Quiz = () => {
                   return (
                     <div
                       key={option.value}
-                      className={`flex justify-between items-center p-3 rounded-lg border mb-3 transition-colors ${
-                        showResult
-                          ? isCorrect
-                            ? "bg-green-50 border-green-200 text-green-800"
-                            : isUserSelection
+                      className={`flex justify-between items-center p-3 rounded-lg border mb-3 transition-colors ${showResult
+                        ? isCorrect
+                          ? "bg-green-50 border-green-200 text-green-800"
+                          : isUserSelection
                             ? "bg-red-50 border-red-200 text-red-800"
                             : "bg-white border-gray-100 text-gray-500"
-                          : "bg-white border-gray-200 hover:border-blue-300"
-                      }`}
+                        : "bg-white border-gray-200 hover:border-blue-300"
+                        }`}
                     >
                       <div className="flex items-center space-x-3 w-full cursor-pointer">
                         <RadioGroupItem
@@ -463,21 +471,19 @@ const Quiz = () => {
                       return (
                         <div key={option.value} className="text-sm">
                           <p
-                            className={`font-bold mb-1 ${
-                              isOptionCorrect
-                                ? "text-green-700"
-                                : "text-red-500"
-                            }`}
+                            className={`font-bold mb-1 ${isOptionCorrect
+                              ? "text-green-700"
+                              : "text-red-500"
+                              }`}
                           >
                             [{isOptionCorrect ? "Correct - " : ""}Choice{" "}
                             {option.value}]
                           </p>
 
                           <p
-                            className={` ${
-                              isOptionCorrect && "text-green-700"
+                            className={` ${isOptionCorrect && "text-green-700"
                               //: "text-red-400"
-                            }`}
+                              }`}
                           >
                             {option.explanation || "No explanation provided."}
                           </p>

@@ -164,6 +164,8 @@ export default function PracticeMCQ() {
     if (lockedQuestions[qId]) return;
 
     setSelected((prev) => ({ ...prev, [qId]: index }));
+    setShowAnswer((prev) => ({ ...prev, [qId]: true }));
+    setLockedQuestions((prev) => ({ ...prev, [qId]: true }));
 
     // Find the question to check correctness
     const question = questions.find(
@@ -171,7 +173,6 @@ export default function PracticeMCQ() {
     );
     if (question) {
       // Check correctness: index matches correctOption (assuming A=0, B=1...)
-      // Wait, correctOption is "A", "B"... we need to map index 0->A.
       // Start from 'A' char code 65.
       const selectedOptionChar = String.fromCharCode(65 + index); // 0->A, 1->B
       const isCorrect = selectedOptionChar === question.correctOption;
@@ -289,7 +290,7 @@ export default function PracticeMCQ() {
     : false;
 
   return (
-    <>
+    <div className="w-full max-w-6xl mx-auto">
       <div className="hidden">{/* Invisible blocker for navigation */}</div>
       <AlertDialog open={blocker.state === "blocked"}>
         <AlertDialogContent>
@@ -534,76 +535,75 @@ export default function PracticeMCQ() {
               return (
                 <div
                   key={qId}
-                  className="border border-slate-300 rounded-lg p-5 space-y-4"
+                  className="border border-slate-300 rounded-lg p-5 md:p-8 space-y-6 bg-white shadow-sm"
                 >
-                  <div
-                    onClick={() => handleCopy(qId)}
-                    className="flex items-center gap-2 cursor-pointer"
-                  >
-                    <Copy className="w-5 h-5" />
-                    <p className="text-slate-700 text-sm font-normal">{qId}</p>
-                  </div>
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-5">
-                      <p className="text-slate-700 text-sm font-normal">
+                    <div
+                      onClick={() => handleCopy(qId)}
+                      className="flex items-center gap-2 cursor-pointer group"
+                    >
+                      <Copy className="w-4 h-4 text-slate-400 group-hover:text-blue-500" />
+                      <p className="text-slate-500 text-sm font-normal">{qId}</p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className="text-slate-500 text-sm">
                         Question {globalQuestionNumber} of {meta?.total || 0}
-                      </p>
+                      </span>
                       {mcqData?.subtopic && (
-                        <p className="bg-[#D97706] text-xs font-normal px-3 py-1 text-white rounded-full">
+                        <span className="bg-[#D97706] text-[10px] font-bold px-3 py-1 text-white rounded-full uppercase tracking-wider">
                           {mcqData?.subtopic}
-                        </p>
+                        </span>
                       )}
                       {q.difficulty && (
-                        <p className="text-xs font-normal px-3 py-1 bg-white rounded-full border border-slate-200">
+                        <span className="text-[10px] font-bold px-3 py-1 bg-white rounded-full border border-slate-200 uppercase tracking-wider text-slate-500">
                           {q.difficulty}
-                        </p>
+                        </span>
                       )}
-                    </div>
-                    <div
-                      className="flex items-center gap-1.5 text-[#F61F1F] cursor-pointer"
-                      onClick={() => {
-                        setMcqId(q?.mcqId);
-                        setOpenReportModal(true);
-                      }}
-                    >
-                      <p className="text-sm font-semibold">Report</p>
-                      <CircleAlert />
+                      <div
+                        className="flex items-center gap-1.5 text-[#F61F1F] cursor-pointer hover:opacity-80"
+                        onClick={() => {
+                          setMcqId(q?.mcqId);
+                          setOpenReportModal(true);
+                        }}
+                      >
+                        <p className="text-sm font-semibold uppercase tracking-wider text-[10px]">Report</p>
+                        <CircleAlert className="w-4 h-4" />
+                      </div>
                     </div>
                   </div>
 
-                  <p className="text-slate-900 font-medium">{q.question}</p>
+                  <p className="text-slate-900 text-lg font-medium leading-relaxed">
+                    {q.question}
+                  </p>
                   {q.imageDescription && (
                     <img
                       src={q.imageDescription}
                       alt="Question Image"
-                      className="mt-4 max-w-full h-auto rounded-lg max-h-96 object-contain"
+                      className="mt-4 max-w-full h-auto rounded-xl border border-slate-200 shadow-sm max-h-96 object-contain"
                     />
                   )}
 
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {q.options.map((opt: any, optionIdx: number) => {
                       const isSelected = selectedIndex === optionIdx;
                       const isCorrect = opt.option === q.correctOption;
-                      const show = showAnswer[qId];
+                      const showResult = showAnswer[qId];
 
-                      // styles
-                      let borderClass = "border-none";
-                      let bgClass = "";
+                      let borderClass = "border-slate-200 hover:border-blue-300";
+                      let bgClass = "bg-white";
                       let textClass = "text-slate-800";
 
-                      if (show) {
-                        if (isSelected && isCorrect) {
+                      if (showResult) {
+                        if (isCorrect) {
                           borderClass = "border-green-500";
                           bgClass = "bg-green-50";
-                          textClass = "text-green-700 font-medium";
-                        } else if (isSelected && !isCorrect) {
+                          textClass = "text-green-700 font-semibold";
+                        } else if (isSelected) {
                           borderClass = "border-red-500";
                           bgClass = "bg-red-50";
-                          textClass = "text-red-700 font-medium";
-                        } else if (!isSelected && isCorrect) {
-                          borderClass = "border-green-500";
-                          bgClass = "bg-green-50";
-                          textClass = "text-green-700 font-medium";
+                          textClass = "text-red-700 font-semibold";
+                        } else {
+                          borderClass = "border-slate-100 opacity-60";
                         }
                       } else if (isSelected) {
                         borderClass = "border-blue-500";
@@ -611,54 +611,47 @@ export default function PracticeMCQ() {
                       }
 
                       return (
-                        <label
+                        <button
                           key={optionIdx}
-                          className={`block p-2 border rounded cursor-pointer ${borderClass} ${bgClass}`}
+                          onClick={() => handleSelect(qId, optionIdx)}
+                          disabled={showResult}
+                          className={`w-full text-left p-4 rounded-xl border transition-all flex items-center gap-4 cursor-pointer ${borderClass} ${bgClass}`}
                         >
-                          <input
-                            type="radio"
-                            name={`question-${qId}`}
-                            className="mr-2"
-                            onChange={() => handleSelect(qId, optionIdx)}
-                            checked={isSelected}
-                            disabled={lockedQuestions[qId]}
-                          />
-                          <span className={textClass}>
-                            {opt.option}. {opt.optionText}
+                          <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm border 
+                            ${isSelected && !showResult ? 'bg-blue-500 text-white border-blue-500' : 'bg-gray-50 text-gray-500 border-gray-200'}
+                            ${showResult && isCorrect ? 'bg-green-500 text-white border-green-500' : ''}
+                            ${showResult && isSelected && !isCorrect ? 'bg-red-500 text-white border-red-500' : ''}
+                          `}>
+                            {opt.option}
                           </span>
-                        </label>
+                          <span className={textClass}>{opt.optionText}</span>
+                        </button>
                       );
                     })}
                   </div>
 
-                  {selectedIndex !== undefined && selectedIndex !== null && (
+                  <div className="flex gap-4">
                     <button
                       onClick={() => toggleAnswer(qId)}
-                      className="px-4 py-2 border rounded text-sm font-medium bg-blue-main text-white hover:bg-blue-main/85 cursor-pointer"
+                      className="px-6 py-2 border rounded-xl text-sm font-semibold bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 transition-colors cursor-pointer"
                     >
                       {showAnswer[qId] ? "Hide Answer" : "Show Answer"}
                     </button>
-                  )}
+                  </div>
+
                   {showAnswer[qId] && (
-                    <div className="mt-4 p-4 bg-slate-100 rounded-lg">
-                      <h4 className="text-lg font-medium mb-2">Explanation</h4>
-                      {q.options.map((option: any) => {
-                        const isOptionCorrect = option.option === q.correctOption;
-                        return (
-                          <div key={option.option} className="mb-3">
-                            {isOptionCorrect ? (
-                              <p className="font-medium text-green-600">
-                                [Correct - Choice {option.option}]
-                              </p>
-                            ) : (
-                              <p className="font-medium text-red-600">
-                                [Choice {option.option}]
-                              </p>
-                            )}
-                            <p className="text-gray-800">{option.explanation}</p>
+                    <div className="mt-8 p-6 bg-slate-50 rounded-xl border border-slate-200 animate-in fade-in slide-in-from-top-4 duration-500">
+                      <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 border-b border-slate-200 pb-2">Explanation</h4>
+                      <div className="space-y-4">
+                        {q.options.map((option: any) => (
+                          <div key={option.option} className="text-sm">
+                            <span className={`font-bold mr-2 ${option.option === q.correctOption ? 'text-green-600' : 'text-red-600'}`}>
+                              {option.option}:
+                            </span>
+                            <span className="text-slate-700">{option.explanation}</span>
                           </div>
-                        );
-                      })}
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -762,6 +755,6 @@ export default function PracticeMCQ() {
         topic={mcqData?.topic || ""}
         subTopic={mcqData?.subtopic || ""}
       />
-    </>
+    </div>
   );
 }
