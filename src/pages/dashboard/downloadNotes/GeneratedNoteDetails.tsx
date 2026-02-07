@@ -1,17 +1,36 @@
 import { useGetGeneratedNoteByIdQuery } from "@/store/features/note/NoteAPI";
 import { ArrowLeft, Calendar, Loader2 } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 export default function GeneratedNoteDetails() {
   const { id } = useParams();
-  const { data: noteResponse, isLoading } = useGetGeneratedNoteByIdQuery(id);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const stateNoteData = location.state?.noteData;
+
+  const { data: noteResponse, isLoading: isNoteLoading } = useGetGeneratedNoteByIdQuery(id, {
+    skip: !!stateNoteData
+  });
 
   // Handle both possible API response structures (array or object)
-  const note = Array.isArray(noteResponse?.data)
+  const note = stateNoteData || (Array.isArray(noteResponse?.data)
     ? noteResponse.data[0]
-    : noteResponse?.data;
+    : noteResponse?.data);
+
+  const isLoading = !stateNoteData && isNoteLoading;
+
+  const fromAnalysis = location.state?.fromAnalysis;
+  const quizId = location.state?.quizId;
+
+  const handleBack = () => {
+    if (fromAnalysis && quizId) {
+      navigate(`/dashboard/quiz-analysis/${quizId}`);
+    } else {
+      navigate("/dashboard/download-notes");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -39,13 +58,12 @@ export default function GeneratedNoteDetails() {
   return (
     <div className="w-full max-w-5xl mx-auto mb-3">
       <div className="flex items-center gap-3 mb-8 mt-4">
-        <Link
-          to="/dashboard/download-notes"
-          state={{ activeTab: "generatedNotes" }}
+        <button
+          onClick={handleBack}
           className="p-2 hover:bg-slate-100 rounded-full transition-colors"
         >
           <ArrowLeft className="w-5 h-5 text-gray-700" />
-        </Link>
+        </button>
         <div className="flex-1">
           <h1 className="text-2xl font-bold text-slate-900">
             {note.title || "Generated Note"}
