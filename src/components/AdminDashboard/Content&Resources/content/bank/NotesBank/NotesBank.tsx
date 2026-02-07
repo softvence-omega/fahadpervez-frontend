@@ -1,8 +1,10 @@
 import CommonButton from "@/common/button/CommonButton";
 import AlertDialogBox from "@/common/custom/AlertDialogBox";
-import { useDeleteClinicalCaseMutation } from "@/store/features/adminDashboard/ContentResources/ClinicalCase/clinicalCaseApi";
 import { NotesTreeResponse } from "@/store/features/adminDashboard/ContentResources/MCQ/types/allContent";
-import { useGetNotesQuery } from "@/store/features/adminDashboard/ContentResources/Notes/NoteSlice";
+import {
+  useDeleteNotesMutation,
+  useGetNotesQuery,
+} from "@/store/features/adminDashboard/ContentResources/Notes/NoteSlice";
 import React from "react";
 import SingleNote from "./SingleNote";
 
@@ -21,11 +23,10 @@ const NotesBank: React.FC<Props> = ({ mcqBank, bankId, setBankId }) => {
     skip: bankId === "",
   });
 
-  const [deleteClinicalCase, { isLoading: isDeleting }] =
-    useDeleteClinicalCaseMutation();
+  const [deleteNotes, { isLoading: isDeleting }] = useDeleteNotesMutation();
 
   const handleDelete = async (id: string) => {
-    await deleteClinicalCase(id)
+    await deleteNotes(id)
       .unwrap()
 
       .catch((error) =>

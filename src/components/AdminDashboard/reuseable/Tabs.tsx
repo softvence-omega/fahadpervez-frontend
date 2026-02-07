@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-interface Tab<T extends string> {
+export interface Tab<T extends string> {
   label: string;
   value: T;
 }
@@ -25,25 +25,7 @@ const Tabs = <T extends string>({
 }: TabsProps<T>) => {
   return (
     <>
-      {/* Mobile: Dropdown (below sm) */}
-      {/* <div className="block sm:hidden w-full">
-        <select
-          value={active}
-          onChange={(e) => onChange(e.target.value as T)}
-          className="w-full  border border-border bg-white px-4 py-3 text-sm font-medium cursor-pointer "
-        >
-          {tabs.map((tab) => (
-            <option
-              key={tab.value}
-              value={tab.value}
-              className=" cursor-pointer"
-            >
-              {tab.label}
-            </option>
-          ))}
-        </select>
-      </div> */}
-      <div className="block sm:hidden w-full">
+      <div className="block sm:hidden w-full ">
         <Select value={active} onValueChange={onChange}>
           <SelectTrigger
             className={`${className} bg-[#FCFCFC] border border-[#CBD5E1] px-3 py-3 cursor-pointer rounded-md text-sm     outline-none
