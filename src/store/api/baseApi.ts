@@ -109,6 +109,8 @@ export const baseAPI = createApi({
     "Sessions",
     "AllExam",
     "ProfessionalAllExam",
+    "DailyChallenge",
   ],
+
   endpoints: () => ({}),
 });

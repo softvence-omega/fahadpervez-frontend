@@ -58,7 +58,7 @@ export default function WeeklyPlan() {
 
   // Use state plan only as initial placeholder, preferring fresh data
   const planFromState = location.state?.plan as StudyPlanData | undefined;
-  
+
   const studyPlan: StudyPlanData | undefined =
     data?.data?.find((p: StudyPlanData) => p._id === id) || planFromState;
 
@@ -79,7 +79,7 @@ export default function WeeklyPlan() {
 
   const handleStartWithContent = (taskTypeStr: string, contentId: string, dayNumber: number) => {
     const taskType = taskTypeStr.toLowerCase();
-    
+
     if (!contentId) {
       toast.warning("Content ID is not available");
       return;
@@ -91,7 +91,7 @@ export default function WeeklyPlan() {
       suggest_content: contentId,
       from: "weekly-plan",
     };
-    
+
     console.log("Navigating with state:", navigationState);
 
     if (taskType === "mcqs" || taskType === "mcq") {
@@ -289,8 +289,12 @@ export default function WeeklyPlan() {
                         className={`space-y-3 border p-4 rounded-[8px] ${sectionBgClass}`}
                       >
                         <h3 className="text-lg font-semibold">
-                          {getDayName(dayPlan.day_number)} -{" "}
-                          {new Date(dayPlan.date).toLocaleDateString()}
+                          {getDayName(dayPlan.day_number)} –{" "}
+                          {new Date(dayPlan.date).toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })}
                         </h3>
                         {/* <p className="text-sm text-gray-500">
                           Topics: {dayPlan.topics.join(", ")} | Total Hours:{" "}
@@ -300,17 +304,17 @@ export default function WeeklyPlan() {
                           <div className="space-y-3">
                             {dayPlan.hourly_breakdown.map((session, idx) => {
                               const isSessionCompleted = session.isCompleted;
-                              
+
                               // Use the day's Topic as the title, fallback to description or task type
                               // Trying to match the "clean" title from the image
-                              const rowTitle = dayPlan.topics.length > 0 ? dayPlan.topics[0] : session.description;
+                              // const rowTitle = dayPlan.topics.length > 0 ? dayPlan.topics[0] : session.description;
+                              const rowTitle = session.description;
 
                               return (
                                 <div
                                   key={idx}
-                                  className={`flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 rounded-md border border-slate-300 ${
-                                    isSessionCompleted ? "bg-green-100 border border-green-200" : "bg-white"
-                                  }`}
+                                  className={`flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 rounded-md border border-slate-300 ${isSessionCompleted ? "bg-green-100 border border-green-200" : "bg-white"
+                                    }`}
                                 >
                                   <div className="mb-2 sm:mb-0">
                                     <h4 className="font-semibold text-gray-900 text-base">
@@ -320,18 +324,17 @@ export default function WeeklyPlan() {
                                       {session.task_type} • {session.duration_hours}h
                                     </p>
                                   </div>
-                                  
+
                                   <Button
                                     size="sm"
                                     disabled={!isSessionCompleted && isFuture}
                                     onClick={() => handleStartWithContent(session.task_type, session.suggest_content.contentId, dayPlan.day_number)}
-                                    className={`${
-                                      isSessionCompleted 
-                                        ? "bg-green-600 text-white hover:bg-green-700 border border-green-200" 
-                                        : isFuture
-                                          ? "bg-white text-gray-400 border border-gray-200 cursor-not-allowed"
-                                          : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
-                                    } min-w-[80px] font-medium shadow-none transition-colors`}
+                                    className={`${isSessionCompleted
+                                      ? "bg-green-600 text-white hover:bg-green-700 border border-green-200"
+                                      : isFuture
+                                        ? "bg-white text-gray-400 border border-gray-200 cursor-not-allowed"
+                                        : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
+                                      } min-w-[80px] font-medium shadow-none transition-colors`}
                                   >
                                     {isSessionCompleted ? "complete" : isFuture ? "Locked" : "Start"}
                                   </Button>

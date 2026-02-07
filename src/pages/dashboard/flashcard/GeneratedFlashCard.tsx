@@ -31,7 +31,7 @@ export default function GeneratedFlashCard({
     searchTerm,
     ...filters,
     page,
-    limit: 8,
+    limit: 12,
   });
 
   const [deleteContent, { isLoading: isDeleting }] =
@@ -62,7 +62,7 @@ export default function GeneratedFlashCard({
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-medium">Generated Cards</h3>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 ">
+        <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4 ">
           {allGeneratedFlashcard?.length > 0 ? (
             allGeneratedFlashcard.map(
               (flashcard: IFlashcardBank, idx: number) => (
@@ -108,7 +108,7 @@ export default function GeneratedFlashCard({
               be undone.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="gap-2 sm:gap-0">
+          <DialogFooter className="gap-2">
             <Button
               variant="outline"
               onClick={() => setCardToDelete(null)}

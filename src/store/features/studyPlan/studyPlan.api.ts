@@ -12,9 +12,10 @@ const studyPlanAPI = baseAPI.injectEndpoints({
     }),
 
     getStudyPlan: build.query({
-      query: () => ({
+      query: (params) => ({
         url: "/study_planner/all",
         method: "GET",
+        params,
       }),
       providesTags: ["StudyPlan"],
     }),
@@ -36,6 +37,14 @@ const studyPlanAPI = baseAPI.injectEndpoints({
       invalidatesTags: ["StudyPlan"],
     }),
 
+    deleteStudyPlan: build.mutation({
+      query: (id: string) => ({
+        url: `/study_planner/delete/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["StudyPlan"],
+    }),
+
     //end
   }),
 });
@@ -45,4 +54,5 @@ export const {
   useGetStudyPlanQuery,
   useGetSingleStudyPlanQuery,
   useSaveStudyPlanProgressMutation,
+  useDeleteStudyPlanMutation,
 } = studyPlanAPI;

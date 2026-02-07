@@ -164,6 +164,7 @@ export const sidebarItems: SidebarItem[] = [
     // iconBgColor: "bg-red-50",
     fieldBg: "bg-indigo-50",
     isImageIcon: true,
+    disabled: true,
   },
   {
     icon: diagramIcon,

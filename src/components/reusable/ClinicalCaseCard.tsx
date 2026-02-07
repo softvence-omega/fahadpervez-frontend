@@ -17,11 +17,11 @@ interface ClinicalCaseCardProps {
 }
 
 const ClinicalCaseCard = ({
-  title = "Clinical Case ",
-  subtitle = "12/240 Case Completed",
-  caseTitle = "Abdominal Pain in Young Adult",
-  caseSubTitle = "A 22-year-old presents with right lower quadrant pain.",
-  tags = ["Drag Card", "Pharmacology"],
+  title,
+  subtitle,
+  caseTitle,
+  caseSubTitle,
+  tags,
   icon: IconComponent = BookOpenText,
 }: // Theme-based styling
 
@@ -55,7 +55,7 @@ const ClinicalCaseCard = ({
       <div>
         {/* Tags */}
         <div className="flex gap-2 mb-3">
-          {tags.map((tag, index) => (
+          {tags?.map((tag, index) => (
             <span
               key={index}
               className="px-3 py-1 bg-gray-100 border border-gray-200 rounded-full text-xs font-medium text-gray-600"
