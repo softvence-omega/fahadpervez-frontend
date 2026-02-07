@@ -1,28 +1,39 @@
-import { Exam } from "@/store/features/adminDashboard/ContentResources/MCQ/types/tree";
 import { useState } from "react";
-import CreateExamModal from "./CreateExamModal";
+import BulkExamModal from "./BulkExamModal";
+import ManualExamModal from "./ManualExamModal";
+import McqTableForExam from "./McqTableForExam";
 import TableContentForExam from "./TableContentForExam";
 
 const ExamMode = () => {
   const [isCreateQuestionModalOpen, setIsCreateQuestionModalOpen] =
     useState(false);
-  const [initialData, setInitialData] = useState<Exam | null>(null);
+  const [selectedExamId, setSelectedExamId] = useState<string | null>(null);
+  const [mode, setMode] = useState<"manual" | "bulk">("manual");
 
+  console.log("mode", mode);
   return (
     <div>
       <div className=" w-full flex  gap-6">
         <TableContentForExam
           iconAction={() => setIsCreateQuestionModalOpen(true)}
-          setInitialData={setInitialData}
+          onSelectExam={(examId) => setSelectedExamId(examId)}
+          mode={mode}
+          setMode={setMode}
+        />
+        <McqTableForExam
+          examId={selectedExamId}
+          setSelectedExamId={setSelectedExamId}
         />
       </div>
 
-      {isCreateQuestionModalOpen && (
-        <CreateExamModal
-          setIsQuestionModalOpen={setIsCreateQuestionModalOpen}
-          initialData={initialData}
-        />
-      )}
+      {isCreateQuestionModalOpen &&
+        (mode === "manual" ? (
+          <ManualExamModal
+            onClose={() => setIsCreateQuestionModalOpen(false)}
+          />
+        ) : (
+          <BulkExamModal onClose={() => setIsCreateQuestionModalOpen(false)} />
+        ))}
     </div>
   );
 };

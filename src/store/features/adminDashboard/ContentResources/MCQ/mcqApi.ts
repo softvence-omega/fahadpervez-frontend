@@ -18,7 +18,7 @@ import {
   ProfileParams,
   ProfileTypeResponse,
 } from "./types/student";
-import { GetExamsResponse, PostExam, PostStudyModeTree } from "./types/tree";
+import { PostStudyModeTree } from "./types/tree";
 import { GetStudyModeTree, GetStudyModeTreeParams } from "./types/TreeResponse";
 
 export const mcqApi = baseAPI.injectEndpoints({
@@ -259,37 +259,37 @@ export const mcqApi = baseAPI.injectEndpoints({
       ],
     }),
 
-    //exam mode
-    postExam: build.mutation<void, PostExam>({
-      query: (data) => ({
-        url: `/exam/create`,
-        method: "POST",
-        body: data,
-      }),
-      invalidatesTags: ["Exams"],
-    }),
-    getExam: build.query<GetExamsResponse, void>({
-      query: () => ({
-        url: `/exam/all`,
-        method: "GET",
-      }),
-      providesTags: ["Exams"],
-    }),
-    updateExam: build.mutation<void, { data: PostExam; examId: string }>({
-      query: ({ data, examId }) => ({
-        url: `/exam/update/${examId}`,
-        method: "PATCH",
-        body: data,
-      }),
-      invalidatesTags: ["Exams"],
-    }),
-    deleteExam: build.mutation<void, string>({
-      query: (examId) => ({
-        url: `/exam/delete/${examId}`,
-        method: "DELETE",
-      }),
-      invalidatesTags: ["Exams"],
-    }),
+    // //exam mode
+    // postExam: build.mutation<void, PostExam>({
+    //   query: (data) => ({
+    //     url: `/exam/create`,
+    //     method: "POST",
+    //     body: data,
+    //   }),
+    //   invalidatesTags: ["Exams"],
+    // }),
+    // getExam: build.query<GetExamsResponse, void>({
+    //   query: () => ({
+    //     url: `/exam/all`,
+    //     method: "GET",
+    //   }),
+    //   providesTags: ["Exams"],
+    // }),
+    // updateExam: build.mutation<void, { data: PostExam; examId: string }>({
+    //   query: ({ data, examId }) => ({
+    //     url: `/exam/update/${examId}`,
+    //     method: "PATCH",
+    //     body: data,
+    //   }),
+    //   invalidatesTags: ["Exams"],
+    // }),
+    // deleteExam: build.mutation<void, string>({
+    //   query: (examId) => ({
+    //     url: `/exam/delete/${examId}`,
+    //     method: "DELETE",
+    //   }),
+    //   invalidatesTags: ["Exams"],
+    // }),
 
     ReportMcq: build.mutation({
       query: (data) => ({
@@ -318,10 +318,6 @@ export const {
   useGetStudyModeTreeQuery,
   useUpdateStudyModeTreeMutation,
   useDeleteStudyModeTreeMutation,
-  usePostExamMutation,
-  useGetExamQuery,
-  useUpdateExamMutation,
-  useDeleteExamMutation,
   useReportMcqMutation,
   useUploadManualMcqMutation,
   useGetStudyModeAllContentQuery,

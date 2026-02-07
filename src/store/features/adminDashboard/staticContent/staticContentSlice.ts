@@ -66,6 +66,9 @@ const staticContentSlice = createSlice({
     setContentFor: (state, action: PayloadAction<ContentFor>) => {
       state.contentFor = action.payload;
     },
+    setType: (state, action: PayloadAction<ContentModeType>) => {
+      state.type = action.payload;
+    },
     setContentModeType: (state, action: PayloadAction<ContentModeType>) => {
       state.type = action.payload;
     },
