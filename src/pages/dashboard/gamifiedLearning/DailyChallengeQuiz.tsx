@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useGetDailyChallengeQuery, useUpdateDailyChallengeStatusMutation } from "@/store/features/tracking/tracking.api";
 import { ArrowLeft, Copy } from "lucide-react";
 import GlobalLoader from "@/common/GlobalLoader";
@@ -9,10 +9,14 @@ import PrimaryButton from "@/components/reusable/PrimaryButton";
 import StatsRow from "@/components/quizOverview/StatsRow";
 import CircularProgress from "@/components/quizOverview/CircularProgress";
 import { toast } from "sonner";
+import { Stats } from "@/components/quizOverview/type";
 
 export default function DailyChallengeQuiz() {
     const navigate = useNavigate();
-    const { data: challengeResponse, isLoading } = useGetDailyChallengeQuery();
+    const location = useLocation();
+    const { data: challengeResponse, isLoading: isChallengeLoading } = useGetDailyChallengeQuery(undefined, {
+        skip: !!location.state?.challengeData
+    });
     const [updateStatus] = useUpdateDailyChallengeStatusMutation();
 
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -23,13 +27,24 @@ export default function DailyChallengeQuiz() {
     const [startTime] = useState(Date.now());
     const [totalTimeTaken, setTotalTimeTaken] = useState("");
 
-    const challenge = challengeResponse?.data;
+    const challenge = location.state?.challengeData || challengeResponse?.data;
     const questions = challenge?.mcqs || [];
+    const isLoading = !location.state?.challengeData && isChallengeLoading;
+
+    const fromAnalysis = location.state?.fromAnalysis;
+    const quizId = location.state?.quizId;
+
+    const handleBack = () => {
+        if (fromAnalysis && quizId) {
+            navigate(`/dashboard/quiz-analysis/${quizId}`);
+        } else {
+            navigate("/dashboard");
+        }
+    };
 
     const breadcrumbs = [
         { name: "Dashboard", link: "/dashboard" },
-        { name: "Daily Challenge", link: "#" },
-        { name: challenge?.title || "Quiz", link: "#" },
+        { name: "Daily Challenge Quiz", link: "/dashboard/gamified-learning/daily-challenge" },
     ];
 
     const handleOptionSelect = (option: string) => {
@@ -44,7 +59,7 @@ export default function DailyChallengeQuiz() {
         } else {
             let correct = 0;
             let wrong = 0;
-            questions.forEach((q, index) => {
+            questions.forEach((q: any, index: number) => {
                 if (selectedOptions[index] === q.correctOption) {
                     correct++;
                 } else {
@@ -62,7 +77,9 @@ export default function DailyChallengeQuiz() {
             setIsFinished(true);
 
             try {
-                await updateStatus().unwrap();
+                if (!fromAnalysis) {
+                    await updateStatus().unwrap();
+                }
             } catch (err) {
                 console.error("Failed to update challenge status:", err);
             }
@@ -83,7 +100,7 @@ export default function DailyChallengeQuiz() {
         const correctPercent = Math.round((results.correct / totalQuestions) * 100);
         const wrongPercent = 100 - correctPercent;
 
-        const stats = {
+        const stats: Stats = {
             completed: `${totalQuestions}`,
             correct: `${results.correct}`,
             wrong: `${results.wrong}`,
@@ -93,7 +110,7 @@ export default function DailyChallengeQuiz() {
         return (
             <div className="p-6 max-w-6xl mx-auto space-y-8">
                 <div className="flex items-start gap-1">
-                    <button onClick={() => navigate("/dashboard")} className="sm:mb-0 cursor-pointer">
+                    <button onClick={handleBack} className="sm:mb-0 cursor-pointer">
                         <ArrowLeft />
                     </button>
                     <DashboardHeading
@@ -107,7 +124,7 @@ export default function DailyChallengeQuiz() {
                     />
                 </div>
 
-                <StatsRow stats={stats as any} />
+                <StatsRow stats={stats} />
 
                 <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6">
                     {/* Performance Card */}
@@ -152,46 +169,48 @@ export default function DailyChallengeQuiz() {
 
                         <div className="mt-10">
                             <PrimaryButton
-                                onClick={() => navigate("/dashboard")}
+                                onClick={handleBack}
                                 className="px-10 py-3 h-auto"
                             >
-                                Back to Dashboard
+                                {fromAnalysis ? "Back to Analysis" : "Back to Dashboard"}
                             </PrimaryButton>
                         </div>
                     </div>
 
                     {/* Summary Card */}
-                    <div className="bg-blue-50 p-6 rounded-xl shadow-sm border border-blue-200 h-fit">
-                        <h3 className="text-lg font-bold text-blue-900 mb-4">Summary</h3>
+                    {!fromAnalysis && (
+                        <div className="bg-blue-50 p-6 rounded-xl shadow-sm border border-blue-200 h-fit">
+                            <h3 className="text-lg font-bold text-blue-900 mb-4">Summary</h3>
 
-                        <div className="space-y-4">
-                            <div className="flex justify-between items-center py-2 border-b border-blue-200">
-                                <span className="text-blue-600">Subject</span>
-                                <span className="font-medium text-blue-800">
-                                    {challenge.subject}
-                                </span>
-                            </div>
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-center py-2 border-b border-blue-200">
+                                    <span className="text-blue-600">Subject</span>
+                                    <span className="font-medium text-blue-800">
+                                        {challenge.subject}
+                                    </span>
+                                </div>
 
-                            <div className="flex justify-between items-center py-2 border-b border-slate-200">
-                                <span className="text-slate-600">System</span>
-                                <span className="font-medium text-slate-800">
-                                    {challenge.system}
-                                </span>
-                            </div>
+                                <div className="flex justify-between items-center py-2 border-b border-slate-200">
+                                    <span className="text-slate-600">System</span>
+                                    <span className="font-medium text-slate-800">
+                                        {challenge.system}
+                                    </span>
+                                </div>
 
-                            <div className="flex justify-between items-center py-2 border-b border-slate-200">
-                                <span className="text-slate-600">Topic</span>
-                                <span className="font-medium text-slate-800">
-                                    {challenge.topic}
-                                </span>
-                            </div>
+                                <div className="flex justify-between items-center py-2 border-b border-slate-200">
+                                    <span className="text-slate-600">Topic</span>
+                                    <span className="font-medium text-slate-800">
+                                        {challenge.topic}
+                                    </span>
+                                </div>
 
-                            <div className="flex justify-between items-center py-2">
-                                <span className="text-slate-600">Reward</span>
-                                <span className="text-blue-600 font-semibold">+10 pts</span>
+                                <div className="flex justify-between items-center py-2">
+                                    <span className="text-slate-600">Reward</span>
+                                    <span className="text-blue-600 font-semibold">+10 pts</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )}
                 </div>
 
             </div>
@@ -207,7 +226,7 @@ export default function DailyChallengeQuiz() {
 
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div className="flex items-center gap-3">
-                    <button onClick={() => navigate("/dashboard")} className="cursor-pointer">
+                    <button onClick={handleBack} className="cursor-pointer">
                         <ArrowLeft className="mb-7" />
                     </button>
                     <DashboardHeading

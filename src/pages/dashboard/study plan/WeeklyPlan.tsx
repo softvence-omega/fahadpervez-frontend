@@ -21,6 +21,7 @@ import { toast } from "sonner";
 interface HourlyBreakdown {
   task_type: string;
   duration_hours: number;
+  duration_minutes: number;
   suggest_content: { // Updated to object
     contentId: string;
     limit: number;
@@ -320,16 +321,26 @@ export default function WeeklyPlan() {
                                     <h4 className="font-semibold text-gray-900 text-base">
                                       {rowTitle}
                                     </h4>
-                                    <p className="text-sm text-gray-500 mt-0.5">
+                                    {/* <p className="text-sm text-gray-500 mt-0.5">
                                       {session.task_type} • {session.duration_hours}h
+                                    </p> */}
+                                    <p className="text-sm text-gray-500 mt-0.5">
+                                      {[
+                                        session.task_type,
+                                        session.duration_hours && `${session.duration_hours}h`,
+                                        session.duration_minutes && `${session.duration_minutes}m`,
+                                      ]
+                                        .filter(Boolean)
+                                        .join(" • ")}
                                     </p>
+
                                   </div>
 
                                   <Button
                                     size="sm"
                                     disabled={!isSessionCompleted && isFuture}
                                     onClick={() => handleStartWithContent(session.task_type, session.suggest_content.contentId, dayPlan.day_number)}
-                                    className={`${isSessionCompleted
+                                    className={`cursor-pointer ${isSessionCompleted
                                       ? "bg-green-600 text-white hover:bg-green-700 border border-green-200"
                                       : isFuture
                                         ? "bg-white text-gray-400 border border-gray-200 cursor-not-allowed"

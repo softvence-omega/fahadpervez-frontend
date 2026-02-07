@@ -56,6 +56,7 @@ export default function SolveFlashCard() {
 
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
+      !isCompleted &&
       currentQuestion > 0 &&
       !isSubmitting &&
       currentLocation.pathname !== nextLocation.pathname
@@ -147,19 +148,44 @@ export default function SolveFlashCard() {
     }
   };
 
+  const fromAnalysis = location.state?.fromAnalysis;
+  const quizId = location.state?.quizId;
+
+  const handleBack = () => {
+    console.log("Navigating back. fromAnalysis:", fromAnalysis, "quizId:", quizId);
+
+    // Using a timeout to ensure the navigation happens after any ongoing React state updates
+    setTimeout(() => {
+      if (fromAnalysis && quizId) {
+        navigate(`/dashboard/quiz-analysis/${quizId}`, { replace: true });
+      } else if (location.state?.from === "weekly-plan") {
+        navigate(-1);
+      } else {
+        navigate("/dashboard/flashcard-page", { replace: true });
+      }
+    }, 100);
+  };
+
   const handleSubmit = async () => {
-    if (!flashCardData?._id) return;
+    // If we're coming from analysis, we don't strictly need a bankId/flashCardData._id
+    if (!flashCardData?._id && !fromAnalysis) return;
+
     setIsSubmitting(true);
+    console.log("Submitting flashcard progress...");
 
     try {
-      await updateProgress({
-        totalAttempted: questions.length,
-        totalCorrect: questions.length,
-        totalIncorrect: 0,
-        key: "flashcard",
-        bankId: flashCardData._id,
-      }).unwrap();
+      // Only call standard progress API if we have a real bank ID
+      if (flashCardData?._id) {
+        await updateProgress({
+          totalAttempted: questions.length,
+          totalCorrect: questions.length,
+          totalIncorrect: 0,
+          key: "flashcard",
+          bankId: flashCardData._id,
+        }).unwrap();
+      }
 
+      // Check for weekly plan progress
       if (location.state?.from === "weekly-plan" && location.state?.planId) {
         try {
           await saveStudyPlanProgress({
@@ -172,11 +198,8 @@ export default function SolveFlashCard() {
         }
       }
 
-      if (location.state?.from === "weekly-plan") {
-        navigate(-1);
-      } else {
-        navigate("/dashboard/flashcard-page");
-      }
+      console.log("Finished saving progress, calling handleBack");
+      handleBack();
     } catch (error) {
       console.error("Failed to save progress:", error);
       toast.error("Failed to save progress");
@@ -220,7 +243,7 @@ export default function SolveFlashCard() {
               className="bg-[#7F56D9] hover:bg-[#6941C6] text-white px-8 py-6 text-lg rounded-xl shadow-lg shadow-purple-200"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Saving Progress..." : "Finish & Save Progress"}
+              {isSubmitting ? "Saving Progress..." : fromAnalysis ? "Finish & Back to Analysis" : "Finish & Save Progress"}
             </Button>
           </motion.div>
         </motion.div>
@@ -294,10 +317,7 @@ export default function SolveFlashCard() {
       >
         <motion.div
           whileHover={{ scale: 1.1, x: -5 }}
-          onClick={() => {
-            if (location.state?.from === "weekly-plan") navigate(-1);
-            else navigate("/dashboard/flashcard-page");
-          }}
+          onClick={handleBack}
           className="mt-1 flex items-center justify-center w-10 h-10 bg-white rounded-full shadow-sm cursor-pointer border border-slate-100"
         >
           <ArrowLeft className="w-5 h-5 text-slate-600" />
