@@ -10,13 +10,14 @@ const ExamMode = () => {
   const [selectedExamId, setSelectedExamId] = useState<string | null>(null);
   const [mode, setMode] = useState<"manual" | "bulk">("manual");
 
-  console.log("mode", mode);
+  console.log("selectedExamId", selectedExamId);
   return (
     <div>
       <div className=" w-full flex  gap-6">
         <TableContentForExam
           iconAction={() => setIsCreateQuestionModalOpen(true)}
           onSelectExam={(examId) => setSelectedExamId(examId)}
+          selectedExamId={selectedExamId}
           mode={mode}
           setMode={setMode}
         />

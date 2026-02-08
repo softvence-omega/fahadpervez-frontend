@@ -20,7 +20,7 @@ const ParentComponent = () => {
 
   const { pathname } = useLocation();
   const { profileType, type } = useAppSelector(
-    (state: RootState) => state.staticContent
+    (state: RootState) => state.staticContent,
   );
   const dispatch = useDispatch();
 
@@ -37,7 +37,7 @@ const ParentComponent = () => {
               description={`Manage and organize content for ${
                 profileType ?? ""
               }`}
-              buttonText="Add Content"
+              buttonText={`Add Content`}
               action={() => {
                 navigate("create-content");
               }}

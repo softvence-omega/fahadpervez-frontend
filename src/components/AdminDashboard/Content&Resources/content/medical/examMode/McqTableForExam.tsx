@@ -21,6 +21,7 @@ import { ExamMcq } from "@/store/features/adminDashboard/examMode/studentApi/typ
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { HiOutlineArrowNarrowLeft } from "react-icons/hi";
+import AddMoreMCQ from "./AddMoreMCQ";
 import UpdateMcqForExamModal from "./UpdateMcqForExamModal";
 
 interface McqTableProps {
@@ -49,6 +50,7 @@ const McqTableForExam: React.FC<McqTableProps> = ({
   setSelectedExamId,
 }) => {
   const [page, setPage] = useState(1);
+  const [isMoreMCQModalOpen, setIsMoreMCQModalOpen] = useState(false);
 
   const { data, isLoading } = useGetSingleExamQuery(
     { id: examId!, page },
@@ -78,7 +80,8 @@ const McqTableForExam: React.FC<McqTableProps> = ({
   };
   // update single mcq in exam
 
-  const [updateSingleExamMcq] = useUpdateSingleExamMcqMutation();
+  const [updateSingleExamMcq, { isLoading: isUpdateLoading }] =
+    useUpdateSingleExamMcqMutation();
   const [selectedMCQ, setSelectedMCQ] = useState<ExamMcq | null>(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
@@ -126,6 +129,7 @@ const McqTableForExam: React.FC<McqTableProps> = ({
       </div>
     );
   }
+
   return (
     <div className="w-full">
       <div className="flex justify-between mb-6">
@@ -144,14 +148,17 @@ const McqTableForExam: React.FC<McqTableProps> = ({
           </div>
         </div>
 
-        <div className="flex items-start gap-2">
-          <ButtonWithIcon
-            icon={FaPlus}
-            className="w-full lg:w-auto flex justify-center  shrink-0 !py-3"
-          >
-            Add MCQ
-          </ButtonWithIcon>
-        </div>
+        {examId && (
+          <div className="flex items-start gap-2">
+            <ButtonWithIcon
+              onClick={() => setIsMoreMCQModalOpen(true)}
+              icon={FaPlus}
+              className="w-full lg:w-auto flex justify-center  shrink-0 !py-3"
+            >
+              Add MCQ
+            </ButtonWithIcon>
+          </div>
+        )}
       </div>
 
       <div className="flex-1 flex flex-col ">
@@ -269,7 +276,14 @@ const McqTableForExam: React.FC<McqTableProps> = ({
           }}
           onClose={() => setIsUpdateModalOpen(false)}
           onSubmit={handleUpdate}
-          isLoading={isLoading}
+          isLoading={isUpdateLoading}
+        />
+      )}
+
+      {isMoreMCQModalOpen && examId && (
+        <AddMoreMCQ
+          onClose={() => setIsMoreMCQModalOpen(false)}
+          examId={examId}
         />
       )}
     </div>

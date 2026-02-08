@@ -64,7 +64,7 @@ export interface MCQOption {
   explanation: string;
 }
 
-export interface MCQ {
+export interface SingleMCQForExam {
   question: string;
   imageDescription?: string;
   options: MCQOption[];
@@ -76,5 +76,9 @@ export interface ExamPayload {
   examName: string;
   subject: string;
   totalTime: number;
-  mcqs: MCQ[];
+  mcqs: SingleMCQForExam[];
+}
+
+export interface AddMoreMCQPayload {
+  mcqs: SingleMCQForExam[];
 }
