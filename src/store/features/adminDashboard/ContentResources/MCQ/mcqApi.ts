@@ -259,38 +259,6 @@ export const mcqApi = baseAPI.injectEndpoints({
       ],
     }),
 
-    // //exam mode
-    // postExam: build.mutation<void, PostExam>({
-    //   query: (data) => ({
-    //     url: `/exam/create`,
-    //     method: "POST",
-    //     body: data,
-    //   }),
-    //   invalidatesTags: ["Exams"],
-    // }),
-    // getExam: build.query<GetExamsResponse, void>({
-    //   query: () => ({
-    //     url: `/exam/all`,
-    //     method: "GET",
-    //   }),
-    //   providesTags: ["Exams"],
-    // }),
-    // updateExam: build.mutation<void, { data: PostExam; examId: string }>({
-    //   query: ({ data, examId }) => ({
-    //     url: `/exam/update/${examId}`,
-    //     method: "PATCH",
-    //     body: data,
-    //   }),
-    //   invalidatesTags: ["Exams"],
-    // }),
-    // deleteExam: build.mutation<void, string>({
-    //   query: (examId) => ({
-    //     url: `/exam/delete/${examId}`,
-    //     method: "DELETE",
-    //   }),
-    //   invalidatesTags: ["Exams"],
-    // }),
-
     ReportMcq: build.mutation({
       query: (data) => ({
         url: `/mcq-bank/save-report`,

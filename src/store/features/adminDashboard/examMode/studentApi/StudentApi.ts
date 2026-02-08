@@ -1,5 +1,6 @@
 import { baseAPI } from "@/store/api/baseApi";
 import {
+  AddMoreMCQPayload,
   AllExamResponse,
   ExamPayload,
   ExamQueryParams,
@@ -63,6 +64,25 @@ export const studentApi = baseAPI.injectEndpoints({
       invalidatesTags: ["AllExam"],
     }),
 
+    deleteExam: build.mutation<any, string>({
+      query: (id) => ({
+        url: `/exam/student/delete-exam/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["AllExam"],
+    }),
+    addMoreMcqManual: build.mutation<
+      any,
+      { data: AddMoreMCQPayload; id: string }
+    >({
+      query: ({ data, id }) => ({
+        url: `/exam/student/add-more-mcq/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["AllExam"],
+    }),
+
     updateSingleExamMcq: build.mutation<
       any,
       { examId: string; mcqId: string; data: SingleMCQUpdatePayloadForExam }
@@ -98,4 +118,6 @@ export const {
   useUpdateExamMutation,
   useCreateExamBulkMutation,
   useCreateExamManualMutation,
+  useDeleteExamMutation,
+  useAddMoreMcqManualMutation,
 } = studentApi;

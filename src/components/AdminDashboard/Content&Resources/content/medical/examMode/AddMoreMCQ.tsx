@@ -4,9 +4,7 @@ import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
 import FormHeader from "@/components/AdminDashboard/reuseable/FormHeader";
 import ModalCloseButton from "@/components/AdminDashboard/reuseable/ModalCloseButton";
 import { useUploadSingleImageMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
-import { useCreateExamManualMutation } from "@/store/features/adminDashboard/examMode/studentApi/StudentApi";
-import { useAppSelector } from "@/store/hook";
-import { RootState } from "@/store/store";
+import { useAddMoreMcqManualMutation } from "@/store/features/adminDashboard/examMode/studentApi/StudentApi";
 import { correctAnswerOptions } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -54,10 +52,6 @@ const MCQSchema = z
   });
 
 const FinalSchema = z.object({
-  // profileType: z.string().min(1, { message: "Profile Type is required" }),
-  examName: z.string().min(1, { message: "Exam Name is required" }),
-  subject: z.string().min(1, { message: "Subject is required" }),
-  totalTime: z.number().min(1, { message: "Total Time is required" }),
   mcqs: z.array(MCQSchema).min(1),
 });
 
@@ -72,14 +66,12 @@ export const inputClass = {
 
 interface CreateExamModalProps {
   onClose: () => void;
+  examId: string | null;
 }
 
-const ManualExamModal: React.FC<CreateExamModalProps> = ({ onClose }) => {
-  const { profileType } = useAppSelector(
-    (state: RootState) => state.staticContent,
-  );
-  const [createExamManual, { isLoading: isUploading }] =
-    useCreateExamManualMutation();
+const AddMoreMCQ: React.FC<CreateExamModalProps> = ({ onClose, examId }) => {
+  const [addMoreMcq, { isLoading: isUploading }] =
+    useAddMoreMcqManualMutation();
 
   const defaultOptions = [
     { option: "A", optionText: "", explanation: "" },
@@ -100,9 +92,6 @@ const ManualExamModal: React.FC<CreateExamModalProps> = ({ onClose }) => {
   } = useForm<MCQFormValues>({
     resolver: zodResolver(FinalSchema),
     defaultValues: {
-      examName: "",
-      subject: "",
-      totalTime: 0,
       mcqs: [
         {
           question: "",
@@ -185,14 +174,12 @@ const ManualExamModal: React.FC<CreateExamModalProps> = ({ onClose }) => {
       }));
 
       const payload = {
-        profileType: profileType,
-        examName: data.examName,
-        subject: data.subject,
-        totalTime: data.totalTime,
         mcqs: processedMcqs,
       };
 
-      await createExamManual(payload).unwrap();
+      if (examId) {
+        await addMoreMcq({ data: payload, id: examId }).unwrap();
+      }
 
       setImagePreviews({});
       reset();
@@ -203,7 +190,6 @@ const ManualExamModal: React.FC<CreateExamModalProps> = ({ onClose }) => {
   };
 
   const handleSavePublish = async () => {
-    console.log("=== handleSavePublish clicked ===");
     await handleSubmit(onSubmit)();
   };
 
@@ -216,51 +202,8 @@ const ManualExamModal: React.FC<CreateExamModalProps> = ({ onClose }) => {
       <CommonBorderWrapper className="w-full max-w-3xl relative max-h-full overflow-y-auto">
         <ModalCloseButton onClick={handleCancel} />
 
-        <FormHeader title="Create New Exam" />
+        <FormHeader title="Add More MCQ" />
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Exam Metadata Fields */}
-          <CommonBorderWrapper className="mb-6">
-            <h2 className="text-base font-semibold mb-4">Exam Details</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className={inputClass.label}>Exam Name</label>
-                <input
-                  {...register("examName")}
-                  className={inputClass.input}
-                  placeholder="Enter exam name"
-                />
-                {errors.examName && (
-                  <p className={inputClass.error}>{errors.examName.message}</p>
-                )}
-              </div>
-
-              <div>
-                <label className={inputClass.label}>Subject</label>
-                <input
-                  {...register("subject")}
-                  className={inputClass.input}
-                  placeholder="Enter subject"
-                />
-                {errors.subject && (
-                  <p className={inputClass.error}>{errors.subject.message}</p>
-                )}
-              </div>
-
-              <div>
-                <label className={inputClass.label}>Total Time (minutes)</label>
-                <input
-                  type="number"
-                  {...register("totalTime", { valueAsNumber: true })}
-                  className={inputClass.input}
-                  placeholder="Enter total time"
-                />
-                {errors.totalTime && (
-                  <p className={inputClass.error}>{errors.totalTime.message}</p>
-                )}
-              </div>
-            </div>
-          </CommonBorderWrapper>
-
           {/* MCQ Questions */}
           {fields.map((field, qIndex) => (
             <CommonBorderWrapper key={field.id} className="mb-6">
@@ -476,4 +419,4 @@ const ManualExamModal: React.FC<CreateExamModalProps> = ({ onClose }) => {
   );
 };
 
-export default ManualExamModal;
+export default AddMoreMCQ;
