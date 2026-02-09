@@ -51,7 +51,7 @@ const StudyRecommendations: React.FC<StudyRecommendationsProps> = ({
         break;
       case "clinical_case":
         if (recommendations.clinical_case) {
-          navigate(`/dashboard/clinical-case/recommended-${id}/make-decision`, {
+          navigate(`/dashboard/clinical-case/recommended-${id}`, {
             state: {
               clinicalCaseData: recommendations.clinical_case,
               fromAnalysis: true,
