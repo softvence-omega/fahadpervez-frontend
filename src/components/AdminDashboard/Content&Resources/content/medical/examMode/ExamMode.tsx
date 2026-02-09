@@ -9,8 +9,6 @@ const ExamMode = () => {
     useState(false);
   const [selectedExamId, setSelectedExamId] = useState<string | null>(null);
   const [mode, setMode] = useState<"manual" | "bulk">("manual");
-
-  console.log("selectedExamId", selectedExamId);
   return (
     <div>
       <div className=" w-full flex  gap-6">

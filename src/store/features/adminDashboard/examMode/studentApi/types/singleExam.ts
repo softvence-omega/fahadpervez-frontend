@@ -1,7 +1,3 @@
-/* =========================
-   Exam API Types
-========================= */
-
 export interface McqOption {
   option: string; // e.g. "A", "B", "C"
   optionText: string;
@@ -56,5 +52,10 @@ export interface SingleExamUpdatePayload {
   profileType: string;
   examName: string;
   subject: string;
+  totalTime: number;
+}
+export interface ProfessionalExamUpdatePayload {
+  professionName: string;
+  examName: string;
   totalTime: number;
 }

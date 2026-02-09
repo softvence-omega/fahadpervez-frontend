@@ -5,15 +5,24 @@ import CommonHeader from "@/common/header/CommonHeader";
 import Tabs, { Tab } from "@/components/AdminDashboard/reuseable/Tabs";
 
 import TableAction from "@/components/reusable/TableAction";
+import { useAppSelector } from "@/hooks/useRedux";
+import {
+  useDeleteExamForProfessionalMutation,
+  useGetAllExamForProfessionalQuery,
+} from "@/store/features/adminDashboard/examMode/professionalApi/professionalApi";
 import {
   useDeleteExamMutation,
   useGetAllExamForStudentQuery,
 } from "@/store/features/adminDashboard/examMode/studentApi/StudentApi";
-import { SingleExamUpdatePayload } from "@/store/features/adminDashboard/examMode/studentApi/types/singleExam";
+import {
+  ProfessionalExamUpdatePayload,
+  SingleExamUpdatePayload,
+} from "@/store/features/adminDashboard/examMode/studentApi/types/singleExam";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import UpdateExamModal from "./UpdateExamModal";
+import UpdateExamModalForProfessional from "./UpdateExamModalForProfessional";
 const tabs: Tab<"manual" | "bulk">[] = [
   { label: "Manual", value: "manual" },
   { label: "Bulk", value: "bulk" },
@@ -33,26 +42,48 @@ const TableContentForExam: React.FC<TableOfContentProps> = ({
   mode,
   setMode,
 }) => {
+  const { contentFor } = useAppSelector((state) => state.staticContent);
   const [searchQuery, setSearchQuery] = useState("");
   const deBounce = useDebounce(searchQuery, 500);
-  const { data, isLoading } = useGetAllExamForStudentQuery({
-    searchTerm: deBounce,
-  });
+  const isStudent = contentFor === "student";
+  const isProfessional = contentFor === "professional";
+
+  const { data: studentData, isLoading: studentLoading } =
+    useGetAllExamForStudentQuery(
+      { searchTerm: deBounce },
+      { skip: !isStudent },
+    );
+
+  const { data: professionalData, isLoading: professionalLoading } =
+    useGetAllExamForProfessionalQuery(
+      { searchTerm: deBounce },
+      { skip: !isProfessional },
+    );
+
+  const data = isStudent ? studentData : professionalData;
+  const isLoading = isStudent ? studentLoading : professionalLoading;
 
   const [deleteExam] = useDeleteExamMutation();
+  const [deleteExamForProfessional] = useDeleteExamForProfessionalMutation();
+
+  const deleteExamApi = isStudent ? deleteExam : deleteExamForProfessional;
 
   const handleDelete = (examId: string) => {
     if (!examId) return;
-    deleteExam(examId);
+    deleteExamApi(examId);
   };
 
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-  const [initialData, setInitialData] =
-    useState<SingleExamUpdatePayload | null>(null);
 
-  const handleUpdate = (data: SingleExamUpdatePayload) => {
+  const [initialData, setInitialData] = useState<
+    SingleExamUpdatePayload | ProfessionalExamUpdatePayload | null
+  >(null);
+
+  const handleUpdate = (
+    payload: SingleExamUpdatePayload | ProfessionalExamUpdatePayload,
+  ) => {
+    setInitialData(payload);
     setIsUpdateModalOpen(true);
-    setInitialData(data);
   };
 
   return (
@@ -61,7 +92,7 @@ const TableContentForExam: React.FC<TableOfContentProps> = ({
         <div className="flex justify-between">
           <div className="flex items-center gap-2">
             <img src={preview} className="w-5 h-5" alt="icon" />
-            <CommonHeader className="text-[#0A0A0A] !text-base">
+            <CommonHeader className="text-[#0A0A0A] text-base!">
               Exams
             </CommonHeader>
           </div>
@@ -112,7 +143,11 @@ const TableContentForExam: React.FC<TableOfContentProps> = ({
                     </p>
                     <TableAction
                       handleEdit={() => {
-                        handleUpdate(exam);
+                        handleUpdate(
+                          exam as
+                            | SingleExamUpdatePayload
+                            | ProfessionalExamUpdatePayload,
+                        );
                       }}
                       handleDelete={() => {
                         handleDelete(exam._id);
@@ -125,13 +160,21 @@ const TableContentForExam: React.FC<TableOfContentProps> = ({
           </div>
         )}
       </div>
-      {isUpdateModalOpen && (
+      {isUpdateModalOpen && initialData && (
         <div className=" fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-          <UpdateExamModal
-            setIsUpdateModalOpen={setIsUpdateModalOpen}
-            initialData={initialData}
-            selectedExamId={selectedExamId}
-          />
+          {isStudent ? (
+            <UpdateExamModal
+              setIsUpdateModalOpen={setIsUpdateModalOpen}
+              initialData={initialData as SingleExamUpdatePayload}
+              selectedExamId={selectedExamId}
+            />
+          ) : (
+            <UpdateExamModalForProfessional
+              setIsUpdateModalOpen={setIsUpdateModalOpen}
+              initialData={initialData as ProfessionalExamUpdatePayload}
+              selectedExamId={selectedExamId}
+            />
+          )}
         </div>
       )}
     </>

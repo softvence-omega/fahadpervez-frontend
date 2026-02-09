@@ -108,7 +108,7 @@ export const baseAPI = createApi({
     "Leaderboard",
     "Sessions",
     "AllExam",
-    "ProfessionalAllExam",
+    "AllExamForProfessional",
     "DailyChallenge",
   ],
 
