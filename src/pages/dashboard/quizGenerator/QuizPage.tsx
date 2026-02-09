@@ -4,7 +4,7 @@ import { Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 // import MyQuizAnalysisTab from "./MyQuizAnalysisTab";
-import QuizOverviewTab from "./QuizOverviewTab";
+import QuizCollection from "./QuizCollection";
 
 const QuizPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -73,7 +73,8 @@ const QuizPage = () => {
 
             {/* Tab Content */}
             <div className="">
-              {activeTab === "overview" && <QuizOverviewTab />}
+              {activeTab === "overview" && <QuizCollection />}
+              {/* {activeTab === "overview" && <QuizOverviewTab />} */}
               {/* {activeTab === "myQuiz" && <MyQuizAnalysisTab />} */}
             </div>
           </div>
