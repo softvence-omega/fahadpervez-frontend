@@ -4,6 +4,7 @@ import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
 import FormHeader from "@/components/AdminDashboard/reuseable/FormHeader";
 import ModalCloseButton from "@/components/AdminDashboard/reuseable/ModalCloseButton";
 import { useUploadSingleImageMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import { useCreateExamManualForProfessionalMutation } from "@/store/features/adminDashboard/examMode/professionalApi/professionalApi";
 import { useCreateExamManualMutation } from "@/store/features/adminDashboard/examMode/studentApi/StudentApi";
 import { useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
@@ -53,15 +54,13 @@ const MCQSchema = z
     }
   });
 
-const FinalSchema = z.object({
-  // profileType: z.string().min(1, { message: "Profile Type is required" }),
-  examName: z.string().min(1, { message: "Exam Name is required" }),
-  subject: z.string().min(1, { message: "Subject is required" }),
-  totalTime: z.number().min(1, { message: "Total Time is required" }),
-  mcqs: z.array(MCQSchema).min(1),
-});
-
-type MCQFormValues = z.infer<typeof FinalSchema>;
+// const FinalSchema = z.object({
+//   // profileType: z.string().min(1, { message: "Profile Type is required" }),
+//   examName: z.string().min(1, { message: "Exam Name is required" }),
+//   subject: z.string().min(1, { message: "Subject is required" }),
+//   totalTime: z.number().min(1, { message: "Total Time is required" }),
+//   mcqs: z.array(MCQSchema).min(1),
+// });
 
 export const inputClass = {
   label: "block text-sm font-normal text-[#020617] font-inter mb-2",
@@ -75,11 +74,39 @@ interface CreateExamModalProps {
 }
 
 const ManualExamModal: React.FC<CreateExamModalProps> = ({ onClose }) => {
-  const { profileType } = useAppSelector(
+  const { profileType, contentFor } = useAppSelector(
     (state: RootState) => state.staticContent,
   );
+
+  const FinalSchema = z
+    .object({
+      examName: z.string().min(1, { message: "Exam Name is required" }),
+      subject: z.string().optional(),
+      totalTime: z.number().min(1, { message: "Total Time is required" }),
+      mcqs: z.array(MCQSchema).min(1),
+    })
+    .superRefine((data, ctx) => {
+      // subject is required only for students
+      if (
+        contentFor === "student" &&
+        (!data.subject || data.subject.trim() === "")
+      ) {
+        ctx.addIssue({
+          path: ["subject"],
+          message: "Subject is required for students",
+          code: z.ZodIssueCode.custom,
+        });
+      }
+    });
+  type MCQFormValues = z.infer<typeof FinalSchema>;
+  const isStudent = contentFor === "student";
+  const isProfessional = contentFor === "professional";
   const [createExamManual, { isLoading: isUploading }] =
     useCreateExamManualMutation();
+  const [
+    createExamManualForProfessional,
+    { isLoading: isUploadingForProfessional },
+  ] = useCreateExamManualForProfessionalMutation();
 
   const defaultOptions = [
     { option: "A", optionText: "", explanation: "" },
@@ -187,12 +214,23 @@ const ManualExamModal: React.FC<CreateExamModalProps> = ({ onClose }) => {
       const payload = {
         profileType: profileType,
         examName: data.examName,
-        subject: data.subject,
+        subject: data.subject!,
+        totalTime: data.totalTime,
+        mcqs: processedMcqs,
+      };
+      const payloadForProfessional = {
+        professionName: profileType,
+        examName: data.examName,
         totalTime: data.totalTime,
         mcqs: processedMcqs,
       };
 
-      await createExamManual(payload).unwrap();
+      if (isProfessional) {
+        await createExamManualForProfessional(payloadForProfessional).unwrap();
+      }
+      if (isStudent) {
+        await createExamManual(payload).unwrap();
+      }
 
       setImagePreviews({});
       reset();
@@ -203,7 +241,6 @@ const ManualExamModal: React.FC<CreateExamModalProps> = ({ onClose }) => {
   };
 
   const handleSavePublish = async () => {
-    console.log("=== handleSavePublish clicked ===");
     await handleSubmit(onSubmit)();
   };
 
@@ -234,18 +271,19 @@ const ManualExamModal: React.FC<CreateExamModalProps> = ({ onClose }) => {
                 )}
               </div>
 
-              <div>
-                <label className={inputClass.label}>Subject</label>
-                <input
-                  {...register("subject")}
-                  className={inputClass.input}
-                  placeholder="Enter subject"
-                />
-                {errors.subject && (
-                  <p className={inputClass.error}>{errors.subject.message}</p>
-                )}
-              </div>
-
+              {isStudent && (
+                <div>
+                  <label className={inputClass.label}>Subject</label>
+                  <input
+                    {...register("subject")}
+                    className={inputClass.input}
+                    placeholder="Enter subject"
+                  />
+                  {errors.subject && (
+                    <p className={inputClass.error}>{errors.subject.message}</p>
+                  )}
+                </div>
+              )}
               <div>
                 <label className={inputClass.label}>Total Time (minutes)</label>
                 <input
@@ -465,7 +503,7 @@ const ManualExamModal: React.FC<CreateExamModalProps> = ({ onClose }) => {
             </CommonButton>
 
             <ActionButtons
-              isLoading={isUploading}
+              isLoading={isUploading || isUploadingForProfessional}
               onSavePublish={handleSavePublish}
               onCancel={handleCancel}
             />

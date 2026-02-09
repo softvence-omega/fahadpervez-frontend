@@ -1,8 +1,8 @@
 import CommonSelect from "@/common/custom/CommonSelect";
 import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
-import { useGetStudentTypeApiQuery } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
-import { useUpdateExamMutation } from "@/store/features/adminDashboard/examMode/studentApi/StudentApi";
-import { SingleExamUpdatePayload } from "@/store/features/adminDashboard/examMode/studentApi/types/singleExam";
+import { useUpdateExamForProfessionalMutation } from "@/store/features/adminDashboard/examMode/professionalApi/professionalApi";
+import { ProfessionalExamUpdatePayload } from "@/store/features/adminDashboard/examMode/studentApi/types/singleExam";
+import { useGetProfessionalDataQuery } from "@/store/features/adminDashboard/UserManagement/professionalUserApi";
 import { useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,10 +15,10 @@ import { inputClass } from "./ManualExamModal";
 interface UpdateExamModalProps {
   selectedExamId: string | null;
   setIsUpdateModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  initialData: SingleExamUpdatePayload | null;
+  initialData: ProfessionalExamUpdatePayload | null;
 }
 
-const UpdateExamModal: React.FC<UpdateExamModalProps> = ({
+const UpdateExamModalForProfessional: React.FC<UpdateExamModalProps> = ({
   selectedExamId,
   setIsUpdateModalOpen,
   initialData,
@@ -28,9 +28,8 @@ const UpdateExamModal: React.FC<UpdateExamModalProps> = ({
   );
 
   const updateSchema = z.object({
-    profileType: z.string().min(1, { message: "Profile Type is required" }),
+    professionName: z.string().min(1, { message: "Profile name is required" }),
     examName: z.string().min(1, { message: "Exam Name is required" }),
-    subject: z.string().min(1, { message: "Subject is required" }),
     totalTime: z.number().min(1, { message: "Total Time is required" }),
   });
 
@@ -45,35 +44,33 @@ const UpdateExamModal: React.FC<UpdateExamModalProps> = ({
   } = useForm<UpdateFormValues>({
     resolver: zodResolver(updateSchema),
     defaultValues: {
-      profileType: initialData?.profileType || "",
+      professionName: initialData?.professionName || "",
       examName: initialData?.examName || "",
-      subject: initialData?.subject || "",
       totalTime: initialData?.totalTime || 0,
     },
   });
-  const [updateExam, { isLoading: updateLoading }] = useUpdateExamMutation();
+  const [updateExam, { isLoading: updateLoading }] =
+    useUpdateExamForProfessionalMutation();
 
-  const { data: studentTypeData } = useGetStudentTypeApiQuery({});
+  const { data: professionalTypeData } = useGetProfessionalDataQuery({});
 
-  const studentTypeOptions = studentTypeData?.data?.map((item) => ({
-    value: item.typeName,
-    label: item.typeName,
+  const professionalTypeOptions = professionalTypeData?.data?.map((item) => ({
+    value: item.professionName,
+    label: item.professionName,
   }));
 
   useEffect(() => {
     reset({
-      profileType: initialData?.profileType || "",
+      professionName: initialData?.professionName || "",
       examName: initialData?.examName || "",
-      subject: initialData?.subject || "",
       totalTime: initialData?.totalTime || 0,
     });
   }, [initialData, reset]);
   const onSubmit = async (data: UpdateFormValues) => {
     try {
       const payload = {
-        profileType: profileType,
+        professionName: profileType,
         examName: data.examName,
-        subject: data.subject,
         totalTime: data.totalTime,
       };
       if (selectedExamId) {
@@ -111,34 +108,25 @@ const UpdateExamModal: React.FC<UpdateExamModalProps> = ({
           </div>
 
           <div>
-            <label className={inputClass.label}>Profile Type</label>
+            <label className={inputClass.label}>Profession Name</label>
 
             <Controller
               control={control}
-              name="profileType"
+              name="professionName"
               render={({ field }) => (
                 <CommonSelect
                   value={field.value}
-                  item={studentTypeOptions || []}
+                  item={professionalTypeOptions || []}
                   onValueChange={field.onChange}
-                  placeholder="Select profile type"
+                  placeholder="Select profession name"
                 />
               )}
             />
 
-            {errors.profileType && (
-              <p className={inputClass.error}>{errors.profileType.message}</p>
-            )}
-          </div>
-          <div>
-            <label className={inputClass.label}>Subject</label>
-            <input
-              {...register("subject")}
-              className={inputClass.input}
-              placeholder="Enter subject"
-            />
-            {errors.subject && (
-              <p className={inputClass.error}>{errors.subject.message}</p>
+            {errors.professionName && (
+              <p className={inputClass.error}>
+                {errors.professionName.message}
+              </p>
             )}
           </div>
 
@@ -166,4 +154,4 @@ const UpdateExamModal: React.FC<UpdateExamModalProps> = ({
   );
 };
 
-export default UpdateExamModal;
+export default UpdateExamModalForProfessional;

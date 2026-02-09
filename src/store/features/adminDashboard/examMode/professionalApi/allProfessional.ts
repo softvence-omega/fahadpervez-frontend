@@ -37,48 +37,42 @@ export interface ExamQueryParams {
 
 // single exam response
 
-// MCQ option
-export interface McqOption {
-  option: "A" | "B" | "C" | "D";
+// Option inside an MCQ
+export type MCQOption = {
+  option: "A" | "B" | "C" | "D" | "E" | "F";
   optionText: string;
   explanation: string;
-}
+};
 
-// MCQ question
-export interface Mcq {
+// Single MCQ
+export type MCQ = {
+  mcqId: string;
   question: string;
-  imageDescription: string | null;
-  options: McqOption[];
-  correctOption: "A" | "B" | "C" | "D";
-}
+  imageDescription: string;
+  options: MCQOption[];
+  correctOption: "A" | "B" | "C" | "D" | "E" | "F";
+};
 
-// Exam entity
-export interface ExamDetails {
+// Exam data
+export type ExamData = {
   _id: string;
   professionName: string;
   examName: string;
-  mcqs: Mcq[];
+  mcqs: MCQ[];
   totalQuestions: number;
   totalTime: number;
   createdAt: string; // ISO date
   updatedAt: string; // ISO date
-}
+};
 
-// Pagination meta
-export interface PaginationMeta {
-  page: number;
-  limit: number;
-  skip: number;
-  total: number;
-  totalPages: number;
-}
+export type ExamResponseData = {
+  data: ExamData;
+  meta: PaginationMeta;
+};
 
-// API response
-export interface GetExamDetailsResponse {
+// Final API response
+export type GetExamDetailsResponse = {
   success: boolean;
   message: string;
-  data: {
-    data: ExamDetails;
-    meta: PaginationMeta;
-  };
-}
+  data: ExamResponseData;
+};

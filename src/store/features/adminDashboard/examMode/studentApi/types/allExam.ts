@@ -82,3 +82,10 @@ export interface ExamPayload {
 export interface AddMoreMCQPayload {
   mcqs: SingleMCQForExam[];
 }
+
+export interface ExamPayloadForProfessional {
+  professionName: string;
+  examName: string;
+  totalTime: number;
+  mcqs: SingleMCQForExam[];
+}
