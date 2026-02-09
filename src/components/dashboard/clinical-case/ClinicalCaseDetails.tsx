@@ -8,7 +8,6 @@ import {
   Microscope,
   Scan,
   Printer,
-  Share2,
 } from "lucide-react";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import {
@@ -63,16 +62,21 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
 
   const { id } = useParams();
   const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const caseType = searchParams.get("type"); // "generated" or null/undefined
 
   const isGenerated = caseType === "generated";
+  const stateClinicalCaseData = location.state?.clinicalCaseData;
 
   // Standard Query
   const {
     data: standardData,
     isLoading: isLoadingStandard,
     error: errorStandard,
-  } = useGetSingleClinicalCaseQuery(id as string, { skip: isGenerated });
+  } = useGetSingleClinicalCaseQuery(id as string, {
+    skip: isGenerated || !!stateClinicalCaseData,
+  });
 
   // Generated Query
   const {
@@ -80,18 +84,17 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
     isLoading: isLoadingGenerated,
     error: errorGenerated,
   } = useGetSingleGeneratedClinicalCaseQuery(id as string, {
-    skip: !isGenerated,
+    skip: !isGenerated || !!stateClinicalCaseData,
   });
 
-  const isLoading = isGenerated ? isLoadingGenerated : isLoadingStandard;
+  const isLoading =
+    !stateClinicalCaseData &&
+    (isGenerated ? isLoadingGenerated : isLoadingStandard);
   const error = isGenerated ? errorGenerated : errorStandard;
 
   // Combine data source
-  const clinicalCase = (
-    isGenerated ? generatedData?.data : standardData?.data
-  ) as ClinicalCaseData;
-  const location = useLocation();
-  const navigate = useNavigate();
+  const clinicalCase = (stateClinicalCaseData ||
+    (isGenerated ? generatedData?.data : standardData?.data)) as ClinicalCaseData;
 
   const scrollToSection = (
     ref: React.RefObject<HTMLDivElement>,
@@ -113,8 +116,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
   const handleMakeDecision = (): void => {
     console.log("Make Your Decision clicked");
     navigate(
-      `/dashboard/clinical-case/${id}/make-decision${
-        isGenerated ? "?type=generated" : ""
+      `/dashboard/clinical-case/${id}/make-decision${isGenerated ? "?type=generated" : ""
       }`,
       { state: location.state }
     );
@@ -235,9 +237,8 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
     referenceRange?: string;
   }> = ({ test, value, unit, isAbnormal, referenceRange }) => (
     <div
-      className={`flex justify-between items-center p-3 rounded ${
-        isAbnormal ? "bg-red-50 border border-red-200" : "bg-gray-50"
-      }`}
+      className={`flex justify-between items-center p-3 rounded ${isAbnormal ? "bg-red-50 border border-red-200" : "bg-gray-50"
+        }`}
     >
       <div>
         <span className="font-medium text-gray-700">{test}:</span>
@@ -248,9 +249,8 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
         )}
       </div>
       <span
-        className={`font-semibold ${
-          isAbnormal ? "text-red-600" : "text-gray-900"
-        }`}
+        className={`font-semibold ${isAbnormal ? "text-red-600" : "text-gray-900"
+          }`}
       >
         {value} {unit || ""}
       </span>
@@ -354,17 +354,21 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
                 <div className="flex items-center gap-4">
                   <button
                     onClick={() => {
-                        if (location.state?.from === "weekly-plan") {
-                            navigate(-1);
-                        } else if (onBack) {
-                            onBack();
-                        } else {
-                            navigate("/dashboard/clinical-case-generator");
-                        }
+                      const fromAnalysis = location.state?.fromAnalysis;
+                      const quizId = location.state?.quizId;
+                      if (fromAnalysis && quizId) {
+                        navigate(`/dashboard/quiz-analysis/${quizId}`);
+                      } else if (location.state?.from === "weekly-plan") {
+                        navigate(-1);
+                      } else if (onBack) {
+                        onBack();
+                      } else {
+                        navigate("/dashboard/clinical-case-generator");
+                      }
                     }}
                     className="flex items-center text-gray-600 hover:text-gray-800"
                   >
-                      <ArrowLeft size={20} />
+                    <ArrowLeft size={20} />
                     <span className="ml-2 font-medium">Clinical Case</span>
                   </button>
                 </div>
@@ -435,11 +439,10 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
                   <button
                     key={key}
                     onClick={() => scrollToSection(ref, key)}
-                    className={`flex items-center gap-2 pb-3 border-b-2 transition-colors px-4 cursor-pointer ${
-                      activeTab === key
+                    className={`flex items-center gap-2 pb-3 border-b-2 transition-colors px-4 cursor-pointer ${activeTab === key
                         ? "border-blue-main text-blue-main"
                         : "border-transparent text-gray-500 hover:text-black"
-                    }`}
+                      }`}
                   >
                     <Icon size={16} />
                     <span className="text-sm lg:text-base font-medium">
@@ -653,7 +656,7 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
                     {[
                       // { icon: Bookmark, label: "Bookmark", action: "bookmark" },
                       { icon: Printer, label: "Print Case", action: "print" },
-                      { icon: Share2, label: "Share Case", action: "share" },
+                      // { icon: Share2, label: "Share Case", action: "share" },
                     ].map(({ icon: Icon, label, action }) => (
                       <button
                         key={action}
@@ -696,8 +699,8 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
                       <span className="text-gray-700">
                         {clinicalCase?.createdAt
                           ? new Date(
-                              clinicalCase.createdAt
-                            ).toLocaleDateString()
+                            clinicalCase.createdAt
+                          ).toLocaleDateString()
                           : "--"}
                       </span>
                     </div>
