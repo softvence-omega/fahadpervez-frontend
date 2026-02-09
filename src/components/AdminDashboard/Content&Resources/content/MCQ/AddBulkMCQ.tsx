@@ -13,7 +13,7 @@ import RequiredColumnsList from "../medical/studyMode/RequiredColumsList";
 import UploadDropzone from "../medical/studyMode/UpdateDropZone";
 import UploadPreview from "../medical/studyMode/UploadPreview";
 
-const columns = [
+export const columns = [
   { label: "Question", description: "The question text" },
   {
     label: "Image Description",

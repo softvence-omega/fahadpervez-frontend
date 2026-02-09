@@ -12,12 +12,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  useDeleteSingleExamMcqForProfessionalMutation,
+  useGetSingleExamForProfessionalQuery,
+  useUpdateSingleExamMcqForProfessionalMutation,
+} from "@/store/features/adminDashboard/examMode/professionalApi/professionalApi";
+import {
   useDeleteSingleExamMcqMutation,
   useGetSingleExamQuery,
   useUpdateSingleExamMcqMutation,
 } from "@/store/features/adminDashboard/examMode/studentApi/StudentApi";
 import { SingleMCQUpdatePayloadForExam } from "@/store/features/adminDashboard/examMode/studentApi/types/allExam";
 import { ExamMcq } from "@/store/features/adminDashboard/examMode/studentApi/types/singleExam";
+import { useAppSelector } from "@/store/hook";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { HiOutlineArrowNarrowLeft } from "react-icons/hi";
@@ -51,18 +57,38 @@ const McqTableForExam: React.FC<McqTableProps> = ({
 }) => {
   const [page, setPage] = useState(1);
   const [isMoreMCQModalOpen, setIsMoreMCQModalOpen] = useState(false);
+  const { contentFor } = useAppSelector((state) => state.staticContent);
 
-  const { data, isLoading } = useGetSingleExamQuery(
-    { id: examId!, page },
-    {
-      refetchOnMountOrArgChange: true,
-      skip: !examId,
-    },
-  );
+  const isStudent = contentFor === "student";
+  const isProfessional = contentFor === "professional";
 
+  const { data: studentData, isLoading: studentLoading } =
+    useGetSingleExamQuery(
+      { id: examId!, page },
+      {
+        refetchOnMountOrArgChange: true,
+        skip: !examId || !isStudent,
+      },
+    );
+
+  const { data: professionalData, isLoading: professionalLoading } =
+    useGetSingleExamForProfessionalQuery(
+      { id: examId!, page },
+      { refetchOnMountOrArgChange: true, skip: !examId || !isProfessional },
+    );
+
+  const data = isStudent ? studentData : professionalData;
+  const isLoading = isStudent ? studentLoading : professionalLoading;
   const mcqs = data?.data.data.mcqs ?? [];
 
+  // delete single mcq
   const [deleteSingleExamMcq] = useDeleteSingleExamMcqMutation();
+  const [deleteSingleExamMcqForProfessional] =
+    useDeleteSingleExamMcqForProfessionalMutation();
+
+  const deleteSingleExamMcqApi = isStudent
+    ? deleteSingleExamMcq
+    : deleteSingleExamMcqForProfessional;
 
   const handleDeleteClick = async ({
     examId,
@@ -71,17 +97,30 @@ const McqTableForExam: React.FC<McqTableProps> = ({
     examId: string;
     mcqId: string;
   }) => {
+    console.log("examId", examId, "mcqId", mcqId);
     if (!examId || !mcqId) return;
-    await deleteSingleExamMcq({ examId, mcqId });
+    await deleteSingleExamMcqApi({ examId, mcqId });
   };
 
   const handleBackClick = () => {
     setSelectedExamId(null);
   };
   // update single mcq in exam
-
-  const [updateSingleExamMcq, { isLoading: isUpdateLoading }] =
+  const [updateSingleExamMcq, { isLoading: isUpdateLoadingForStudent }] =
     useUpdateSingleExamMcqMutation();
+
+  const [
+    updateSingleExamMcqForProfessional,
+    { isLoading: isUpdateLoadingForProfessional },
+  ] = useUpdateSingleExamMcqForProfessionalMutation();
+
+  const updateSingleExamMcqApi = isStudent
+    ? updateSingleExamMcq
+    : updateSingleExamMcqForProfessional;
+
+  const isUpdateLoading = isStudent
+    ? isUpdateLoadingForStudent
+    : isUpdateLoadingForProfessional;
   const [selectedMCQ, setSelectedMCQ] = useState<ExamMcq | null>(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
@@ -109,7 +148,7 @@ const McqTableForExam: React.FC<McqTableProps> = ({
     };
 
     try {
-      await updateSingleExamMcq({
+      await updateSingleExamMcqApi({
         examId,
         mcqId: selectedMCQ.mcqId,
         data: payload,
@@ -167,7 +206,6 @@ const McqTableForExam: React.FC<McqTableProps> = ({
         {!isLoading && mcqs.length > 0 && (
           <div className="overflow-x-auto rounded-md border border-border bg-white">
             <Table>
-              {/* ===== Table Header ===== */}
               <TableHeader>
                 <TableRow className={tableDesign.header}>
                   {tableHeaders.map((header, index) => (
@@ -188,7 +226,6 @@ const McqTableForExam: React.FC<McqTableProps> = ({
                 </TableRow>
               </TableHeader>
 
-              {/* ===== Table Body ===== */}
               <TableBody>
                 {mcqs.map((mcq, index) => (
                   <TableRow key={mcq.mcqId} className={tableDesign.bodyRow}>

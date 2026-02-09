@@ -4,7 +4,9 @@ import CommonBorderWrapper from "@/common/space/CommonBorderWrapper";
 import FormHeader from "@/components/AdminDashboard/reuseable/FormHeader";
 import ModalCloseButton from "@/components/AdminDashboard/reuseable/ModalCloseButton";
 import { useUploadSingleImageMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
+import { useAddMoreMcqManualForProfessionalMutation } from "@/store/features/adminDashboard/examMode/professionalApi/professionalApi";
 import { useAddMoreMcqManualMutation } from "@/store/features/adminDashboard/examMode/studentApi/StudentApi";
+import { useAppSelector } from "@/store/hook";
 import { correctAnswerOptions } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -70,8 +72,16 @@ interface CreateExamModalProps {
 }
 
 const AddMoreMCQ: React.FC<CreateExamModalProps> = ({ onClose, examId }) => {
+  const { contentFor } = useAppSelector((state) => state.staticContent);
+
+  const isStudent = contentFor === "student";
   const [addMoreMcq, { isLoading: isUploading }] =
     useAddMoreMcqManualMutation();
+  const [addMoreMcqForProfessional, { isLoading: isUploadingForProfessional }] =
+    useAddMoreMcqManualForProfessionalMutation();
+
+  const addMoreMcqApi = isStudent ? addMoreMcq : addMoreMcqForProfessional;
+  const isLoading = isUploading || isUploadingForProfessional;
 
   const defaultOptions = [
     { option: "A", optionText: "", explanation: "" },
@@ -178,7 +188,7 @@ const AddMoreMCQ: React.FC<CreateExamModalProps> = ({ onClose, examId }) => {
       };
 
       if (examId) {
-        await addMoreMcq({ data: payload, id: examId }).unwrap();
+        await addMoreMcqApi({ data: payload, id: examId }).unwrap();
       }
 
       setImagePreviews({});
@@ -408,7 +418,7 @@ const AddMoreMCQ: React.FC<CreateExamModalProps> = ({ onClose, examId }) => {
             </CommonButton>
 
             <ActionButtons
-              isLoading={isUploading}
+              isLoading={isLoading}
               onSavePublish={handleSavePublish}
               onCancel={handleCancel}
             />
