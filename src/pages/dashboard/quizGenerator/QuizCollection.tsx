@@ -20,7 +20,7 @@ export default function QuizCollection() {
     searchTerm,
     ...filters,
     page,
-    limit: 8,
+    limit: 12,
   });
 
   const quizzes = quizzesResponse?.data || [];
@@ -34,8 +34,8 @@ export default function QuizCollection() {
   if (isLoading) return <GlobalLoader />;
 
   return (
-    <div className="md:my-6">
-      <div className="flex items-center justify-between mb-6 mt-3">
+    <div className="md:mb-6">
+      <div className="flex items-center justify-between">
         <div className="relative">
           <input
             type="text"
@@ -59,13 +59,13 @@ export default function QuizCollection() {
         </button>
       </div>
 
-      <div className="mt-12">
-        <div className="flex justify-between items-center mb-6">
+      <div className="mt-3">
+        <div className="flex justify-between items-center mb-3">
           <h3 className="font-medium text-lg text-zinc-800">All Quiz's</h3>
         </div>
 
         {quizzes.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 bg-white border border-slate-200 p-6 rounded-xl shadow-sm">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
             {quizzes.map((quiz: any) => (
               <QuizCard
                 key={quiz.id || quiz._id}

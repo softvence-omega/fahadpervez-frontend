@@ -99,7 +99,10 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
       setTopic("");
       setSubTopic("");
       const matchingBank = filteredBanks.find((b: any) => b.system === system);
-      if (matchingBank) setQuestionBank(matchingBank._id);
+      if (matchingBank) {
+        setQuestionBank(matchingBank._id);
+        clearError("questionBank");
+      }
     }
   }, [system, quizMode]);
 
@@ -126,19 +129,29 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
     }
   }, [examName, quizMode, allBanks]);
 
-  const handleSubmit = async () => {
-    // if (!quizName) {
-    //   toast.error("Please enter a quiz name");
-    //   return;
-    // }
+  const [errors, setErrors] = useState<string[]>([]);
 
-    if (quizMode === "study" && !subject && !questionBank) {
-      toast.error("Please select a subject or a question bank for study mode");
-      return;
+  const clearError = (field: string) => {
+    setErrors((prev) => prev.filter((item) => item !== field));
+  };
+
+  const handleSubmit = async () => {
+    const newErrors: string[] = [];
+
+    if (!quizName) newErrors.push("quizName");
+
+    if (quizMode === "study") {
+      if (!subject) newErrors.push("subject");
+      if (!questionBank) newErrors.push("questionBank");
     }
 
-    if (quizMode === "exam" && !examName) {
-      toast.error("Please select an exam");
+    if (quizMode === "exam") {
+      if (!examName) newErrors.push("examName");
+    }
+
+    if (newErrors.length > 0) {
+      setErrors(newErrors);
+      toast.error("Please fill in all required fields");
       return;
     }
 
@@ -180,11 +193,20 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
           {/* Quiz Name */}
           <div className="grid gap-2">
-            <Label>Quiz Name</Label>
+            <Label className={errors.includes("quizName") ? "text-red-500" : ""}>
+              Quiz Name
+            </Label>
             <Input
               value={quizName}
-              onChange={(e) => setQuizName(e.target.value)}
+              onChange={(e) => {
+                setQuizName(e.target.value);
+                clearError("quizName");
+              }}
               placeholder="e.g., Cardiology Quiz"
+              className={`transition-all duration-300 ${errors.includes("quizName")
+                ? "border-red-500 bg-red-50 focus-visible:ring-red-500"
+                : ""
+                }`}
             />
           </div>
 
@@ -206,9 +228,24 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
           {quizMode === "exam" && (
             <>
               <div className="grid gap-2">
-                <Label>Exam Name</Label>
-                <Select value={examName} onValueChange={setExamName}>
-                  <SelectTrigger>
+                <Label
+                  className={errors.includes("examName") ? "text-red-500" : ""}
+                >
+                  Exam Name
+                </Label>
+                <Select
+                  value={examName}
+                  onValueChange={(val) => {
+                    setExamName(val);
+                    clearError("examName");
+                  }}
+                >
+                  <SelectTrigger
+                    className={`transition-all duration-300 ${errors.includes("examName")
+                      ? "border-red-500 bg-red-50 focus:ring-red-500"
+                      : ""
+                      }`}
+                  >
                     <SelectValue placeholder="Select Question Bank" />
                   </SelectTrigger>
                   <SelectContent>
@@ -244,9 +281,24 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
             <>
               {/* Subject */}
               <div className="grid gap-2">
-                <Label>Subject</Label>
-                <Select value={subject} onValueChange={setSubject}>
-                  <SelectTrigger>
+                <Label
+                  className={errors.includes("subject") ? "text-red-500" : ""}
+                >
+                  Subject
+                </Label>
+                <Select
+                  value={subject}
+                  onValueChange={(val) => {
+                    setSubject(val);
+                    clearError("subject");
+                  }}
+                >
+                  <SelectTrigger
+                    className={`transition-all duration-300 ${errors.includes("subject")
+                      ? "border-red-500 bg-red-50 focus:ring-red-500"
+                      : ""
+                      }`}
+                  >
                     <SelectValue placeholder="Select Subject" />
                   </SelectTrigger>
                   <SelectContent>
@@ -324,9 +376,26 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
 
               {/* Question Bank */}
               <div className="grid gap-2">
-                <Label>Question Bank</Label>
-                <Select value={questionBank} onValueChange={setQuestionBank}>
-                  <SelectTrigger>
+                <Label
+                  className={
+                    errors.includes("questionBank") ? "text-red-500" : ""
+                  }
+                >
+                  Question Bank
+                </Label>
+                <Select
+                  value={questionBank}
+                  onValueChange={(val) => {
+                    setQuestionBank(val);
+                    clearError("questionBank");
+                  }}
+                >
+                  <SelectTrigger
+                    className={`transition-all duration-300 ${errors.includes("questionBank")
+                      ? "border-red-500 bg-red-50 focus:ring-red-500"
+                      : ""
+                      }`}
+                  >
                     <SelectValue placeholder="Select Question Bank" />
                   </SelectTrigger>
                   <SelectContent>

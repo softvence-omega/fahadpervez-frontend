@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { z } from "zod";
 import PostCard from "./PostCard";
-import MentorSearchFilter from "./MentorSearchFilter";
+// import MentorSearchFilter from "./MentorSearchFilter";
 import { Textarea } from "@/components/ui/textarea";
 import { FileImage, Image, X } from "lucide-react";
 import MentorUploadFiles from "./MentorUploadFiles";
@@ -164,14 +164,14 @@ const SocialFeed = () => {
         </button>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6 w-full">
+      <div className="w-full max-w-7xl mx-auto px-2">
         {/* Sidebar */}
-        <div className="w-full lg:w-1/4">
+        {/* <div className="w-full lg:w-1/4">
           <MentorSearchFilter />
-        </div>
+        </div> */}
 
         {/* Main Feed */}
-        <div className="w-full lg:w-3/4 flex flex-col gap-4">
+        <div className="w-full flex flex-col gap-4">
           <div className="space-y-4">
             {posts.map((post: TSocialPost) => (
               <PostCard key={post?._id} post={post} />

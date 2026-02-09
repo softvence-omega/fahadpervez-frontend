@@ -86,11 +86,11 @@ export default function DownloadNotes() {
   };
 
   return (
-    <div className="mb-5">
+    <div className="mb-5 px-2">
       <DashboardHeading
         title="High-Yield Medical Study Notes"
         description="Download concise, topic-focused PDF notes for anatomy, pathology, pharmacology, and more."
-        className="mt-12 mb-8 space-y-2"
+        className="mt-4 mb-8 space-y-2"
       />
 
       <div className="md:flex gap-5 space-y-3 justify-between items-center">
@@ -109,12 +109,12 @@ export default function DownloadNotes() {
 
           <button
             onClick={() => setIsFilterOpen(true)}
-            className="flex items-center gap-2 bg-slate-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-slate-600 transition-colors"
+            className="flex items-center gap-2 bg-blue-btn-1 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-btn-1 hover:opacity-80 transition-colors"
           >
             <Filter className="w-4 h-4" />
             Filter
             {(filters.subject || filters.system || filters.topic) && (
-              <span className="ml-1 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="ml-1 bg-blue-btn-1 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 •
               </span>
             )}
@@ -214,11 +214,10 @@ export default function DownloadNotes() {
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
               className={`py-1 text-start transition-colors duration-200 hover:cursor-pointer
-              ${
-                activeTab === tab.id
+              ${activeTab === tab.id
                   ? "border-b-2 border-blue-500 text-blue-600"
                   : "text-gray-500 hover:text-blue-500"
-              }`}
+                }`}
             >
               {tab.label}
             </button>

@@ -19,15 +19,18 @@ const sessionsData: Session[] = [
       correct: 2,
       incorrect: 3,
       recommendations: {
-        articles: [
-          "Chronic obstructive pulmonary",
-          "Acute leukemia",
-          "Nephrotic syndrome",
-          "Tick-borne diseases",
-          "Retinal detachment",
-        ],
-        flashcards: ["Flashcard topic 1", "Flashcard topic 2"],
-        clinicalCases: ["Case 1", "Case 2"],
+        post_quiz_recommendations: {
+          weak_area_level: "Intermediate",
+          weak_area_name: "Cardiovascular System",
+          why_this_is_commonly_missed: "Lack of clarity in murmur types",
+          what_to_review: "Aortic vs Mitral murmurs",
+          how_to_practice: "Review clinical cases",
+          suggested_references: "Robbins Pathologic Basis",
+          mcqs: [],
+        },
+        flashcards: {
+          flashcards: [],
+        }
       },
     },
   },
@@ -43,7 +46,6 @@ const sessionsData: Session[] = [
 const overviewStats: Stats = {
   completed: "2/5",
   correct: "40%",
-  timePerQuestion: "00m 23s",
   totalTime: "0h 01m",
 };
 
@@ -62,11 +64,10 @@ const MyFlashCardAnalysisTab: React.FC = () => {
             {sessionsData.map((session) => (
               <div
                 key={session.id}
-                className={`p-4 rounded-lg shadow cursor-pointer ${
-                  selectedSession.id === session.id
+                className={`p-4 rounded-lg shadow cursor-pointer ${selectedSession.id === session.id
                     ? " bg-[#007BFF1F]"
                     : "bg-white"
-                }`}
+                  }`}
                 onClick={() => setSelectedSession(session)}
               >
                 <p className="font-semibold">Quiz: {session.name}</p>

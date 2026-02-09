@@ -28,7 +28,7 @@ const ClinicalCaseFlow: React.FC<Props> = ({ clinicalCase }) => {
     null
   );
   const [isConfirmed, setIsConfirmed] = useState(false);
-console.log(isConfirmed)
+  console.log(isConfirmed)
   // MCQ State
   const [mcqIndex, setMcqIndex] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
@@ -68,19 +68,33 @@ console.log(isConfirmed)
     }
   };
 
+  const fromAnalysis = location.state?.fromAnalysis;
+  const quizId = location.state?.quizId;
+
+  const handleBack = () => {
+    if (fromAnalysis && quizId) {
+      navigate(`/dashboard/quiz-analysis/${quizId}`);
+    } else if (location.state?.from === "weekly-plan") {
+      navigate(-1);
+    } else {
+      navigate("/dashboard/clinical-case-generator");
+    }
+  };
+
   const handleFinishQuiz = async () => {
     // API Call
     try {
-      await updateProgress({
-        totalCorrect: correctAnswers,
-        totalIncorrect: totalMCQs - correctAnswers,
-        totalAttempted: totalMCQs,
-        key: "clinicalcase",
-        bankId: clinicalCase._id,
-      }).unwrap();
+      if (!fromAnalysis && clinicalCase._id) {
+        await updateProgress({
+          totalCorrect: correctAnswers,
+          totalIncorrect: totalMCQs - correctAnswers,
+          totalAttempted: totalMCQs,
+          key: "clinicalcase",
+          bankId: clinicalCase._id,
+        }).unwrap();
+      }
 
-      
-            // Check if we came from WeeklyPlan and update study plan progress
+      // Check if we came from WeeklyPlan and update study plan progress
       if (location.state?.from === "weekly-plan" && location.state?.planId) {
         try {
           await saveStudyPlanProgress({
@@ -88,7 +102,6 @@ console.log(isConfirmed)
             day: location.state.day,
             suggest_content: location.state.suggest_content,
           }).unwrap();
-          // toast.success("Study plan progress saved!");
         } catch (error) {
           console.error("Failed to save study plan progress:", error);
         }
@@ -98,7 +111,6 @@ console.log(isConfirmed)
     } catch (err) {
       console.error("Failed to update progress", err);
       toast.error("Failed to save progress");
-      // Still show success modal? Or block? Let's show it so they can leave.
       setShowSuccessModal(true);
     }
   };
@@ -108,7 +120,7 @@ console.log(isConfirmed)
       return {
         label: "Next",
         disabled: true,
-        onClick: () => {},
+        onClick: () => { },
       };
     }
     if (currentStep === 2) {
@@ -177,8 +189,8 @@ console.log(isConfirmed)
             {currentStep === 1
               ? "Select a diagnosis to continue"
               : currentStep === 2
-              ? "Review evidence to unlock quiz"
-              : "Complete the practice questions"}
+                ? "Review evidence to unlock quiz"
+                : "Complete the practice questions"}
           </p>
           <div className="mt-6 flex justify-end">
             <button
@@ -234,16 +246,10 @@ console.log(isConfirmed)
           </div>
           <DialogFooter className="sm:justify-center">
             <PrimaryButton
-              onClick={() => {
-                if (location.state?.from === "weekly-plan") {
-                   navigate(-1);
-                } else {
-                   navigate("/dashboard/clinical-case-generator");
-                }
-              }}
+              onClick={handleBack}
               className="w-full sm:w-auto"
             >
-              Back to Cases
+              {fromAnalysis ? "Back to Analysis" : "Back to Cases"}
             </PrimaryButton>
           </DialogFooter>
         </DialogContent>

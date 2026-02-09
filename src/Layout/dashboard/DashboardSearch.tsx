@@ -44,7 +44,7 @@ const DashboardSearch: FC<DashboardSearchProps> = ({
   useEffect(() => {
     if (value.trim().length > 0) {
       const filtered = sidebarItems.filter((item) =>
-        item.label.toLowerCase().includes(value.toLowerCase())
+        item.label.toLowerCase().includes(value.toLowerCase()),
       );
       setResults(filtered);
       setIsOpen(filtered.length > 0);
@@ -99,7 +99,7 @@ const DashboardSearch: FC<DashboardSearchProps> = ({
       <div
         className={cn(
           "flex items-center w-full gap-1 border border-border rounded-full bg-white px-3 transition-shadow duration-200 focus-within:ring-2 focus-within:ring-primary/20",
-          className
+          className,
         )}
       >
         <span className="flex items-center justify-center text-[#94A3B8] rounded-full transition-colors duration-200">
@@ -130,16 +130,24 @@ const DashboardSearch: FC<DashboardSearchProps> = ({
                 "w-full flex items-center gap-3 px-4 py-2 text-sm text-left transition-colors duration-150",
                 focusedIndex === index
                   ? "bg-blue-50 text-blue-700"
-                  : "text-gray-700 hover:bg-gray-50"
+                  : "text-gray-700 hover:bg-gray-50",
               )}
             >
               <div
                 className={cn(
                   "flex items-center justify-center w-8 h-8 rounded-lg",
-                  item.iconBgColor
+                  item.iconBgColor,
                 )}
               >
-                <item.icon className={cn("w-5 h-5", item.iconColor)} />
+                {item?.isImageIcon ? (
+                  <img
+                    src={item.icon as string}
+                    alt={item.label ?? "icon"}
+                    className={cn("w-5 h-5", item.iconColor)}
+                  />
+                ) : (
+                  <item.icon className={cn("w-5 h-5", item.iconColor)} />
+                )}
               </div>
               <div className="flex flex-col">
                 <span className="font-medium">{item.label}</span>
