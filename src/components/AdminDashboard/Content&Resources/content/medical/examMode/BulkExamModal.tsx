@@ -35,10 +35,12 @@ const BulkExamModal: React.FC<MCQFormValues> = ({ onClose }) => {
   const isStudent = contentFor === "student";
   const isProfessional = contentFor === "professional";
 
+  console.log("isStudent", isStudent, "isProfessional", isProfessional);
+
   const bulkExamSchema = z
     .object({
       examName: z.string().min(1, { message: "Exam Name is required" }),
-      subject: z.string().min(1, { message: "Subject is required" }),
+      subject: z.string().optional(),
       totalTime: z.number().min(1, { message: "Total Time is required" }),
     })
     .superRefine((data, ctx) => {
@@ -127,8 +129,8 @@ const BulkExamModal: React.FC<MCQFormValues> = ({ onClose }) => {
   const submitForm = handleSubmit(handleImport);
 
   return (
-    <div className="w-full fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="w-[50%] max-h-[90vh] overflow-y-auto bg-white z-100 shadow">
+    <div className="w-full fixed inset-0 bg-black/50 flex items-center justify-center z-50 ">
+      <div className="w-[50%] max-h-[90vh] overflow-y-auto bg-white z-100 shadow p-4">
         <CommonBorderWrapper className="mb-6">
           <h2 className="text-base font-semibold mb-4">Exam Details</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

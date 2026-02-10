@@ -38,20 +38,20 @@ const ClinicalCaseBank: React.FC<Props> = ({ mcqBank, bankId, setBankId }) => {
           {ClinicalBank.map((item) => (
             <div
               key={item._id}
-              className="border border-border rounded-lg shadow-md p-4 bg-white hover:shadow-xl transition-shadow duration-200"
+              className="border border-border rounded-lg shadow-md p-4 bg-white  transition-shadow duration-200"
             >
               <h2 className="text-lg font-bold mb-2">{item.caseTitle}</h2>
-              <p className="text-sm text-gray-600 mb-1">
+              <p className="text-sm text-black mb-1">
                 <strong>Patient Presentation:</strong>{" "}
                 {item.patientPresentation}
               </p>
-              <p className="text-sm text-gray-600 mb-1">
+              <p className="text-sm text-black mb-1">
                 <strong>History:</strong> {item.historyOfPresentIllness}
               </p>
-              <p className="text-sm text-gray-600 mb-1">
+              <p className="text-sm text-black mb-1">
                 <strong>Examination:</strong> {item.physicalExamination}
               </p>
-              <p className="text-sm text-gray-600 mb-1">
+              <p className="text-sm text-black mb-1">
                 <strong>Imaging:</strong> {item.imaging}
               </p>
 
