@@ -1,20 +1,47 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { Stats } from "@/components/quizOverview/type";
+import { Stats, Recommendations } from "@/components/quizOverview/type";
 import StatsRow from "@/components/quizOverview/StatsRow";
 import CircularProgress from "@/components/quizOverview/CircularProgress";
 import ResultsSummary from "@/components/quizOverview/ResultsSummary";
 import StudyRecommendations from "@/components/quizOverview/StudyRecommendations";
 import { useGetGeneratedMCQQuery } from "@/store/features/MCQBank/MCQBank.api";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 
 const MyQuizAnalysisTab: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const justSubmitted = location.state?.justSubmitted;
-  const { data: response, isLoading } = useGetGeneratedMCQQuery(id || "");
+  const { data: response, isLoading, isFetching, refetch } = useGetGeneratedMCQQuery(id || "");
   const quizData = response?.data;
+  const [isAILoading, setIsAILoading] = useState(!!location.state?.isGeneratingRecommendation);
+
+  // Stop loading if we have content OR if we finished a fetch and gpt might have returned nothing
+  useEffect(() => {
+    if (!isFetching && response) {
+      const recommendations = quizData?.tracking?.recommendedContent as Recommendations;
+      if (recommendations && (
+        recommendations.post_quiz_recommendations ||
+        recommendations.flashcards ||
+        recommendations.clinical_case ||
+        recommendations.notes
+      )) {
+        setIsAILoading(false);
+      }
+    }
+  }, [isFetching, response, quizData]);
+
+  // If still loading AI, refetch every 3 seconds to check for updates
+  useEffect(() => {
+    let interval: any;
+    if (isAILoading) {
+      interval = setInterval(() => {
+        refetch();
+      }, 3000);
+    }
+    return () => clearInterval(interval);
+  }, [isAILoading, refetch]);
 
   if (isLoading) {
     return (
@@ -45,7 +72,7 @@ const MyQuizAnalysisTab: React.FC = () => {
   const wrongPercentage = tracking?.wrongPercentage ?? 0;
 
   return (
-  <div className="">
+    <div className="">
       <div className="py-6">
         <div className="w-full space-y-6">
           {/* <div className="flex justify-between items-center">
@@ -68,6 +95,18 @@ const MyQuizAnalysisTab: React.FC = () => {
               className="mb-5"
             />
           </div>
+
+          {isAILoading && (
+            <div className="flex items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl animate-pulse">
+              <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-blue-900">AI is crafting your study plan</p>
+                <p className="text-xs text-blue-700">Analyzing your weak areas to generate personalized recommendations...</p>
+              </div>
+            </div>
+          )}
 
           <StatsRow stats={stats} />
 
@@ -96,22 +135,8 @@ const MyQuizAnalysisTab: React.FC = () => {
             </div>
 
             <StudyRecommendations
-              recommendations={
-                tracking?.recommendedContent &&
-                tracking?.recommendedContent?.length > 0
-                  ? {
-                      articles: tracking?.recommendedContent
-                        ?.filter((c: any) => c?.type === "article")
-                        ?.map((c: any) => c?.title),
-                      flashcards: tracking?.recommendedContent
-                        ?.filter((c: any) => c?.type === "flashcard")
-                        ?.map((c: any) => c?.title),
-                      clinicalCases: tracking?.recommendedContent
-                        ?.filter((c: any) => c?.type === "case")
-                        ?.map((c: any) => c?.title),
-                    }
-                  : { articles: [], flashcards: [], clinicalCases: [] }
-              }
+              isLoading={isAILoading}
+              recommendations={tracking?.recommendedContent || {}}
             />
           </div>
         </div>

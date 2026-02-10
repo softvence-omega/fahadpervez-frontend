@@ -1,18 +1,18 @@
-import {
-//   BrainCog,
-  CalendarRange,
-  Cog,
-  NotebookText,
-  Target,
-} from "lucide-react";
-import TestOverviewCard from "@/components/reusable/TestOverviewCard";
+// import {
+// //   BrainCog,
+//   CalendarRange,
+//   Cog,
+//   NotebookText,
+//   Target,
+// } from "lucide-react";
+// import TestOverviewCard from "@/components/reusable/TestOverviewCard";
 // import { Progress } from "@/components/ui/progress";
 import QuizCollection from "./QuizCollection";
 
 export default function QuizOverviewTab() {
   return (
     <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-6">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-6">
         <TestOverviewCard
           icon={Target}
           iconColor="text-blue-700"
@@ -41,7 +41,7 @@ export default function QuizOverviewTab() {
           topText="Cardiology"
           bottomText="Top Category"
         />
-      </div>
+      </div> */}
       <div>
         <QuizCollection />
         {/* <div className="max-w-[700px] bg-white border border-slate-300 p-4 mt-10 rounded-[8px]">

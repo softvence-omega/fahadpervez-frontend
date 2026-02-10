@@ -1,24 +1,54 @@
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
-import { Plus } from "lucide-react";
+import { Plus, AlertCircle, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import MyStudyPlanCard from "./MyStudyPlanCard";
-import { useGetStudyPlanQuery } from "@/store/features/studyPlan/studyPlan.api";
+import { useDeleteStudyPlanMutation, useGetStudyPlanQuery } from "@/store/features/studyPlan/studyPlan.api";
 import GlobalLoader2 from "@/common/GlobalLoader2";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import Pagination from "@/common/custom/Pagination";
 
 export default function MyPlan() {
-  const { data, isLoading } = useGetStudyPlanQuery({});
+  const [page, setPage] = useState(1);
+  const limit = 12;
+  const { data, isLoading } = useGetStudyPlanQuery({ page, limit });
+  const [deleteStudyPlan, { isLoading: isDeleting }] = useDeleteStudyPlanMutation();
+  const [planToDelete, setPlanToDelete] = useState<string | null>(null);
 
   const allStudyPlans = data?.data ?? [];
+  const totalPages = Math.ceil(allStudyPlans.length / limit);
+  const paginatedPlans = allStudyPlans.slice((page - 1) * limit, page * limit);
+
   console.log("data :", allStudyPlans);
 
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!planToDelete) return;
+    try {
+      await deleteStudyPlan(planToDelete).unwrap();
+      setPlanToDelete(null);
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
+  };
+
   return (
-    <div className="px-2">
+    <div className="px-1 md:px-2">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
-          {/* <Link to={"/dashboard/smart-study"} className="mb-7">
-            <ArrowLeft />
-          </Link> */}
           <DashboardHeading
             title="All Study Plan"
             titleSize="text-xl"
@@ -55,30 +85,91 @@ export default function MyPlan() {
       {isLoading ? (
         <GlobalLoader2 />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-9">
-          {allStudyPlans.map(
-            (plan: {
-              _id: string;
-              plan_summary: string;
-              total_days: number;
-              daily_plan: {
-                day_number: number;
-                date: string;
-                total_hours: number;
-                topics: string[];
-                hourly_breakdown: {
-                  task_type: string;
-                  duration_hours: number;
-                  suggest_content: string[];
-                  isCompleted: boolean;
+        <div className="mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 mb-3 transition-all duration-300">
+            {paginatedPlans.map(
+              (plan: {
+                _id: string;
+                plan_summary: string;
+                total_days: number;
+                daily_plan: {
+                  day_number: number;
+                  date: string;
+                  total_hours: number;
+                  topics: string[];
+                  hourly_breakdown: {
+                    task_type: string;
+                    duration_hours: number;
+                    suggest_content: string[];
+                    isCompleted: boolean;
+                  }[];
                 }[];
-              }[];
-            }) => (
-              <MyStudyPlanCard key={plan._id} plan={plan} />
-            )
+              }) => (
+                <MyStudyPlanCard
+                  key={plan._id}
+                  plan={plan}
+                  onDelete={() => setPlanToDelete(plan._id)}
+                  isDeleting={isDeleting && planToDelete === plan._id}
+                />
+              )
+            )}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="mt-8 flex justify-center">
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </div>
           )}
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <Dialog
+        open={!!planToDelete}
+        onOpenChange={(open) => !open && setPlanToDelete(null)}
+      >
+        <DialogContent className="sm:max-w-106.25">
+          <DialogHeader>
+            <div className="flex items-center gap-3 text-red-600 mb-2">
+              <AlertCircle className="w-6 h-6" />
+              <DialogTitle>Delete Study Plan</DialogTitle>
+            </div>
+            <DialogDescription>
+              Are you sure you want to delete this study plan? This action
+              cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setPlanToDelete(null)}
+              disabled={isDeleting}
+              className="cursor-pointer"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteConfirm}
+              disabled={isDeleting}
+              className="cursor-pointer flex items-center gap-2"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete Plan"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
