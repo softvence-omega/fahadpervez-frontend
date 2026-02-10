@@ -61,7 +61,7 @@ export function GenerateMcqWithFileModal({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({
+  } = useForm<QuizFormValues>({
     resolver: zodResolver(quizSchema),
     defaultValues: {
       questionCount: 10,
