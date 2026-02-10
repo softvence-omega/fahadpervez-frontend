@@ -25,9 +25,9 @@ import FlashCardUpload from "../../FlashCard/FlashCardUpload";
 import MCQUpload from "../../MCQ/MCQUpload";
 const tableDesign = {
   header:
-    "text-lg font-geist text-[#2C2C2C] font-medium bg-[#EFF6FF] hover:bg-[#EFF6FF] md:h-12",
+    "text-lg font-geist text-black font-medium bg-[#EFF6FF] hover:bg-[#EFF6FF] md:h-12",
   cellHeader: "border border-border px-4",
-  bodyRow: "text-[#2C2C2C] font-inter text-sm font-normal md:h-12 bg-white",
+  bodyRow: "text-black font-inter text-sm font-normal md:h-12 bg-white",
   cell: "border border-border px-4 text-center",
 };
 

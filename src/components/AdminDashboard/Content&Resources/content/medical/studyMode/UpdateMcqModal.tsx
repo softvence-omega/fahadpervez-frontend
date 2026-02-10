@@ -5,7 +5,7 @@ import FormHeader from "@/components/AdminDashboard/reuseable/FormHeader";
 import ModalCloseButton from "@/components/AdminDashboard/reuseable/ModalCloseButton";
 import { ANSWER_OPTIONS, CorrectAnswerOption, DifficultyLevel } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -64,7 +64,7 @@ const inputClass = {
   error: "text-red-500 text-sm mt-1",
 };
 
-// Options and types
+// Options
 const options = ["A", "B", "C", "D", "E", "F"] as const;
 type OptionKey = (typeof options)[number];
 
@@ -81,11 +81,21 @@ const UpdateMcqModal: FC<UpdateMCQModalProps> = ({
   onSubmit,
   isLoading,
 }) => {
+  // Determine initial option count
+  const getInitialOptionCount = () => {
+    if (data.optionF) return 6;
+    if (data.optionE) return 5;
+    return 4;
+  };
+
+  const [optionCount, setOptionCount] = useState(getInitialOptionCount);
+
   const {
     register,
     handleSubmit,
     control,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<UpdateMCQFormValues>({
     resolver: zodResolver(UpdateMCQSchema),
@@ -106,7 +116,23 @@ const UpdateMcqModal: FC<UpdateMCQModalProps> = ({
       explanationE: data.explanationE ?? "",
       explanationF: data.explanationF ?? "",
     });
+    setOptionCount(getInitialOptionCount());
   }, [data, reset]);
+
+  const addOption = () => {
+    if (optionCount < 6) {
+      setOptionCount(optionCount + 1);
+    }
+  };
+
+  const removeLastOption = () => {
+    if (optionCount > 4) {
+      const optionToRemove = String.fromCharCode(64 + optionCount) as OptionKey;
+      setValue(`option${optionToRemove}`, "");
+      setValue(`explanation${optionToRemove}` as any, "");
+      setOptionCount(optionCount - 1);
+    }
+  };
 
   const handleFormSubmit = (formData: UpdateMCQFormValues) => {
     onSubmit(formData);
@@ -134,9 +160,16 @@ const UpdateMcqModal: FC<UpdateMCQModalProps> = ({
 
           {/* Options */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {options.map((opt) => (
+            {options.slice(0, optionCount).map((opt) => (
               <div key={opt}>
-                <label className={inputClass.label}>Option {opt}</label>
+                <label className={inputClass.label}>
+                  Option {opt}
+                  {(opt === "E" || opt === "F") && (
+                    <span className="text-gray-400 text-xs ml-1">
+                      (optional)
+                    </span>
+                  )}
+                </label>
                 <input
                   {...register(`option${opt}`)}
                   className={inputClass.input}
@@ -162,7 +195,29 @@ const UpdateMcqModal: FC<UpdateMCQModalProps> = ({
             ))}
           </div>
 
-          {/* Correct Option and Difficulty */}
+          {/* Add / Remove Options */}
+          <div className="flex gap-2">
+            {optionCount < 6 && (
+              <CommonButton
+                type="button"
+                onClick={addOption}
+                className="!text-blue-600 text-sm"
+              >
+                + Add Option {String.fromCharCode(65 + optionCount)}
+              </CommonButton>
+            )}
+            {optionCount > 4 && (
+              <CommonButton
+                type="button"
+                onClick={removeLastOption}
+                className="!text-red-500 text-sm"
+              >
+                - Remove Option {String.fromCharCode(64 + optionCount)}
+              </CommonButton>
+            )}
+          </div>
+
+          {/* Correct Option & Difficulty */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div>
               <label className={inputClass.label}>Correct Option</label>
@@ -199,7 +254,7 @@ const UpdateMcqModal: FC<UpdateMCQModalProps> = ({
 
           {/* Actions */}
           <div className="flex justify-end gap-3 mt-4">
-            <CommonButton type="button" onClick={onClose} className="">
+            <CommonButton type="button" onClick={onClose}>
               Cancel
             </CommonButton>
 

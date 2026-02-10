@@ -1,4 +1,5 @@
 import { DifficultyLevel } from "@/types";
+import { ContentFor } from "../../../staticContent/staticContentSlice";
 
 export interface SingleClinicalCaseResponse {
   success: boolean;
@@ -25,10 +26,13 @@ export interface ClinicalCase {
   system: string;
   topic: string;
   subtopic: string;
-  studentType: string;
-  type: string;
+
   createdAt: string;
   updatedAt: string;
+
+  contentFor: ContentFor;
+  profileType: string;
+  viewCount: number;
 }
 
 export interface LaboratoryResult {

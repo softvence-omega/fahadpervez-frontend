@@ -1,6 +1,5 @@
 import { baseAPI } from "@/store/api/baseApi";
 import { NotesResponse } from "./types/Notes";
-import { UpdateNotesResponse } from "./types/updateNotes";
 
 export const notesApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
@@ -11,10 +10,15 @@ export const notesApi = baseAPI.injectEndpoints({
       }),
       providesTags: ["Notes"],
     }),
-    updatedNotes: build.mutation<
-      void,
-      { id: string; data: Partial<UpdateNotesResponse> }
-    >({
+    postNotes: build.mutation<void, FormData>({
+      query: (data) => ({
+        url: "/notes/create",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Notes"],
+    }),
+    updatedNotes: build.mutation<void, { id: string; data: FormData }>({
       query: ({ id, data }) => ({
         url: `/notes/update/${id}`,
         method: "PUT",
@@ -22,18 +26,11 @@ export const notesApi = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ["Notes"],
     }),
+
     deleteNotes: build.mutation<void, string>({
       query: (id) => ({
         url: `/notes/delete/${id}`,
         method: "DELETE",
-      }),
-      invalidatesTags: ["Notes"],
-    }),
-    postNotes: build.mutation<void, FormData>({
-      query: (data) => ({
-        url: "/notes/create",
-        method: "POST",
-        body: data,
       }),
       invalidatesTags: ["Notes"],
     }),
