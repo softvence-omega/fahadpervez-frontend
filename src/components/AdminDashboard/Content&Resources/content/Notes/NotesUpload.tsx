@@ -25,9 +25,9 @@ interface CreateMCQStudyProps {
 }
 
 const inputClass = {
-  label: "block text-sm font-normal text-[#020617] font-inter mb-2",
+  label: "block text-sm font-normal text-black font-inter mb-2",
   input:
-    "w-full border border-[#CBD5E1] bg-white rounded-md p-3 outline-none text-[#94A3B8] text-xs",
+    "w-full border border-[#CBD5E1] bg-white rounded-md p-3 outline-none text-black text-xs",
   error: "text-red-500 text-sm mt-1",
 };
 
@@ -46,12 +46,12 @@ const notesSchema = z.object({
               "application/msword",
               "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             ].includes(file.type),
-          "Only PDF, DOC, DOCX files allowed"
+          "Only PDF, DOC, DOCX files allowed",
         )
         .refine(
           (file) => file.size <= 10 * 1024 * 1024,
-          "Max file size is 10MB"
-        )
+          "Max file size is 10MB",
+        ),
     )
     .min(1, "At least one file is required"),
 });
@@ -75,9 +75,6 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
     },
   });
 
-  // -------------------------------------
-  // MULTIPLE FILE UPLOAD HANDLER
-  // -------------------------------------
   const handleFileUpload = (files: FileList | null) => {
     if (!files || files.length === 0) return;
 
@@ -108,7 +105,7 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
       setValue(
         "files",
         updatedFiles.map((f) => f.file),
-        { shouldValidate: true }
+        { shouldValidate: true },
       );
     }
   };
@@ -120,7 +117,7 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
     setValue(
       "files",
       updated.map((f) => f.file),
-      { shouldValidate: true }
+      { shouldValidate: true },
     );
   };
 
@@ -133,10 +130,10 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
   };
 
   const selectFormData = useSelector(
-    (state: RootState) => state.staticContent.formData
+    (state: RootState) => state.staticContent.formData,
   );
   const contentType = useSelector(
-    (state: RootState) => state.staticContent.contentType
+    (state: RootState) => state.staticContent.contentType,
   );
   const [postNotes, { isLoading }] = usePostNotesMutation();
 
@@ -283,13 +280,14 @@ const NotesUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
           </div>
         )}
       </div>
-
-      <ActionButtons
-        onCancel={handleCancel}
-        importLabel="Save & Publish Notes"
-        onSavePublish={() => handleSubmit(onSubmit)()}
-        isLoading={isLoading}
-      />
+      <div className="pb-5">
+        <ActionButtons
+          onCancel={handleCancel}
+          importLabel="Save & Publish Notes"
+          onSavePublish={() => handleSubmit(onSubmit)()}
+          isLoading={isLoading}
+        />
+      </div>
     </form>
   );
 };

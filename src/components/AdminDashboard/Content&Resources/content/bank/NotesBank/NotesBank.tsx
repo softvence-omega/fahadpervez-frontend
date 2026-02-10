@@ -16,8 +16,6 @@ interface Props {
 const NotesBank: React.FC<Props> = ({ mcqBank, bankId, setBankId }) => {
   const notesBank = mcqBank?.data ?? [];
 
-  console.log("mcqBank", mcqBank);
-
   // single clinical case
   const { data: singleNotes } = useGetNotesQuery(bankId, {
     skip: bankId === "",
@@ -40,12 +38,10 @@ const NotesBank: React.FC<Props> = ({ mcqBank, bankId, setBankId }) => {
         <div className="grid grid-cols-1 gap-6 p-4  2xl:grid-cols-3">
           {notesBank.map((item) => (
             <div className="bg-white shadow-md rounded-xl p-4 border border-gray-200 hover:shadow-lg transition">
-              <h2 className="text-lg font-semibold text-gray-800">
-                {item.title}
-              </h2>
-              <p className="text-sm text-gray-600">{item.description}</p>
+              <h2 className="text-lg font-semibold text-black">{item.title}</h2>
+              <p className="text-sm text-black">{item.description}</p>
 
-              <div className="mt-3 space-y-1 text-sm text-gray-700">
+              <div className="mt-3 space-y-1 text-sm text-black">
                 <p>
                   <span className="font-semibold">Subject:</span> {item.subject}
                 </p>
@@ -57,13 +53,13 @@ const NotesBank: React.FC<Props> = ({ mcqBank, bankId, setBankId }) => {
                 </p>
                 {item.subtopic && (
                   <p>
-                    <span className="font-semibold">Subtopic:</span>{" "}
+                    <span className="font-semibold">Subtopic:</span>
                     {item.subtopic}
                   </p>
                 )}
 
                 <p>
-                  <span className="font-semibold">Student:</span>{" "}
+                  <span className="font-semibold">Student:</span>
                   {item.profileType}
                 </p>
               </div>
