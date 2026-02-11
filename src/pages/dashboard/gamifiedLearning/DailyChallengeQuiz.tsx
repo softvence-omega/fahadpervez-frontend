@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useGetDailyChallengeQuery, useUpdateDailyChallengeStatusMutation } from "@/store/features/tracking/tracking.api";
@@ -126,7 +127,10 @@ export default function DailyChallengeQuiz() {
 
                 <StatsRow stats={stats} />
 
-                <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6">
+                <div className={`w-full mx-auto grid gap-6 ${fromAnalysis 
+                    ? "grid-cols-1 place-items-center"
+                    : "grid-cols-1 lg:grid-cols-[1fr_400px]"
+                }`}>
                     {/* Performance Card */}
                     <div className="bg-blue-50 p-8 rounded-xl shadow-sm border border-blue-200 flex flex-col items-center">
                         <h2 className="text-xl font-bold mb-8 text-blue-900 self-start">

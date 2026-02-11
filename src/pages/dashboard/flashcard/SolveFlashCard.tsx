@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, BadgeHelp, CircleAlert } from "lucide-react";
@@ -340,7 +341,7 @@ export default function SolveFlashCard() {
         <motion.div
           initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          className={`bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all duration-300 h-fit
+          className={`hidden lg:block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all duration-300 h-fit
             ${isSidebarOpen ? "w-full lg:w-72" : "w-16"}
           `}
         >
