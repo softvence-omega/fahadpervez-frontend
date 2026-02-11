@@ -98,7 +98,7 @@ export function GenerateMcqWithFileModal({
       }
 
       const jsonData = {
-        prompt: note || "Generate Clinical case", // Use note as prompt
+        prompt: note || "Generate MCQ", // Use note as prompt
         d_level: data.difficulty,
         q_count: data.questionCount,
       };
