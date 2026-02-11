@@ -8,7 +8,8 @@ type FileUploaderProps = {
 };
 
 export default function FileUploader({
-    accept = "image/*,.pdf,.docx",
+    // accept = "image/*,.pdf,.docx",
+    accept="image/jpeg,image/png,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     multiple = true,
     onFilesChange,
 }: FileUploaderProps) {
