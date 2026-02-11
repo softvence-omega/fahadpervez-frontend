@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import {
   BookOpen,
@@ -14,7 +15,12 @@ import { motion } from "framer-motion";
 
 const taskTypeConfig: Record<
   string,
-  { icon: React.ReactNode; color: string; buttonText: string; buttonBgColor: string }
+  {
+    icon: React.ReactNode;
+    color: string;
+    buttonText: string;
+    buttonBgColor: string;
+  }
 > = {
   mcqs: {
     icon: <BookOpen className="w-4 h-4" />,
@@ -231,7 +237,8 @@ const SmartStudyPlan: React.FC = () => {
                   <div className="flex flex-wrap flex-col sm:flex-row sm:items-center gap-4 text-sm text-gray-600 mb-4">
                     <span className="flex items-center gap-1 text-nowrap text-sm">
                       <Clock className="w-4 h-4" />
-                      {task.duration_hours}h
+                      {task.duration_hours > 0 && `${task.duration_hours} h `}
+                      {task.duration_minutes > 0 && `${task.duration_minutes} m`}
                     </span>
                   </div>
                 </div>
