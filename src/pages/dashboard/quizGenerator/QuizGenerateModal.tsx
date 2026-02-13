@@ -182,7 +182,7 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[800px]">
+      <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto thin-scrollbar">
         <DialogHeader>
           <DialogTitle>Generate Quiz</DialogTitle>
           <DialogDescription>

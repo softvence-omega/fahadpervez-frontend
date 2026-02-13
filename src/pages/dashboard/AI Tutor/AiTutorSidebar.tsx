@@ -194,7 +194,7 @@ export default function AiTutorSidebar() {
           )}
 
           {(isHistoryOpen || isCollapsed) && (
-            <div className="flex-1 overflow-y-auto border-t border-gray-200 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto thin-scrollbar border-t border-gray-200 custom-scrollbar">
               {isLoading ? (
                 <div className="flex justify-center p-4">
                   <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
