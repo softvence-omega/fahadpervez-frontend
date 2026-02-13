@@ -3,7 +3,7 @@ import { baseAPI } from "@/store/api/baseApi";
 
 export const mcqBankAPI = baseAPI.injectEndpoints({
   endpoints: (build) => ({
-    gllMCQBank: build.query({
+    getAllMCQBank: build.query({
       query: ({ searchTerm, subject, system, topic, type, page, limit }) => {
         const params: any = { page, limit };
 
@@ -15,6 +15,25 @@ export const mcqBankAPI = baseAPI.injectEndpoints({
 
         return {
           url: "/mcq-bank",
+          method: "GET",
+          params,
+        };
+      },
+      providesTags: ["Mcq"],
+    }),
+
+    getAllPublicMCQBank: build.query({
+      query: ({ searchTerm, subject, system, topic, type, page, limit }) => {
+        const params: any = { page, limit };
+
+        if (searchTerm) params.searchTerm = searchTerm;
+        if (subject) params.subject = subject;
+        if (system) params.system = system;
+        if (topic) params.topic = topic;
+        if (type) params.type = type;
+
+        return {
+          url: "/mcq-bank/public-mcq",
           method: "GET",
           params,
         };
@@ -127,7 +146,8 @@ export const mcqBankAPI = baseAPI.injectEndpoints({
 });
 
 export const {
-  useGllMCQBankQuery,
+  useGetAllMCQBankQuery,
+  useGetAllPublicMCQBankQuery,
   useGetSingleMCQQuery,
   useGetMCQBankTreeQuery,
   useGetMcqBySubtopicQuery,

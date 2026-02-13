@@ -11,7 +11,6 @@ import {
   Search,
 } from "lucide-react";
 // import TestOverviewCard from "@/components/reusable/TestOverviewCard";
-import { useGllMCQBankQuery } from "@/store/features/MCQBank/MCQBank.api";
 import GlobalLoader from "@/common/GlobalLoader";
 import { TMCQBank } from "@/types";
 import { QuizGeneratorDialog } from "../quizGenerator/QuizGenerateModal";
@@ -19,6 +18,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@/common/custom/Pagination";
 import McqBankFilterModal from "./McqBankFilterModal";
+import { useGetAllMCQBankQuery } from "@/store/features/MCQBank/MCQBank.api";
 
 const McqBankCard = ({ mcq }: { mcq: any }) => {
   const [localCompletedCount, setLocalCompletedCount] = useState(0);
@@ -120,7 +120,7 @@ const McqBank = () => {
     topic: "",
   });
 
-  const { data, isFetching } = useGllMCQBankQuery({
+  const { data, isFetching } = useGetAllMCQBankQuery({
     searchTerm: searchTerm || undefined,
     subject: filters.subject || undefined,
     system: filters.system || undefined,

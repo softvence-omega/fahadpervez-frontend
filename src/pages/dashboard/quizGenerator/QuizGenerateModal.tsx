@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 import {
   useGenerateMCQMutation,
   useGetMCQBankTreeQuery,
-  useGllMCQBankQuery,
+  useGetAllPublicMCQBankQuery,
 } from "@/store/features/MCQBank/MCQBank.api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -51,7 +51,7 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
   const [quizName, setQuizName] = useState("");
   const [quizMode, setQuizMode] = useState("study");
 
-  const { data: bankData } = useGllMCQBankQuery({
+  const { data: bankData } = useGetAllPublicMCQBankQuery({
     type: quizMode === "exam" ? "exam" : undefined,
   });
 
@@ -182,7 +182,7 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[800px]">
+      <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto thin-scrollbar">
         <DialogHeader>
           <DialogTitle>Generate Quiz</DialogTitle>
           <DialogDescription>
@@ -193,7 +193,9 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
           {/* Quiz Name */}
           <div className="grid gap-2">
-            <Label className={errors.includes("quizName") ? "text-red-500" : ""}>
+            <Label
+              className={errors.includes("quizName") ? "text-red-500" : ""}
+            >
               Quiz Name
             </Label>
             <Input
@@ -203,11 +205,16 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                 clearError("quizName");
               }}
               placeholder="e.g., Cardiology Quiz"
-              className={`transition-all duration-300 ${errors.includes("quizName")
-                ? "border-red-500 bg-red-50 focus-visible:ring-red-500"
-                : ""
-                }`}
+              className={`transition-all duration-300 ${
+                errors.includes("quizName")
+                  ? "border-red-500 bg-red-50 focus-visible:ring-red-500"
+                  : ""
+              }`}
             />
+
+            {
+              errors.includes("quizName") ? <p className="text-red-500 text-sm ml-2">Fill the quiz name</p> : ""
+            }
           </div>
 
           {/* Quiz Mode */}
@@ -241,10 +248,11 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                   }}
                 >
                   <SelectTrigger
-                    className={`transition-all duration-300 ${errors.includes("examName")
-                      ? "border-red-500 bg-red-50 focus:ring-red-500"
-                      : ""
-                      }`}
+                    className={`transition-all duration-300 ${
+                      errors.includes("examName")
+                        ? "border-red-500 bg-red-50 focus:ring-red-500"
+                        : ""
+                    }`}
                   >
                     <SelectValue placeholder="Select Question Bank" />
                   </SelectTrigger>
@@ -294,10 +302,11 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                   }}
                 >
                   <SelectTrigger
-                    className={`transition-all duration-300 ${errors.includes("subject")
-                      ? "border-red-500 bg-red-50 focus:ring-red-500"
-                      : ""
-                      }`}
+                    className={`transition-all duration-300 ${
+                      errors.includes("subject")
+                        ? "border-red-500 bg-red-50 focus:ring-red-500"
+                        : ""
+                    }`}
                   >
                     <SelectValue placeholder="Select Subject" />
                   </SelectTrigger>
@@ -309,6 +318,9 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                     ))}
                   </SelectContent>
                 </Select>
+                {
+              errors.includes("subject") ? <p className="text-red-500 text-sm ml-2">Select a subject</p> : ""
+            }
               </div>
 
               {/* System */}
@@ -391,10 +403,11 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                   }}
                 >
                   <SelectTrigger
-                    className={`transition-all duration-300 ${errors.includes("questionBank")
-                      ? "border-red-500 bg-red-50 focus:ring-red-500"
-                      : ""
-                      }`}
+                    className={`transition-all duration-300 ${
+                      errors.includes("questionBank")
+                        ? "border-red-500 bg-red-50 focus:ring-red-500"
+                        : ""
+                    }`}
                   >
                     <SelectValue placeholder="Select Question Bank" />
                   </SelectTrigger>
@@ -412,6 +425,10 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                     )}
                   </SelectContent>
                 </Select>
+
+                {
+              errors.includes("questionBank") ? <p className="text-red-500 text-sm ml-2">Select a question bank</p> : ""
+            }
               </div>
 
               {/* Question Type */}

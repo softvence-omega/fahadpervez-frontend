@@ -114,7 +114,7 @@ const DashboardSidebar: FC<SidebarProps> = ({
         </div>
 
         {/* Scrollable Menu */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden py-4 px-3 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden py-4 px-3 thin-scrollbar scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
           {/* Main Navigation */}
           <div className="space-y-1 mb-6">
             {groupedItems.main?.map((item) => renderNavItem(item))}
