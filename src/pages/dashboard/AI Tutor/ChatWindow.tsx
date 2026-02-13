@@ -121,7 +121,7 @@ export default function ChatWindow() {
                 <h2 className="text-xl font-semibold">AI Tutor</h2>
             </header> */}
             
-            <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
+            <div className="flex-1 overflow-y-auto custom-scrollbar thin-scrollbar flex flex-col">
                 {!currentChatId && displayMessages.length === 0 ? (
                     <NewChatPrompt />
                 ) : (
