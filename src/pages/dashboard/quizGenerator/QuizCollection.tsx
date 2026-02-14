@@ -1,10 +1,20 @@
 import { useGetAllGeneratedMCQQuery } from "@/store/features/MCQBank/MCQBank.api";
 import QuizCard from "./QuizCard";
 import GlobalLoader from "@/common/GlobalLoader";
-import { Filter, Search } from "lucide-react";
+import { AlertCircle, Filter, Loader2, Search } from "lucide-react";
 import { useState } from "react";
 import FlashCardFilterModal from "../flashcard/FlashCardFilterModal";
 import Pagination from "@/common/custom/Pagination";
+import { useDeleteMyContentMutation } from "@/store/features/content/content.api";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 export default function QuizCollection() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -15,6 +25,10 @@ export default function QuizCollection() {
     topic: "",
   });
   const [page, setPage] = useState(1);
+  const [quizToDelete, setQuizToDelete] = useState<string | null>(null);
+
+  const [deleteContent, { isLoading: isDeleting }] =
+    useDeleteMyContentMutation();
 
   const { data: quizzesResponse, isLoading } = useGetAllGeneratedMCQQuery({
     searchTerm,
@@ -29,6 +43,16 @@ export default function QuizCollection() {
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!quizToDelete) return;
+    try {
+      await deleteContent({ id: quizToDelete, key: "mcq" }).unwrap();
+      setQuizToDelete(null);
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
   };
 
   if (isLoading) return <GlobalLoader />;
@@ -81,6 +105,8 @@ export default function QuizCollection() {
                   quiz.isCompleted ||
                   (quiz.tracking && quiz.tracking.totalAttemptCount > 0)
                 }
+                onDelete={() => setQuizToDelete(quiz.id || quiz._id)}
+                isDeleting={isDeleting && quizToDelete === (quiz.id || quiz._id)}
               />
             ))}
           </div>
@@ -113,6 +139,50 @@ export default function QuizCollection() {
           }}
         />
       )}
+
+      {/* Delete Confirmation Modal */}
+      <Dialog
+        open={!!quizToDelete}
+        onOpenChange={(open) => !open && setQuizToDelete(null)}
+      >
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <div className="flex items-center gap-3 text-red-600 mb-2">
+              <AlertCircle className="w-6 h-6" />
+              <DialogTitle>Delete Quiz</DialogTitle>
+            </div>
+            <DialogDescription>
+              Are you sure you want to delete this AI-generated quiz? This
+              action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setQuizToDelete(null)}
+              disabled={isDeleting}
+              className="cursor-pointer"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteConfirm}
+              disabled={isDeleting}
+              className="cursor-pointer flex items-center gap-2"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete Quiz"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
