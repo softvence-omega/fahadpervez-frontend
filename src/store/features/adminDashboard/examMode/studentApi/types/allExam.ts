@@ -45,6 +45,8 @@ export type SingleMCQUpdatePayloadForExam = {
   optionD: string;
   optionE?: string;
   optionF?: string;
+
+  imageDescription?: string;
   correctOption: CorrectAnswerOption;
   explanationA?: string;
   explanationB?: string;

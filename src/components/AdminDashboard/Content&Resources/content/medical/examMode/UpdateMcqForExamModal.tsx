@@ -3,6 +3,7 @@ import CommonButton from "@/common/button/CommonButton";
 import CommonSelect from "@/common/custom/CommonSelect";
 import FormHeader from "@/components/AdminDashboard/reuseable/FormHeader";
 import ModalCloseButton from "@/components/AdminDashboard/reuseable/ModalCloseButton";
+import { useUploadSingleImageMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import { SingleMCQUpdatePayloadForExam } from "@/store/features/adminDashboard/examMode/studentApi/types/allExam";
 import { ANSWER_OPTIONS } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,7 +26,7 @@ const UpdateMCQSchema = z.object({
   optionD: z.string().min(1, "Option D is required"),
   optionE: z.string().optional(),
   optionF: z.string().optional(),
-
+  imageDescription: z.string().url().optional().or(z.literal("")),
   correctOption: z.enum(ANSWER_OPTIONS),
   explanationA: z.string().optional(),
   explanationB: z.string().optional(),
@@ -47,7 +48,6 @@ const inputClass = {
 // Options and types
 const options = ["A", "B", "C", "D", "E", "F"] as const;
 type OptionKey = (typeof options)[number];
-
 const correctAnswerOptions = options.map((o) => ({ label: o, value: o }));
 
 const UpdateMcqForExamModal: FC<UpdateMCQModalProps> = ({
@@ -80,8 +80,15 @@ const UpdateMcqForExamModal: FC<UpdateMCQModalProps> = ({
       optionF: data.optionF ?? "",
       explanationE: data.explanationE ?? "",
       explanationF: data.explanationF ?? "",
+      imageDescription: data.imageDescription ?? "",
     },
   });
+
+  const [uploadSingleImage, { isLoading: isUploadingImage }] =
+    useUploadSingleImageMutation();
+  const [imagePreview, setImagePreview] = useState<string>(
+    data.imageDescription ?? "",
+  );
 
   useEffect(() => {
     reset({
@@ -90,8 +97,10 @@ const UpdateMcqForExamModal: FC<UpdateMCQModalProps> = ({
       optionF: data.optionF ?? "",
       explanationE: data.explanationE ?? "",
       explanationF: data.explanationF ?? "",
+      imageDescription: data.imageDescription ?? "",
     });
     setOptionCount(getInitialOptionCount());
+    setImagePreview(data.imageDescription ?? "");
   }, [data, reset]);
 
   const addOption = () => {
@@ -110,28 +119,72 @@ const UpdateMcqForExamModal: FC<UpdateMCQModalProps> = ({
     }
   };
 
+  const handleUploadImage = async (file: File) => {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const result = await uploadSingleImage(formData).unwrap();
+      const fileUrl = result.data.fileUrl;
+      setValue("imageDescription", fileUrl, { shouldDirty: true });
+      setImagePreview(fileUrl);
+    } catch (error) {
+      console.error("Image upload error:", error);
+    }
+  };
+
   const handleFormSubmit = (formData: UpdateMCQFormValues) => {
     onSubmit(formData);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white w-full max-w-3xl p-6 rounded-lg shadow-lg overflow-y-auto max-h-[90vh] relative">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50">
+      <div className="relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-lg bg-white p-6 shadow-lg">
         <ModalCloseButton onClick={onClose} />
         <FormHeader title="Update MCQ" />
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+          {/* Question */}
           <div>
             <label className={inputClass.label}>Question</label>
             <textarea
               {...register("question")}
-              className={inputClass.input}
               rows={3}
-              placeholder="Question text"
+              className={`${inputClass.input} resize-none`}
+              placeholder="Enter the question"
             />
             {errors.question && (
               <p className={inputClass.error}>{errors.question.message}</p>
             )}
+          </div>
+
+          {/* Image */}
+          <div>
+            <label className={inputClass.label}>Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              className={` cursor-pointer ${inputClass.input}`}
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  handleUploadImage(e.target.files[0]);
+                }
+              }}
+              disabled={isUploadingImage}
+            />
+            {isUploadingImage && (
+              <p className="text-blue-500 text-sm mt-1">Uploading image...</p>
+            )}
+            {imagePreview && (
+              <div className="mt-2">
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="max-h-40 object-contain border rounded"
+                />
+              </div>
+            )}
+            <input type="hidden" {...register("imageDescription")} />
           </div>
 
           {/* Options */}
@@ -149,7 +202,9 @@ const UpdateMcqForExamModal: FC<UpdateMCQModalProps> = ({
                 <input
                   {...register(`option${opt}`)}
                   className={inputClass.input}
-                  placeholder={`Option ${opt} text${opt === "E" || opt === "F" ? " (optional)" : ""}`}
+                  placeholder={`Option ${opt} text${
+                    opt === "E" || opt === "F" ? " (optional)" : ""
+                  }`}
                 />
                 <textarea
                   {...register(
@@ -217,7 +272,6 @@ const UpdateMcqForExamModal: FC<UpdateMCQModalProps> = ({
             <CommonButton type="button" onClick={onClose} className="">
               Cancel
             </CommonButton>
-
             <CommonButton type="submit" className="!bg-blue-500 !text-white">
               {isLoading ? (
                 <ButtonWithLoading title="Updating..." />
