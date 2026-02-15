@@ -1,5 +1,5 @@
-import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import React from "react";
 
 type PaginationProps = {
   currentPage: number;
@@ -61,7 +61,7 @@ const Pagination: React.FC<PaginationProps> = ({
           >
             {page}
           </button>
-        )
+        ),
       )}
 
       <button

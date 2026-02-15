@@ -138,7 +138,7 @@ const McqTableForExam: React.FC<McqTableProps> = ({
       optionF: updatedData.optionF,
 
       correctOption: updatedData.correctOption,
-
+      imageDescription: updatedData.imageDescription,
       explanationA: updatedData.explanationA,
       explanationB: updatedData.explanationB,
       explanationC: updatedData.explanationC,
@@ -304,6 +304,8 @@ const McqTableForExam: React.FC<McqTableProps> = ({
               | "D"
               | "E"
               | "F",
+
+            imageDescription: selectedMCQ.imageDescription || "",
             explanationA: selectedMCQ.options[0]?.explanation || "",
             explanationB: selectedMCQ.options[1]?.explanation || "",
             explanationC: selectedMCQ.options[2]?.explanation || "",
