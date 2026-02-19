@@ -12,6 +12,7 @@ import {
   useEnrollInEventMutation,
 } from "@/store/features/event/event.api";
 import { toast } from "sonner";
+import { CalendarDays, CalendarCheck } from "lucide-react";
 import Pagination from "@/common/custom/Pagination";
 import GlobalLoader2 from "@/common/GlobalLoader2";
 
@@ -193,7 +194,7 @@ const EventPage: React.FC<EventPageProps> = ({
           <div>
             {isAllEventsLoading ? (
               <GlobalLoader2 />
-            ) : (
+            ) : paginatedAllEvents.length > 0 ? (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {paginatedAllEvents.map((event: IEvent) => (
@@ -216,6 +217,16 @@ const EventPage: React.FC<EventPageProps> = ({
                   </div>
                 )}
               </>
+            ) : (
+              <div className="col-span-full py-20 text-center bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
+                <CalendarDays className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                <p className="text-slate-500 font-bold text-lg">
+                  No Events found
+                </p>
+                <p className="text-slate-400 text-sm mt-1">
+                  There are no upcoming events at the moment. Check back later!
+                </p>
+              </div>
             )}
           </div>
         </>
@@ -242,7 +253,7 @@ const EventPage: React.FC<EventPageProps> = ({
           <div>
             {isMyEventsLoading ? (
               <GlobalLoader2 />
-            ) : myEvents.length > 0 ? (
+            ) : paginatedMyEvents.length > 0 ? (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {paginatedMyEvents.map((event: any) => (
@@ -279,10 +290,13 @@ const EventPage: React.FC<EventPageProps> = ({
                 )}
               </>
             ) : (
-              <div className="text-center py-12 text-gray-500">
-                <p className="text-lg font-medium">No registered events</p>
-                <p className="text-sm mt-2">
-                  Register for events to see them here
+              <div className="col-span-full py-20 text-center bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
+                <CalendarCheck className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                <p className="text-slate-500 font-bold text-lg">
+                  No Registered Events
+                </p>
+                <p className="text-slate-400 text-sm mt-1">
+                  You haven't registered for any events yet.
                 </p>
               </div>
             )}

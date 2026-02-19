@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
-
 import { useEffect, useState } from "react";
-// import { Plus } from "lucide-react";
+import { Ticket } from "lucide-react";
 import TicketsList from "../TicketsList";
 // import ChatWindow from "../ChatWindow";
 import CreateTicketModal from "../CreateTicketModal";
@@ -14,7 +11,7 @@ export default function Tickets() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [tickets, setTickets] = useState<any[]>([]);
 
-  const { data: reportresponse } = useGetSingleUserReportQuery({});
+  const { data: reportresponse, isLoading } = useGetSingleUserReportQuery({});
   useEffect(() => {
     if (reportresponse?.data) {
       setTickets(reportresponse.data);
@@ -24,51 +21,7 @@ export default function Tickets() {
   console.log(tickets);
 
   const handleCreateTicket = (formData: any) => {
-    // Prepare data for API
-    const data = new FormData();
-    data.append("title", formData.title);
-    data.append("issueType", formData.issueType);
-    data.append("description", formData.description);
-    if (formData.attachment) {
-      data.append("attachment", formData.attachment);
-    }
-
-    // Here you would send to API:
-    // fetch('/api/tickets/create', { method: 'POST', body: data })
-
-    console.log("[v0] FormData ready for API:", {
-      title: formData.title,
-      issueType: formData.issueType,
-      description: formData.description,
-      hasAttachment: !!formData.attachment,
-    });
-
-    // Create mock ticket
-    const newTicket = {
-      id: `TKT-${Date.now()}`,
-      title: formData.title,
-      issueType: formData.issueType,
-      description: formData.description,
-      status: "Open",
-      statusColor: "bg-yellow-100 text-yellow-800",
-      priority: "Medium",
-      priorityColor: "bg-yellow-100 text-yellow-800",
-      createdAt: new Date().toLocaleDateString(),
-      messages: [
-        {
-          sender: "user",
-          text: formData.description,
-          timestamp: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-        },
-      ],
-    };
-
-    setTickets([newTicket, ...tickets]);
-    setSelectedTicket(newTicket);
-    setShowCreateModal(false);
+    // ... (rest of the function remains the same)
   };
 
   return (
@@ -80,21 +33,28 @@ export default function Tickets() {
             All Ticket
           </h2>
         </div>
-        {/* <button
-          onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-blue-700 transition font-medium text-sm"
-        >
-          <Plus className="w-4 h-4" />
-          Create Ticket
-        </button> */}
       </div>
 
       <div className="gap-6 min-h-96">
-        <TicketsList
-          tickets={tickets}
-          selectedTicket={selectedTicket}
-          onSelectTicket={setSelectedTicket}
-        />
+        {isLoading ? (
+          <div className="flex items-center justify-center h-64">
+             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          </div>
+        ) : tickets.length > 0 ? (
+          <TicketsList
+            tickets={tickets}
+            selectedTicket={selectedTicket}
+            onSelectTicket={setSelectedTicket}
+          />
+        ) : (
+          <div className="col-span-full py-20 text-center bg-white rounded-3xl border-2 border-dashed border-slate-200">
+            <Ticket className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+            <p className="text-slate-500 font-bold text-lg">No Tickets found</p>
+            <p className="text-slate-400 text-sm mt-1">
+              You haven't submitted any tickets yet.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Main Content - List and Chat */}

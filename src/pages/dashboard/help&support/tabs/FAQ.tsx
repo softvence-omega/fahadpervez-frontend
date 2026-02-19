@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { useMemo, useState, useEffect } from "react";
+import { Search, HelpCircle } from "lucide-react";
 import FAQAccordion from "../FAQAccordion";
 import { useGetAllFAQQuery } from "@/store/features/faq/faq.api";
 import GlobalLoader2 from "@/common/GlobalLoader2";
@@ -16,9 +15,6 @@ const normalizeCategory = (value: string) =>
   value.toLowerCase().replace(/\s+/g, "-");
 
 export default function FAQ() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState<string>("all");
-
   const { data: faqsData, isLoading: faqLoading } = useGetAllFAQQuery({});
   const faqs: FAQItem[] = faqsData?.data || [];
 
@@ -30,14 +26,20 @@ export default function FAQ() {
       new Set(faqs.map((faq) => faq.category))
     );
 
-    return [
-      { id: "all", label: "All" },
-      ...uniqueCategories.map((cat) => ({
-        id: normalizeCategory(cat),
-        label: cat,
-      })),
-    ];
+    return uniqueCategories.map((cat) => ({
+      id: normalizeCategory(cat),
+      label: cat,
+    }));
   }, [faqs]);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState<string>("");
+
+  useEffect(() => {
+    if (categories.length > 0 && !activeCategory) {
+      setActiveCategory(categories[0].id);
+    }
+  }, [categories, activeCategory]);
 
   /* -------------------
       Group FAQs
@@ -108,57 +110,34 @@ export default function FAQ() {
         <GlobalLoader2 />
       ) : (
         <div className="space-y-4">
-          {activeCategory === "all" ? (
-            categories
-              .filter((c) => c.id !== "all")
-              .map((cat) => {
-                const faqsByCategory = (groupedFaqs[cat.id] || []).filter(
-                  matchSearch
-                );
+          {(() => {
+            const currentFaqs = (groupedFaqs[activeCategory] || []).filter(
+              matchSearch
+            );
 
-                if (!faqsByCategory.length) return null;
+            if (currentFaqs.length > 0) {
+              return currentFaqs.map((faq: FAQItem) => (
+                <FAQAccordion
+                  key={faq._id}
+                  question={faq.question}
+                  answer={faq.answer}
+                />
+              ));
+            }
 
-                return (
-                  <div
-                    key={cat.id}
-                    className="space-y-3 bg-white p-6 rounded-lg"
-                  >
-                    <h3 className="text-base font-medium text-black mb-6">
-                      {cat.label}
-                    </h3>
-
-                    {faqsByCategory.map((faq: FAQItem) => (
-                      <FAQAccordion
-                        key={faq._id}
-                        question={faq.question}
-                        answer={faq.answer}
-                      />
-                    ))}
-                  </div>
-                );
-              })
-          ) : (
-            <>
-              {(groupedFaqs[activeCategory] || []).filter(matchSearch).length >
-              0 ? (
-                (groupedFaqs[activeCategory] || [])
-                  .filter(matchSearch)
-                  .map((faq: FAQItem) => (
-                    <FAQAccordion
-                      key={faq._id}
-                      question={faq.question}
-                      answer={faq.answer}
-                    />
-                  ))
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-muted-foreground">
-                    No FAQs found matching your search
-                  </p>
-                </div>
-              )}
-            </>
-          )}
+            return (
+              <div className="col-span-full py-20 text-center bg-white rounded-3xl border-2 border-dashed border-slate-200">
+                <HelpCircle className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                <p className="text-slate-500 font-bold text-lg">
+                  No FAQs found
+                </p>
+                <p className="text-slate-400 text-sm mt-1">
+                  No FAQs found matching your search. Try a different term or
+                  category.
+                </p>
+              </div>
+            );
+          })()}
         </div>
       )}
     </div>
