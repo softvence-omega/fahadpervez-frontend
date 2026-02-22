@@ -1,6 +1,6 @@
 import DashboardHeading from "@/components/reusable/DashboardHeading";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
-import { Plus, AlertCircle, Loader2 } from "lucide-react";
+import { Plus, AlertCircle, Loader2, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import MyStudyPlanCard from "./MyStudyPlanCard";
 import { useDeleteStudyPlanMutation, useGetStudyPlanQuery } from "@/store/features/studyPlan/studyPlan.api";
@@ -86,34 +86,46 @@ export default function MyPlan() {
         <GlobalLoader2 />
       ) : (
         <div className="mb-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 mb-3 transition-all duration-300">
-            {paginatedPlans.map(
-              (plan: {
-                _id: string;
-                plan_summary: string;
-                total_days: number;
-                daily_plan: {
-                  day_number: number;
-                  date: string;
-                  total_hours: number;
-                  topics: string[];
-                  hourly_breakdown: {
-                    task_type: string;
-                    duration_hours: number;
-                    suggest_content: string[];
-                    isCompleted: boolean;
+          {paginatedPlans.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 mb-3 transition-all duration-300">
+              {paginatedPlans.map(
+                (plan: {
+                  _id: string;
+                  plan_summary: string;
+                  total_days: number;
+                  daily_plan: {
+                    day_number: number;
+                    date: string;
+                    total_hours: number;
+                    topics: string[];
+                    hourly_breakdown: {
+                      task_type: string;
+                      duration_hours: number;
+                      suggest_content: string[];
+                      isCompleted: boolean;
+                    }[];
                   }[];
-                }[];
-              }) => (
-                <MyStudyPlanCard
-                  key={plan._id}
-                  plan={plan}
-                  onDelete={() => setPlanToDelete(plan._id)}
-                  isDeleting={isDeleting && planToDelete === plan._id}
-                />
-              )
-            )}
-          </div>
+                }) => (
+                  <MyStudyPlanCard
+                    key={plan._id}
+                    plan={plan}
+                    onDelete={() => setPlanToDelete(plan._id)}
+                    isDeleting={isDeleting && planToDelete === plan._id}
+                  />
+                )
+              )}
+            </div>
+          ) : (
+            <div className="col-span-full py-20 text-center bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
+              <FileText className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+              <p className="text-slate-500 font-bold text-lg">
+                No Study Plans found
+              </p>
+              <p className="text-slate-400 text-sm mt-1">
+                You haven't created any study plans yet. Create one to get started!
+              </p>
+            </div>
+          )}
 
           {totalPages > 1 && (
             <div className="mt-8 flex justify-center">

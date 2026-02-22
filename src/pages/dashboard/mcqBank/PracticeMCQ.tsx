@@ -486,8 +486,8 @@ export default function PracticeMCQ() {
                 <DashboardHeading
                   title={mcqData?.title}
                   titleSize="text-xl"
-                  description={`${meta?.total || 0} Questions 
-                `}
+                  // description={`${meta?.total || 0} Questions `}
+                  description={`${Math.ceil(((meta?.total ?? 0) * 30) / 60)} Min`}
                   className="space-y-1"
                 />
               </div>
