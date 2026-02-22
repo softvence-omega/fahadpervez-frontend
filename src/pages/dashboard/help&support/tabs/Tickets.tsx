@@ -20,7 +20,7 @@ export default function Tickets() {
 
   console.log(tickets);
 
-  const handleCreateTicket = (formData: any) => {
+  const handleCreateTicket = () => {
     // ... (rest of the function remains the same)
   };
 
