@@ -65,13 +65,16 @@ const FinalSchema = z.object({
 type MCQFormValues = z.infer<typeof FinalSchema>;
 
 const inputClass = {
-  label: "block text-sm font-normal text-[#020617] font-inter mb-2",
+  label: "block text-sm font-normal text-black font-inter mb-2",
   input:
     "w-full border border-[#CBD5E1] bg-white rounded-md p-3 outline-none text-black text-xs ",
   error: "text-red-500 text-sm mt-1",
 };
 
-const AddMCQForm = () => {
+interface AddMCQFormProps {
+  handleCancel: () => void;
+}
+const AddMCQForm: React.FC<AddMCQFormProps> = ({ handleCancel }) => {
   const { formData, contentType, uploadIntoBank, bankId } = useAppSelector(
     (state: RootState) => state.staticContent,
   );
@@ -221,9 +224,7 @@ const AddMCQForm = () => {
   };
 
   const navigate = useNavigate();
-  const handleCancel = () => {
-    navigate(-1);
-  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {fields.map((field, qIndex) => (

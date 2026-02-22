@@ -3,12 +3,12 @@ import CommonButton from "@/common/button/CommonButton";
 import CommonSelect from "@/common/custom/CommonSelect";
 import FormHeader from "@/components/AdminDashboard/reuseable/FormHeader";
 import ModalCloseButton from "@/components/AdminDashboard/reuseable/ModalCloseButton";
+import { useUploadSingleImageMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import { ANSWER_OPTIONS, CorrectAnswerOption, DifficultyLevel } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FC, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
-
 interface UpdateMCQModalProps {
   data: BackendMCQData;
   onClose: () => void;
@@ -25,7 +25,7 @@ export interface BackendMCQData {
   optionD: string;
   optionE?: string;
   optionF?: string;
-
+  imageDescription?: string;
   correctOption: CorrectAnswerOption;
   explanationA?: string;
   explanationB?: string;
@@ -45,6 +45,7 @@ const UpdateMCQSchema = z.object({
   optionD: z.string().min(1, "Option D is required"),
   optionE: z.string().optional(),
   optionF: z.string().optional(),
+  imageDescription: z.string().url().optional().or(z.literal("")),
 
   correctOption: z.enum(ANSWER_OPTIONS),
   explanationA: z.string().optional(),
@@ -58,7 +59,7 @@ const UpdateMCQSchema = z.object({
 type UpdateMCQFormValues = z.infer<typeof UpdateMCQSchema>;
 
 const inputClass = {
-  label: "block text-sm font-normal text-[#020617] font-inter mb-2",
+  label: "block text-sm font-normal text-black font-inter mb-2",
   input:
     "w-full border border-[#CBD5E1] bg-white rounded-md p-3 outline-none text-black text-xs ",
   error: "text-red-500 text-sm mt-1",
@@ -107,6 +108,11 @@ const UpdateMcqModal: FC<UpdateMCQModalProps> = ({
       explanationF: data.explanationF ?? "",
     },
   });
+  const [uploadSingleImage, { isLoading: isUploadingImage }] =
+    useUploadSingleImageMutation();
+  const [imagePreview, setImagePreview] = useState<string>(
+    data.imageDescription ?? "",
+  );
 
   useEffect(() => {
     reset({
@@ -115,8 +121,10 @@ const UpdateMcqModal: FC<UpdateMCQModalProps> = ({
       optionF: data.optionF ?? "",
       explanationE: data.explanationE ?? "",
       explanationF: data.explanationF ?? "",
+      imageDescription: data.imageDescription ?? "",
     });
     setOptionCount(getInitialOptionCount());
+    setImagePreview(data.imageDescription ?? "");
   }, [data, reset]);
 
   const addOption = () => {
@@ -131,6 +139,20 @@ const UpdateMcqModal: FC<UpdateMCQModalProps> = ({
       setValue(`option${optionToRemove}`, "");
       setValue(`explanation${optionToRemove}` as any, "");
       setOptionCount(optionCount - 1);
+    }
+  };
+
+  const handleUploadImage = async (file: File) => {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const result = await uploadSingleImage(formData).unwrap();
+      const fileUrl = result.data.fileUrl;
+      setValue("imageDescription", fileUrl, { shouldDirty: true });
+      setImagePreview(fileUrl);
+    } catch (error) {
+      console.error("Image upload error:", error);
     }
   };
 
@@ -158,6 +180,33 @@ const UpdateMcqModal: FC<UpdateMCQModalProps> = ({
             )}
           </div>
 
+          <div>
+            <label className={inputClass.label}>Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              className={` cursor-pointer ${inputClass.input}`}
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  handleUploadImage(e.target.files[0]);
+                }
+              }}
+              disabled={isUploadingImage}
+            />
+            {isUploadingImage && (
+              <p className="text-blue-500 text-sm mt-1">Uploading image...</p>
+            )}
+            {imagePreview && (
+              <div className="mt-2">
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="max-h-40 object-contain border rounded"
+                />
+              </div>
+            )}
+            <input type="hidden" {...register("imageDescription")} />
+          </div>
           {/* Options */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {options.slice(0, optionCount).map((opt) => (

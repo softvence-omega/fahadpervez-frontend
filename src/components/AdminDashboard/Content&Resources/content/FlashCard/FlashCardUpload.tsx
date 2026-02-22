@@ -11,13 +11,17 @@ import ManualFlashUpload from "./ManualFlashUpload";
 
 interface CreateMCQStudyProps {
   breadcrumb?: string;
+  handleCancel: () => void;
 }
 
 const activeStep = 2;
-const FlashCardUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
+const FlashCardUpload: React.FC<CreateMCQStudyProps> = ({
+  breadcrumb,
+  handleCancel,
+}) => {
   const [mode, setMode] = useState<"manual" | "bulk">("manual");
   const { uploadIntoBank } = useAppSelector(
-    (state: RootState) => state.staticContent
+    (state: RootState) => state.staticContent,
   );
   return (
     <div>
@@ -44,7 +48,11 @@ const FlashCardUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
           />
         </div>
 
-        {mode === "manual" ? <ManualFlashUpload /> : <BulkUploadFlashCard />}
+        {mode === "manual" ? (
+          <ManualFlashUpload handleCancel={handleCancel} />
+        ) : (
+          <BulkUploadFlashCard />
+        )}
       </div>
     </div>
   );
