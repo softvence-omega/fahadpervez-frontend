@@ -77,6 +77,7 @@ const SmartStudyPlan: React.FC = () => {
   const navigate = useNavigate();
 
   const allStudyPlans = data?.data ?? [];
+  console.log(data?.data);
 
   // Logic to find today's or nearest upcoming plan
   // const todayStr = new Date().toISOString().split("T")[0];
@@ -86,24 +87,21 @@ const SmartStudyPlan: React.FC = () => {
   // let currentPlanId = "";
 
   if (allStudyPlans.length > 0) {
-    // Try to find a plan that has today's date in daily_plan
-    // const activePlan =
-    //   allStudyPlans.find((plan: any) =>
-    //     plan.daily_plan.some(
-    //       (d: any) => d.date && d.date.split("T")[0] === todayStr,
-    //     ),
-    //   ) || allStudyPlans[0]; // Fallback to the first (most recent) plan
+    const firstPlan = allStudyPlans[0];
+    const todayStr = new Date().toISOString().split("T")[0];
 
-    // currentPlanSummary = activePlan.plan_summary;
-    // currentPlanId = activePlan._id;
+    // Find the daily plan entry for today
+    const todayPlanEntry = firstPlan.daily_plan?.find((day: any) => {
+      if (!day.date) return false;
+      return day.date.split("T")[0] === todayStr;
+    });
 
-    // const dailyPlanEntry =
-    //   activePlan.daily_plan.find(
-    //     (d: any) => d.date && d.date.split("T")[0] === todayStr,
-    //   ) || activePlan.daily_plan[0]; // Fallback to day 1 if today not found
-
-    // todayTasks = dailyPlanEntry?.hourly_breakdown || [];
-    todayTasks = allStudyPlans[0]?.daily_plan[0]?.hourly_breakdown || [];
+    // If today is found, use its tasks; otherwise, fallback to the first day's tasks
+    if (todayPlanEntry) {
+      todayTasks = todayPlanEntry.hourly_breakdown || [];
+    } else {
+      todayTasks = firstPlan.daily_plan?.[0]?.hourly_breakdown || [];
+    }
   }
 
   const handleStartClick = (task: any) => {
