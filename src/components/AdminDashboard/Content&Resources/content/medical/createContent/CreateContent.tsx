@@ -9,6 +9,7 @@ import { useAppDispatch } from "@/store/hook";
 import { RootState } from "@/store/store";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import ClinicalCaseUpload from "../../ClinicalCase/ClinicalCaseUpload";
 import FlashCardUpload from "../../FlashCard/FlashCardUpload";
 import MCQUpload from "../../MCQ/MCQUpload";
@@ -37,14 +38,19 @@ const CreateContent = () => {
   const activeStep = 1;
 
   const [isContentCreation, setIsContentCreation] = useState(false);
-
+  const navigate = useNavigate();
+  const mcqClose = () => {
+    navigate(-1);
+  };
   return (
     <div>
       {isContentCreation ? (
         <div>
-          {contentType === "MCQ" && <MCQUpload breadcrumb={breadcrumb} />}
+          {contentType === "MCQ" && (
+            <MCQUpload breadcrumb={breadcrumb} handleModalClose={mcqClose} />
+          )}
           {contentType === "Flashcard" && (
-            <FlashCardUpload breadcrumb={breadcrumb} />
+            <FlashCardUpload breadcrumb={breadcrumb} handleCancel={mcqClose} />
           )}
           {contentType === "ClinicalCase" && (
             <ClinicalCaseUpload breadcrumb={breadcrumb} />

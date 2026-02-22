@@ -12,13 +12,17 @@ import AddMCQForm from "./AddMCQForm";
 
 interface CreateMCQStudyProps {
   breadcrumb?: string;
+  handleModalClose: () => void;
 }
 
 const activeStep = 2;
-const MCQUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
+const MCQUpload: React.FC<CreateMCQStudyProps> = ({
+  breadcrumb,
+  handleModalClose,
+}) => {
   const [mode, setMode] = useState<"manual" | "bulk">("manual");
   const { uploadIntoBank } = useAppSelector(
-    (state: RootState) => state.staticContent
+    (state: RootState) => state.staticContent,
   );
   return (
     <div>
@@ -45,7 +49,11 @@ const MCQUpload: React.FC<CreateMCQStudyProps> = ({ breadcrumb }) => {
           />
         </div>
 
-        {mode === "manual" ? <AddMCQForm /> : <AddBulkMCQ />}
+        {mode === "manual" ? (
+          <AddMCQForm handleCancel={handleModalClose} />
+        ) : (
+          <AddBulkMCQ />
+        )}
       </div>
     </div>
   );

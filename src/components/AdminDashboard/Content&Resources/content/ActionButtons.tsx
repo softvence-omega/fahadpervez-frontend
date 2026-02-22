@@ -27,7 +27,9 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
           {isLoading ? <ButtonWithLoading title="Saving..." /> : importLabel}
         </CommonButton>
       </div>
-      <CommonButton onClick={onCancel}>Cancel</CommonButton>
+      <CommonButton type="button" onClick={onCancel}>
+        Cancel
+      </CommonButton>
     </div>
   );
 };
