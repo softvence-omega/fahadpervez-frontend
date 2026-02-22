@@ -158,7 +158,7 @@ const WeeklyHighlights: React.FC = () => {
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl font-semibold text-gray-900">
-            Highlights of the Week
+            Highlights of your preference
           </h3>
           <Lightbulb className="w-6 h-6 text-blue-500" />
         </div>
@@ -174,7 +174,7 @@ const WeeklyHighlights: React.FC = () => {
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl font-semibold text-gray-900">
-            Highlights of the Week
+            Highlights of your preference
           </h3>
           <Lightbulb className="w-6 h-6 text-blue-500" />
         </div>
@@ -189,7 +189,7 @@ const WeeklyHighlights: React.FC = () => {
     <div className="bg-white rounded-lg p-6 border border-slate-200 min-h-75">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl font-semibold text-gray-900">
-          Highlights of the Week
+          Highlights of your preference
         </h3>
         <motion.div
           animate={{ scale: [1, 1.2, 1] }}
