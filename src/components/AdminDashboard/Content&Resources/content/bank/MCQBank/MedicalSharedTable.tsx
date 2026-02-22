@@ -83,7 +83,6 @@ const MedicalSharedTable: React.FC<MedicalSharedTableProps> = ({
   const [selectedMCQ, setSelectedMCQ] = useState<OneMCQ | null>(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
-  console.log("selectedMCQ", selectedMCQ);
   const handleDelete = async (mcqId: string) => {
     if (mcqBankId) {
       const payload = { mcqBankId, mcqId };
@@ -108,7 +107,7 @@ const MedicalSharedTable: React.FC<MedicalSharedTableProps> = ({
       optionD: updatedData.optionD,
       optionE: updatedData.optionE,
       optionF: updatedData.optionF,
-
+      imageDescription: updatedData.imageDescription,
       correctOption: updatedData.correctOption,
       explanationA: updatedData.explanationA,
       explanationB: updatedData.explanationB,
@@ -222,6 +221,7 @@ const MedicalSharedTable: React.FC<MedicalSharedTableProps> = ({
               | "D"
               | "E"
               | "F",
+            imageDescription: selectedMCQ.imageDescription || "",
             explanationA: selectedMCQ.options[0]?.explanation || "",
             explanationB: selectedMCQ.options[1]?.explanation || "",
             explanationC: selectedMCQ.options[2]?.explanation || "",

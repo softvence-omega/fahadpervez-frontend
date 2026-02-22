@@ -150,7 +150,7 @@ const McqBankCardForAdmin: FC<Props> = ({ data, setMcqBankId }) => {
 
             <FormHeader title={"Upload MCQs to the Question Bank"} />
 
-            <MCQUpload />
+            <MCQUpload handleModalClose={handleModalClose} />
           </div>
         </div>
       )}
@@ -160,7 +160,7 @@ const McqBankCardForAdmin: FC<Props> = ({ data, setMcqBankId }) => {
             <ModalCloseButton onClick={handleModalClose} />
             <FormHeader title={"Upload Flashcards to the Flashcard Bank"} />
 
-            <FlashCardUpload />
+            <FlashCardUpload handleCancel={handleModalClose} />
           </div>
         </div>
       )}

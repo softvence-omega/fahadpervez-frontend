@@ -39,7 +39,7 @@ const UpdateMCQSchema = z.object({
 type UpdateMCQFormValues = z.infer<typeof UpdateMCQSchema>;
 
 const inputClass = {
-  label: "block text-sm font-normal text-[#020617] font-inter mb-2",
+  label: "block text-sm font-normal text-black font-inter mb-2",
   input:
     "w-full border border-[#CBD5E1] bg-white rounded-md p-3 outline-none text-black text-xs ",
   error: "text-red-500 text-sm mt-1",

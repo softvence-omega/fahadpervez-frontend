@@ -40,9 +40,12 @@ const inputClass = {
   error: "text-red-500 text-sm mt-1",
 };
 
-const ManualFlashUpload = () => {
+interface FlashCardsFormProps {
+  handleCancel: () => void;
+}
+const ManualFlashUpload: React.FC<FlashCardsFormProps> = ({ handleCancel }) => {
   const { uploadIntoBank, bankId } = useAppSelector(
-    (state: RootState) => state.staticContent
+    (state: RootState) => state.staticContent,
   );
 
   const [addMoreFlashcardToFlashcardBank, { isLoading: addMoreLoading }] =
@@ -78,7 +81,7 @@ const ManualFlashUpload = () => {
   });
 
   const { formData, contentType } = useAppSelector(
-    (state: RootState) => state.staticContent
+    (state: RootState) => state.staticContent,
   );
   const [manualUploadFlashCard, { isLoading }] =
     useManualUploadFlashCardMutation();
@@ -87,7 +90,7 @@ const ManualFlashUpload = () => {
 
   const handleImageChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -135,8 +138,6 @@ const ManualFlashUpload = () => {
       console.error("API Error:", error);
     }
   };
-
-  const handleCancel = () => navigate(-1);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
