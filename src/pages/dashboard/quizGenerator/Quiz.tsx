@@ -12,12 +12,14 @@ import {
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   useGetGeneratedMCQQuery,
   useUpdateQuizTrackingMutation,
   useGenerateRecommendationMutation,
 } from "@/store/features/MCQBank/MCQBank.api";
+import { useGetSingleExamQuery } from "@/store/features/adminDashboard/examMode/studentApi/StudentApi";
+
 // import { setQuizResults } from "@/store/features/MCQBank/quizSlice";
 // import { useDispatch } from "react-redux";
 import GlobalLoader from "@/common/GlobalLoader";
@@ -28,19 +30,30 @@ const Quiz = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const isReviewMode = queryParams.get("mode") === "review";
+  const isExamMode = queryParams.get("source") === "exam";
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
 
   // const dispatch = useDispatch();
   const { currentQuiz: reduxQuiz } = useSelector(
     (state: RootState) => state.quiz
   );
 
-  const { data: apiQuizData, isLoading } = useGetGeneratedMCQQuery(
+  const { data: apiQuizData, isLoading: isQuizLoading } = useGetGeneratedMCQQuery(
     id as string,
     {
-      skip: !id || id === "3", // Sample ID case or missing ID
+      skip: !id || isExamMode, // Removed static ID "3"
     }
+
   );
+
+  const { data: examData, isLoading: isExamLoading } = useGetSingleExamQuery(
+    { id: id as string },
+    { skip: !id || !isExamMode }
+  );
+
+  const isLoading = isQuizLoading || (isExamMode && isExamLoading);
+
 
   // Use API data, then redux quiz, then sample
   const fetchedQuiz = apiQuizData?.data || apiQuizData;
@@ -69,8 +82,32 @@ const Quiz = () => {
     return data;
   };
 
-  const normalizedFetchedQuiz = normalizeQuizData(fetchedQuiz);
+  const normalizeExamData = (data: any) => {
+    if (!data) return null;
+    // According to provided structure: response.data.data is the exam object
+    const exam = data?.data?.data;
+    if (!exam) return null;
+
+    return {
+      title: exam?.examName,
+      description: exam?.subject,
+      questions: exam?.mcqs?.map((q: any) => ({
+        mcqId: q?.mcqId,
+        question: q?.question,
+        imageDescription: q?.imageDescription,
+        options: q?.options?.map((opt: any) => ({
+          option: opt?.option,
+          optionText: opt?.optionText,
+          explanation: opt?.explanation,
+        })),
+        correctOption: q?.correctOption,
+      })) || [],
+    };
+  };
+
+  const normalizedFetchedQuiz = isExamMode ? normalizeExamData(examData) : normalizeQuizData(fetchedQuiz);
   const quizData = normalizedFetchedQuiz || reduxQuiz; //|| sampleQuizData;
+
 
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -92,22 +129,24 @@ const Quiz = () => {
 
   // Normalize questions format inside the data
   const rawQuestions = quizData?.questions || [];
-  const questions = rawQuestions.map((q: any, index: number) => ({
-    id: q.id || (index + 1).toString(),
-    text: q.question || q.text || "Question " + (index + 1),
-    options: (q.options || []).map((opt: any, i: number) => {
+  const questions = rawQuestions?.map((q: any, index: number) => ({
+    id: q?.id || (index + 1).toString(),
+    text: q?.question || q?.text || "Question " + (index + 1),
+    options: (q?.options || []).map((opt: any, i: number) => {
       if (typeof opt === "string") {
         return { value: String.fromCharCode(65 + i), label: opt };
       }
       return {
-        value: opt.value || opt.option || String.fromCharCode(65 + i),
-        label: opt.label || opt.optionText || opt.text || "",
-        explanation: opt.explanation || "",
+        value: opt?.value || opt?.option || String.fromCharCode(65 + i),
+        label: opt?.label || opt?.optionText || opt?.text || "",
+        explanation: opt?.explanation || "",
       };
     }),
-    correctAnswer: q.correctOption || q.correctAnswer || q.answer || "",
-    explanation: q.explanation || "",
+    imageDescription: q?.imageDescription || "",
+    correctAnswer: q?.correctOption || q?.correctAnswer || q?.answer || "",
+    explanation: q?.explanation || "",
   }));
+
 
   useEffect(() => {
     if (apiQuizData) {
@@ -165,7 +204,7 @@ const Quiz = () => {
   const handleNext = () => {
     if (!isReviewMode && !answers[currentQuestion]) return;
 
-    if (currentQuestion < questions.length - 1) {
+    if (currentQuestion < (questions?.length || 0) - 1) {
       setCurrentQuestion((prev) => prev + 1);
     } else {
       if (isReviewMode) {
@@ -173,7 +212,7 @@ const Quiz = () => {
         if (id) {
           sessionStorage.removeItem(`quiz_answers_${id}`);
         }
-        navigate(`/dashboard/quiz-analysis/${id}`, {
+        navigate(`/dashboard/quiz-analysis/${id}${isExamMode ? "?source=exam" : ""}`, {
           // state: { activeTab: "myQuiz" },
         });
       } else {
@@ -181,6 +220,7 @@ const Quiz = () => {
       }
     }
   };
+
 
   const [updateTracking] = useUpdateQuizTrackingMutation();
   const [generateRecommendation] = useGenerateRecommendationMutation();
@@ -192,10 +232,11 @@ const Quiz = () => {
     let correctCount = 0;
 
     questions?.forEach((q: any, index: number) => {
-      if (answers[index] === q.correctAnswer) {
+      if (answers[index] === q?.correctAnswer) {
         correctCount++;
       }
     });
+
 
     const trackingData = {
       totalMcqCount: totalQuestions,
@@ -206,27 +247,43 @@ const Quiz = () => {
     };
 
     const wrongAnswers = questions
-      .map((q: any, index: number) => {
-        if (answers[index] === q.correctAnswer) return null;
+      ?.map((q: any, index: number) => {
+        if (answers[index] === q?.correctAnswer) return null;
 
         const originalQ = rawQuestions[index];
 
         return {
-          mcqId: originalQ?.mcqId || q.id,
+          mcqId: originalQ?.mcqId || q?.id,
           difficulty: originalQ?.difficulty || "Basic",
-          question: q.text,
-          options: q.options.map((opt: any) => ({
-            option: opt.value,
-            optionText: opt.label,
-            explanation: opt.explanation,
+          question: q?.text,
+          options: q?.options?.map((opt: any) => ({
+            option: opt?.value,
+            optionText: opt?.label,
+            explanation: opt?.explanation,
           })),
-          correctOption: q.correctAnswer,
+          correctOption: q?.correctAnswer,
           userSelectedOption: answers[index],
         };
       })
       .filter(Boolean);
 
+
     try {
+      if (isExamMode) {
+        // For exam mode, skip tracking and recommendation APIs
+        if (id) {
+          sessionStorage.setItem(`quiz_answers_${id}`, JSON.stringify(answers));
+        }
+
+        navigate(`/dashboard/quiz-analysis/${id}?source=exam`, {
+          state: {
+            trackingData,
+            isExamMode: true
+          },
+        });
+        return;
+      }
+
       if (id && id !== "generated") {
         await updateTracking({ id, data: trackingData }).unwrap();
 
@@ -250,62 +307,46 @@ const Quiz = () => {
         state: { isGeneratingRecommendation: wrongAnswers.length > 0 },
       });
     }
+
   };
 
   if (isLoading) return <GlobalLoader />;
 
-  const currentQuestionData = questions[currentQuestion];
+  const currentQuestionData = questions?.[currentQuestion];
+
+
+  const handleBack = () => {
+    if (isReviewMode) {
+      navigate(-1); // Go one step back
+    } else if (isExamMode) {
+      navigate("/dashboard/mcq-bank");
+    } else {
+      navigate("/dashboard/quiz-page");
+    }
+  };
 
   return (
     <div className="min-h- p-4">
       {/* Main Content */}
-      <Link to="/dashboard/quiz-page" className="sm:mb-0">
-        <button className="flex items-center gap-1 border border-gray-300 px-3 py-2 rounded cursor-pointer">
-          <ArrowLeft className="w-5 h-4" /> Back
-        </button>
-      </Link>
+      {/* <Link
+        to={
+          isReviewMode
+            ? `/dashboard/quiz-analysis/${id}${isExamMode ? "?source=exam" : ""}`
+            : isExamMode
+              ? "/dashboard/mcq-bank"
+              : "/dashboard/quiz-page"
+        }
+        className="sm:mb-0"
+      > */}
+      <button
+        onClick={handleBack}
+        className="flex items-center gap-1 border border-gray-300 px-3 py-2 rounded cursor-pointer">
+        <ArrowLeft className="w-5 h-4" /> Back
+      </button>
+      {/* </Link> */}
+
 
       <div className="flex gap-4 my-5">
-        {/* Sidebar */}
-        {/* <div className="w-full md:w-1/4 bg-white p-4 rounded-lg shadow">
-          <h2 className="font-semibold mb-2">
-            {isReviewMode ? "Review Mode" : quizData?.title}
-          </h2>
-          <p className="text-sm text-gray-600 mb-4">{quizData?.description}</p>
-          {questions.map((q: any, index: number) => (
-            <div
-              key={q.id}
-              className={`p-2 mb-2 rounded cursor-pointer flex items-center justify-between ${
-                index === currentQuestion
-                  ? "bg-blue-100 text-blue-600"
-                  : answers[index] || isReviewMode
-                  ? "bg-gray-50"
-                  : "text-gray-600"
-              }`}
-              onClick={() => {
-                if (
-                  isReviewMode ||
-                  index <= currentQuestion ||
-                  answers[index - 1]
-                ) {
-                  setCurrentQuestion(index);
-                }
-              }}
-            >
-              Question {q.id}
-              {isReviewMode && answers[index] && (
-                <span className="ml-2">
-                  {answers[index] === q.correctAnswer ? (
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                  ) : (
-                    <XCircle className="w-4 h-4 text-red-500" />
-                  )}
-                </span>
-              )}
-            </div>
-          ))}
-        </div> */}
-
         {/* Sidebar */}
         <div
           className={`bg-white rounded-lg shadow transition-all duration-300
@@ -334,9 +375,9 @@ const Quiz = () => {
 
           {/* Scrollable Question List */}
           <div className="max-h-[500px] overflow-y-auto p-2">
-            {questions.map((q: any, index: number) => (
+            {questions?.map((q: any, index: number) => (
               <div
-                key={q.id}
+                key={q?.id}
                 className={`p-2 mb-2 rounded cursor-pointer flex items-center justify-between text-sm
         ${index === currentQuestion
                     ? "bg-blue-100 text-blue-600"
@@ -354,11 +395,11 @@ const Quiz = () => {
                   }
                 }}
               >
-                <span>{isSidebarOpen ? `Question ${q.id}` : q.id}</span>
+                <span>{isSidebarOpen ? `Question ${q?.id}` : q?.id}</span>
 
                 {isReviewMode && answers[index] && isSidebarOpen && (
                   <span className="ml-2">
-                    {answers[index] === q.correctAnswer ? (
+                    {answers[index] === q?.correctAnswer ? (
                       <CheckCircle className="w-4 h-4 text-green-500" />
                     ) : (
                       <XCircle className="w-4 h-4 text-red-500" />
@@ -368,6 +409,7 @@ const Quiz = () => {
               </div>
             ))}
           </div>
+
         </div>
 
         {/* Question Area */}
@@ -389,9 +431,7 @@ const Quiz = () => {
                 isReviewMode
                   ? () => {
                     if (id) sessionStorage.removeItem(`quiz_answers_${id}`);
-                    navigate(`/dashboard/quiz-page/${id}`, {
-                      // state: { activeTab: "myQuiz" },
-                    });
+                    navigate(`/dashboard/quiz-analysis/${id}${isExamMode ? "?source=exam" : ""}`);
                   }
                   : handleSubmit
               }
@@ -404,45 +444,50 @@ const Quiz = () => {
           {currentQuestionData && (
             <div className="w-full bg-white p-4 rounded-lg shadow">
               <h3 className="font-semibold mb-4">
-                Question {currentQuestionData.id}
+                Question {currentQuestionData?.id}
               </h3>
-              <p className="mb-4">{currentQuestionData.text}</p>
+              <p className="mb-4">{currentQuestionData?.text}</p>
+              {currentQuestionData?.imageDescription && (
+                <img src={currentQuestionData?.imageDescription} alt="" className="w-full h-auto mb-4" />
+              )}
 
               <RadioGroup
                 value={answers[currentQuestion] || ""}
                 onValueChange={handleAnswerChange}
                 disabled={isReviewMode}
               >
-                {currentQuestionData.options.map((option: any) => {
+                {currentQuestionData?.options?.map((option: any) => {
                   const isCorrect =
-                    option.value === currentQuestionData.correctAnswer;
+                    option?.value === currentQuestionData?.correctAnswer;
                   const isUserSelection =
-                    answers[currentQuestion] === option.value;
+                    answers[currentQuestion] === option?.value;
                   const showResult = isReviewMode;
 
                   return (
                     <div
-                      key={option.value}
-                      className={`flex justify-between items-center p-3 rounded-lg border mb-3 transition-colors ${showResult
+                      key={option?.value}
+                      onClick={() => !isReviewMode && handleAnswerChange(option?.value)}
+                      className={`flex justify-between items-center p-3 rounded-lg border mb-3 transition-colors cursor-pointer ${showResult
                         ? isCorrect
                           ? "bg-green-50 border-green-200 text-green-800"
                           : isUserSelection
                             ? "bg-red-50 border-red-200 text-red-800"
                             : "bg-white border-gray-100 text-gray-500"
-                        : "bg-white border-gray-200 hover:border-blue-300"
+                        : "bg-white border-gray-200 hover:border-blue-300 hover:bg-blue-50"
                         }`}
                     >
-                      <div className="flex items-center space-x-3 w-full cursor-pointer">
+                      <div className="flex items-center space-x-3 w-full">
                         <RadioGroupItem
-                          value={option.value}
-                          id={option.value}
+                          value={option?.value}
+                          id={option?.value}
                           className={showResult ? "hidden" : ""}
                         />
                         <Label
-                          htmlFor={option.value}
+                          htmlFor={option?.value}
                           className="flex-grow cursor-pointer font-medium"
+                          onClick={(e) => e.preventDefault()} // Let the div handling take over
                         >
-                          {option.label}
+                          {option?.label}
                         </Label>
                       </div>
                       {showResult && (
@@ -465,11 +510,11 @@ const Quiz = () => {
                     Explanation
                   </h4>
                   <div className="space-y-6">
-                    {currentQuestionData.options.map((option: any) => {
+                    {currentQuestionData?.options?.map((option: any) => {
                       const isOptionCorrect =
-                        option.value === currentQuestionData.correctAnswer;
+                        option?.value === currentQuestionData?.correctAnswer;
                       return (
-                        <div key={option.value} className="text-sm">
+                        <div key={option?.value} className="text-sm">
                           <p
                             className={`font-bold mb-1 ${isOptionCorrect
                               ? "text-green-700"
@@ -477,7 +522,7 @@ const Quiz = () => {
                               }`}
                           >
                             [{isOptionCorrect ? "Correct - " : ""}Choice{" "}
-                            {option.value}]
+                            {option?.value}]
                           </p>
 
                           <p
@@ -485,7 +530,7 @@ const Quiz = () => {
                               //: "text-red-400"
                               }`}
                           >
-                            {option.explanation || "No explanation provided."}
+                            {option?.explanation || "No explanation provided."}
                           </p>
                         </div>
                       );
@@ -493,6 +538,7 @@ const Quiz = () => {
                   </div>
                 </div>
               )}
+
 
               {/* Navigation Buttons */}
               <div className="flex justify-between mt-6">
@@ -512,12 +558,13 @@ const Quiz = () => {
                   onClick={handleNext}
                   disabled={!isReviewMode && !answers[currentQuestion]}
                 >
-                  {currentQuestion === questions.length - 1
+                  {currentQuestion === (questions?.length || 0) - 1
                     ? isReviewMode
                       ? "Finish Review"
                       : "Submit"
                     : "Next"}
                 </Button>
+
               </div>
             </div>
           )}
