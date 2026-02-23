@@ -26,6 +26,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Zap } from "lucide-react";
+import { useGetAllExamForStudentQuery } from "@/store/features/adminDashboard/examMode/studentApi/StudentApi";
+
 
 // Types for hierarchy
 interface Topic {
@@ -58,11 +60,19 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
   const subjects: SubjectTree[] = treeData?.data || [];
   const allBanks = bankData?.data || [];
   const [examName, setExamName] = useState("");
+  const [examSubject, setExamSubject] = useState("");
+  const { data: allExamRes } = useGetAllExamForStudentQuery({ limit: 100 });
+  const allExams = allExamRes?.data?.data || [];
+
+  const subjectsFromExams = Array.from(new Set(allExams.map((e: any) => e.subject))).filter(Boolean);
+  const examListForSelectedSubject = allExams.filter((e: any) => e.subject === examSubject);
+
   const [questionBank, setQuestionBank] = useState("");
   const [questionType, setQuestionType] = useState("hybrid");
   const [difficulty, setDifficulty] = useState("Intermediate");
   const [questionCount, setQuestionCount] = useState(5);
   const [duration, setDuration] = useState(10);
+
 
   const [subject, setSubject] = useState("");
   const [system, setSystem] = useState("");
@@ -115,19 +125,20 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
   // Sync question count and duration for Exam Mode
   useEffect(() => {
     if (quizMode === "exam" && examName) {
-      const selectedBank = allBanks.find((b: any) => b._id === examName);
-      if (selectedBank) {
-        setQuestionCount(selectedBank.totalMcq || 5);
-        setDuration(selectedBank.totalMcq || 10); // Assuming 1 min per question for exam
+      const selectedExam = allExams.find((e: any) => e._id === examName);
+      if (selectedExam) {
+        setQuestionCount(selectedExam.totalQuestions || 0);
+        setDuration(selectedExam.totalTime || 0);
       }
     } else if (quizMode === "exam") {
-      setQuestionCount(50);
-      setDuration(60);
+      setQuestionCount(0);
+      setDuration(0);
     } else if (quizMode === "study") {
       setQuestionCount(5);
       setDuration(10);
     }
-  }, [examName, quizMode, allBanks]);
+  }, [examName, quizMode, allExams]);
+
 
   const [errors, setErrors] = useState<string[]>([]);
 
@@ -138,7 +149,7 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
   const handleSubmit = async () => {
     const newErrors: string[] = [];
 
-    if (!quizName) newErrors.push("quizName");
+    if (quizMode === "study" && !quizName) newErrors.push("quizName");
 
     if (quizMode === "study") {
       if (!subject) newErrors.push("subject");
@@ -146,12 +157,20 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
     }
 
     if (quizMode === "exam") {
+      if (!examSubject) newErrors.push("examSubject");
       if (!examName) newErrors.push("examName");
     }
+
 
     if (newErrors.length > 0) {
       setErrors(newErrors);
       toast.error("Please fill in all required fields");
+      return;
+    }
+
+    if (quizMode === "exam") {
+      setOpen(false);
+      navigate(`/dashboard/quiz/${examName}?source=exam`);
       return;
     }
 
@@ -164,8 +183,9 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
       question_type: questionType,
       question_count: questionCount,
       difficulty_level: difficulty,
-      mcq_bank_id: quizMode === "exam" ? examName : questionBank || undefined,
+      mcq_bank_id: questionBank || undefined,
     };
+
 
     try {
       const res = await generateMCQ(payload).unwrap();
@@ -191,31 +211,6 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
         </DialogHeader>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
-          {/* Quiz Name */}
-          <div className="grid gap-2">
-            <Label
-              className={errors.includes("quizName") ? "text-red-500" : ""}
-            >
-              Quiz Name
-            </Label>
-            <Input
-              value={quizName}
-              onChange={(e) => {
-                setQuizName(e.target.value);
-                clearError("quizName");
-              }}
-              placeholder="e.g., Cardiology Quiz"
-              className={`transition-all duration-300 ${
-                errors.includes("quizName")
-                  ? "border-red-500 bg-red-50 focus-visible:ring-red-500"
-                  : ""
-              }`}
-            />
-
-            {
-              errors.includes("quizName") ? <p className="text-red-500 text-sm ml-2">Fill the quiz name</p> : ""
-            }
-          </div>
 
           {/* Quiz Mode */}
           <div className="grid gap-2">
@@ -231,9 +226,74 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
             </Select>
           </div>
 
+          {/* Quiz Name (Only for Study Mode) */}
+          {quizMode === "study" && (
+            <div className="grid gap-2">
+              <Label
+                className={errors.includes("quizName") ? "text-red-500" : ""}
+              >
+                Quiz Name
+              </Label>
+              <Input
+                value={quizName}
+                onChange={(e) => {
+                  setQuizName(e.target.value);
+                  clearError("quizName");
+                }}
+                placeholder="e.g., Cardiology Quiz"
+                className={`transition-all duration-300 ${errors.includes("quizName")
+                    ? "border-red-500 bg-red-50 focus-visible:ring-red-500"
+                    : ""
+                  }`}
+              />
+
+              {
+                errors.includes("quizName") ? <p className="text-red-500 text-sm ml-2">Fill the quiz name</p> : ""
+              }
+            </div>
+          )}
+
+
           {/* === EXAM MODE FIELDS === */}
           {quizMode === "exam" && (
             <>
+              {/* Subject Select */}
+              <div className="grid gap-2">
+                <Label
+                  className={errors.includes("examSubject") ? "text-red-500" : ""}
+                >
+                  Subject
+                </Label>
+                <Select
+                  value={examSubject}
+                  onValueChange={(val) => {
+                    setExamSubject(val);
+                    setExamName("");
+                    clearError("examSubject");
+                  }}
+                >
+                  <SelectTrigger
+                    className={`transition-all duration-300 ${errors.includes("examSubject")
+                        ? "border-red-500 bg-red-50 focus:ring-red-500"
+                        : ""
+                      }`}
+                  >
+                    <SelectValue placeholder="Select Subject" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {subjectsFromExams.map((sub: any) => (
+                      <SelectItem key={sub} value={sub}>
+                        {sub}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.includes("examSubject") && (
+                  <p className="text-red-500 text-sm ml-2">Select a subject</p>
+                )}
+              </div>
+
+              {/* Exam Name Select */}
               <div className="grid gap-2">
                 <Label
                   className={errors.includes("examName") ? "text-red-500" : ""}
@@ -246,43 +306,47 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                     setExamName(val);
                     clearError("examName");
                   }}
+                  disabled={!examSubject}
                 >
                   <SelectTrigger
-                    className={`transition-all duration-300 ${
-                      errors.includes("examName")
+                    className={`transition-all duration-300 ${errors.includes("examName")
                         ? "border-red-500 bg-red-50 focus:ring-red-500"
                         : ""
-                    }`}
+                      }`}
                   >
-                    <SelectValue placeholder="Select Question Bank" />
+                    <SelectValue placeholder="Select Exam" />
                   </SelectTrigger>
                   <SelectContent>
-                    {allBanks.length > 0 ? (
-                      allBanks.map((bank: any) => (
-                        <SelectItem key={bank._id} value={bank._id}>
-                          {bank.title}
+                    {examListForSelectedSubject.length > 0 ? (
+                      examListForSelectedSubject.map((exam: any) => (
+                        <SelectItem key={exam._id} value={exam._id}>
+                          {exam.examName}
                         </SelectItem>
                       ))
                     ) : (
                       <SelectItem value="none" disabled>
-                        No Question Banks found
+                        {examSubject ? "No Exams found" : "Select Subject first"}
                       </SelectItem>
                     )}
                   </SelectContent>
                 </Select>
+                {errors.includes("examName") && (
+                  <p className="text-red-500 text-sm ml-2">Select an exam</p>
+                )}
               </div>
 
               <div className="grid gap-2">
                 <Label>Question Count</Label>
-                <Input value={questionCount} disabled />
+                <Input value={questionCount} readOnly />
               </div>
 
               <div className="grid gap-2">
                 <Label>Duration (Minutes)</Label>
-                <Input value={duration} disabled />
+                <Input value={duration} readOnly />
               </div>
             </>
           )}
+
 
           {/* === STUDY MODE FIELDS === */}
           {quizMode === "study" && (
@@ -302,11 +366,10 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                   }}
                 >
                   <SelectTrigger
-                    className={`transition-all duration-300 ${
-                      errors.includes("subject")
+                    className={`transition-all duration-300 ${errors.includes("subject")
                         ? "border-red-500 bg-red-50 focus:ring-red-500"
                         : ""
-                    }`}
+                      }`}
                   >
                     <SelectValue placeholder="Select Subject" />
                   </SelectTrigger>
@@ -319,8 +382,8 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                   </SelectContent>
                 </Select>
                 {
-              errors.includes("subject") ? <p className="text-red-500 text-sm ml-2">Select a subject</p> : ""
-            }
+                  errors.includes("subject") ? <p className="text-red-500 text-sm ml-2">Select a subject</p> : ""
+                }
               </div>
 
               {/* System */}
@@ -403,11 +466,10 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                   }}
                 >
                   <SelectTrigger
-                    className={`transition-all duration-300 ${
-                      errors.includes("questionBank")
+                    className={`transition-all duration-300 ${errors.includes("questionBank")
                         ? "border-red-500 bg-red-50 focus:ring-red-500"
                         : ""
-                    }`}
+                      }`}
                   >
                     <SelectValue placeholder="Select Question Bank" />
                   </SelectTrigger>
@@ -427,8 +489,8 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                 </Select>
 
                 {
-              errors.includes("questionBank") ? <p className="text-red-500 text-sm ml-2">Select a question bank</p> : ""
-            }
+                  errors.includes("questionBank") ? <p className="text-red-500 text-sm ml-2">Select a question bank</p> : ""
+                }
               </div>
 
               {/* Question Type */}
