@@ -159,7 +159,10 @@ export default function SolveFlashCard() {
     setTimeout(() => {
       if (fromAnalysis && quizId) {
         navigate(`/dashboard/quiz-analysis/${quizId}`, { replace: true });
-      } else if (location.state?.from === "weekly-plan") {
+      } else if (
+        location.state?.from === "weekly-plan" ||
+        location.state?.from === "home"
+      ) {
         navigate(-1);
       } else {
         navigate("/dashboard/flashcard-page", { replace: true });
@@ -187,7 +190,11 @@ export default function SolveFlashCard() {
       }
 
       // Check for weekly plan progress
-      if (location.state?.from === "weekly-plan" && location.state?.planId) {
+      if (
+        (location.state?.from === "weekly-plan" ||
+          location.state?.from === "home") &&
+        location.state?.planId
+      ) {
         try {
           await saveStudyPlanProgress({
             planId: location.state.planId,

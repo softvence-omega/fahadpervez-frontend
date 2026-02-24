@@ -74,7 +74,10 @@ const ClinicalCaseFlow: React.FC<Props> = ({ clinicalCase }) => {
   const handleBack = () => {
     if (fromAnalysis && quizId) {
       navigate(`/dashboard/quiz-analysis/${quizId}`);
-    } else if (location.state?.from === "weekly-plan") {
+    } else if (
+      location.state?.from === "weekly-plan" ||
+      location.state?.from === "home"
+    ) {
       navigate(-1);
     } else {
       navigate("/dashboard/clinical-case-generator");
@@ -94,8 +97,12 @@ const ClinicalCaseFlow: React.FC<Props> = ({ clinicalCase }) => {
         }).unwrap();
       }
 
-      // Check if we came from WeeklyPlan and update study plan progress
-      if (location.state?.from === "weekly-plan" && location.state?.planId) {
+      // Check if we came from WeeklyPlan or Home and update study plan progress
+      if (
+        (location.state?.from === "weekly-plan" ||
+          location.state?.from === "home") &&
+        location.state?.planId
+      ) {
         try {
           await saveStudyPlanProgress({
             planId: location.state.planId,
