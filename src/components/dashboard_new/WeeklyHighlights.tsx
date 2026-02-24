@@ -45,9 +45,9 @@ const WeeklyHighlights: React.FC = () => {
       cards.push({
         id: mcq._id,
         type: "mcq",
-        title: "MCQ of the Week",
+        title: "MCQ of your daily preference",
         description:
-          "Test your knowledge with this week's featured multiple-choice question",
+          "Test your knowledge with a multiple-choice question of your daily preference",
         buttonText: "Answer Now",
         route: `/dashboard/practice-mcq/${mcq._id}`,
         img: "/image/dashboard_new/Frame1.svg",
@@ -62,9 +62,9 @@ const WeeklyHighlights: React.FC = () => {
       cards.push({
         id: flashcard._id,
         type: "flashcard",
-        title: "Flashcard of the Week",
+        title: "Flashcard of your daily preference",
         description:
-          "Master key concepts with this week's featured flashcard set",
+          "Master key concepts with a flashcard set of your daily preference",
         buttonText: "Study Now",
         route: `/dashboard/solve-flash-card/${flashcard._id}`,
         img: "/image/dashboard_new/Frame.svg",
@@ -79,9 +79,9 @@ const WeeklyHighlights: React.FC = () => {
       cards.push({
         id: clinicalCase._id,
         type: "clinicalCase",
-        title: "Clinical Case of the Week",
+        title: "Clinical Case of your daily preference",
         description:
-          "Apply your clinical reasoning to this week's challenging case scenario",
+          "Apply your clinical reasoning to a case scenario of your daily preference",
         buttonText: "Solve Case",
         route: `/dashboard/clinical-case/${clinicalCase._id}`,
         img: "/image/dashboard_new/Frame.svg",
@@ -96,9 +96,9 @@ const WeeklyHighlights: React.FC = () => {
       cards.push({
         id: osce._id,
         type: "osce",
-        title: "OSCE of the Week",
+        title: "OSCE of your daily preference",
         description:
-          "Practice your clinical skills with this week's OSCE station",
+          "Practice your clinical skills with an OSCE station of your daily preference",
         buttonText: "Practice Now",
         route: `/dashboard/practice-with-checklist/${osce._id}`,
         img: "/image/dashboard_new/User.svg",
@@ -112,9 +112,9 @@ const WeeklyHighlights: React.FC = () => {
       cards.push({
         id: note._id,
         type: "note",
-        title: "Note of the Week",
+        title: "Note of your daily preference",
         description:
-          "Master key concepts with this week's featured note",
+          "Master key concepts with a study note of your daily preference",
         buttonText: "Study Now",
         route: `/dashboard/notes/${note?._id}`,
         img: "/image/dashboard_new/Frame.svg",
@@ -127,7 +127,7 @@ const WeeklyHighlights: React.FC = () => {
   }, [data]);
 
   const handleCardClick = (route: string) => {
-    navigate(route);
+    navigate(route, { state: { from: "home" } });
   };
 
   const containerVariants = {

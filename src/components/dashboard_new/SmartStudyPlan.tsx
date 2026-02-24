@@ -83,11 +83,12 @@ const SmartStudyPlan: React.FC = () => {
   // const todayStr = new Date().toISOString().split("T")[0];
 
   let todayTasks: any[] = [];
-  // let currentPlanSummary = "Your Plan";
-  // let currentPlanId = "";
+  let currentPlanId = "";
+  let currentDayNumber = 1;
 
   if (allStudyPlans.length > 0) {
     const firstPlan = allStudyPlans[0];
+    currentPlanId = firstPlan._id;
     const todayStr = new Date().toISOString().split("T")[0];
 
     // Find the daily plan entry for today
@@ -99,8 +100,10 @@ const SmartStudyPlan: React.FC = () => {
     // If today is found, use its tasks; otherwise, fallback to the first day's tasks
     if (todayPlanEntry) {
       todayTasks = todayPlanEntry.hourly_breakdown || [];
+      currentDayNumber = todayPlanEntry.day_number;
     } else {
-      todayTasks = firstPlan.daily_plan?.[0]?.hourly_breakdown || [];
+      todayTasks = []; //firstPlan.daily_plan?.[0]?.hourly_breakdown || [];
+      currentDayNumber = firstPlan.daily_plan?.[0]?.day_number || 1;
     }
   }
 
@@ -108,20 +111,35 @@ const SmartStudyPlan: React.FC = () => {
     const contentId = task.suggest_content?.contentId;
     const taskType = task.task_type.toLowerCase();
 
+    const navigationState = {
+      planId: currentPlanId,
+      day: currentDayNumber,
+      suggest_content: contentId,
+      from: "home",
+    };
+
     if (taskType === "mcqs" || taskType === "mcq") {
-      navigate(`/dashboard/practice-mcq/${contentId}`);
+      navigate(`/dashboard/practice-mcq/${contentId}`, {
+        state: navigationState,
+      });
     } else if (taskType === "flashcards" || taskType === "flashcard") {
-      navigate(`/dashboard/solve-flash-card/${contentId}`);
+      navigate(`/dashboard/solve-flash-card/${contentId}`, {
+        state: navigationState,
+      });
     } else if (
       taskType === "clinical case" ||
       taskType === "clinical_case" ||
       taskType === "clinical cases"
     ) {
-      navigate(`/dashboard/clinical-case/${contentId}`);
+      navigate(`/dashboard/clinical-case/${contentId}`, {
+        state: navigationState,
+      });
     } else if (taskType === "osce") {
-      navigate(`/dashboard/practice-with-checklist/${contentId}`);
-    } else if (taskType === "notes") {
-      navigate(`/dashboard/notes/${contentId}`);
+      navigate(`/dashboard/practice-with-checklist/${contentId}`, {
+        state: navigationState,
+      });
+    } else if (taskType === "notes" || taskType === "note") {
+      navigate(`/dashboard/notes/${contentId}`, { state: navigationState });
     }
   };
 
@@ -244,10 +262,16 @@ const SmartStudyPlan: React.FC = () => {
                 <motion.button
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleStartClick(task)}
-                  className={`mt-auto w-full ${config.buttonBgColor} text-white py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer`}
+                  className={`mt-auto w-full ${
+                    task.isCompleted
+                      ? "bg-green-600 hover:bg-green-700"
+                      : config.buttonBgColor
+                  } text-white py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer`}
                 >
                   {config.icon}
-                  <span className="text-sm">{config.buttonText}</span>
+                  <span className="text-sm">
+                    {task.isCompleted ? "Completed" : config.buttonText}
+                  </span>
                 </motion.button>
               </motion.div>
             );

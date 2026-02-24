@@ -358,7 +358,10 @@ const ClinicalCaseDetails: React.FC<CaseDetailProps> = ({ onBack }) => {
                       const quizId = location.state?.quizId;
                       if (fromAnalysis && quizId) {
                         navigate(`/dashboard/quiz-analysis/${quizId}`);
-                      } else if (location.state?.from === "weekly-plan") {
+                      } else if (
+                        location.state?.from === "weekly-plan" ||
+                        location.state?.from === "home"
+                      ) {
                         navigate(-1);
                       } else if (onBack) {
                         onBack();
