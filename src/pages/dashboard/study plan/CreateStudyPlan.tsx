@@ -180,7 +180,7 @@ export default function CreateStudyPlan() {
               <Input
                 type="number"
                 min="0"
-                max={3}
+                max={15}
                 value={dailyTime}
                 onChange={(e) => {
                   setDailyTime(e.target.value);
@@ -201,7 +201,7 @@ export default function CreateStudyPlan() {
               <Input
                 type="date"
                 min={new Date().toISOString().split("T")[0]}
-                max={maxDate.toISOString().split("T")[0]}
+                // max={maxDate.toISOString().split("T")[0]}
                 value={examDate}
                 onChange={(e) => {
                   setExamDate(e.target.value);
