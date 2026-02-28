@@ -13,10 +13,10 @@ import { useGetSettingsQuery } from "@/store/features/adminDashboard/settings/se
 import { logout } from "@/store/features/auth/auth.slice";
 import { useAppDispatch } from "@/store/hook";
 import Cookies from "js-cookie";
-import { FaRegBell } from "react-icons/fa6";
+// import { FaRegBell } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 import DashboardSearch from "@/Layout/dashboard/DashboardSearch";
-import NotificationIcon from "./NotificationIcon";
+// import NotificationIcon from "./NotificationIcon";
 
 interface DashboardHeaderProps {
   sidebarOpen: boolean;
@@ -71,12 +71,12 @@ const DashboardHeader = ({ sidebarOpen }: DashboardHeaderProps) => {
             </DropdownMenu>
           </div> */}
 
-          <NotificationIcon
+          {/* <NotificationIcon
             className="hidden md:flex"
             icon={<FaRegBell />}
             count={12}
             color="bg-[#E2E8F0]"
-          />
+          /> */}
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild className="cursor-pointer">

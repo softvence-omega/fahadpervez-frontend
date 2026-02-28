@@ -2,7 +2,7 @@ import { useGetSettingsQuery } from "@/store/features/adminDashboard/settings/se
 import { logout, selectUser } from "@/store/features/auth/auth.slice";
 import { useAppDispatch } from "@/store/hook";
 import Cookies from "js-cookie";
-import { Bell, ChevronDown, Menu } from "lucide-react";
+import { ChevronDown, Menu } from "lucide-react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -69,10 +69,10 @@ const StudentDashboardHeader: React.FC<StudentDashboardHeaderProps> = ({
           </button> */}
 
           {/* Notifications */}
-          <button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors">
+          {/* <button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors">
             <Bell className="h-5 w-5" />
             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-          </button>
+          </button> */}
 
           {/* Profile Dropdown */}
           <div className="relative">
