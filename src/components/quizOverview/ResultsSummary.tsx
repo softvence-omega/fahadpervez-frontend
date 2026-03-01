@@ -8,7 +8,9 @@ interface ResultsSummaryProps {
   incorrect: number;
   quizId?: string;
   justSubmitted?: boolean;
+  isExamMode?: boolean;
 }
+
 
 const ResultsSummary: React.FC<ResultsSummaryProps> = ({
   completed = 0,
@@ -17,7 +19,9 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({
   incorrect = 0,
   quizId,
   justSubmitted,
+  isExamMode,
 }) => {
+
   const correctPercentage = total > 0 ? Math.round((correct / total) * 100) : 0;
   // console.log(quizId);
   return (
@@ -46,9 +50,10 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({
           </Button>
         </Link> */}
         <Link
-          to={`/dashboard/quiz/${quizId}?mode=review`}
+          to={`/dashboard/quiz/${quizId}?mode=review${isExamMode ? "&source=exam" : ""}`}
           state={{ justSubmitted }}
         >
+
           <Button
             variant="outline"
             className="h-11 px-6 border-slate-300 text-slate-700 hover:bg-slate-50 font-medium cursor-pointer"

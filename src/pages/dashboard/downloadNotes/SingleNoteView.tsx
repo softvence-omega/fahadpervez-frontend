@@ -60,8 +60,12 @@ export default function SingleNoteView() {
   // Open PDF in new tab
   const handleViewPdf = async () => {
     if (note?.notes?.[0]?.fileUrl) {
-      // Check if we came from WeeklyPlan and update study plan progress
-      if (location.state?.from === "weekly-plan" && location.state?.planId) {
+      // Check if we came from WeeklyPlan or Home and update study plan progress
+      if (
+        (location.state?.from === "weekly-plan" ||
+          location.state?.from === "home") &&
+        location.state?.planId
+      ) {
         try {
           await saveStudyPlanProgress({
             planId: location.state.planId,
@@ -85,8 +89,12 @@ export default function SingleNoteView() {
       // Increment download count via API
       await incrementDownloadCount(note._id).unwrap();
 
-      // Check if we came from WeeklyPlan and update study plan progress
-      if (location.state?.from === "weekly-plan" && location.state?.planId) {
+      // Check if we came from WeeklyPlan or Home and update study plan progress
+      if (
+        (location.state?.from === "weekly-plan" ||
+          location.state?.from === "home") &&
+        location.state?.planId
+      ) {
         try {
           await saveStudyPlanProgress({
             planId: location.state.planId,
@@ -160,13 +168,16 @@ export default function SingleNoteView() {
     <div className="w-full max-w-5xl mx-auto mb-3">
       <div className="flex items-center gap-3 mb-8 mt-4">
         <div
-            onClick={() => {
-                if (location.state?.from === "weekly-plan") {
-                    navigate(-1);
-                } else {
-                    navigate("/dashboard/download-notes");
-                }
-            }}
+          onClick={() => {
+            if (
+              location.state?.from === "weekly-plan" ||
+              location.state?.from === "home"
+            ) {
+              navigate(-1);
+            } else {
+              navigate("/dashboard/download-notes");
+            }
+          }}
           className="p-2 hover:bg-slate-100 rounded-full transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-5 h-5 text-gray-700" />

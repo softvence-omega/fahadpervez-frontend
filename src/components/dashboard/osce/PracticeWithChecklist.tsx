@@ -293,8 +293,12 @@ export default function PracticeWithChecklist(): JSX.Element {
         await updateProgressOsce({ osceId }).unwrap();
       }
 
-      // Check if we came from WeeklyPlan and update study plan progress
-      if (location.state?.from === "weekly-plan" && location.state?.planId) {
+      // Check if we came from WeeklyPlan or Home and update study plan progress
+      if (
+        (location.state?.from === "weekly-plan" ||
+          location.state?.from === "home") &&
+        location.state?.planId
+      ) {
         try {
           await saveStudyPlanProgress({
             planId: location.state.planId,
@@ -315,10 +319,13 @@ export default function PracticeWithChecklist(): JSX.Element {
 
       if (!res.ok) throw new Error(await res.text());
       setSubmitResult("Session submitted successfully!");
-      if (location.state?.from === "weekly-plan") {
-         navigate(-1);
+      if (
+        location.state?.from === "weekly-plan" ||
+        location.state?.from === "home"
+      ) {
+        navigate(-1);
       } else {
-         navigate("/dashboard/check-list-result"); 
+        navigate("/dashboard/check-list-result");
       }
     } catch (err: any) {
       setSubmitResult(err.message || "Submission failed");
@@ -380,10 +387,13 @@ export default function PracticeWithChecklist(): JSX.Element {
       <div className="w-2/3 p-6 space-y-6 overflow-y-auto left-panel">
         <div
             onClick={() => {
-                if (location.state?.from === "weekly-plan") {
-                    navigate(-1);
+                if (
+                  location.state?.from === "weekly-plan" ||
+                  location.state?.from === "home"
+                ) {
+                  navigate(-1);
                 } else {
-                    navigate("/dashboard/osce");
+                  navigate("/dashboard/osce");
                 }
             }} 
             className="sm:mb-0 inline-block w-auto"

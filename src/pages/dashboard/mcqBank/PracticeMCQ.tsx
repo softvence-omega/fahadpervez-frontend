@@ -247,8 +247,12 @@ export default function PracticeMCQ() {
         bankId: mcqData?._id,
       }).unwrap();
 
-      // Check if we came from WeeklyPlan and update study plan progress
-      if (navigationState?.from === "weekly-plan" && navigationState?.planId) {
+      // Check if we came from WeeklyPlan or Home and update study plan progress
+      if (
+        (navigationState?.from === "weekly-plan" ||
+          navigationState?.from === "home") &&
+        navigationState?.planId
+      ) {
         try {
           await saveStudyPlanProgress({
             planId: navigationState.planId,
@@ -263,7 +267,7 @@ export default function PracticeMCQ() {
       // localStorage.removeItem(storageKey);
       // localStorage.removeItem(`lastPage_${id}`);
       setShowResult(true);
-      // if (navigationState?.from === "weekly-plan") {
+      // if (navigationState?.from === "weekly-plan" || navigationState?.from === "home") {
       //   navigate(-1);
       // } else {
       //   navigate("/dashboard/mcq-bank");
@@ -358,7 +362,10 @@ export default function PracticeMCQ() {
           <div className="flex items-start gap-1">
             <div
               onClick={() => {
-                if (navigationState?.from === "weekly-plan") {
+                if (
+                  navigationState?.from === "weekly-plan" ||
+                  navigationState?.from === "home"
+                ) {
                   navigate(-1);
                 } else {
                   navigate("/dashboard/mcq-bank");
@@ -432,7 +439,10 @@ export default function PracticeMCQ() {
               <div className="flex justify-center mt-8">
                 <PrimaryButton
                   onClick={() => {
-                    if (navigationState?.from === "weekly-plan") {
+                    if (
+                      navigationState?.from === "weekly-plan" ||
+                      navigationState?.from === "home"
+                    ) {
                       navigate(-1);
                     } else {
                       navigate("/dashboard/mcq-bank");
@@ -473,7 +483,10 @@ export default function PracticeMCQ() {
               <div className="flex items-center gap-3">
                 <div
                   onClick={() => {
-                    if (navigationState?.from === "weekly-plan") {
+                    if (
+                      navigationState?.from === "weekly-plan" ||
+                      navigationState?.from === "home"
+                    ) {
                       navigate(-1);
                     } else {
                       navigate("/dashboard/mcq-bank");
@@ -497,7 +510,10 @@ export default function PracticeMCQ() {
                 <PrimaryButton
                   className="h-10 w-full sm:w-auto cursor-pointer bg-slate-600 hover:bg-slate-700"
                   onClick={() => {
-                    if (navigationState?.from === "weekly-plan") {
+                    if (
+                      navigationState?.from === "weekly-plan" ||
+                      navigationState?.from === "home"
+                    ) {
                       navigate(-1);
                     } else {
                       navigate("/dashboard/mcq-bank");
@@ -704,7 +720,10 @@ export default function PracticeMCQ() {
                 </button>
                 <button
                   onClick={() => {
-                    if (navigationState?.from === "weekly-plan") {
+                    if (
+                      navigationState?.from === "weekly-plan" ||
+                      navigationState?.from === "home"
+                    ) {
                       navigate(-1);
                     } else {
                       navigate("/dashboard/mcq-bank");
