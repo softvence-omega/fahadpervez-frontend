@@ -7,81 +7,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
-import * as z from "zod";
 
-export const inputClass = {
-  input:
-    "text-base font-normal font-inter leading-[20px] outline-none transition w-full px-4 py-3 border border-border rounded-md text-black",
-  label:
-    "text-base font-semibold text-black font-inter leading-[20px] block mb-2",
-  error: "text-red-500 text-sm mt-1",
-};
-
-// Zod Schema
-const clinicalCaseSchema = z.object({
-  caseTitle: z.string().min(1, "Case title is required"),
-  patientPresentation: z.string().min(1, "Patient presentation is required"),
-  historyOfPresentIllness: z.string().min(1, "History is required"),
-  physicalExamination: z.string().min(1, "Physical examination is required"),
-  imaging: z.string().min(1, "Imaging is required"),
-  difficultyLevel: z.enum(["Basic", "Intermediate", "Advance"], {
-    message: "Please select a valid difficulty level",
-  }),
-
-  laboratoryResults: z.array(
-    z.object({
-      name: z.string().min(1, "Lab name is required"),
-      value: z.string().min(1, "Lab value is required"),
-    }),
-  ),
-
-  diagnosisQuestion: z.object({
-    question: z.string().min(1, "Diagnosis question is required"),
-    diagnosisOptions: z
-      .array(
-        z.object({
-          optionName: z.string().min(1, "Option name is required"),
-          optionValue: z.string().min(1, "Option value is required"),
-          supportingEvidence: z.array(z.string()).optional().default([]),
-          refutingEvidence: z.array(z.string()).optional().default([]),
-        }),
-      )
-      .length(4, "Diagnosis must have exactly 4 options"),
-  }),
-
-  correctOption: z.object({
-    optionName: z.string().min(1, "Correct option name is required"),
-    explanation: z.string().min(1, "Explanation is required"),
-  }),
-
-  mcqs: z.array(
-    z.object({
-      question: z.string().min(1, "MCQ question is required"),
-      options: z
-        .array(
-          z.object({
-            option: z.string().min(1, "Option name is required"),
-            optionText: z.string().min(1, "Option text is required"),
-            explanation: z.string().min(1, "Explanation is required"),
-          }),
-        )
-        .min(4, "At least 4 options are required")
-        .max(6, "Maximum 6 options allowed"),
-      correctOption: z.string().min(1, "Correct option is required"),
-    }),
-  ),
-
-  subject: z.string().min(1, "Subject is required"),
-  system: z.string().min(1, "System is required"),
-  topic: z.string().min(1, "Topic is required"),
-  subtopic: z.string().optional(),
-  profileType: z.string().min(1, "Profile type is required"),
-  contentFor: z.enum(["student", "professional"], {
-    message: "Please select a valid content for",
-  }),
-});
-
-type ClinicalCaseFormData = z.infer<typeof clinicalCaseSchema>;
+import ButtonWithLoading from "@/common/button/ButtonWithLoading";
+import { inputClass } from "../NotesBank/SingleNote";
+import { ClinicalCaseFormData, clinicalCaseSchema } from "./schema";
 
 interface ClinicalCaseData {
   data: SingleClinicalCaseResponse;
@@ -93,6 +22,7 @@ export const difficultyOptions = [
   { label: "Intermediate", value: "Intermediate" },
   { label: "Advance", value: "Advance" },
 ] as const;
+
 const SingleClinicalCase: React.FC<ClinicalCaseData> = ({
   data,
   setBankId,
@@ -154,12 +84,6 @@ const SingleClinicalCase: React.FC<ClinicalCaseData> = ({
         explanation: "",
       },
       mcqs: ClinicalBank?.mcqs || [],
-      subject: ClinicalBank?.subject || "",
-      system: ClinicalBank?.system || "",
-      topic: ClinicalBank?.topic || "",
-      subtopic: ClinicalBank?.subtopic || "",
-      profileType: ClinicalBank.profileType || "",
-      contentFor: ClinicalBank.contentFor || "",
     },
   });
 
@@ -183,9 +107,15 @@ const SingleClinicalCase: React.FC<ClinicalCaseData> = ({
 
   const onSubmit = async (formData: ClinicalCaseFormData) => {
     try {
-      // Transform data to ensure arrays are never undefined
       const transformedData: Partial<ClinicalCaseInput> = {
         ...formData,
+        // Pass non-editable fields directly from API data
+        subject: ClinicalBank.subject,
+        system: ClinicalBank.system,
+        topic: ClinicalBank.topic,
+        subtopic: ClinicalBank.subtopic,
+        profileType: ClinicalBank.profileType,
+        contentFor: ClinicalBank.contentFor,
         diagnosisQuestion: {
           ...formData.diagnosisQuestion,
           diagnosisOptions: formData.diagnosisQuestion.diagnosisOptions.map(
@@ -385,7 +315,6 @@ const SingleClinicalCase: React.FC<ClinicalCaseData> = ({
               {/* Difficulty Level */}
               <div className="flex flex-col text-sm">
                 <label className={inputClass.label}>Difficulty Level</label>
-
                 <Controller
                   name="difficultyLevel"
                   control={control}
@@ -398,7 +327,6 @@ const SingleClinicalCase: React.FC<ClinicalCaseData> = ({
                     />
                   )}
                 />
-
                 {errors.difficultyLevel && (
                   <span className={inputClass.error}>
                     {errors.difficultyLevel.message}
@@ -697,7 +625,12 @@ const SingleClinicalCase: React.FC<ClinicalCaseData> = ({
                   className="!px-4 !py-2 !bg-blue-500 !text-white hover:!bg-blue-600"
                   disabled={isUpdating}
                 >
-                  {isUpdating ? "Updating..." : "Update"}
+                  {}
+                  {isUpdating ? (
+                    <ButtonWithLoading title="Updating..." />
+                  ) : (
+                    "Update"
+                  )}
                 </CommonButton>
               </div>
             </form>
