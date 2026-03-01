@@ -38,7 +38,6 @@ interface McqTableProps {
 const tableHeaders = [
   { label: "ID", align: "text-center hidden xl:table-cell" },
   { label: "Question", align: "text-center" },
-  { label: "Difficulty", align: "text-center hidden 2xl:table-cell" },
   { label: "Correct Answer", align: "text-center hidden 2xl:table-cell" },
   { label: "Action", align: "text-center" },
 ];
@@ -239,12 +238,6 @@ const McqTableForExam: React.FC<McqTableProps> = ({
                       className={`${tableDesign.cell} max-w-[220px] break-words overflow-hidden whitespace-nowrap overflow-ellipsis`}
                     >
                       {mcq.question}
-                    </TableCell>
-
-                    <TableCell
-                      className={`${tableDesign.cell} hidden 2xl:table-cell`}
-                    >
-                      Basic
                     </TableCell>
 
                     <TableCell

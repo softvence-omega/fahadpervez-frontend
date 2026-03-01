@@ -8,7 +8,7 @@ export const editFlashCardSchema = z.object({
   explanation: z.string().min(1, "Explanation is required"),
   difficulty: z.enum(
     ["Basic", "Intermediate", "Advance"],
-    "Difficulty is required"
+    "Difficulty is required",
   ),
   image: z.string().optional(),
 });
@@ -60,9 +60,9 @@ const EditFlashCardModal: React.FC<EditFlashCardModalProps> = ({
   if (!isOpen) return null;
 
   const inputClass = {
-    label: "block text-sm font-normal text-[#020617] font-inter mb-2",
+    label: "block text-sm font-normal text-black font-inter mb-2",
     input:
-      "w-full border border-[#CBD5E1] bg-white rounded-md p-3 outline-none text-[#94A3B8] text-xs",
+      "w-full border border-[#CBD5E1] bg-white rounded-md p-3 outline-none text-black text-xs",
     error: "text-red-500 text-sm mt-1",
   };
   const submit = async (values: EditFlashCardInput) => {
