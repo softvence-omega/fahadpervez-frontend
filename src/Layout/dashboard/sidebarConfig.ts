@@ -19,7 +19,7 @@ import {
 
 import flashcardIcon from "@/assets/navIcon/Flashcard.png";
 import diagramIcon from "@/assets/navIcon/diagram.png";
-import osceIcon from "@/assets/navIcon/osce.png";
+// import osceIcon from "@/assets/navIcon/osce.png";
 import resourceIcon from "@/assets/navIcon/resource.png";
 
 export interface SidebarItem {
@@ -99,7 +99,8 @@ export const sidebarItems: SidebarItem[] = [
   },
   {
     icon: CalendarRange,
-    label: "Smart Study Planner",
+    // label: "Smart Study Planner",
+    label: "Preference",
     path: "/dashboard/smart-study",
     section: "AI Tools",
     iconColor: "text-lime-700",
@@ -155,17 +156,17 @@ export const sidebarItems: SidebarItem[] = [
     // iconBgColor: "bg-amber-50",
     fieldBg: "bg-emerald-50",
   },
-  {
-    icon: osceIcon,
-    label: "OSCE",
-    path: "/dashboard/osce",
-    section: "Study Materials",
-    iconColor: "text-red-600",
-    // iconBgColor: "bg-red-50",
-    fieldBg: "bg-indigo-50",
-    isImageIcon: true,
-    disabled: true,
-  },
+  // {
+  //   icon: osceIcon,
+  //   label: "OSCE",
+  //   path: "/dashboard/osce",
+  //   section: "Study Materials",
+  //   iconColor: "text-red-600",
+  //   // iconBgColor: "bg-red-50",
+  //   fieldBg: "bg-indigo-50",
+  //   isImageIcon: true,
+  //   disabled: true,
+  // },
   {
     icon: diagramIcon,
     label: "Diagram",

@@ -30,7 +30,8 @@ export const GoalModal: React.FC<ModalProps> = ({
       >
         <div className="sticky top-0 bg-white px-6 py-4 flex justify-between items-center">
           <h2 className="text-xl font-semibold">
-            {isEditMode ? "Update Your Preference" : "Create Your Preference"}
+            {/* {isEditMode ? "Update Your Preference" : "Create Your Preference"} */}
+            {isEditMode ? "Update Your Smart Study Planner" : "Create Your Smart Study Planner"}
           </h2>
 
           <button
@@ -66,11 +67,12 @@ export const Step1: React.FC<Step1Props> = ({
 
   return (
     <div className="p-6">
-      <h3 className="text-lg font-semibold mb-4">Setup Duration</h3>
+      {/* <h3 className="text-lg font-semibold mb-4">Setup Duration</h3> */}
 
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2">
-          Preference name
+          {/* Preference name */}
+          Plan Name
         </label>
         <input
           type="text"

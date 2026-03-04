@@ -28,20 +28,23 @@ export const GoalEmptyState: React.FC<EmptyStateProps> = ({ onSetGoal }) => {
         </div>
         <div>
           <h2 className="text-xl font-semibold text-[#171717] mb-1 text-center">
-            {/* No Goal Set */}No Preference set yet!
+            {/* No Goal Set */} {/*No Preference set yet! */} No Plan Set Yet!
           </h2>
           <p className="text-gray-600 text-center">
             {/* Create your first study goal to start tracking your */}
-            Create your first preference to start tracking your
+            {/* Create your first preference to start tracking your */}
+            Create your first study plan to start tracking your
             <br />
             {/* medical studies progress */} studies progress.
           </p>
         </div>
         <button
           onClick={onSetGoal}
-          className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 cursor-pointer"
+          className="px-10 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 cursor-pointer"
         >
-          {/* Set your goal */} Set your preference
+          {/* Set your goal */}
+          {/* Set your preference */}
+          Set your plan
         </button>
       </div>
     </div>
