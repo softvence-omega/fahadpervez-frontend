@@ -500,7 +500,7 @@ export default function PracticeMCQ() {
                   title={mcqData?.title}
                   titleSize="text-xl"
                   // description={`${meta?.total || 0} Questions `}
-                  description={`${Math.ceil(((meta?.total ?? 0) * 30) / 60)} Min`}
+                  description={`${Math.ceil(((meta?.total ?? 0) * 50) / 60)} Min`}
                   className="space-y-1"
                 />
               </div>
@@ -649,7 +649,11 @@ export default function PracticeMCQ() {
                   <div className="flex gap-4">
                     <button
                       onClick={() => toggleAnswer(qId)}
-                      className="px-6 py-2 border rounded-xl text-sm font-semibold bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 transition-colors cursor-pointer"
+                      disabled={selected[qId] === undefined || selected[qId] === null}
+                      className={`px-6 py-2 border rounded-xl text-sm font-semibold transition-colors ${selected[qId] === undefined || selected[qId] === null
+                        ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-70"
+                        : "bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 cursor-pointer"
+                        }`}
                     >
                       {showAnswer[qId] ? "Hide Answer" : "Show Answer"}
                     </button>

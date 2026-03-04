@@ -544,7 +544,7 @@ const Quiz = () => {
               <div className="flex justify-between mt-6">
                 {currentQuestion > 0 ? (
                   <Button
-                    className="cursor-pointer"
+                    className="cursor-pointer h-10"
                     variant="outline"
                     onClick={handlePrevious}
                   >
@@ -554,7 +554,7 @@ const Quiz = () => {
                   <div></div>
                 )}
                 <Button
-                  className="cursor-pointer"
+                  className="cursor-pointer px-10 h-10"
                   onClick={handleNext}
                   disabled={!isReviewMode && !answers[currentQuestion]}
                 >
