@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useForm, Controller, Resolver } from "react-hook-form";
 import { z } from "zod";
 import { useEffect } from "react";
 import { Zap } from "lucide-react";
@@ -29,11 +29,11 @@ import { useNavigate } from "react-router-dom";
 // =======================
 const quizSchema = z.object({
   difficulty: z.enum(["Basic", "Intermediate", "Advance"]),
-  questionCount: z.coerce
+  questionCount: z
     .number()
     .min(1, "At least 1 question is required")
     .max(50, "Max 50 questions"),
-  duration: z.coerce.number().min(1, "Duration must be at least 1 minute"),
+  duration: z.number().min(1, "Duration must be at least 1 minute"),
 });
 
 type QuizFormValues = z.infer<typeof quizSchema>;
@@ -62,7 +62,7 @@ export function GenerateMcqWithFileModal({
     reset,
     formState: { errors },
   } = useForm<QuizFormValues>({
-    resolver: zodResolver(quizSchema),
+    resolver: zodResolver(quizSchema) as Resolver<QuizFormValues>,
     defaultValues: {
       questionCount: 10,
       duration: 40,
@@ -84,7 +84,7 @@ export function GenerateMcqWithFileModal({
   // =======================
   // API CALL INSIDE MODAL
   // =======================
-  const onFormSubmit: SubmitHandler<QuizFormValues> = async (data) => {
+  const onFormSubmit = async (data: QuizFormValues) => {
     try {
       if ((!files || files.length === 0) && !note.trim()) {
         console.error("No file or note provided");
@@ -210,7 +210,7 @@ export function GenerateMcqWithFileModal({
                 type="number"
                 min={1}
                 max={50}
-                {...register("questionCount")}
+                {...register("questionCount", { valueAsNumber: true })}
                 className={errors.questionCount ? "border-red-500" : ""}
               />
               {errors.questionCount && (
@@ -235,9 +235,8 @@ export function GenerateMcqWithFileModal({
               disabled={isLoading}
             >
               <Zap
-                className={`mr-2 h-4 w-4 fill-white ${
-                  isLoading ? "animate-spin" : ""
-                } `}
+                className={`mr-2 h-4 w-4 fill-white ${isLoading ? "animate-spin" : ""
+                  } `}
               />
               {isLoading ? "Generating..." : "Generate Quiz"}
             </Button>
