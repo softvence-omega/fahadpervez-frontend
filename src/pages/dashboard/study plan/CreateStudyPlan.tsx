@@ -39,12 +39,12 @@ export default function CreateStudyPlan() {
   const subjects: SubjectTree[] = treeData?.data || [];
   const today = new Date();
   const maxDate = new Date();
-  maxDate.setDate(today.getDate() + 1);
+  maxDate.setDate(today.getDate() + 3);
 
   const [examName, setExamName] = useState("");
   const [dailyTime, setDailyTime] = useState("");
   const [examDate, setExamDate] = useState("");
-  const [examType, setExamType] = useState("");
+  // const [examType, setExamType] = useState("");
 
   const [subject, setSubject] = useState("");
   const [system, setSystem] = useState("");
@@ -89,7 +89,7 @@ export default function CreateStudyPlan() {
     if (!examName) newErrors.push("examName");
     if (!dailyTime) newErrors.push("dailyTime");
     if (!examDate) newErrors.push("examDate");
-    if (!examType) newErrors.push("examType");
+    // if (!examType) newErrors.push("examType");
     if (!subject) newErrors.push("subject");
 
     if (newErrors.length > 0) {
@@ -102,7 +102,7 @@ export default function CreateStudyPlan() {
       exam_name: examName,
       exam_date: examDate,
       daily_study_time: Number(dailyTime),
-      exam_type: examType,
+      exam_type: "", //examType,
       topics: [
         {
           subject,
@@ -118,7 +118,7 @@ export default function CreateStudyPlan() {
       const planId = response?.data?._id || response?._id;
 
       if (planId) {
-        toast.success("Study plan created successfully!");
+        // toast.success("Study plan created successfully!");
         navigate(`/dashboard/weekly-plan/${planId}`);
       } else {
         toast.error("Failed to retrieve study plan ID");
@@ -180,7 +180,7 @@ export default function CreateStudyPlan() {
               <Input
                 type="number"
                 min="0"
-                max={15}
+                max={4}
                 value={dailyTime}
                 onChange={(e) => {
                   setDailyTime(e.target.value);
@@ -196,12 +196,12 @@ export default function CreateStudyPlan() {
 
             <div className="grid gap-2">
               <Label className={errors.includes("examDate") ? "text-red-500" : ""}>
-                Exam Date
+                Finish Date
               </Label>
               <Input
                 type="date"
                 min={new Date().toISOString().split("T")[0]}
-                // max={maxDate.toISOString().split("T")[0]}
+                max={maxDate.toISOString().split("T")[0]}
                 value={examDate}
                 onChange={(e) => {
                   setExamDate(e.target.value);
@@ -214,7 +214,7 @@ export default function CreateStudyPlan() {
               />
             </div>
 
-            <div className="grid gap-2 col-span-1 lg:col-span-2">
+            {/* <div className="grid gap-2 col-span-1 lg:col-span-2">
               <Label className={errors.includes("examType") ? "text-red-500" : ""}>
                 Exam Type
               </Label>
@@ -239,7 +239,7 @@ export default function CreateStudyPlan() {
                   <SelectItem value="advanced">Advanced</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </div> */}
           </div>
         </div>
 
