@@ -19,7 +19,7 @@ const MyQuizAnalysisTab: React.FC = () => {
   const justSubmitted = location.state?.justSubmitted;
   const trackingDataFromState = location.state?.trackingData;
 
-  const { data: response, isLoading: quizLoading, isFetching, refetch } = useGetGeneratedMCQQuery(id || "", {
+  const { data: response, isLoading: quizLoading, isFetching, refetch } = useGetGeneratedMCQQuery({ id: id || "" }, {
     skip: !id || isExamMode,
   });
 
@@ -139,7 +139,7 @@ const MyQuizAnalysisTab: React.FC = () => {
           <div className={isExamMode ? "flex justify-center" : "grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6"}>
             <div className={`bg-white p-6 rounded-xl shadow-sm border border-gray-100 ${isExamMode ? "w-full max-w-2xl mx-auto" : ""}`}>
               <h2 className="text-xl font-bold mb-8 text-[#1A1C1E] font-inter">
-                {currentTitle} {isExamMode && `(${subject})`}
+                {currentTitle} {isExamMode && subject && `(${subject})`}
               </h2>
 
               <div className="mb-10">

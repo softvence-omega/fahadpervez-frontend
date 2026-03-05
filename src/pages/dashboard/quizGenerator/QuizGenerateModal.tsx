@@ -22,11 +22,14 @@ import {
   useGenerateMCQMutation,
   useGetMCQBankTreeQuery,
   useGetAllPublicMCQBankQuery,
+  useGetAllExamForStudentQuery,
+  useGetAllExamForProfessionalQuery,
 } from "@/store/features/MCQBank/MCQBank.api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Zap } from "lucide-react";
-import { useGetAllExamForStudentQuery } from "@/store/features/adminDashboard/examMode/studentApi/StudentApi";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/features/auth/auth.slice";
 
 
 // Types for hierarchy
@@ -61,11 +64,31 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
   const allBanks = bankData?.data || [];
   const [examName, setExamName] = useState("");
   const [examSubject, setExamSubject] = useState("");
-  const { data: allExamRes } = useGetAllExamForStudentQuery({ limit: 100 });
-  const allExams = allExamRes?.data?.data || [];
 
-  const subjectsFromExams = Array.from(new Set(allExams.map((e: any) => e.subject))).filter(Boolean);
-  const examListForSelectedSubject = allExams.filter((e: any) => e.subject === examSubject);
+  const user = useSelector(selectUser);
+  const isProfessional = user?.account?.role === "PROFESSIONAL";
+
+  const { data: allExamResForStudent } = useGetAllExamForStudentQuery(
+    { limit: 100 },
+    { skip: isProfessional || quizMode !== "exam" }
+  );
+  const { data: allExamResForProfessional } = useGetAllExamForProfessionalQuery(
+    { limit: 100 },
+    { skip: !isProfessional || quizMode !== "exam" }
+  );
+
+  const allExams = isProfessional
+    ? allExamResForProfessional?.data?.data || []
+    : allExamResForStudent?.data?.data || [];
+
+  const subjectsFromExams = Array.from(
+    new Set(allExams.map((e: any) => (isProfessional ? e.professionName : e.subject)))
+  ).filter(Boolean);
+
+  const examListForSelectedSubject = allExams.filter((e: any) => {
+    const subjectValue = isProfessional ? e.professionName : e.subject;
+    return subjectValue === examSubject;
+  });
 
   const [questionBank, setQuestionBank] = useState("");
   const [questionType, setQuestionType] = useState("hybrid");
@@ -170,7 +193,7 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
 
     if (quizMode === "exam") {
       setOpen(false);
-      navigate(`/dashboard/quiz/${examName}?source=exam`);
+      navigate(`/dashboard/quiz/${examName}?source=exam&limit=${questionCount}`);
       return;
     }
 
@@ -242,8 +265,8 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                 }}
                 placeholder="e.g., Cardiology Quiz"
                 className={`transition-all duration-300 ${errors.includes("quizName")
-                    ? "border-red-500 bg-red-50 focus-visible:ring-red-500"
-                    : ""
+                  ? "border-red-500 bg-red-50 focus-visible:ring-red-500"
+                  : ""
                   }`}
               />
 
@@ -274,8 +297,8 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                 >
                   <SelectTrigger
                     className={`transition-all duration-300 ${errors.includes("examSubject")
-                        ? "border-red-500 bg-red-50 focus:ring-red-500"
-                        : ""
+                      ? "border-red-500 bg-red-50 focus:ring-red-500"
+                      : ""
                       }`}
                   >
                     <SelectValue placeholder="Select Subject" />
@@ -310,8 +333,8 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                 >
                   <SelectTrigger
                     className={`transition-all duration-300 ${errors.includes("examName")
-                        ? "border-red-500 bg-red-50 focus:ring-red-500"
-                        : ""
+                      ? "border-red-500 bg-red-50 focus:ring-red-500"
+                      : ""
                       }`}
                   >
                     <SelectValue placeholder="Select Exam" />
@@ -367,8 +390,8 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                 >
                   <SelectTrigger
                     className={`transition-all duration-300 ${errors.includes("subject")
-                        ? "border-red-500 bg-red-50 focus:ring-red-500"
-                        : ""
+                      ? "border-red-500 bg-red-50 focus:ring-red-500"
+                      : ""
                       }`}
                   >
                     <SelectValue placeholder="Select Subject" />
@@ -467,8 +490,8 @@ export function QuizGeneratorDialog({ open, setOpen }: any) {
                 >
                   <SelectTrigger
                     className={`transition-all duration-300 ${errors.includes("questionBank")
-                        ? "border-red-500 bg-red-50 focus:ring-red-500"
-                        : ""
+                      ? "border-red-500 bg-red-50 focus:ring-red-500"
+                      : ""
                       }`}
                   >
                     <SelectValue placeholder="Select Question Bank" />
