@@ -17,8 +17,10 @@ import {
   useGetGeneratedMCQQuery,
   useUpdateQuizTrackingMutation,
   useGenerateRecommendationMutation,
+  useGetSingleExamForStudentQuery,
+  useGetSingleExamForProfessionalQuery,
 } from "@/store/features/MCQBank/MCQBank.api";
-import { useGetSingleExamQuery } from "@/store/features/adminDashboard/examMode/studentApi/StudentApi";
+import { selectUser } from "@/store/features/auth/auth.slice";
 
 // import { setQuizResults } from "@/store/features/MCQBank/quizSlice";
 // import { useDispatch } from "react-redux";
@@ -39,20 +41,29 @@ const Quiz = () => {
     (state: RootState) => state.quiz
   );
 
+  const user = useSelector(selectUser);
+  const isProfessional = user?.account?.role === "PROFESSIONAL";
+  const limit = queryParams.get("limit") ? Number(queryParams.get("limit")) : 10;
+
   const { data: apiQuizData, isLoading: isQuizLoading } = useGetGeneratedMCQQuery(
-    id as string,
+    { id: id as string, limit },
     {
       skip: !id || isExamMode, // Removed static ID "3"
     }
-
   );
 
-  const { data: examData, isLoading: isExamLoading } = useGetSingleExamQuery(
-    { id: id as string },
-    { skip: !id || !isExamMode }
+  const { data: studentExamData, isLoading: isStudentExamLoading } = useGetSingleExamForStudentQuery(
+    { id: id as string, limit },
+    { skip: !id || !isExamMode || isProfessional }
   );
 
-  const isLoading = isQuizLoading || (isExamMode && isExamLoading);
+  const { data: professionalExamData, isLoading: isProfessionalExamLoading } = useGetSingleExamForProfessionalQuery(
+    { id: id as string, limit },
+    { skip: !id || !isExamMode || !isProfessional }
+  );
+
+  const examData = isProfessional ? professionalExamData : studentExamData;
+  const isLoading = isQuizLoading || (isExamMode && (isStudentExamLoading || isProfessionalExamLoading));
 
 
   // Use API data, then redux quiz, then sample
@@ -346,10 +357,10 @@ const Quiz = () => {
       {/* </Link> */}
 
 
-      <div className="flex flex-col md:flex-row gap-6 my-5 items-stretch min-h-[calc(100vh-160px)]">
+      <div className="flex flex-col md:flex-row gap-6 my-5 items-start min-h-[calc(100vh-160px)]">
         {/* Sidebar */}
         <div
-          className={`bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col transition-all duration-300
+          className={`bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col transition-all duration-300 min-h-[calc(100vh-220px)] h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar  
     ${isSidebarOpen ? "w-full md:w-1/4 lg:w-1/5" : "w-16"}
     `}
         >
