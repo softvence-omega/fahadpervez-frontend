@@ -103,11 +103,12 @@ export const mcqBankAPI = baseAPI.injectEndpoints({
     }),
 
     getGeneratedMCQ: build.query({
-      query: (id: string) => ({
+      query: ({ id, limit }: { id: string; limit?: number }) => ({
         url: `/my_content/mcqs/${id}`,
         method: "GET",
+        params: { limit },
       }),
-      providesTags: (id) => [{ type: "GeneratedMCQ", id }],
+      providesTags: (_result, _error, { id }) => [{ type: "GeneratedMCQ", id }],
     }),
 
     generateMCQ: build.mutation({
@@ -140,6 +141,50 @@ export const mcqBankAPI = baseAPI.injectEndpoints({
         { type: "GeneratedMCQ", id: contentId },
       ],
     }),
+    getAllExamForStudent: build.query({
+      query: (params) => {
+        return {
+          url: `/exam/student/get-all-exam`,
+          method: "GET",
+          params,
+        };
+      },
+      providesTags: ["AllExam"],
+    }),
+    getAllExamForProfessional: build.query({
+      query: (params) => {
+        return {
+          url: `/exam/professional/get-all-exam`,
+          method: "GET",
+          params,
+        };
+      },
+      providesTags: ["AllExamForProfessional"],
+    }),
+    getSingleExamForStudent: build.query({
+      query: (params) => ({
+        url: `/exam/student/get-single-exam/${params.id}`,
+        method: "GET",
+        params: {
+          page: params.page,
+          limit: params.limit,
+        },
+      }),
+      providesTags: ["AllExam"],
+    }),
+    getSingleExamForProfessional: build.query({
+      query: (params) => {
+        return {
+          url: `/exam/professional/get-single-exam/${params.id}`,
+          method: "GET",
+          params: {
+            page: params.page,
+            limit: params.limit,
+          },
+        };
+      },
+      providesTags: ["AllExamForProfessional"],
+    }),
 
     // end
   }),
@@ -157,4 +202,8 @@ export const {
   useGenerateMCQMutation,
   useUpdateQuizTrackingMutation,
   useGenerateRecommendationMutation,
+  useGetAllExamForStudentQuery,
+  useGetAllExamForProfessionalQuery,
+  useGetSingleExamForStudentQuery,
+  useGetSingleExamForProfessionalQuery,
 } = mcqBankAPI;

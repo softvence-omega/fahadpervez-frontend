@@ -50,7 +50,7 @@ const ResultsSummary: React.FC<ResultsSummaryProps> = ({
           </Button>
         </Link> */}
         <Link
-          to={`/dashboard/quiz/${quizId}?mode=review${isExamMode ? "&source=exam" : ""}`}
+          to={`/dashboard/quiz/${quizId}?mode=review&limit=${total}${isExamMode ? "&source=exam" : ""}`}
           state={{ justSubmitted }}
         >
 
