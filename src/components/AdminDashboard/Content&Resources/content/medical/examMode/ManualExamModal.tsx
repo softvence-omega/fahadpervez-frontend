@@ -5,7 +5,10 @@ import FormHeader from "@/components/AdminDashboard/reuseable/FormHeader";
 import ModalCloseButton from "@/components/AdminDashboard/reuseable/ModalCloseButton";
 import { useUploadSingleImageMutation } from "@/store/features/adminDashboard/ContentResources/MCQ/mcqApi";
 import { useCreateExamManualForProfessionalMutation } from "@/store/features/adminDashboard/examMode/professionalApi/professionalApi";
-import { useCreateExamManualMutation } from "@/store/features/adminDashboard/examMode/studentApi/StudentApi";
+import {
+  useCreateExamManualMutation,
+  useGetAllExamForStudentQuery,
+} from "@/store/features/adminDashboard/examMode/studentApi/StudentApi";
 import { useAppSelector } from "@/store/hook";
 import { RootState } from "@/store/store";
 import { correctAnswerOptions } from "@/types";
@@ -54,14 +57,6 @@ const MCQSchema = z
     }
   });
 
-// const FinalSchema = z.object({
-//   // profileType: z.string().min(1, { message: "Profile Type is required" }),
-//   examName: z.string().min(1, { message: "Exam Name is required" }),
-//   subject: z.string().min(1, { message: "Subject is required" }),
-//   totalTime: z.number().min(1, { message: "Total Time is required" }),
-//   mcqs: z.array(MCQSchema).min(1),
-// });
-
 export const inputClass = {
   label: "block text-sm font-normal text-[#020617] font-inter mb-2",
   input:
@@ -78,6 +73,14 @@ const ManualExamModal: React.FC<CreateExamModalProps> = ({ onClose }) => {
     (state: RootState) => state.staticContent,
   );
 
+  const { data: studentData } = useGetAllExamForStudentQuery({ profileType });
+
+  const subjectOptions = Array.from(
+    new Set(studentData?.data.data.map((exam) => exam.subject)),
+  ).map((subject) => ({
+    label: subject,
+    value: subject,
+  }));
   const FinalSchema = z
     .object({
       examName: z.string().min(1, { message: "Exam Name is required" }),
@@ -121,6 +124,7 @@ const ManualExamModal: React.FC<CreateExamModalProps> = ({ onClose }) => {
     register,
     handleSubmit,
     control,
+    watch,
     reset,
     setValue,
     formState: { errors },
@@ -274,11 +278,14 @@ const ManualExamModal: React.FC<CreateExamModalProps> = ({ onClose }) => {
               {isStudent && (
                 <div>
                   <label className={inputClass.label}>Subject</label>
-                  <input
-                    {...register("subject")}
-                    className={inputClass.input}
-                    placeholder="Enter subject"
+
+                  <CommonSelect
+                    value={watch("subject")}
+                    item={subjectOptions}
+                    placeholder="Select subject"
+                    onValueChange={(val) => setValue("subject", val)}
                   />
+
                   {errors.subject && (
                     <p className={inputClass.error}>{errors.subject.message}</p>
                   )}
