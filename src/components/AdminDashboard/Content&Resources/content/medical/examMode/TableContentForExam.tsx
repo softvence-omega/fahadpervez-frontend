@@ -21,6 +21,7 @@ import {
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
+import ExamPagination from "./ExamPagination";
 import UpdateExamModal from "./UpdateExamModal";
 import UpdateExamModalForProfessional from "./UpdateExamModalForProfessional";
 const tabs: Tab<"manual" | "bulk">[] = [
@@ -42,21 +43,25 @@ const TableContentForExam: React.FC<TableOfContentProps> = ({
   mode,
   setMode,
 }) => {
-  const { contentFor } = useAppSelector((state) => state.staticContent);
+  const { contentFor, profileType } = useAppSelector(
+    (state) => state.staticContent,
+  );
+
   const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
   const deBounce = useDebounce(searchQuery, 500);
   const isStudent = contentFor === "student";
   const isProfessional = contentFor === "professional";
 
   const { data: studentData, isLoading: studentLoading } =
     useGetAllExamForStudentQuery(
-      { searchTerm: deBounce },
+      { searchTerm: deBounce, profileType, page },
       { skip: !isStudent },
     );
 
   const { data: professionalData, isLoading: professionalLoading } =
     useGetAllExamForProfessionalQuery(
-      { searchTerm: deBounce },
+      { searchTerm: deBounce, professionName: profileType },
       { skip: !isProfessional },
     );
 
@@ -158,6 +163,14 @@ const TableContentForExam: React.FC<TableOfContentProps> = ({
               </div>
             ))}
           </div>
+        )}
+
+        {data?.data.data && data?.data.data.length > 1 && (
+          <ExamPagination
+            page={page}
+            setPage={setPage}
+            totalPages={data?.data.meta.totalPages || 1}
+          />
         )}
       </div>
       {isUpdateModalOpen && initialData && (
