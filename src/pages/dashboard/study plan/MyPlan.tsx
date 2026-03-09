@@ -50,7 +50,7 @@ export default function MyPlan() {
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
           <DashboardHeading
-            title="All Study Plan"
+            title="All Preference"
             titleSize="text-xl"
             description="A structured path to smarter learning and better results."
             className="mt-12 mb-12 space-y-1"
@@ -76,7 +76,7 @@ export default function MyPlan() {
               icon={<Plus className="w-4 h-4" />}
               className="h-12 mb-4 hover:bg-blue-btn-1 hover:opacity-80 cursor-pointer"
             >
-              Create new plan
+              Create new preference
             </PrimaryButton>
           </Link>
         </div>
