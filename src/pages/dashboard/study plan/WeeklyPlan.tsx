@@ -189,7 +189,7 @@ export default function WeeklyPlan() {
           <Card className="border-0 bg-transparent shadow-none">
             <CardHeader className="flex items-center justify-between mb-5">
               <h2 className="text-xl text-[#0A0A0A] font-semibold">
-                Your Study Plan
+                Your Preference
               </h2>
               {/* <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -255,7 +255,7 @@ export default function WeeklyPlan() {
 
               <div className="border border-slate-300 p-7 rounded-[8px] bg-white shadow">
                 <div className="flex justify-between items-center mb-7">
-                  <p>Study Plan Overview</p>
+                  <p>Preference Overview</p>
                   <p className="text-white bg-green-600 px-1.5 sm:px-3 py-1 text-sm sm:text-base rounded">
                     Active
                   </p>

@@ -136,7 +136,7 @@ export default function CreateStudyPlan() {
           <ArrowLeft />
         </Link>
         <DashboardHeading
-          title="Create New Study Plan"
+          title="Create New Preference"
           titleSize="text-xl"
           description="Your roadmap to organized and effective studying"
           className="mt-12 mb-12 space-y-1"
@@ -371,7 +371,7 @@ export default function CreateStudyPlan() {
             className="w-full flex justify-center gap-4 bg-blue-main text-white py-2 rounded-lg hover:bg-blue-main/70 cursor-pointer mt-auto"
           >
             <Atom className={isLoading ? "animate-spin" : ""} />
-            {isLoading ? "Generating..." : "Generate Study Plan"}
+            {isLoading ? "Generating..." : "Generate Preference"}
           </button>
         </div>
       </form>
