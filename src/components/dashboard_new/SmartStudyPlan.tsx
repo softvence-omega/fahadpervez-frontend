@@ -177,7 +177,7 @@ const SmartStudyPlan: React.FC = () => {
     <div className="bg-blue-50 rounded-lg shadow-sm p-6 h-full flex flex-col border border-slate-200 overflow-hidden">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold text-gray-900">
-          Smart Study Plan
+          Today's Preference
         </h3>
         {/* <span className="text-sm text-gray-500">Completed</span> */}
       </div>
