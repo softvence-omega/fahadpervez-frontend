@@ -91,6 +91,7 @@ const TableContentForExam: React.FC<TableOfContentProps> = ({
     setIsUpdateModalOpen(true);
   };
 
+  console.log("data?.data.data", data?.data.data);
   return (
     <>
       <div className="w-[350px] bg-white rounded-2xl shadow p-4 space-y-4">
@@ -165,7 +166,7 @@ const TableContentForExam: React.FC<TableOfContentProps> = ({
           </div>
         )}
 
-        {data?.data.data && data?.data.data.length > 1 && (
+        {data?.data.data && data?.data.data.length > 0 && (
           <ExamPagination
             page={page}
             setPage={setPage}
